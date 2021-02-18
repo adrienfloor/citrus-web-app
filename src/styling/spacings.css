@@ -1,0 +1,21 @@
+.small-separator {
+	min-height: 10px;
+}
+
+.medium-separator {
+	min-height: 20px;
+}
+
+.big-separator {
+	min-height: 40px;
+}
+
+.max-separator {
+	min-height: 100px;
+}
+
+.border-separator {
+	min-height: 1px;
+	width: 100%;
+	background-color: #EFEFEF
+}

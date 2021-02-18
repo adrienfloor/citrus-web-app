@@ -1,0 +1,69 @@
+.maxi-title {
+	font-weight: 900;
+	line-height: 50px;
+	letter-spacing: -0.08px;
+	font-size: 50px;
+	font-family: Roboto;
+}
+
+.big-title {
+	font-weight: 900;
+	line-height: 76.9px;
+	letter-spacing: -0.08px;
+	font-size: 30px;
+	font-family: Roboto;
+}
+
+.big-title-light-weight {
+	font-weight: 600;
+	letter-spacing: -0.08px;
+	font-size: 30px;
+	font-family: Roboto;
+}
+
+.medium-title {
+	font-weight: 500;
+	font-size: 24px;
+	line-height: 28px;
+	font-family: Roboto;
+}
+
+.small-title {
+	font-weight: 400;
+	font-family: Roboto;
+	font-size: 20px;
+	line-height: 23px;
+}
+
+.big-text {
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 21px;
+	font-family: Roboto;
+}
+
+.medium-text {
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 19px;
+	font-family: Roboto;
+}
+
+.small-text {
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 16px;
+	font-family: Roboto;
+}
+
+.simple-link {
+	text-decoration: underline;
+}
+
+.simple-link:hover {
+	cursor: pointer;
+}
+
+.hover:hover {
+	cursor: pointer;
+}

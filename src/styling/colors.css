@@ -1,0 +1,52 @@
+.whiteBackground {
+	background-color: #fff;
+}
+
+.blackBackground {
+	background-color: #000;
+}
+
+.darkGreyBackground {
+	background-color: #1D1D1D;
+}
+
+.greyBackground {
+	background-color: #303030;
+}
+
+.white {
+	color: #fff;
+}
+
+.black {
+	color: #000;
+}
+
+.orange {
+	color: #FF8832;
+}
+
+.light-grey {
+	color :#EFEFEF;
+}
+
+.grey {
+	color: #BEBEBE;
+}
+
+.dark-grey {
+	color: #1D1D1D;
+}
+
+.fired-red {
+	color: #cf352e;
+}
+
+.red {
+	color: #ff0000;
+}
+
+
+.green {
+	color: green;
+}

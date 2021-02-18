@@ -1,0 +1,104 @@
+.action-button {
+	background-color: #FF842A;
+	color: #FFF;
+	width: 272px;
+	height: 65px;
+	border-radius: 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: 0;
+	border: none;
+}
+
+.next-action-button {
+	background-color: #61CE70;
+	color: #FFF;
+	width: 180px;
+	height: 50px;
+	border-radius: 3px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: 0;
+	border: none;
+}
+
+.full-width-action-button {
+	background-color: #FF842A;
+	color: #FFF;
+	width: 100%;
+	height: 38px;
+	border-radius: 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: 0;
+	border: none;
+}
+
+.reset-button {
+	background-color: #fff;
+	width: 54px;
+	height: 29px;
+	border-radius: 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-width: 1px;
+	border-color: #BEBEBE;
+	padding: 5px
+}
+
+.small-action-button {
+	background-color: #FF842A;
+	color: #FFF;
+	width: 72px;
+	height: 27px;
+	border-radius: 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: 0;
+	border: none;
+}
+
+.small-action-white-button {
+	background-color: #FFF;
+	color: #000;
+	width: 72px;
+	height: 27px;
+	border-radius: 1px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	outline: 0;
+	border: 0.5px solid lightgray;
+}
+
+.video-player-back-button {
+	background-color: #000;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	width: 169px;
+	height: 57px;
+	padding: 5px 0;
+}
+
+.disabled-button:hover {
+	cursor: not-allowed !important;
+}
+
+.button-white-text {
+	color: #fff;
+}
+
+.small-action-button:hover,
+.action-button:hover,
+.full-width-action-button:hover,
+.small-action-white-button:hover,
+.next-action-button:hover {
+	cursor: pointer;
+}
