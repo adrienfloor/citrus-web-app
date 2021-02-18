@@ -17,6 +17,10 @@ const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers)
 
 const store = createStore(rootReducer, initialState, composedEnhancers)
 
+if (REACT_APP_ENV === 'production') {
+  console.log = console.warn = console.error = () => { }
+}
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
