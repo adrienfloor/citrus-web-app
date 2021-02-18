@@ -8,9 +8,11 @@ import rootReducer from './reducers'
 import './i18n'
 import App from './App'
 
+const { REACT_APP_ENV } = process.env
+
 const initialState = {}
 const enhancers = []
-const middlewares = [thunkMiddleware, loggerMiddleware]
+const middlewares = REACT_APP_ENV === 'production' ? [thunkMiddleware] : [thunkMiddleware, loggerMiddleware]
 const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers)
 
 const store = createStore(rootReducer, initialState, composedEnhancers)
