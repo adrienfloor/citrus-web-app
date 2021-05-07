@@ -139,7 +139,7 @@ class Payout extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -169,7 +169,7 @@ class Payout extends React.Component {
 					/>
 				</div>
 				<div className='billing-card flex-column padded'>
-					<h2 className='medium-title'>Payout</h2>
+					<div className='medium-title'>Payout</div>
 					<span className='small-text'>In order to withdraw your earnings, we need to get confirmation from you. Note that a payout can take a few days to appear on your bank account.</span>
 					<div className='small-separator'></div>
 					<span className='small-text'>Current funds : {funds}</span>

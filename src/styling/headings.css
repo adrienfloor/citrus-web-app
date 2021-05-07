@@ -1,63 +1,50 @@
 .maxi-title {
-	font-weight: 900;
-	line-height: 50px;
-	letter-spacing: -0.08px;
-	font-size: 50px;
-	font-family: Roboto;
-}
-
-.big-title {
-	font-weight: 900;
-	line-height: 76.9px;
-	letter-spacing: -0.08px;
-	font-size: 30px;
-	font-family: Roboto;
-}
-
-.big-title-light-weight {
-	font-weight: 600;
-	letter-spacing: -0.08px;
-	font-size: 30px;
-	font-family: Roboto;
-}
-
-.medium-title {
-	font-weight: 500;
-	font-size: 24px;
-	line-height: 28px;
-	font-family: Roboto;
+	font-family: Raleway-Bold;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 40px;
+	line-height: 47px;
 }
 
 .small-title {
-	font-weight: 400;
-	font-family: Roboto;
+	font-family: Raleway-Bold;
+	font-style: normal;
+	font-weight: bold !important;
 	font-size: 20px;
 	line-height: 23px;
 }
 
-.big-text {
-	font-weight: normal;
-	font-size: 18px;
-	line-height: 21px;
-	font-family: Roboto;
-}
-
-.medium-text {
-	font-weight: normal;
+.small-text {
+	font-family: Raleway-Regular;
+	font-style: normal;
+	font-weight: 500;
 	font-size: 16px;
 	line-height: 19px;
-	font-family: Roboto;
 }
 
-.small-text {
-	font-weight: normal;
-	font-size: 14px;
-	line-height: 16px;
-	font-family: Roboto;
+.small-text-high {
+	font-family: Raleway-Regular;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 21px !important;
+}
+
+.small-text-bold {
+	font-family: Raleway-Medium;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 18px !important;
+	line-height: 19px;
 }
 
 .simple-link {
-	text-decoration: underline;
+	font-family: Raleway-Medium;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 19px;
+	color: #0075FF;
 }
 
 .simple-link:hover {

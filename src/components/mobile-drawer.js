@@ -57,9 +57,9 @@ function MobileDrawer({ t, currentFocus }) {
 			onClick={toggleDrawer(false)}
 			onKeyDown={toggleDrawer(false)}
 		>
-			<h2 className={`${classes.padded} big-text`}>
+			<div className={`${classes.padded} big-text`}>
 				{capitalize(t('myAccount'))}
-			</h2>
+			</div>
 			<List>
 				<ListItem
 					button
@@ -84,9 +84,9 @@ function MobileDrawer({ t, currentFocus }) {
 				</ListItem>
 			</List>
 			<Divider />
-			<h2 className={`${classes.padded} big-text`}>
+			<div className={`${classes.padded} big-text`}>
 				{capitalize(t('myVideos'))}
-			</h2>
+			</div>
 			<List>
 				<ListItem
 					button

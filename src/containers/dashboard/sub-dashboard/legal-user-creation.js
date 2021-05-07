@@ -158,20 +158,20 @@ class LegalUserCreation extends React.Component {
 
 		return (
 			<div className='full-container flex-column flex-start legal-user-creation'>
-				<span
-					className='medium-text'
-					style={{ padding: '2.5%' }}
-				>
+				<span className='maxi-title title'>
+					{capitalize(t('cashOut'))}
+				</span>
+				<span className='small-text-high'>
 					{capitalize(t('toCashOutYouFirstNeed'))}
 				</span>
+				<div className='medium-separator'></div>
 				<form
 					onSubmit={this.handleSubmit}
+					className='legal-user-creation-form'
 				>
-					<div>
-						<span
-							className='small-text grey'
-							style={{ padding: '2.5%' }}
-						>
+					<div className='flex-column flex-center'>
+						<div className='medium-separator'></div>
+						<span className='small-text citrusGrey row'>
 							{uppercase(t('generalInformation'))} :
 						</span>
 						<div className='row flex-row'>
@@ -181,7 +181,7 @@ class LegalUserCreation extends React.Component {
 									'business',
 									'organization'
 								]}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								name="Legal Person Type"
 								onSelect={LegalPersonType => this.setState({ LegalPersonType })}
 								t={t}
@@ -191,7 +191,7 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Company Name"
 								onChange={e => this.handleInputChange(e, 'Name')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 							/>
 						</div>
@@ -199,22 +199,19 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Company Number"
 								onChange={e => this.handleInputChange(e, 'CompanyNumber')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 							/>
 						</div>
 						<div className='medium-separator'></div>
-						<span
-							className='small-text grey'
-							style={{ padding: '2.5%' }}
-						>
+						<span className='small-text citrusGrey row'>
 							{uppercase(t('companyAddress'))} :
 						</span>
 						<div className='row flex-row'>
 							<TextField
 								label="Company Adress Line"
 								onChange={e => this.handleInputChange(e, 'AddressLine1')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 							/>
 						</div>
@@ -222,13 +219,13 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Postal Code"
 								onChange={e => this.handleInputChange(e, 'PostalCode')}
-								style={{ width: '45%', margin: '2% 2.5%' }}
+								style={{ width: '47.5%', margin: '0 2.5% 0 0' }}
 								variant='outlined'
 							/>
 							<TextField
 								label="City"
 								onChange={e => this.handleInputChange(e, 'City')}
-								style={{ width: '45%', margin: '2% 2.5%' }}
+								style={{ width: '47.5%', margin: '0 0 0 2.5%' }}
 								variant='outlined'
 							/>
 						</div>
@@ -236,27 +233,24 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Region"
 								onChange={e => this.handleInputChange(e, 'Region')}
-								style={{ width: '45%', margin: '2% 2.5%' }}
+								style={{ width: '47.5%', margin: '0 2.5% 0 0' }}
 								variant='outlined'
 							/>
 							<CountrySelector
-								style={{ width: '45%', margin: '2% 2.5%' }}
+								style={{ width: '47.5%', margin: '0 0 0 2.5%' }}
 								name="Country"
 								onSelect={Country => this.setState({ Country })}
 							/>
 						</div>
 						<div className='medium-separator'></div>
-						<span
-							className='small-text grey'
-							style={{ padding: '2.5%' }}
-						>
+						<span className='small-text citrusGrey row'>
 							{uppercase(t('legalRepresentative'))} :
 						</span>
 						<div className='row flex-row'>
 							<TextField
 								label="Legal Representative Firstname"
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeFirstName')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 							/>
 						</div>
@@ -264,20 +258,20 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Legal Representative Lastname"
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeLastName')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 							/>
 						</div>
 						<div className='row flex-row'>
 							<CountrySelector
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								name="Legal Representative Nationality"
 								onSelect={LegalRepresentativeNationality => this.setState({ LegalRepresentativeNationality })}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<CountrySelector
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								name="Legal Representative Residence"
 								onSelect={LegalRepresentativeCountryOfResidence => this.setState({ LegalRepresentativeCountryOfResidence })}
 							/>
@@ -286,7 +280,7 @@ class LegalUserCreation extends React.Component {
 							<TextField
 								label="Legal Representative Email"
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeEmail')}
-								style={{ width: '95%', margin: '2% 2.5%' }}
+								style={{ width: '100%' }}
 								variant='outlined'
 								error={LegalRepresentativeEmail.length && !isValidEmailInput(LegalRepresentativeEmail)}
 								helperText={
@@ -296,14 +290,10 @@ class LegalUserCreation extends React.Component {
 							/>
 						</div>
 						<div
-							className='row flex-row medium-text flex-center'
-							style={{
-								marginTop: '15px',
-								padding: '0 2.5%',
-								width: '95%'
-							}}
+							className='row flex-row medium-text row  flex-center'
+							style={{ justifyContent: 'flex-start' }}
 						>
-							<span style={{ marginRight: '5px' }}>Legal Representative Birthday : </span>
+							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Legal Representative Birthday : </span>
 							<TextField
 								onChange={this.handleDateChange}
 								type="date"
@@ -323,25 +313,48 @@ class LegalUserCreation extends React.Component {
 							<div className='small-separator'></div>
 						</div>
 					}
-					<button
-						className='full-width-action-button'
-						id='submit'
-						style={{ marginBottom: '20px' }}
-					>
-						<span id='button-text' className='big-text'>
-							{capitalize(t('submit'))}
-						</span>
-					</button>
+					<div className='button-container flex-center'>
+						<button
+							className='filled-button'
+							type='submit'
+							form='credit-card-form'
+						>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('submit'))}
+							</span>
+						</button>
+					</div>
 				</form>
 				<style jsx='true'>
 					{`
 						.row {
-							width: 100%;
+							width: 454px;
+							margin-bottom: 10px;
+							margin-top: 10px;
 						}
-						.legal-user-creation {
-							align-items: center;
+						.title {
+							margin-left: 2px;
+							margin-bottom: 30px;
+						}
+						.legal-user-creation-form {
+							height: 400px;
+							background-color: #FFFFFF;
+							width: 690px;
 							overflow-y: auto;
 							margin-bottom: 20px;
+						}
+						.button-container {
+							padding-top: 10px;
+							padding-bottom: 20px;
+						}
+						@media only screen and (max-width: 640px) {
+							.title {
+								margin-bottom: 10px;
+							}
+							.legal-user-creation-form,
+							.row {
+								width: 100%;
+							}
 						}
 				`}
 				</style>

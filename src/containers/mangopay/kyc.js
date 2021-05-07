@@ -177,7 +177,7 @@ class Kyc extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -207,7 +207,7 @@ class Kyc extends React.Component {
 					/>
 				</div>
 				<div className='billing-card flex-column padded'>
-					<h2 className='medium-title'>KYC Regulations</h2>
+					<div className='medium-title'>KYC Regulations</div>
 					<span className='small-text'>In order to withdraw your earnings, and according to the law in place, we need to verify your identity.</span>
 					<div className='small-separator'></div>
 					<span className='small-text'>If you recently submitted documents, please note that this verification is manual and can take a few days</span>

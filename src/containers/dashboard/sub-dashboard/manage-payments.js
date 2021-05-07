@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 
 import CloseIcon from '@material-ui/icons/Close'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
 
 import '../../../styling/headings.css'
 import '../../../styling/colors.css'
 import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
+
+import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 
 import CreditCardForm from '../../mangopay/credit-card-form'
 import TopUp from '../../mangopay/top-up'
@@ -186,42 +187,7 @@ class ManagePayments extends React.Component {
 
 		if(isCancelingSubscription) {
 			return (
-				<div className='full-container flex-column flex-center payments'>
-					<span className='small-text'>
-						{capitalize(t('areYouSureCancelSubscription'))} ?
-					</span>
-					<div
-					style={{
-						width: '180px',
-						height: '100px',
-						justifyContent: 'space-between',
-						alignItems: 'center'
-					}}
-						className='flex-row flex-center'
-					>
-						<button
-							className='small-action-white-button'
-							onClick={() => this.updateUserSubscription(false)}
-						>
-							{capitalize(t('yes'))}
-						</button>
-						<button
-							className='small-action-button'
-							onClick={() => this.setState({ isCancelingSubscription: false })}
-						>
-							{capitalize(t('no'))}
-						</button>
-					</div>
-				</div>
-			)
-		}
-
-		if (isUpdatingAutomaticTopUp) {
-			return (
-				<div
-					className='full-container flex-column payments'
-					style={{ alignItems: 'center' }}
-				>
+				<div className='full-container flex-column payments'>
 					<div
 						style={{
 							width: '100%',
@@ -230,57 +196,149 @@ class ManagePayments extends React.Component {
 							justifyContent: 'flex-start',
 							alignItems: 'center'
 						}}
+						onClick={() => this.setState({ isCancelingSubscription: false })}
+						className='hover'
 					>
-						<KeyboardBackspaceIcon
-							className='action-icon'
-							fontSize='large'
-							onClick={() => this.setState({ isUpdatingAutomaticTopUp: false })}
+						<CaretBack
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
 						/>
+						<span className='small-text citrusGrey'>
+							{capitalize(t('payments'))}
+						</span>
 					</div>
-					<span
-						className='small-text'
-						style={{ width: '80%' }}
+					<span className='maxi-title title'>
+						{capitalize(t('subscriptionPlan'))}
+					</span>
+					<div className='small-separator'></div>
+					<span className='small-text-high'>
+						{capitalize(t('areYouSureCancelSubscription'))} ?
+					</span>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<div className='flex-column flex-center'>
+						<button
+							className='filled-button'
+							onClick={() => this.updateUserSubscription(false)}
+						>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('yes'))}
+							</span>
+						</button>
+						<div className='small-separator'></div>
+						<button
+							className='light-button'
+							onClick={() => this.setState({ isCancelingSubscription: false })}
+						>
+							<span className='small-title citrusBlue'>
+								{capitalize(t('no'))}
+							</span>
+						</button>
+					</div>
+					<style jsx='true'>
+						{`
+						.title {
+							margin-bottom: 30px;
+						}
+						@media only screen and (max-width: 640px) {
+							.title {
+								margin-bottom: 10px;
+								font-size: 36px !important;
+							}
+						}
+					`}
+					</style>
+				</div>
+			)
+		}
+
+		if(isUpdatingAutomaticTopUp) {
+			return (
+				<div className='full-container flex-column payments'>
+					<div
+						style={{
+							width: '100%',
+							height: '50px',
+							display: 'flex',
+							justifyContent: 'flex-start',
+							alignItems: 'center'
+						}}
+						onClick={() => this.setState({ isUpdatingAutomaticTopUp: false })}
+						className='hover'
 					>
+						<CaretBack
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
+						/>
+						<span className='small-text citrusGrey'>
+							{capitalize(t('payments'))}
+						</span>
+					</div>
+					<span className='maxi-title title'>
+						{capitalize(t('allowAutomaticTopUp'))}
+					</span>
+					<span className='small-text-high'>
+						{capitalize(t('whyItIseasier'))}
+					</span>
+					<div className='small-separator'></div>
+					<span className='small-text-high'>
 						{capitalize(t('topUpDisclaimer'))}
 					</span>
 					<div className='small-separator'></div>
 					<span className='small-text'>
 						{capitalize(t('allowAutomaticTopUp'))} ?
 					</span>
-					<div
-						style={{
-							width: '180px',
-							height: '100px',
-							justifyContent: 'space-between',
-							alignItems: 'center'
-						}}
-						className='flex-row flex-center'
-					>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<div className='flex-column flex-center'>
 						<button
-							className='small-action-white-button'
+							className='filled-button'
 							onClick={this.updateUserAutomaticTopUp}
 						>
-							{capitalize(t('no'))}
+							<span className='small-title citrusWhite'>
+								{capitalize(t('yes'))}
+							</span>
 						</button>
+						<div className='small-separator'></div>
 						<button
-							className='small-action-button'
+							className='light-button'
 							onClick={this.updateUserAutomaticTopUp}
 						>
-							{capitalize(t('yes'))}
+							<span className='small-title citrusBlue'>
+								{capitalize(t('no'))}
+							</span>
 						</button>
 					</div>
+					<style jsx='true'>
+						{`
+						.title {
+							margin-bottom: 30px;
+						}
+						@media only screen and (max-width: 640px) {
+							.title {
+								margin-bottom: 10px;
+								font-size: 36px !important;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}
 
 		if (isTopingUpAccount) {
 			if (mangoPayUserId) {
-				return (<TopUp
-					onClose={() => {
-						this.setState({ isTopingUpAccount: false })
-						this.fetchMangoPayInfo()
-					}}
-				/>
+				return (
+					<TopUp
+						onClose={() => {
+							this.setState({ isTopingUpAccount: false })
+							this.fetchMangoPayInfo()
+						}}
+					/>
 				)
 			} else {
 				this.setState({
@@ -297,38 +355,41 @@ class ManagePayments extends React.Component {
 
 		return (
 			<div className='full-container flex-column flex-start payments'>
-				<div className='flex-row'>
-					<span className='small-text row-item'>{capitalize(t('firstName'))} : </span>
+				<span className='maxi-title'>
+					{capitalize(t('payments'))}
+				</span>
+				<div className='medium-separator'></div>
+				<div className='small-separator'></div>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('firstName'))}</span>
 					<span className='small-text row-item'>{firstName}</span>
 				</div>
-				<div className='flex-row'>
-					<span className='small-text row-item'>{capitalize(t('lastName'))} : </span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('lastName'))}</span>
 					<span className='small-text row-item'>{lastName}</span>
 				</div>
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('creditCardDetails'))} : </span>
+				<div className='flex-row flex-row-mobile row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('creditCardDetails'))}</span>
 					<span className='small-text row-item'>{cardInfo.Alias || capitalize(t('none'))}</span>
 					<span
-						className='small-text row-item simple-link'
+						className={
+							creditCardRequiredMessage ?
+							'small-text citrusRed mobile-warning' :
+							'small-text row-item simple-link'
+						}
 						onClick={() => this.setState({ isUpdatingCard: true })}
 					>
 						{
+							creditCardRequiredMessage ?
+							capitalize(t('creditCardRequired')) :
 							cardInfo.Alias ?
-							t('switch') :
-							t('add')
+								capitalize(t('switch')) :
+								capitalize(t('add'))
 						}
 					</span>
-					{
-						creditCardRequiredMessage &&
-						<span className='small-text red desktop'>{capitalize(t('creditCardRequired'))}</span>
-					}
 				</div>
-				{
-					creditCardRequiredMessage &&
-					<span className='small-text red mobile'>{capitalize(t('creditCardRequired'))}</span>
-				}
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('automaticTopUp'))} : </span>
+				<div className='flex-row flex-row-mobile row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('automaticTopUp'))}</span>
 					<span className='small-text row-item'>
 						{
 							automaticTopUp ?
@@ -340,11 +401,11 @@ class ManagePayments extends React.Component {
 						className='small-text row-item simple-link'
 						onClick={() => this.setState({ isUpdatingAutomaticTopUp: true })}
 						>
-						{t('change')}
+						{capitalize(t('change'))}
 					</span>
 				</div>
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('subscriptionPlan'))} : </span>
+				<div className='flex-row flex-row-mobile row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('subscription'))}</span>
 					<span className='small-text row-item'>
 						{
 							subscription ?
@@ -373,13 +434,13 @@ class ManagePayments extends React.Component {
 					>
 						{
 							subscription ?
-								t('cancel') :
-								t('subscribe')
+								capitalize(t('cancel')) :
+								capitalize(t('subscribe'))
 						}
 					</span>
 				</div>
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('myVideos'))} : </span>
+				<div className='flex-row flex-row-mobile row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('videos'))}</span>
 					<span className='small-text row-item'>
 						{`${myVideos} ${t('videosAvailable')}`}
 					</span>
@@ -397,17 +458,13 @@ class ManagePayments extends React.Component {
 							this.setState({ isTopingUpAccount: true })
 						}}
 					>
-						{t('topUpYourAccount')}
+						{capitalize(t('topUp'))}
 					</span>
 				</div>
 				<style jsx='true'>
 					{`
-					.payments {
-						padding: 10px 0;
-					}
-					.row-item {
-						width: 150px;
-						height: 35px;
+					.title {
+						margin-bottom: 30px;
 					}
 					@media only screen and (min-width: 640px) {
 						.mobile {
@@ -424,11 +481,21 @@ class ManagePayments extends React.Component {
 						.row-item {
 							text-overflow: ellipsis;
 							overflow: hidden;
-							width: 100px;
-							margin: 10px 5px;
+							margin: 0 5px;
 						}
 						.flex-row-mobile {
 							width: 100%;
+						}
+						.title {
+							margin-bottom: 10px;
+							font-size: 36px !important;
+							line-height: 40px !important;
+						}
+						.mobile-warning {
+							line-height: 13px !important;
+							text-overflow: ellipsis;
+							overflow: hidden;
+							max-width: 100px;
 						}
 					}
         `}

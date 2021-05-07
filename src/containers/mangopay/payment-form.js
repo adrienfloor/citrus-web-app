@@ -239,7 +239,7 @@ class PaymentForm extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>

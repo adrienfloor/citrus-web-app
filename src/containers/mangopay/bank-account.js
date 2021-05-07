@@ -160,7 +160,7 @@ class BankAccount extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -190,7 +190,7 @@ class BankAccount extends React.Component {
 					/>
 				</div>
 				<div className='billing-card flex-column padded'>
-					<h2 className='medium-title'>Bank account registration</h2>
+					<div className='medium-title'>Bank account registration</div>
 					<span className='small-text'>In order to withdraw your earnings, we need to get your banking information.</span>
 					<div className='small-separator'></div>
 					<span className='small-text'>Please enter the following :</span>

@@ -18,6 +18,7 @@ import {
 import {
 	createMpCardDirectPayin
 } from '../../services/mangopay'
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 class Subscription extends React.Component {
 	constructor(props) {
@@ -98,7 +99,7 @@ class Subscription extends React.Component {
 			onSuccess
 		} = this.props
 
-		if (success) {
+		if(success) {
 			return (
 				<div className='full-container flex-column flex-center'>
 					<div
@@ -130,14 +131,14 @@ class Subscription extends React.Component {
 			)
 		}
 
-		if (isLoading) {
+		if(isLoading) {
 			const { loadingMessage } = this.state
 			return (
 				<div className='full-container flex-column flex-center'>
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -148,10 +149,7 @@ class Subscription extends React.Component {
 		}
 
 		return (
-			<div
-				className='full-container flex-column bank-account-registration'
-				style={{ alignItems: 'center' }}
-			>
+			<div className='full-container flex-column'>
 				<div
 					style={{
 						width: '100%',
@@ -160,43 +158,51 @@ class Subscription extends React.Component {
 						justifyContent: 'flex-start',
 						alignItems: 'center'
 					}}
+					onClick={onClose}
+					className='hover'
 				>
-					<KeyboardBackspaceIcon
-						className='action-icon'
-						fontSize='large'
-						onClick={onClose}
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
 					/>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('payments'))}
+					</span>
 				</div>
-				<div className='billing-card flex-column padded'>
-					<h2 className='medium-title'>Subscription plan</h2>
-					<span className='small-text'>Select our monthly subscription and get unlimited content for only 20euros a month</span>
-					<div className='big-separator'></div>
-					<span className='small-text'>Click to subscribe </span>
-					<div className='big-separator'></div>
-					<div
+				<span className='maxi-title title'>
+					{capitalize(t('subscription'))}
+				</span>
+				<span className='small-text-high'>{capitalize(t('bySubscribing'))}.</span>
+				<div className='medium-separator'></div>
+				<div className='small-separator'></div>
+				<div className='medium-separator'></div>
+				<div className='small-separator'></div>
+				<div
 					className='flex-center'
-						style={{ width: '100%' }}
+					style={{ width: '100%' }}
+				>
+					<button
+						className='filled-button'
+						onClick={this.handleSubmit}
 					>
-						<button
-							className='action-button'
-							onClick={this.handleSubmit}
-						>
-							{capitalize(t('submit'))}
-						</button>
-					</div>
-					<div className='small-separator'></div>
-					<span className='small-text red'>{warningMessage}</span>
+						<span className='small-title citrusWhite'>
+							{capitalize(t('subscribe'))}
+						</span>
+					</button>
 				</div>
+				<div className='small-separator'></div>
+				<span className='small-text red'>{warningMessage}</span>
 				<style jsx='true'>
 					{`
-					.padded {
-						padding: 0 10px;
+					.title {
+						margin-left: 2px;
+						margin-bottom: 30px;
 					}
 					@media only screen and (max-width: 640px) {
-						.bank-account-registration {
-							height: 100%;
-							overflow: auto;
-    					padding-bottom: 20px;
+						.title {
+							margin-bottom: 10px;
 						}
 					}
 				`}

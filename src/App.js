@@ -25,7 +25,7 @@ import { loadUser } from './actions/auth-actions'
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#FF8832' }
+    primary: { main: '#0075FF' }
   }
 })
 

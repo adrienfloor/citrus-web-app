@@ -87,18 +87,63 @@
 	padding: 5px 0;
 }
 
-.disabled-button:hover {
-	cursor: not-allowed !important;
-}
-
 .button-white-text {
 	color: #fff;
 }
 
-.small-action-button:hover,
+
+
+/* NEW */
+.small-button {
+	width: 98px;
+	height: 40px;
+	background-color: #0075FF;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #FFFFFF;
+	border: none !important;
+}
+
+.filled-button {
+	width: 454px;
+	height: 50px;
+	background-color: #0075FF;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #FFFFFF;
+	border: none !important;
+}
+
+.light-button {
+	width: 454px;
+	height: 50px;
+	background-color: #FFFFFF;
+	border: 2px solid #0075FF;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #0075FF;
+}
+
+.small-button:hover,
 .action-button:hover,
 .full-width-action-button:hover,
 .small-action-white-button:hover,
 .next-action-button:hover {
 	cursor: pointer;
 }
+
+.light-button:hover,
+.filled-button:hover {
+	cursor: pointer;
+}
+
+/* @media only screen and (max-width: 640px) {
+	.light-button,
+	.filled-button {
+		width: 95%;
+		margin: 0 2.5%;
+	}
+} */

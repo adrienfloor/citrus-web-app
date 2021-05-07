@@ -71,32 +71,22 @@ class Dashboard extends React.Component {
 				component = <ManagePayments history={this.props.history} />
 				break;
 			case 'invoices':
-				component = (
-					<div>Invoices</div>
-				)
+				component = null
 				break;
 			case 'stats':
-				component =(
-					<div>Stats</div>
-				)
+				component = null
 				break;
 			case 'paymentsReceipts':
-				component = (
-					<div>Payments receipts</div>
-				)
+				component = null
 				break;
 			case 'paymentsHistory':
-				component = (
-					<div>Payments history</div>
-				)
+				component = null
 				break;
 			case 'cashOut':
 				component = mangoPayLegalUserId ? <PaymentsMethods /> : <LegalUserCreation />
 				break;
 			default:
-				component = (
-					<div>Profile</div>
-				)
+				component = null
 				break;
 		}
 		return component
@@ -112,80 +102,80 @@ class Dashboard extends React.Component {
 		return (
 			<div className='full-container flex-row main'>
 				{/* Desktop fixed menu */}
-				<div
-					className='padded desktop'
-					style={{
-						justifyContent: 'flex-start',
-						alignItems: 'space-between',
-						width: '15%',
-						height: '90%',
-						margin: '0 3%'
-					}}
-				>
-					<h2 className='small-title'>
-						{capitalize(t('myAccount'))}
-					</h2>
-					<div className={currentFocus === 'profile' ? 'active' : ''}>
+				<div className='padded desktop menu-column'>
+					<span className='small-title'>
+						{capitalize(t('account'))}
+					</span>
+					<div className='medium-separator'></div>
+					<div className={currentFocus === 'profile' ? 'active menu-item' : 'menu-item'}>
 						<span
 							onClick={() => this.setState({ currentFocus: 'profile' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'profile' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('profile'))}
 						</span>
 					</div>
-					<div className='small-separator'></div>
-					<div className={currentFocus === 'managePayments' ? 'active' : ''}>
+					<div className={currentFocus === 'managePayments' ? 'active menu-item' : 'menu-item'}>
+						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'managePayments' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'managePayments' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
-							{capitalize(t('managePayments'))}
+							{capitalize(t('payments'))}
 						</span>
 					</div>
-					<div className='small-separator'></div>
-					<div className={currentFocus === 'invoices' ? 'active' : ''}>
+					<div className={currentFocus === 'invoices' ? 'active menu-item' : 'menu-item'}>
+						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'invoices' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'invoices' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('invoices'))}
 						</span>
 					</div>
-					<div className='small-separator'></div>
-					<h2 className='small-title'>
-						{capitalize(t('myVideos'))}
-					</h2>
-					<div className={currentFocus === 'stats' ? 'active' : ''}>
+					<div className='big-separator'></div>
+					<span className='small-title'>
+						{capitalize(t('videos'))}
+					</span>
+					<div className='medium-separator'></div>
+					<div className={currentFocus === 'stats' ? 'active menu-item' : 'menu-item'}>
 						<span
 							onClick={() => this.setState({ currentFocus: 'stats' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'stats' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('stats'))}
 						</span>
 					</div>
-					<div className='small-separator'></div>
-					<div className={currentFocus === 'paymentsReceipts' ? 'active' : ''}>
+					<div className={currentFocus === 'paymentsReceipts' ? 'active menu-item' : 'menu-item'}>
+						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'paymentsReceipts' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'paymentsReceipts' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('paymentsReceipts'))}
 						</span>
 					</div>
 					<div className='small-separator'></div>
-					<div className={currentFocus === 'paymentsHistory' ? 'active' : ''}>
+					<div className={currentFocus === 'paymentsHistory' ? 'active menu-item' : 'menu-item'}>
 						<span
 							onClick={() => this.setState({ currentFocus: 'paymentsHistory' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'paymentsHistory' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('paymentsHistory'))}
 						</span>
 					</div>
-					<div className='small-separator'></div>
-					<div className={currentFocus === 'cashOut' ? 'active' : ''}>
+					<div className={currentFocus === 'cashOut' ? 'active menu-item' : 'menu-item'}>
+						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'cashOut' })}
-							className='small-text hover'
+							style={{ fontSize: '16px' }}
+							className={currentFocus === 'cashOut' ? 'small-title hover' : 'small-text hover citrusGrey'}
 						>
 							{capitalize(t('cashOut'))}
 						</span>
@@ -193,7 +183,7 @@ class Dashboard extends React.Component {
 					<div className='medium-separator'></div>
 				</div>
 				<div
-					className='card padded desktop'
+					className='padded desktop'
 					style={{
 						width: '60%',
 						height: '90%'
@@ -214,13 +204,26 @@ class Dashboard extends React.Component {
 					{`
 					.main {
 						align-items: center;
+						width: 85%;
+						padding-left: 15%;
+						padding-top: 2%;
 					}
 					.padded {
 						padding: 0 10px;
 					}
+					.menu-column {
+						justify-content: flex-start;
+						width: 15%;
+						height: 90%;
+						margin: 0 3%;
+						padding-top: 2%;
+					}
+					.menu-item {
+						margin: 10px 0;
+					}
 					.active {
 						width: fit-content;
-						border-bottom: 2.5px solid black;
+						color: #000000;
 					}
 					@media only screen and (min-width: 640px) {
 						.mobile {
@@ -240,6 +243,11 @@ class Dashboard extends React.Component {
 						}
 						.main {
 							align-items: flex-start;
+							width: 96%;
+							height: 96%;
+							margin: 2%;
+							padding-left: 0;
+							padding-top: 0;
 						}
 					}
 				`}

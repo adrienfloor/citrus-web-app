@@ -227,7 +227,7 @@ class PaymentsMethods extends React.Component {
 					}
 					.row-item {
 						width: 150px;
-						height: 35px;
+						height: 50px;
 					}
 					@media only screen and (min-width: 640px) {
 						.mobile {
@@ -241,9 +241,7 @@ class PaymentsMethods extends React.Component {
 						.row-item {
 							text-overflow: ellipsis;
 							overflow: hidden;
-							width: 100px;
-							margin: 10px 5px;
-							height: 35px;
+							margin: 0 5px;
 						}
 						.flex-row-mobile {
 							width: 100%;

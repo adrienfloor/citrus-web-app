@@ -18,6 +18,7 @@ import '../../styling/buttons.css'
 import '../../styling/colors.css'
 import '../../styling/App.css'
 import CountrySelector from '../../components/country-selector'
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 import {
 	createMpUser,
@@ -268,7 +269,7 @@ class CreditCardForm extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -280,10 +281,7 @@ class CreditCardForm extends React.Component {
 			)
 		}
 		return (
-			<div
-				className='full-container flex-column'
-				style={{ alignItems: 'center' }}
-			>
+			<div className='full-container flex-column'>
 				<div
 					style={{
 						width: '100%',
@@ -292,23 +290,28 @@ class CreditCardForm extends React.Component {
 						justifyContent: 'flex-start',
 						alignItems: 'center'
 					}}
+					onClick={onClose}
+					className='hover'
 				>
-					<KeyboardBackspaceIcon
-						className='action-icon'
-						fontSize='large'
-						onClick={onClose}
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
 					/>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('paymentsHistory'))}
+					</span>
 				</div>
+				<span className='maxi-title title'>
+					{capitalize(t('creditCardDetails'))}
+				</span>
 				<form
+					id='credit-card-form'
+					className='credit-card-form'
 					onSubmit={this.handleSubmit}
 				>
 					<div style={{ width: '95%', margin: '5% 2.5% 2%' }}>
-						<div
-							className='medium-text padded'
-							style={{ width: 270, marginBottom: 5 }}
-						>
-							{capitalize(t('cardInformation'))}
-						</div>
 						<CreditCardInput
 							cardNumberInputProps={{ value: number, onChange: e => this.handleInputChange(e, 'number') }}
 							cardExpiryInputProps={{ value: expiry, onChange: e => this.handleInputChange(e, 'expiry') }}
@@ -349,7 +352,7 @@ class CreditCardForm extends React.Component {
 								className='row flex-row medium-text flex-center'
 								style={{ marginTop: '15px' }}
 							>
-								<span style={{ marginRight: '5px' }}>Birthday : </span>
+								<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
 								<TextField
 									onChange={this.handleDateChange}
 									type="date"
@@ -370,24 +373,46 @@ class CreditCardForm extends React.Component {
 							<div className='small-separator'></div>
 						</div>
 					}
-					<button
-						className='full-width-action-button'
-						id='submit'
-					>
-						<span id='button-text' className='big-text'>
-							{capitalize(t('submit'))}
-						</span>
-					</button>
+					<div className='button-container flex-center'>
+						<button
+							className='filled-button'
+							type='submit'
+							form='credit-card-form'
+						>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('submit'))}
+							</span>
+						</button>
+					</div>
 				</form>
 				<style jsx='true'>
 					{`
 						.row {
 							width: 100%;
 						}
+						.title {
+							margin-left: 2px;
+							margin-bottom: 30px;
+						}
+						.credit-card-form {
+							background-color: #FFFFFF;
+						}
+						.button-container {
+							padding-top: 10px;
+							padding-bottom: 20px;
+						}
+						.MuiInputBase-input {
+							color: #C2C2C2;
+						}
 						input#card-number.credit-card-input::placeholder,
 						input#cvc.credit-card-input::placeholder,
 						input#card-expiry.credit-card-input::placeholder {
 							color: #808080;
+						}
+						@media only screen and (max-width: 640px) {
+							.title {
+								margin-bottom: 10px;
+							}
 						}
 				`}
 				</style>

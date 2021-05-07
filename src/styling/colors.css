@@ -14,16 +14,28 @@
 	background-color: #303030;
 }
 
-.white {
+.citrusWhite {
 	color: #fff;
 }
 
-.black {
+.citrusBlack {
 	color: #000;
 }
 
-.orange {
-	color: #FF8832;
+.citrusBlue {
+	color: #0075FF;
+}
+
+.citrusGrey{
+	color: #C2C2C2;
+}
+
+.citrusOffWhite {
+	color: #F8F8F8;
+}
+
+.citrusRed {
+	color: #FF5232;
 }
 
 .light-grey {

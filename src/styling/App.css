@@ -1,5 +1,31 @@
 /* GENERAL */
 
+@font-face {
+	font-family: 'Raleway-Bold';
+	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Bold.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Raleway-Semi-Bold';
+	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-SemiBold.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Raleway-Regular';
+	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Regular.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Raleway-Medium';
+	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Medium.ttf) format('truetype');
+}
+
+@font-face {
+	font-family: 'Raleway-Black';
+	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Black.ttf) format('truetype');
+}
+
+
 html, body, #root {
 	height: 100%;
 	width: 100%;
@@ -7,12 +33,10 @@ html, body, #root {
 }
 
 a {
-	color: inherit;
-	text-decoration: inherit;
+	text-decoration: none;
 }
 
 a:visited {
-	color: inherit;
 	text-decoration: none;
 }
 
@@ -47,21 +71,23 @@ a:visited {
 	align-items: flex-end;
 }
 .text-input {
-	border: 1px solid #C3CBCB;
-	border-radius: 1px;
-	width: 265px;
-	height: 35px;
-	padding: 0 0 0 10px;
+	border: none;
+	border-bottom: 1px solid #C2C2C2;
+	height: 50px;
+	width: 453px;
 }
 
 input:focus {
-	outline: 1px solid #C3CBCB;
+	outline: none;
+}
+
+.row-dashboard {
+	height: 50px;
+	width: 690px;
 }
 
 .card {
-	background-color: #fff;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-	transition: 0.3s;
+	background-color: #FFFFFF;
 }
 
 .action-icon:hover {
@@ -71,12 +97,8 @@ input:focus {
 /* AUTH */
 
 .auth-card {
-	width: 378px;
-	height: 465px;
-}
-
-.auth-card:hover {
-	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+	width: 690px;
+	height: 430px;
 }
 
 .auth-label {
@@ -123,8 +145,17 @@ input:focus {
 	.billing-card {
 		width: 100%;
 	}
+
+	.text-input {
+		height: 50px;
+		width: 95%;
+		margin: 0 2.5%;
+	}
+
 	.auth-card {
-		width: 96%;
+		width: 95%;
+		margin: 0 2.5%;
+		height: 430px;
 	}
 	.choose-plan {
 		overflow-y: auto;
@@ -142,6 +173,10 @@ input:focus {
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		width: 100%;
+	}
+	.row-dashboard {
+		min-height: 5px;
 		width: 100%;
 	}
 }

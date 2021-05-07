@@ -145,7 +145,7 @@ class CreateMangopayUser extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -157,7 +157,7 @@ class CreateMangopayUser extends React.Component {
 		return (
 			<div className='full-container flex-column flex-center'>
 				<div className='card billing-card flex-column padded'>
-					<h2 className='medium-title'>Payment Information</h2>
+					<div className='medium-title'>Payment Information</div>
 					<span className='small-text'>In order to withdraw your earnings, we need a little more info from you.</span>
 					<div className='small-separator'></div>
 					<span className='small-text'>Please enter the following :</span>

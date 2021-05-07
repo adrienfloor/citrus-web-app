@@ -6,7 +6,7 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { Link } from 'react-router-dom'
 import { TextField, Checkbox } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -182,7 +182,7 @@ class TopUp extends React.Component {
 					<div className='big-separator'></div>
 					<Loader
 						type="Grid"
-						color="#FF8832"
+						color="#0075FF"
 						height={100}
 						width={100}
 					/>
@@ -192,10 +192,7 @@ class TopUp extends React.Component {
 		}
 
 		return (
-			<div
-				className='full-container flex-column top-up'
-				style={{ alignItems: 'center' }}
-			>
+			<div className='full-container flex-column top-up'>
 				<div
 					style={{
 						width: '100%',
@@ -204,62 +201,142 @@ class TopUp extends React.Component {
 						justifyContent: 'flex-start',
 						alignItems: 'center'
 					}}
+					onClick={onClose}
+					className='hover'
 				>
-					<KeyboardBackspaceIcon
-						className='action-icon'
-						fontSize='large'
-						onClick={onClose}
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
 					/>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('payments'))}
+					</span>
 				</div>
-				<div className='billing-card flex-column padded'>
-					<h2 className='medium-title'>Top up your account</h2>
-					<div className='small-separator'></div>
-					<div className='row flex-row flex-center'>
-						<span
-							className='small-text'
-							style={{ width: '45%', margin: '1% 2% 1% 0' }}
-						>
-						Amount to top up (min 10)
-						</span>
-						<TextField
+				<span className='maxi-title title'>
+					{capitalize(t('topUpYourAccount'))}
+				</span>
+				<span className='small-text-high topup-disclaimer'>
+					{capitalize(t('topUpDisclaimer'))}
+				</span>
+				<div className='flex-column flex-center top-up-card'>
+					<div className='input-container'>
+						<input
+							placeholder='10'
+							className='text-input small-text citrusGrey input left-input'
 							onChange={e => this.handleInputChange(e, 'value')}
-							style={{ width: '30%', margin: '1% 0 1% 2%' }}
-							variant='outlined'
 						/>
+						<div className='right-input hover citrusGrey'>
+							€
+						</div>
+					</div>
+					<span className='small-text citrusGrey minimum-topup'>
+						{capitalize(t('minimumTopUpValue'))} €
+					</span>
+					<div className='flex-row checkbox-row'>
+						<Checkbox
+							checked={automaticTopUp}
+							onChange={() => this.setState({ automaticTopUp: !automaticTopUp })}
+							inputProps={{ 'aria-label': 'topup checkbox' }}
+							color='primary'
+						/>
+						<span className='small-text'>{capitalize(t('automaticTopUp'))}</span>
 					</div>
 					<div className='small-separator'></div>
-					<div className='flex-center'>
+					<div className='button-container flex-center'>
 						<button
-							className='small-action-button'
+							className='filled-button'
 							onClick={this.handleSubmit}
 						>
-							{capitalize(t('submit'))}
+							<span className='small-title citrusWhite'>
+								{capitalize(t('topUp'))}
+							</span>
 						</button>
 					</div>
 					<div className='small-separator'></div>
 					<span className='small-text red'>{warningMessage}</span>
-					<div className='flex-column flex-center'>
-						<div className='flex-row flex-center'>
-							<Checkbox
-								checked={automaticTopUp}
-								onChange={() => this.setState({ automaticTopUp: !automaticTopUp })}
-								inputProps={{ 'aria-label': 'topup checkbox' }}
-								color='primary'
-							/>
-							<span className='small-text'>{capitalize(t('automaticTopUp'))}</span>
-						</div>
-						<span className='small-text padded'>{t('topUpDisclaimer')}</span>
-					</div>
 				</div>
 				<style jsx='true'>
 					{`
 					.padded {
 						padding: 0 10px;
 					}
+					.title {
+						margin-bottom: 30px;
+					}
+					.top-up-card {
+						background-color: #FFFFFF;
+						height: 321px;
+					}
+					.topup-disclaimer {
+						margin-bottom: 30px;
+					}
+					.checkbox-row {
+						display: flex;
+						flex-direction: row;
+						justify-content: flex-start;
+						align-items: center;
+						background-color: #F8F8F8;
+						width: 454px;
+						margin-bottom: 30px;
+					}
+					.minimum-topup {
+						width: 454px;
+						margin-bottom: 30px;
+					}
+					.left-input {
+						width: 80%;
+					}
+					.right-input {
+						width: 20%;
+						border-bottom: 1px solid #C2C2C2;
+						height: 52px !important;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					}
+					.input-container {
+						height: 52px;
+						width: 454px;
+						display: flex;
+						flex-direction: row !important;
+						margin-bottom: 10px;
+					}
+					.button-container {
+						width: 100%;
+					}
 					@media only screen and (max-width: 640px) {
 						.top-up {
 							width: 96%;
 							margin: 0 2%;
+						}
+						.title {
+							margin-bottom: 10px;
+							margin-top: 0;
+							font-size: 36px !important;
+							line-height: 40px !important;
+						}
+						.minimum-topup {
+							margin-bottom: 10px;
+						}
+						.checkbox-row,
+						.input-container,
+						.minimum-topup,
+						.topup-disclaimer {
+							width: 100%;
+							margin-bottom: 10px;
+						}
+						.left-input {
+							width: 80% !important;
+							margin: 0 !important;
+						}
+						.right-input {
+							width: 20% !important;
+							margin: 0 !important;
+						}
+						.button-container {
+							padding-bottom: 70px;
 						}
 					}
 				`}

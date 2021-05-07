@@ -9,6 +9,9 @@ import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
 
+import { ReactComponent as EyeClosed } from '../../assets/svg/eye-closed.svg'
+import { ReactComponent as EyeOpen } from '../../assets/svg/eye-open.svg'
+
 import {
 	signup,
 	loadUser
@@ -32,7 +35,8 @@ class Signup extends React.Component {
 			userName: '',
 			email: '',
 			password: '',
-			message: ''
+			message: '',
+			showPassword: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
 		this.onToggleCheck = this.onToggleCheck.bind(this)
@@ -86,6 +90,7 @@ class Signup extends React.Component {
 		const {
 			email,
 			password,
+			showPassword
 		} = this.state
 		const {
 			t,
@@ -97,56 +102,30 @@ class Signup extends React.Component {
 			return null
 		}
 		return (
-			<div
-				className='full-container flex-column flex-center'
-			>
+			<div className='full-container flex-column flex-center main'>
+				<div className='maxi-title title'>
+					{capitalize(t('signUpTitle'))}
+				</div>
 				<form
 					id='login-form'
 					onSubmit={e => this.onSubmit(e)}
-					className='flex-column card auth-card'
-					style={{ alignItems: 'center', justifyContent: 'space-between' }}
+					className='flex-column flex-start card auth-card form'
 				>
-					<div className='inputs-container flex-column'>
-						<h2
-							className='small-title'
-							style={{ width: 270 }}
-						>
-							{capitalize(t('signUpNow'))}
-						</h2>
-						<span className='big-text auth-label'>
-							{capitalize(t('userName'))}
-						</span>
-						<input
-							className='text-input medium-text'
-							style={{ color: '#1D1D1D' }}
-							label='username'
-							type='username'
-							autoComplete='username'
-							onChange={e => this.onTextInputChange(e, 'userName')}
-							name='userName'
-						/>
-						<div className='small-separator'></div>
-						<span className='big-text auth-label'>
-							{capitalize(t('email'))}
-						</span>
-						<input
-							className='text-input medium-text'
-							style={{ color: '#1D1D1D' }}
-							// style={
-							// 	isValidEmailInput(email) ?
-							// 		{ color: '#1D1D1D'} :
-							// 		{ color: '#cf352e' }
-							// }
-							label='Email'
-							type='email'
-							autoComplete='email'
-							onChange={e => this.onTextInputChange(e, 'email')}
-							name='email'
-						/>
-						<div className='small-separator'></div>
-						<span className='big-text auth-label'>
-							{capitalize(t('password'))}
-						</span>
+					<input
+						className='text-input small-text citrusGrey input'
+						placeholder={capitalize(t('userName'))}
+						type='username'
+						autoComplete='username'
+						onChange={e => this.onTextInputChange(e, 'userName')}
+					/>
+					<input
+						className='text-input small-text citrusGrey input'
+						placeholder={capitalize(t('email'))}
+						type='email'
+						autoComplete='email'
+						onChange={e => this.onTextInputChange(e, 'email')}
+						name='email'
+					/>
 						{/* {this.state.password ? (
 							<div className='container'>
 								<span className={isValidPassword(password).includes('length') ? 'green' : 'red'}>At least 8 characters long</span>
@@ -154,60 +133,104 @@ class Signup extends React.Component {
 								<span className={isValidPassword(password).includes('number') ? 'green' : 'red'}>and one number</span>
 							</div>
 						) : null} */}
+					<div className='password-container'>
 						<input
-							className='text-input medium-text'
-							style={{ color: '#1D1D1D' }}
-							type='password'
-							autoComplete='password'
+							placeholder={capitalize(t('password'))}
+							className='text-input small-text citrusGrey input password-input'
+							type={showPassword ? 'text' : 'password'}
 							onChange={e => this.onTextInputChange(e, 'password')}
-							name='password'
 						/>
-						<div className='small-separator'></div>
-					</div>
-					<div className='buttons-container flex-column'>
-						<span
-							className='small-text grey'
-							style={{ width: 250, textAlign: 'center' }}
+						<div
+							className='password-eye hover'
+							onClick={() => this.setState({ showPassword: !showPassword })}
 						>
-							{capitalize(t('bySubmittingYouAgreeToTerms'))} <Link className='small-text black' to="/terms">{capitalize(t('termsOfUse'))}</Link>
-						</span>
-						<button
-							className={this.isValidSignUp() ? 'action-button' : 'action-button disabled-button'}
-							type='submit'
-							form='login-form'
-							disabled={this.isValidSignUp() ? false : true}
-						>
-							<span className='big-text button-white-text'>
-								{capitalize(t('trainSmarterNow'))}
-							</span>
-						</button>
-						<span className='medium-text simple-link signup-link'>
-							<Link to="/signin">{capitalize(t('iAlreadyHaveAnAccount'))}</Link>
-						</span>
+							{
+								showPassword ?
+									<EyeOpen
+										width={25}
+										height={25}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/> :
+									<EyeClosed
+										width={25}
+										height={25}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/>
+							}
+						</div>
 					</div>
+					<div className='medium-separator'></div>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('bySubmittingYouAgreeToTerms'))} <a target='_blank' className='smallText citrusGrey' href="https://thecitrusapp.com/cgu-cgv/">{capitalize(t('termsOfUse'))}</a>
+					</span>
+					<div className='small-separator'></div>
+					<button
+						className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
+						type='submit'
+						form='login-form'
+						disabled={this.isValidSignUp() ? false : true}
+					>
+						<span className='small-title citrusWhite'>
+							{capitalize(t('createAnAccount'))}
+						</span>
+					</button>
+					<button
+						className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
+						type='submit'
+						form='login-form'
+						disabled={this.isValidSignUp() ? false : true}
+					>
+						<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
+					</button>
 				</form>
 				<style jsx='true'>
 					{`
-						.inputs-container {
-							padding-top: 20px;
-							height: 60%;
-							width: 100%;
+						.form {
 							align-items: center;
-							justify-content: flex-start;
+							justify-content: center;
 						}
-						.buttons-container {
-							padding-bottom: 20px;
-							height: 30%;
-							width: 100%;
+						.input {
+							margin-bottom: 20px;
+						}
+						.button {
+							margin-bottom: 10px;
+						}
+						.password-container {
+							height: 52px;
+							width: 453px;
+							display: flex;
+							flex-direction: row !important;
+							margin-bottom: 20px;
+						}
+						.password-input {
+							width: 80%;
+						}
+						.password-eye {
+							width: 20%;
+							border-bottom: 1px solid #C2C2C2;
+							height: 52px !important;
+							display: flex;
+							justify-content: center;
 							align-items: center;
-							justify-content: space-around;
 						}
-						.signup-link {
-							max-width: 225px;
-							text-align: center;
+						.title {
+							width: 690px;
+							margin-bottom: 40px;
 						}
-						.signup-link:hover {
-							color: #303030;
+						@media only screen and (max-width: 640px) {
+							.title {
+								max-width: 95% !important;
+								margin: 0 0 10px 2.5% !important;
+								font-size: 36px !important;
+							}
+							.main {
+								justify-content: flex-start !important;
+							}
+							.password-container {
+								width: 95%;
+							}
 						}
         `}
 				</style>
