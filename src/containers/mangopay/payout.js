@@ -6,13 +6,15 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { Link } from 'react-router-dom'
 import { TextField } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
 import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
+
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	capitalize
@@ -41,9 +43,9 @@ class Payout extends React.Component {
 
 	async componentDidMount() {
 		const { user, t } = this.props
-		const { mangoPayUserId } = user
-		bankAccountId = await fetchMpBankAccountId(mangoPayUserId)
-		walletInfo = await fetchMpWalletInfo(mangoPayUserId)
+		const { MPUserId } = user
+		bankAccountId = await fetchMpBankAccountId(MPUserId)
+		walletInfo = await fetchMpWalletInfo(MPUserId)
 		this.setState({ funds: walletInfo.Balance.Amount / 100 })
 
 		if(!bankAccountId) {
@@ -55,7 +57,7 @@ class Payout extends React.Component {
 
 	async handleSubmit(e) {
 		const { user, t } = this.props
-		const { mangoPayUserId } = user
+		const { MPUserId} = user
 		const { funds, amountToWithdraw } = this.state
 
 		e.preventDefault()
@@ -75,7 +77,7 @@ class Payout extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const payout = await createMpPayout(mangoPayUserId, bankAccountId, amountToWithdraw)
+		const payout = await createMpPayout(MPUserId, bankAccountId, amountToWithdraw)
 
 		if (payout.Status === 'CREATED' && payout.Type === 'PAYOUT') {
 			this.setState({
@@ -103,32 +105,49 @@ class Payout extends React.Component {
 
 		if (success) {
 			return (
-				<div className='full-container flex-column flex-center'>
+				<div className='flex-column card success'>
 					<div
-						style={{
-							width: '100%',
-							height: '10%',
-							display: 'flex',
-							justifyContent: 'flex-end',
-							padding: '10px'
-						}}
+						className='top-container hover'
+						onClick={onClose}
 					>
-						<CloseIcon
-							className='action-icon'
-							fontSize='large'
-							onClick={onClose}
+						<Close
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
 						/>
 					</div>
-					<div
-						className='big-text'
-						style={{
-							width: '60%',
-							height: '90%',
-							marginTop: '100px'
-						}}
-					>
-						{capitalize(t('PayoutSubmitedSuccessfully'))}...
+					<div className='small-title success-feedback'>
+						{capitalize(t('PayoutSubmitedSuccessfully'))}
 					</div>
+					<style jsx='true'>
+						{`
+						.success {
+							width: 690px;
+							height: 431px;
+							justify-content: flex-start;
+							align-items: center;
+						}
+						.top-container {
+							width: 95%;
+							height: 40%;
+							padding: 2.5%;
+							display:flex;
+							align-items: flex-start;
+							justify-content: flex-end;
+						}
+						@media only screen and (max-width: 640px) {
+							.success {
+								width: 98%;
+								height: 85%;
+								margin: 0 1%;
+							}
+							.success-feedback {
+								margin-left: 5px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}
@@ -149,10 +168,7 @@ class Payout extends React.Component {
 		}
 
 		return (
-			<div
-				className='full-container flex-column payout'
-				style={{ alignItems: 'center' }}
-			>
+			<div className='full-container flex-column payout'>
 				<div
 					style={{
 						width: '100%',
@@ -161,54 +177,117 @@ class Payout extends React.Component {
 						justifyContent: 'flex-start',
 						alignItems: 'center'
 					}}
+					onClick={onClose}
+					className='hover'
 				>
-					<KeyboardBackspaceIcon
-						className='action-icon'
-						fontSize='large'
-						onClick={onClose}
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
 					/>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('cashout'))}
+					</span>
 				</div>
-				<div className='billing-card flex-column padded'>
-					<div className='medium-title'>Payout</div>
-					<span className='small-text'>In order to withdraw your earnings, we need to get confirmation from you. Note that a payout can take a few days to appear on your bank account.</span>
-					<div className='small-separator'></div>
-					<span className='small-text'>Current funds : {funds}</span>
-					<div className='small-separator'></div>
-					<span className='small-text'>Amount to cash out : </span>
-					<div className='small-separator'></div>
-					<TextField
-						style={{ width: '30%' }}
-						label="Amount"
-						onChange={e => this.setState({ amountToWithdraw: e.target.value })}
-						variant='outlined'
-					/>
-					<div className='small-separator'></div>
-					<button
-						className='small-action-button'
-						onClick={this.handleSubmit}
-					>
-						{capitalize(t('withdraw'))}
-					</button>
-					<div className='small-separator'></div>
-					<span className='small-text red'>{warningMessage}</span>
-					{
-						warningMessage === capitalize(t('noBankAccountAssociatedToThisUser')) &&
-						<span
-							className='medium-text simple-link'
-						>
-							<Link to="/bank-account-registration">{capitalize(t('registerABankAccount'))}</Link>
-						</span>
-					}
+				<span className='maxi-title title mobile-margin'>
+					{capitalize(t('cashYourEarnings'))}
+				</span>
+				<span className='small-text-high mobile-margin'>
+					{capitalize(t('weNeedYourConfirmation'))}.
+				</span>
+				<div className='small-separator'></div>
+				<div className='flex-column flex-center payout-form'>
+					<div className='form'>
+						<div className='flex-row' style={{ justifyContent: 'space-between' }}>
+							<span className='small-text citrusGrey'>{capitalize(t('currentFunds'))}</span>
+							<span className='small-text'>{funds}</span>
+						</div>
+						<div className='small-separator'></div>
+						<div className='input-container'>
+							<input
+								placeholder={capitalize(t('amoutToCashOut'))}
+								className='text-input small-text citrusGrey input left-input'
+								onChange={e => this.setState({ amountToWithdraw: e.target.value })}
+							/>
+							<div className='right-input hover citrusGrey'>
+								€
+							</div>
+						</div>
+						<div className='button-container flex-center'>
+							<button
+								className='filled-button'
+								onClick={this.handleSubmit}
+							>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('withdraw'))}
+								</span>
+							</button>
+						</div>
+						<div className='small-separator'></div>
+						<span className='small-text citrusRed flex-center'>{warningMessage}</span>
+						{
+							warningMessage === capitalize(t('noBankAccountAssociatedToThisUser')) &&
+							<span className='medium-text simple-link'>
+								<Link to="/bank-account-registration">{capitalize(t('registerABankAccount'))}</Link>
+							</span>
+						}
+					</div>
 				</div>
 				<style jsx='true'>
 					{`
-					.padded {
-						padding: 0 10px;
+					.payout-form {
+						width: 690px;
+						height: 321px;
+						background-color: #FFFFFF;
+					}
+					.form {
+						width: 454px;
+					}
+					.left-input {
+						width: 80%;
+					}
+					.right-input {
+						width: 20%;
+						border-bottom: 1px solid #C2C2C2;
+						height: 52px !important;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					}
+					.input-container {
+						height: 52px;
+						width: 454px;
+						display: flex;
+						flex-direction: row !important;
+						margin-bottom: 10px;
+					}
+					.button-container {
+						padding-top: 20px;
 					}
 					@media only screen and (max-width: 640px) {
-						.payout {
-							width: 96%;
-							margin: 0 2%;
+						.payout-form {
+							width: 98%;
+							margin: 0 1%;
+						}
+						.form {
+							width: 98%;
+							margin: 0 1%;
+						}
+						.input-container {
+							width: 100%;
+						}
+						.left-input {
+							width: 80% !important;
+							margin: 0 !important;
+						}
+						.right-input {
+							width: 20% !important;
+							margin: 0 !important;
+						}
+						.mobile-margin {
+							width: 98%;
+							margin-left: 2%;
 						}
 					}
 				`}

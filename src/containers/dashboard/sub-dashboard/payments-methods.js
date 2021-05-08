@@ -33,7 +33,7 @@ class PaymentsMethods extends React.Component {
 		this.state = {
 			isUpdatingKyc: false,
 			isUpdatingBankAccount: false,
-			isProceedingToPayout: false,
+			isProceedingToPayout: true,
 			verified: false,
 			bankAccount: null,
 			funds: 0,
@@ -49,18 +49,18 @@ class PaymentsMethods extends React.Component {
 	}
 
 	async fetchMangoPayInfo() {
-		const { mangoPayUserId } = this.props.user
+		const { MPUserId } = this.props.user
 
-		const mangoPayUser = await fetchMpUserInfo(mangoPayUserId)
+		const mangoPayUser = await fetchMpUserInfo(MPUserId)
 		this.setState({ verified: mangoPayUser.KYCLevel === 'REGULAR' ? true : false })
 
-		const bankAccount = await fetchMpBankAccount(mangoPayUserId)
+		const bankAccount = await fetchMpBankAccount(MPUserId)
 		if(bankAccount) {
 			this.setState({ bankAccount: bankAccount.IBAN })
 		}
 
 
-		const walletInfo = await fetchMpWalletInfo(mangoPayUserId)
+		const walletInfo = await fetchMpWalletInfo(MPUserId)
 		if(walletInfo) {
 			this.setState({ funds: walletInfo.Balance.Amount / 100 })
 		}
@@ -148,70 +148,61 @@ class PaymentsMethods extends React.Component {
 
 		return (
 			<div className='full-container flex-column flex-start payments-methods'>
-				<div className='flex-row'>
-					<span className='small-text row-item'>{capitalize(t('firstName'))} : </span>
+				<span className='maxi-title title'>
+					{capitalize(t('cashout'))}
+				</span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('firstName'))}</span>
 					<span className='small-text row-item'>{firstName}</span>
+					<span className='small-text row-item'></span>
 				</div>
-				<div className='flex-row'>
-					<span className='small-text row-item'>{capitalize(t('lastName'))} : </span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('lastName'))}</span>
 					<span className='small-text row-item'>{lastName}</span>
+					<span className='small-text row-item'></span>
 				</div>
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('accountVerified'))} : </span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('accountVerified'))}</span>
 					<span className='small-text row-item'>{verified ? capitalize(t('verified')) : capitalize(t('unverified'))}</span>
 					<span
-						className='small-text row-item simple-link'
+						className={
+							kycRequiredMessage ?
+								'small-text citrusRed mobile-warning' :
+								'small-text row-item simple-link'
+						}
 						onClick={() => this.setState({ isUpdatingKyc: true })}
 					>
-						{t('addDocuments')}
+						{
+							kycRequiredMessage ?
+								capitalize(t('kycRequired')) :
+								t('addDocuments')
+						}
 					</span>
-					{
-						kycRequiredMessage &&
-						<span className='small-text red desktop'>{capitalize(t('kycRequired'))}</span>
-					}
 				</div>
-				{
-					kycRequiredMessage &&
-					<span className='small-text red mobile'>{capitalize(t('kycRequired'))}</span>
-				}
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('bankAccount'))} : </span>
-					<span
-						className='small-text row-item desktop'
-						style={{
-							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap',
-							overflow: 'hidden',
-							width: '130px',
-							marginRight: '20px'
-						}}
-					>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('bankAccount'))}</span>
+					<span className='small-text row-item'>
 							{bankAccount ? bankAccount : capitalize(t('no'))}
 					</span>
-					<span className='small-text row-item mobile'>
-						{bankAccount ? bankAccount : capitalize(t('no'))}
-					</span>
 					<span
-						className='small-text row-item simple-link'
+						className={
+							bankAccountRequiredMessage?
+								'small-text citrusRed mobile-warning' :
+								'small-text row-item simple-link'
+						}
 						onClick={() => this.setState({ isUpdatingBankAccount: true })}
 					>
 						{
-							bankAccount ?
-								t('change') :
-								t('add')
+							bankAccountRequiredMessage ?
+								capitalize(t('bankAccountRequired')) :
+								bankAccount ?
+									t('change') :
+									t('add')
 						}
 					</span>
-					{
-						bankAccountRequiredMessage &&
-						<span className='small-text red desktop'>{capitalize(t('bankAccountRequired'))}</span>
-					}
 				</div>
-				{
-					bankAccountRequiredMessage &&
-					<span className='small-text red mobile'>{capitalize(t('bankAccountRequired'))}</span>
-				}
-				<div className='flex-row flex-row-mobile'>
-					<span className='small-text row-item'>{capitalize(t('myGains'))} :</span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('myGains'))}</span>
 					<span className='small-text row-item'>{funds}</span>
 					<span
 						className='small-text row-item simple-link'
@@ -222,17 +213,8 @@ class PaymentsMethods extends React.Component {
 				</div>
 				<style jsx='true'>
 					{`
-					.payments-methods {
-						padding: 10px 0;
-					}
-					.row-item {
-						width: 150px;
-						height: 50px;
-					}
-					@media only screen and (min-width: 640px) {
-						.mobile {
-							display: none !important;
-						}
+					.title {
+						margin-bottom: 30px;
 					}
 					@media only screen and (max-width: 640px) {
 						.desktop {
@@ -243,8 +225,16 @@ class PaymentsMethods extends React.Component {
 							overflow: hidden;
 							margin: 0 5px;
 						}
-						.flex-row-mobile {
-							width: 100%;
+						.title {
+							margin-bottom: 10px;
+							font-size: 36px !important;
+							line-height: 40px !important;
+						}
+						.mobile-warning {
+							line-height: 13px !important;
+							text-overflow: ellipsis;
+							overflow: hidden;
+							max-width: 100px;
 						}
 					}
         `}

@@ -44,7 +44,7 @@ class InitialPayment extends React.Component {
 
 	componentDidMount() {
 		const { user, history } = this.props
-		if(user.mangoPayUserId>0) {
+		if (user.MPUserId) {
 			history.push('/dashboard')
 		}
 	}

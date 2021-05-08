@@ -28,7 +28,7 @@ export const createMpUser = async (
 		Email
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_user`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_user`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -73,7 +73,7 @@ export const createMpLegalUser = async (
 		CompanyNumber
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_legal_user`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_legal_user`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -97,7 +97,7 @@ export const createMpUserWallet = async (id) => {
 		Currency: 'EUR'
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_wallet`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_wallet`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -121,7 +121,7 @@ export const createMpUserCardRegistration = async (UserId, CardType) => {
 		CardType
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_card_registration`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_card_registration`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -144,7 +144,7 @@ export const updateMpUserCardRegistration = async (RegistrationData, cardRegistr
 		cardRegistrationId
 	})
 	try {
-		const response = await axios.put(`${REACT_APP_API_URL}/mango/mp_update_card_registration`, body, config)
+		const response = await axios.put(`${REACT_APP_API_URL}/mp/mp_update_card_registration`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -184,7 +184,7 @@ export const createMpCardDirectPayin = async (
 		paymentPlan
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_card_direct_payin`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_card_direct_payin`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -205,7 +205,7 @@ export const createMpKycDocument = async (UserId, type) => {
 	// BODY
 	const body = JSON.stringify({ UserId, type })
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_kyc_document`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_kyc_document`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -230,7 +230,7 @@ export const createMpKycPage = async (UserId, KYCDocumentId, File) => {
 		File
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_kyc_page`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_kyc_page`, body, config)
 		return response.status
 	} catch (err) {
 		console.log(err)
@@ -254,7 +254,7 @@ export const submitMpKycDocument = async (UserId, KYCDocumentId) => {
 		KYCDocumentId
 	})
 	try {
-		const response = await axios.put(`${REACT_APP_API_URL}/mango/mp_submit_kyc_document`, body, config)
+		const response = await axios.put(`${REACT_APP_API_URL}/mp/mp_submit_kyc_document`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -274,7 +274,7 @@ export const fetchKycsOfAUser = async (UserId) => {
 	}
 
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_list_user_kyc_documents?user_id=${UserId}`, {}, config)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_list_user_kyc_documents?user_id=${UserId}`, {}, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -305,7 +305,7 @@ export const createMpBankAccount = async (
 		Iban
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_iban_bank_account`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_iban_bank_account`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -317,7 +317,7 @@ export const createMpBankAccount = async (
 
 export const fetchMpUserInfo = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_fetch_user_info?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_info?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -329,7 +329,7 @@ export const fetchMpUserInfo = async (UserId) => {
 
 export const fetchMpBankAccountId = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_fetch_user_bank_account_id?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_bank_account_id?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -341,7 +341,7 @@ export const fetchMpBankAccountId = async (UserId) => {
 
 export const fetchMpBankAccount = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_fetch_user_bank_account?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_bank_account?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -353,7 +353,7 @@ export const fetchMpBankAccount = async (UserId) => {
 
 export const fetchMpWalletInfo = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_fetch_user_w_info?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_w_info?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -365,7 +365,7 @@ export const fetchMpWalletInfo = async (UserId) => {
 
 export const fetchMpCardInfo = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mango/mp_fetch_user_card_info?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_card_info?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -386,7 +386,7 @@ export const createMpPayout = async (UserId, BankAccountId, amountToWithdraw) =>
 	// BODY
 	const body = JSON.stringify({ UserId, BankAccountId, amountToWithdraw })
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mango/mp_create_payout`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_payout`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)

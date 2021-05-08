@@ -32,8 +32,7 @@ class Profile extends React.Component {
 			firstName,
 			lastName,
 			userName,
-			email,
-			mangoPayUserId
+			email
 		} = user
 
 		return (

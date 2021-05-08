@@ -19,6 +19,7 @@ import '../../styling/colors.css'
 import '../../styling/App.css'
 import CountrySelector from '../../components/country-selector'
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	createMpUser,
@@ -103,7 +104,7 @@ class CreditCardForm extends React.Component {
 		}
 
 		const endPaymentProcessWithError = res => {
-			console.log(res.ResultCode, res.ResultMessage)
+			console.log(res, res.ResultCode, res.ResultMessage)
 			this.setState({
 				isLoading: false,
 				warningMessage: `${capitalize(t('somethingWentWrongRegisteringYourCard'))} : ${res.ResultMessage}`
@@ -168,7 +169,7 @@ class CreditCardForm extends React.Component {
 		} = this.props
 
 		e.preventDefault()
-		if (this.handleMissingParam(user.mangoPayUserId)) {
+		if (this.handleMissingParam(user.MPUserId)) {
 			this.setState({
 				warningMessage: capitalize(this.props.t('pleaseEnterAllFields'))
 			})
@@ -177,10 +178,10 @@ class CreditCardForm extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		if(user.mangoPayUserId) {
+		if (user.MPUserId) {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(user.mangoPayUserId, CardType)
+			mpUserCardRegistration = await createMpUserCardRegistration(user.MPUserId, CardType)
 			if (mpUserCardRegistration) {
 				return registerNewCard(mpUserCardRegistration)
 			}
@@ -198,7 +199,7 @@ class CreditCardForm extends React.Component {
 			user.email
 		)
 		if (mpUser) {
-			await updateUser({ id: user._id, mangoPayUserId: mpUser.Id })
+			await updateUser({ id: user._id, MPUserId: mpUser.Id })
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id)
 		}
@@ -233,32 +234,49 @@ class CreditCardForm extends React.Component {
 
 		if (success) {
 			return (
-				<div className='full-container flex-column flex-center'>
+				<div className='flex-column card success'>
 					<div
-						style={{
-							width: '100%',
-							height: '10%',
-							display: 'flex',
-							justifyContent: 'flex-end',
-							padding: '10px'
-						}}
+						className='top-container hover'
+						onClick={this.props.onSuccess}
 					>
-						<CloseIcon
-							className='action-icon'
-							fontSize='large'
-							onClick={this.props.onSuccess}
+						<Close
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
 						/>
 					</div>
-					<div
-						className='big-text'
-						style={{
-							width: '60%',
-							height: '90%',
-							marginTop: '100px'
-						}}
-					>
-						{capitalize(t('CardSubmitedSuccessfully'))}...
+					<div className='small-title success-feedback'>
+						{capitalize(t('CardSubmitedSuccessfully'))}
 					</div>
+					<style jsx='true'>
+						{`
+						.success {
+							width: 690px;
+							height: 431px;
+							justify-content: flex-start;
+							align-items: center;
+						}
+						.top-container {
+							width: 95%;
+							height: 40%;
+							padding: 2.5%;
+							display:flex;
+							align-items: flex-start;
+							justify-content: flex-end;
+						}
+						@media only screen and (max-width: 640px) {
+							.success {
+								width: 98%;
+								height: 85%;
+								margin: 0 1%;
+							}
+							.success-feedback {
+								margin-left: 5px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}
@@ -320,7 +338,7 @@ class CreditCardForm extends React.Component {
 						/>
 					</div>
 					{
-						!user.mangoPayUserId &&
+						!user.MPUserId &&
 						<div>
 							<div className='row flex-row'>
 								<TextField

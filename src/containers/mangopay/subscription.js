@@ -18,7 +18,9 @@ import {
 import {
 	createMpCardDirectPayin
 } from '../../services/mangopay'
+
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 class Subscription extends React.Component {
 	constructor(props) {
@@ -59,8 +61,8 @@ class Subscription extends React.Component {
 		createLoadingMessage(capitalize(t('processingPayment')))
 
 		createMpCardDirectPayin(
-			user.mangoPayUserId,
-			user.mangoPayUserId,
+			user.MPUserId,
+			user.MPUserId,
 			walletId,
 			{
 				"Currency": "EUR",
@@ -99,34 +101,51 @@ class Subscription extends React.Component {
 			onSuccess
 		} = this.props
 
-		if(success) {
+		if (success) {
 			return (
-				<div className='full-container flex-column flex-center'>
+				<div className='flex-column card success'>
 					<div
-						style={{
-							width: '100%',
-							height: '10%',
-							display: 'flex',
-							justifyContent: 'flex-end',
-							padding: '10px'
-						}}
+						className='top-container hover'
+						onClick={onSuccess}
 					>
-						<CloseIcon
-							className='action-icon'
-							fontSize='large'
-							onClick={onSuccess}
+						<Close
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
 						/>
 					</div>
-					<div
-						className='big-text'
-						style={{
-							width: '60%',
-							height: '90%',
-							marginTop: '100px'
-						}}
-					>
-						{capitalize(t('InformationSubmitedSuccessfully'))}...
+					<div className='small-title success-feedback'>
+						{capitalize(t('InformationSubmitedSuccessfully'))}
 					</div>
+					<style jsx='true'>
+						{`
+						.success {
+							width: 690px;
+							height: 431px;
+							justify-content: flex-start;
+							align-items: center;
+						}
+						.top-container {
+							width: 95%;
+							height: 40%;
+							padding: 2.5%;
+							display:flex;
+							align-items: flex-start;
+							justify-content: flex-end;
+						}
+						@media only screen and (max-width: 640px) {
+							.success {
+								width: 98%;
+								height: 85%;
+								margin: 0 1%;
+							}
+							.success-feedback {
+								margin-left: 5px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}

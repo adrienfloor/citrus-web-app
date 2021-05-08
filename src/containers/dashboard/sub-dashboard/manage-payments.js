@@ -11,6 +11,7 @@ import '../../../styling/spacings.css'
 import '../../../styling/App.css'
 
 import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 
 import CreditCardForm from '../../mangopay/credit-card-form'
 import TopUp from '../../mangopay/top-up'
@@ -54,13 +55,13 @@ class ManagePayments extends React.Component {
 	}
 
 	async fetchMangoPayInfo() {
-		const { mangoPayUserId } = this.props.user
-		const mangoPayUserCard = await fetchMpCardInfo(mangoPayUserId)
+		const { MPUserId } = this.props.user
+		const mangoPayUserCard = await fetchMpCardInfo(MPUserId)
 		if (mangoPayUserCard) {
 			this.setState({ cardInfo: mangoPayUserCard })
 		}
 
-		const walletInfo = await fetchMpWalletInfo(mangoPayUserId)
+		const walletInfo = await fetchMpWalletInfo(MPUserId)
 		if(walletInfo) {
 			this.setState({
 				walletInfo: walletInfo
@@ -138,14 +139,14 @@ class ManagePayments extends React.Component {
 		const {
 			t,
 			user,
-			updateUserm
+			updateUser
 		} = this.props
 		const {
 			firstName,
 			lastName,
 			automaticTopUp,
 			subscription,
-			mangoPayUserId,
+			MPUserId,
 			myVideos
 		} = user
 
@@ -153,7 +154,7 @@ class ManagePayments extends React.Component {
 			return(
 				<CreditCardForm
 					onSuccess={() => {
-						fetchMpCardInfo(user.mangoPayUserId)
+						fetchMpCardInfo(MPUserId)
 							.then((mangoPayUserCard) => {
 								this.setState({
 									cardInfo: mangoPayUserCard,
@@ -331,7 +332,7 @@ class ManagePayments extends React.Component {
 		}
 
 		if (isTopingUpAccount) {
-			if (mangoPayUserId) {
+			if (MPUserId) {
 				return (
 					<TopUp
 						onClose={() => {
@@ -363,13 +364,15 @@ class ManagePayments extends React.Component {
 				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('firstName'))}</span>
 					<span className='small-text row-item'>{firstName}</span>
+					<span className='small-text row-item'></span>
 				</div>
 				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('lastName'))}</span>
 					<span className='small-text row-item'>{lastName}</span>
+					<span className='small-text row-item'></span>
 				</div>
-				<div className='flex-row flex-row-mobile row-dashboard'>
-					<span className='small-text row-item citrusGrey'>{capitalize(t('creditCardDetails'))}</span>
+				<div className='flex-row row-dashboard'>
+					<span className='small-text row-item citrusGrey'>{capitalize(t('paymentCard'))}</span>
 					<span className='small-text row-item'>{cardInfo.Alias || capitalize(t('none'))}</span>
 					<span
 						className={
@@ -388,7 +391,7 @@ class ManagePayments extends React.Component {
 						}
 					</span>
 				</div>
-				<div className='flex-row flex-row-mobile row-dashboard'>
+				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('automaticTopUp'))}</span>
 					<span className='small-text row-item'>
 						{
@@ -404,7 +407,7 @@ class ManagePayments extends React.Component {
 						{capitalize(t('change'))}
 					</span>
 				</div>
-				<div className='flex-row flex-row-mobile row-dashboard'>
+				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('subscription'))}</span>
 					<span className='small-text row-item'>
 						{
@@ -416,7 +419,7 @@ class ManagePayments extends React.Component {
 					<span
 						className='small-text row-item simple-link'
 						onClick={() => {
-							if(!mangoPayUserId) {
+							if(!MPUserId) {
 								this.setState({
 									creditCardRequiredMessage: true
 								})
@@ -439,7 +442,7 @@ class ManagePayments extends React.Component {
 						}
 					</span>
 				</div>
-				<div className='flex-row flex-row-mobile row-dashboard'>
+				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('videos'))}</span>
 					<span className='small-text row-item'>
 						{`${myVideos} ${t('videosAvailable')}`}
@@ -482,9 +485,6 @@ class ManagePayments extends React.Component {
 							text-overflow: ellipsis;
 							overflow: hidden;
 							margin: 0 5px;
-						}
-						.flex-row-mobile {
-							width: 100%;
 						}
 						.title {
 							margin-bottom: 10px;

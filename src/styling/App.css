@@ -179,6 +179,9 @@ input:focus {
 		min-height: 5px;
 		width: 100%;
 	}
+	.drawer-title {
+		margin: 15px 0 0 0;
+	}
 }
 
 #payment-form {

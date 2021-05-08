@@ -9,14 +9,15 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 
-import MenuIcon from '@material-ui/icons/Menu'
-import PersonIcon from '@material-ui/icons/Person'
-import PaymentIcon from '@material-ui/icons/Payment'
-import DescriptionIcon from '@material-ui/icons/Description'
-import EqualizerIcon from '@material-ui/icons/Equalizer'
-import ReceiptIcon from '@material-ui/icons/Receipt'
-import HistoryIcon from '@material-ui/icons/History'
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import { ReactComponent as User } from '../assets/svg/user.svg'
+import { ReactComponent as Card } from '../assets/svg/card.svg'
+import { ReactComponent as Stats } from '../assets/svg/stats.svg'
+import { ReactComponent as Invoice } from '../assets/svg/invoice.svg'
+import { ReactComponent as History} from '../assets/svg/history.svg'
+import { ReactComponent as Receipt } from '../assets/svg/receipt.svg'
+import { ReactComponent as Money } from '../assets/svg/money.svg'
+import { ReactComponent as Burger } from '../assets/svg/burger.svg'
+
 
 import { withTranslation } from 'react-i18next'
 
@@ -57,63 +58,76 @@ function MobileDrawer({ t, currentFocus }) {
 			onClick={toggleDrawer(false)}
 			onKeyDown={toggleDrawer(false)}
 		>
-			<div className={`${classes.padded} big-text`}>
-				{capitalize(t('myAccount'))}
+			<div className={`${classes.padded} small-title drawer-title`}>
+				{capitalize(t('account'))}
 			</div>
 			<List>
 				<ListItem
 					button
 					onClick={() => currentFocus('profile')}
 				>
-					<ListItemIcon>{<PersonIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<User />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('profile'))} />
 				</ListItem>
 				<ListItem
 					button
 					onClick={() => currentFocus('managePayments')}
 				>
-					<ListItemIcon>{<PaymentIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<Card />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('managePayments'))} />
 				</ListItem>
 				<ListItem
 					button
 					onClick={() => currentFocus('invoices')}
 				>
-					<ListItemIcon>{<DescriptionIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<Invoice />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('invoices'))} />
 				</ListItem>
 			</List>
-			<Divider />
-			<div className={`${classes.padded} big-text`}>
-				{capitalize(t('myVideos'))}
+			<div className={`${classes.padded} small-title drawer-title`}>
+				{capitalize(t('videos'))}
 			</div>
 			<List>
 				<ListItem
 					button
 					onClick={() => currentFocus('stats')}
 				>
-					<ListItemIcon>{<EqualizerIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<Stats />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('stats'))} />
 				</ListItem>
 				<ListItem
 					button
 					onClick={() => currentFocus('paymentsReceipts')}
 				>
-					<ListItemIcon>{<ReceiptIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<Receipt />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('paymentsReceipts'))} />
 				</ListItem>
 				<ListItem
 					button
 					onClick={() => currentFocus('paymentsHistory')}
 				>
-					<ListItemIcon>{<HistoryIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<History />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('paymentsHistory'))} />
 				</ListItem>
 				<ListItem
 					button
 					onClick={() => currentFocus('cashOut')}
 				>
-					<ListItemIcon>{<AttachMoneyIcon />}</ListItemIcon>
+					<ListItemIcon>
+						<Money />
+					</ListItemIcon>
 					<ListItemText primary={capitalize(t('cashOut'))} />
 				</ListItem>
 			</List>
@@ -128,7 +142,7 @@ function MobileDrawer({ t, currentFocus }) {
 						className={classes.menuButton}
 						onClick={toggleDrawer(!open)}
 					>
-						<MenuIcon />
+						<Burger />
 					</Button>
 					<Drawer
 						anchor={anchor}

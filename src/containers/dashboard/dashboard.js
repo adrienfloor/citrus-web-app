@@ -51,8 +51,8 @@ class Dashboard extends React.Component {
 		} = this.props
 		const {
 			email,
-			mangoPayUserId,
-			mangoPayLegalUserId
+			MPUserId,
+			MPLegalUserId
 		} = user
 		const {
 			automaticTopUp,
@@ -83,7 +83,7 @@ class Dashboard extends React.Component {
 				component = null
 				break;
 			case 'cashOut':
-				component = mangoPayLegalUserId ? <PaymentsMethods /> : <LegalUserCreation />
+				component = MPLegalUserId ? <PaymentsMethods /> : <LegalUserCreation />
 				break;
 			default:
 				component = null

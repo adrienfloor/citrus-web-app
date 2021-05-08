@@ -60,7 +60,7 @@
 	"noBankAccountAssociatedToThisUser": "no bank account associated to this user, please create a bank account first",
 	"registerABankAccount": "register a bank account",
 	"bankAccount": "bank account",
-	"withdraw": "withdraw",
+	"withdraw": "withdraw my gains",
 	"youCantWithdrawLessThan150Credits": "You can't withdraw if you have less than 150 credits",
 	"youCantWithdrawThisAmount": "you can't withdraw this amount",
 	"somethingWentWrongWithThePayout": "something went wrong with the payout",
@@ -126,5 +126,18 @@
 	"iAgreeToCardRegistration": "By submiting you agree for you card to be saved for future payments. No payments will be proceed without your consent and you can change card at any given time",
 	"howItWorks": "how it works",
 	"minimumTopUpValue": "minimum 10",
-	"bySubscribing": "By subscribing you get unlimited content for only 20€ a month"
+	"bySubscribing": "By subscribing you get unlimited content for only 20€ a month",
+	"paymentCard": "payment card",
+	"verifyYourKyc": "verify your KYC",
+	"inOrderToWithdrawYourEarnings": "in order to withdraw your earnings, and according to the law in place, we need to verify your identity",
+	"ifYouRecentlySubmittedDocs": "if you recently submitted documents, please note that this verification is manual and can take a few days",
+	"pleaseUploadId": "Please upload an identification. Find more info",
+	"here": "here",
+	"upload": "upload",
+	"bankAccountRegistration": "bank account registration",
+	"weNeedYourBankingInfo": "in order for you to withdraw your earnings, we need to your banking information",
+	"cashYourEarnings": "cash your earnings",
+	"weNeedYourConfirmation": "in order for you to withdraw your earnings, we need confirmation from you. A payout can take a few days to appear on your bank account",
+	"amoutToCashOut": "amount to cash out",
+	"currentGains": "current gains"
 }

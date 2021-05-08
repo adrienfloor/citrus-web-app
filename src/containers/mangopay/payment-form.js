@@ -145,7 +145,7 @@ class PaymentForm extends React.Component {
 			this.props.customer.email
 		)
 		if(mpUser) {
-			await updateUser({ id: user._id, mangoPayUserId: mpUser.Id })
+			await updateUser({ id: user._id, MPUserId: mpUser.Id })
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id)
 		}

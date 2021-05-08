@@ -126,15 +126,43 @@ class CreateMangopayUser extends React.Component {
 
 		if (success) {
 			return (
-				<div className='full-container flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-text'>{capitalize(t('InformationSubmitedSuccessfully'))}...</div>
-					<span
-						className='medium-text simple-link'
-					>
+				<div className='flex-column card success'>
+					<div className='top-container'>
+					</div>
+					<div className='small-title success-feedback'>
+						{capitalize(t('InformationSubmitedSuccessfully'))}
+					</div>
+					<span className='simple-link'>
 						<Link to="/dashboard">{capitalize(t('goToDashboard'))}</Link>
 					</span>
-					<div className='big-separator'></div>
+					<style jsx='true'>
+						{`
+						.success {
+							width: 690px;
+							height: 431px;
+							justify-content: flex-start;
+							align-items: center;
+						}
+						.top-container {
+							width: 95%;
+							height: 40%;
+							padding: 2.5%;
+							display:flex;
+							align-items: flex-start;
+							justify-content: flex-end;
+						}
+						@media only screen and (max-width: 640px) {
+							.success {
+								width: 98%;
+								height: 85%;
+								margin: 0 1%;
+							}
+							.success-feedback {
+								margin-left: 5px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}

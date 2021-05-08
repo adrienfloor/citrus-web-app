@@ -209,7 +209,7 @@ class Signin extends React.Component {
 								justify-content: flex-start !important;
 							}
 							.password-container {
-								width: 95%;
+								width: 100%;
 							}
 						}
         `}

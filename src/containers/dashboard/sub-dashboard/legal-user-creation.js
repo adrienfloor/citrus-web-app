@@ -134,7 +134,7 @@ class LegalUserCreation extends React.Component {
 		if (mpLegalUser) {
 			updateUser({
 				id: user._id,
-				mangoPayLegalUserId: mpLegalUser.Id,
+				MPLegalUserId: mpLegalUser.Id,
 				firstName: user.firstName || this.state.LegalRepresentativeFirstName,
 				lastName: user.lastName || this.state.LegalRepresentativeLastName,
 			})
@@ -166,6 +166,7 @@ class LegalUserCreation extends React.Component {
 				</span>
 				<div className='medium-separator'></div>
 				<form
+					id='legal-user-form'
 					onSubmit={this.handleSubmit}
 					className='legal-user-creation-form'
 				>
@@ -290,7 +291,7 @@ class LegalUserCreation extends React.Component {
 							/>
 						</div>
 						<div
-							className='row flex-row medium-text row  flex-center'
+							className='row flex-row medium-text row flex-center'
 							style={{ justifyContent: 'flex-start' }}
 						>
 							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Legal Representative Birthday : </span>
@@ -308,7 +309,7 @@ class LegalUserCreation extends React.Component {
 					{/* Show any error that happens when processing the payment */}
 					{
 						warningMessage &&
-						<div style={{ textAlign: 'center' }} className='small-text red' role='alert'>
+						<div style={{ textAlign: 'center' }} className='small-text citrusRed' role='alert'>
 							{warningMessage}
 							<div className='small-separator'></div>
 						</div>
@@ -317,7 +318,7 @@ class LegalUserCreation extends React.Component {
 						<button
 							className='filled-button'
 							type='submit'
-							form='credit-card-form'
+							form='legal-user-form'
 						>
 							<span className='small-title citrusWhite'>
 								{capitalize(t('submit'))}
@@ -354,6 +355,10 @@ class LegalUserCreation extends React.Component {
 							.legal-user-creation-form,
 							.row {
 								width: 100%;
+							}
+							.legal-user-creation {
+								width: 98%;
+								margin: 0 1%;
 							}
 						}
 				`}

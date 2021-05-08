@@ -5,14 +5,15 @@ import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import FileBase64 from 'react-file-base64'
 import { Link } from 'react-router-dom'
-import CloseIcon from '@material-ui/icons/Close'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
 import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
+
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	capitalize
@@ -45,10 +46,10 @@ class Kyc extends React.Component {
 			success: false
 		}
 
-		fetchMpUserInfo(this.props.user.mangoPayLegalUserId)
+		fetchMpUserInfo(this.props.user.MPLegalUserId)
 		.then(res => {
 			mpUserInfo = res
-			fetchKycsOfAUser(this.props.user.mangoPayLegalUserId)
+			fetchKycsOfAUser(this.props.user.MPLegalUserId)
 			.then(res => {
 				mpUserKycs = res
 				this.setState({ isLoading: false })
@@ -89,7 +90,7 @@ class Kyc extends React.Component {
 
 	async handleSubmit(typeOfDocument, file) {
 		const { user, t, setNotification } = this.props
-		const { mangoPayLegalUserId } = user
+		const { MPLegalUserId } = user
 
 		if(!file) {
 			this.setState({
@@ -100,13 +101,13 @@ class Kyc extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const { KYCDocumentId } = await createMpKycDocument(mangoPayLegalUserId, typeOfDocument)
-		const kycPage = await createMpKycPage(mangoPayLegalUserId, KYCDocumentId, file)
+		const { KYCDocumentId } = await createMpKycDocument(MPLegalUserId, typeOfDocument)
+		const kycPage = await createMpKycPage(MPLegalUserId, KYCDocumentId, file)
 		if(kycPage == 204) {
-			submitMpKycDocument(mangoPayLegalUserId, KYCDocumentId)
+			submitMpKycDocument(MPLegalUserId, KYCDocumentId)
 			.then(res => {
 				if(res.Status == 'VALIDATION_ASKED') {
-					fetchKycsOfAUser(this.props.user.mangoPayLegalUserId)
+					fetchKycsOfAUser(MPLegalUserId)
 						.then(res => {
 							mpUserKycs = res
 							this.setState({ isLoading: false })
@@ -187,10 +188,7 @@ class Kyc extends React.Component {
 		}
 
 		return (
-			<div
-				className='full-container flex-column kyc'
-				style={{ alignItems: 'center' }}
-			>
+			<div className='full-container flex-column kyc'>
 				<div
 					style={{
 						width: '100%',
@@ -199,61 +197,77 @@ class Kyc extends React.Component {
 						justifyContent: 'flex-start',
 						alignItems: 'center'
 					}}
+					onClick={onClose}
+					className='hover'
 				>
-					<KeyboardBackspaceIcon
-						className='action-icon'
-						fontSize='large'
-						onClick={onClose}
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
 					/>
-				</div>
-				<div className='billing-card flex-column padded'>
-					<div className='medium-title'>KYC Regulations</div>
-					<span className='small-text'>In order to withdraw your earnings, and according to the law in place, we need to verify your identity.</span>
-					<div className='small-separator'></div>
-					<span className='small-text'>If you recently submitted documents, please note that this verification is manual and can take a few days</span>
-					<div className='small-separator'></div>
-					<span className='small-text'>Please upload an identification. Find more info
-						<a className='simple-link' target='_blank' href='https://docs.mangopay.com/guide/kyc-further-information'> here.</a>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('cashout'))}
 					</span>
-
+				</div>
+				<span className='maxi-title title'>
+					{capitalize(t('verifyYourKyc'))}
+				</span>
+				<span className='small-text-high'>
+					{capitalize(t('inOrderToWithdrawYourEarnings'))}.
+				</span>
+				<div className='small-separator'></div>
+				<span className='small-text-high'>
+					{capitalize(t('ifYouRecentlySubmittedDocs'))}.
+				</span>
+				<div className='small-separator'></div>
+				<span className='small-text'>{capitalize(t('pleaseUploadId'))}
+					<a className='simple-link' target='_blank' href='https://docs.mangopay.com/guide/kyc-further-information'> {t('here')} .</a>
+				</span>
+				<div className='flex-column'>
 					{/*  IDENTITY PROOF */}
 					<div className='medium-separator'></div>
-					<span className='small-title'>{capitalize(t('identityProof'))} : </span>
+					<span className='small-title'>{capitalize(t('identityProof'))}</span>
 					{
 						this.isKycValidationInProgress('IDENTITY_PROOF') ?
 						<div>
 							<div className='small-separator'></div>
 							<span className='small-text'>{capitalize(t('yourIdValidationIsInProgress'))}</span>
 						</div> :
-						<div
-							className='row flex-row'
-							style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}
-						>
-							<label className="custom-file-upload">
-								<FileBase64
-									multiple={false}
-									onDone={file => this.getFiles(file, 'identityProof')}
-								/>
-								<span className='small-text'>
-									{
-										identityProofFileName ?
-											'Change file' :
-											'Upload'
-									}
-								</span>
-							</label>
+						<div className='row flex-row upload-row'>
+							{
+								!identityProof &&
+								<label className="custom-empty-file-upload">
+									<FileBase64
+										multiple={false}
+										onDone={file => this.getFiles(file, 'identityProof')}
+									/>
+									<span className='small-title citrusBlue'>{capitalize(t('upload'))}</span>
+								</label>
+							}
 							{
 								identityProofFileName &&
-								<span className='small-text file-name'>{identityProofFileName}</span>
+								<>
+									<span className='small-text file-name'>{identityProofFileName}</span>
+									<label className="custom-file-upload">
+										<FileBase64
+											multiple={false}
+											onDone={file => this.getFiles(file, 'identityProof')}
+										/>
+										<span className='small-title citrusBlue'>{capitalize(t('change'))}</span>
+									</label>
+								</>
 							}
-							<div className='small-separator'></div>
 							{
 								identityProof &&
 								<button
-									className='small-action-button'
+									className='filled-button'
+									style={{ width: 300 }}
 									onClick={() => this.handleSubmit('IDENTITY_PROOF', identityProof)}
 								>
-									{capitalize(t('submit'))}
+									<span className='small-title citrusWhite'>
+										{capitalize(t('submit'))}
+									</span>
 								</button>
 							}
 						</div>
@@ -267,43 +281,48 @@ class Kyc extends React.Component {
 							<span className='small-title'>{capitalize(t('articlesOfAssociation'))} : </span>
 							{
 								this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') ?
-									<div>
-										<div className='small-separator'></div>
-										<div>{this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION')}</div>
-										<span className='small-text'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
-									</div> :
-									<div
-										className='row flex-row'
-										style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}
-									>
-										<label className="custom-file-upload">
+								<div>
+									<div className='small-separator'></div>
+									<div>{this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION')}</div>
+									<span className='small-text'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
+								</div> :
+								<div className='row flex-row upload-row'>
+									{
+										!articlesOfAssociation &&
+										<label className="custom-empty-file-upload">
 											<FileBase64
 												multiple={false}
 												onDone={file => this.getFiles(file, 'articlesOfAssociation')}
 											/>
-											<span className='small-text'>
-												{
-													articlesOfAssociationFileName ?
-														'Change file' :
-														'Upload'
-												}
-											</span>
+											<span className='small-title citrusBlue'>{capitalize(t('upload'))}</span>
 										</label>
-										{
-											articlesOfAssociationFileName &&
+									}
+									{
+										articlesOfAssociationFileName &&
+										<>
 											<span className='small-text file-name'>{articlesOfAssociationFileName}</span>
-										}
-										<div className='small-separator'></div>
-										{
-											articlesOfAssociation &&
-											<button
-												className='small-action-button'
-												onClick={() => this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation)}
-											>
+											<label className="custom-file-upload">
+												<FileBase64
+													multiple={false}
+													onDone={file => this.getFiles(file, 'articlesOfAssociation')}
+												/>
+												<span className='small-title citrusBlue'>{capitalize(t('change'))}</span>
+											</label>
+										</>
+									}
+									{
+										articlesOfAssociation &&
+										<button
+											className='filled-button'
+											style={{ width: 300 }}
+											onClick={() => this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation)}
+										>
+											<span className='small-title citrusWhite'>
 												{capitalize(t('submit'))}
-											</button>
-										}
-									</div>
+											</span>
+										</button>
+									}
+								</div>
 							}
 						</div>
 					}
@@ -313,66 +332,86 @@ class Kyc extends React.Component {
 					<span className='small-title'>{capitalize(t('registrationProof'))} : </span>
 					{
 						this.isKycValidationInProgress('REGISTRATION_PROOF') ?
-							<div>
-								<div className='small-separator'></div>
-								<span className='small-text'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
-							</div> :
-							<div
-								className='row flex-row'
-								style={{ justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}
-							>
-								<label className="custom-file-upload">
+						<div>
+							<div className='small-separator'></div>
+							<span className='small-text'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
+						</div> :
+						<div className='row flex-row upload-row'>
+							{
+								!registrationProof &&
+								<label className="custom-empty-file-upload">
 									<FileBase64
 										multiple={false}
 										onDone={file => this.getFiles(file, 'registrationProof')}
 									/>
-									<span className='small-text'>
-										{
-											registrationProofFileName ?
-												'Change file' :
-												'Upload'
-										}
-									</span>
+									<span className='small-title citrusBlue'>{capitalize(t('upload'))}</span>
 								</label>
-								{
-									registrationProofFileName &&
+							}
+							{
+								registrationProofFileName &&
+								<>
 									<span className='small-text file-name'>{registrationProofFileName}</span>
-								}
-								<div className='small-separator'></div>
-								{
-									registrationProof &&
-									<button
-										className='small-action-button'
-										onClick={() => this.handleSubmit('REGISTRATION_PROOF', registrationProof)}
-									>
+									<label className="custom-file-upload">
+										<FileBase64
+											multiple={false}
+											onDone={file => this.getFiles(file, 'registrationProof')}
+										/>
+										<span className='small-title citrusBlue'>{capitalize(t('change'))}</span>
+									</label>
+								</>
+							}
+							{
+								registrationProof &&
+								<button
+									className='filled-button'
+									style={{ width: 300 }}
+									onClick={() => this.handleSubmit('REGISTRATION_PROOF', registrationProof)}
+								>
+									<span className='small-title citrusWhite'>
 										{capitalize(t('submit'))}
-									</button>
-								}
-							</div>
+									</span>
+								</button>
+							}
+						</div>
 					}
 
-
 					<div className='small-separator'></div>
-					<span className='small-text red'>{warningMessage}</span>
+					<span className='small-text citrusRed'>{warningMessage}</span>
 				</div>
 				<style jsx='true'>
 					{`
 						.row {
 							width: 100%;
 						}
-						.padded {
-							padding: 0 10px;
+						.upload-row {
+							justify-content: space-between;
+							align-items: center;
+							margin-top: 10px;
 						}
 						input[type="file"] {
 							display: none;
 						}
-						.custom-file-upload {
-							border: 1px solid lightGrey;
+						.custom-empty-file-upload {
 							display: inline-block;
-							padding: 6px 12px;
-							border-radius: 2px;
 							cursor: pointer;
-							text-align: center;
+							width: 454px;
+							height: 50px;
+							background-color: #FFFFFF;
+							border: 2px solid #0075FF;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							color: #0075FF;
+						}
+						.custom-file-upload {
+							display: inline-block;
+							cursor: pointer;
+							font-family: Raleway-Bold;
+							font-style: normal;
+							font-weight: bold !important;
+							font-size: 20px;
+							line-height: 23px;
+							color: #0075FF;
 						}
 						.file-name {
 							max-width: 300px;
@@ -381,8 +420,10 @@ class Kyc extends React.Component {
 						}
 						@media only screen and (max-width: 640px) {
 							.kyc {
-								width: 96%;
-								margin: 0 2%;
+								width: 98%;
+								margin: 0 1%;
+								overflow-y: auto;
+								padding-bottom: 100px;
 							}
 						}
 					`}

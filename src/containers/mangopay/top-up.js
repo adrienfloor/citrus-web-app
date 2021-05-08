@@ -5,14 +5,15 @@ import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { Link } from 'react-router-dom'
 import { TextField, Checkbox } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
-import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
 import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
+
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	capitalize
@@ -88,7 +89,7 @@ class TopUp extends React.Component {
 
 	async handleSubmit(e) {
 		const { user, t } = this.props
-		const { mangoPayUserId } = user
+		const { MPUserId} = user
 		const {
 			value
 		} = this.state
@@ -103,12 +104,12 @@ class TopUp extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const wallet = await fetchMpWalletInfo(mangoPayUserId)
-		const card = await fetchMpCardInfo(mangoPayUserId)
+		const wallet = await fetchMpWalletInfo(MPUserId)
+		const card = await fetchMpCardInfo(MPUserId)
 
 		const payment = await createMpCardDirectPayin(
-			mangoPayUserId,
-			mangoPayUserId,
+			MPUserId,
+			MPUserId,
 			wallet.Id,
 			{
 				"Currency": "EUR",
@@ -148,30 +149,49 @@ class TopUp extends React.Component {
 
 		if (success) {
 			return (
-				<div className='full-container flex-column'>
+				<div className='flex-column card success'>
 					<div
-						style={{
-							width: '100%',
-							height: '10%',
-							display: 'flex',
-							justifyContent: 'flex-end',
-							padding: '10px'
-						}}
+						className='top-container hover'
+						onClick={onClose}
 					>
-						<CloseIcon
-							className='action-icon'
-							fontSize='large'
-							onClick={onClose}
+						<Close
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
 						/>
 					</div>
-					<div className='big-separator'></div>
-					<div
-						className='big-text'
-						style={{ padding: '0 15%' }}
-					>
-						{capitalize(t('PaymentSubmitedSuccessfully'))}...
+					<div className='small-title success-feedback'>
+						{capitalize(t('PaymentSubmitedSuccessfully'))}
 					</div>
-					<div className='big-separator'></div>
+					<style jsx='true'>
+						{`
+						.success {
+							width: 690px;
+							height: 431px;
+							justify-content: flex-start;
+							align-items: center;
+						}
+						.top-container {
+							width: 95%;
+							height: 40%;
+							padding: 2.5%;
+							display:flex;
+							align-items: flex-start;
+							justify-content: flex-end;
+						}
+						@media only screen and (max-width: 640px) {
+							.success {
+								width: 98%;
+								height: 85%;
+								margin: 0 1%;
+							}
+							.success-feedback {
+								margin-left: 5px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}
