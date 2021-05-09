@@ -146,24 +146,26 @@ class Signin extends React.Component {
 						</div>
 					</div>
 					<div className='medium-separator'></div>
-					<button
-						className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
-						type='submit'
-						form='login-form'
-						disabled={this.isValidSignUp() ? false : true}
-					>
-						<span className='small-title citrusWhite'>
-							{capitalize(t('logIn'))}
-						</span>
-					</button>
-					<button
-						className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
-						type='submit'
-						form='login-form'
-						disabled={this.isValidSignUp() ? false : true}
-					>
-						<Link className='small-title citrusBlue' to="/signup">{capitalize(t('createAnAccount'))}</Link>
-					</button>
+					<div className='button-container flex-column flex-center'>
+						<button
+							className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
+							type='submit'
+							form='login-form'
+							disabled={this.isValidSignUp() ? false : true}
+						>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('logIn'))}
+							</span>
+						</button>
+						<button
+							className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
+							type='submit'
+							form='login-form'
+							disabled={this.isValidSignUp() ? false : true}
+						>
+							<Link className='small-title citrusBlue' to="/signup">{capitalize(t('createAnAccount'))}</Link>
+						</button>
+					</div>
 				</form>
 				<style jsx='true'>
 					{`
@@ -173,6 +175,9 @@ class Signin extends React.Component {
 						}
 						.input {
 							margin-bottom: 20px;
+						}
+						.button-container {
+							width: 100%;
 						}
 						.button {
 							margin-bottom: 10px;
@@ -209,6 +214,18 @@ class Signin extends React.Component {
 								justify-content: flex-start !important;
 							}
 							.password-container {
+								width: 98%;
+								margin: 0 1%;
+								margin-bottom: 20px;
+							}
+							.password-input {
+								margin: 0;
+							}
+							.button-container {
+								width: 98%;
+								padding: 0 1%;
+							}
+							.button {
 								width: 100%;
 							}
 						}

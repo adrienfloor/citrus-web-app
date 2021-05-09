@@ -162,28 +162,30 @@ class Signup extends React.Component {
 						</div>
 					</div>
 					<div className='medium-separator'></div>
-					<span className='small-text citrusGrey'>
+					<span className='small-text citrusGrey disclaimer'>
 						{capitalize(t('bySubmittingYouAgreeToTerms'))} <a target='_blank' className='smallText citrusGrey' href="https://thecitrusapp.com/cgu-cgv/">{capitalize(t('termsOfUse'))}</a>
 					</span>
 					<div className='small-separator'></div>
-					<button
-						className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
-						type='submit'
-						form='login-form'
-						disabled={this.isValidSignUp() ? false : true}
-					>
-						<span className='small-title citrusWhite'>
-							{capitalize(t('createAnAccount'))}
-						</span>
-					</button>
-					<button
-						className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
-						type='submit'
-						form='login-form'
-						disabled={this.isValidSignUp() ? false : true}
-					>
-						<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
-					</button>
+					<div className='button-container flex-column flex-center'>
+						<button
+							className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
+							type='submit'
+							form='login-form'
+							disabled={this.isValidSignUp() ? false : true}
+						>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('createAnAccount'))}
+							</span>
+						</button>
+						<button
+							className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
+							type='submit'
+							form='login-form'
+							disabled={this.isValidSignUp() ? false : true}
+						>
+							<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
+						</button>
+					</div>
 				</form>
 				<style jsx='true'>
 					{`
@@ -225,11 +227,31 @@ class Signup extends React.Component {
 								margin: 0 0 10px 2.5% !important;
 								font-size: 36px !important;
 							}
+							.disclaimer {
+								margin: 0 0 0 2.5% !important;
+							}
 							.main {
 								justify-content: flex-start !important;
 							}
+							.form {
+								height: 450px;
+								overflow-y: auto;
+								margin-bottom: 60px;
+							}
 							.password-container {
-								width: 95%;
+								width: 98%;
+								margin: 0 1%;
+								margin-bottom: 20px;
+							}
+							.password-input {
+								margin: 0;
+							}
+							.button-container {
+								width: 98%;
+								padding: 0 1%;
+							}
+							.button {
+								width: 100%;
 							}
 						}
         `}

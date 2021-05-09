@@ -146,16 +146,15 @@ input:focus {
 		width: 100%;
 	}
 
+	.auth-card {
+		width: 98%;
+		margin: 0 1%;
+	}
+
 	.text-input {
 		height: 50px;
 		width: 95%;
 		margin: 0 2.5%;
-	}
-
-	.auth-card {
-		width: 95%;
-		margin: 0 2.5%;
-		height: 430px;
 	}
 	.choose-plan {
 		overflow-y: auto;
