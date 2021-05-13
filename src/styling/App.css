@@ -113,22 +113,21 @@ input:focus {
 /* PAYMENTS */
 
 .billing-card {
-	width: 420px;
-	min-height: 478px;
-	padding-bottom: 10px;
+	width: 690px;
+	min-height: 430px;
+	padding: 10px 0 20px 0;
 }
 
 .choose-plan-card {
 	padding: 20px;
 	margin: 20px;
-	border-radius: 3px;
 	width: 350px;
 	height: 350px;
 }
 
 .choose-plan {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: center;
 	align-items: space-between;
 }
 
@@ -163,12 +162,12 @@ input:focus {
 		overflow-y: auto;
 		height: 100%;
 		width: 100%;
-		justify-content: flex-start;
+		justify-content: flex-sta;
 		align-items: center;
 	}
 	.choose-plan-card {
 		width: 86%;
-		min-height: 350px;
+		height: 350px;
 		margin: 10px 0;
 	}
 	.payments-plans {

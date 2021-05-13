@@ -251,7 +251,7 @@ class PaymentForm extends React.Component {
 			)
 		}
 		return (
-			<div id="PaymentForm">
+			<div id="PaymentForm" className='payment-form'>
 				{/* <button onClick={() => this.setState({
 					cvc: '123',
 					expiry: '09 / 23',
@@ -269,7 +269,7 @@ class PaymentForm extends React.Component {
 				>
 					<div style={{ width: '95%', margin: '5% 2.5% 2%' }}>
 						{/* <div
-							className='medium-text padded'
+							className='small-text padded'
 							style={{ width: 270, marginBottom: 5 }}
 						>
 							{capitalize(t('cardInformation'))}
@@ -311,7 +311,7 @@ class PaymentForm extends React.Component {
 							/>
 						</div>
 						<div
-							className='row flex-row medium-text flex-center'
+							className='row flex-row small-text flex-center'
 							style={{ marginTop: '15px' }}
 						>
 							<span style={{ marginRight: '5px' }}>Birthday : </span>
@@ -327,7 +327,7 @@ class PaymentForm extends React.Component {
 					</div>
 					<div className='medium-separator'></div>
 					<span
-						className='medium-text flex-center'
+						className='small-text flex-center'
 						style={{
 							fontWeight: 500
 						}}
@@ -339,7 +339,7 @@ class PaymentForm extends React.Component {
 						className='small-text flex-center'
 						style={{ padding: '0 10px' }}
 					>
-						{capitalize(t('iAgreeToCardRegistration'))}
+						{capitalize(t('iAgreeToCardRegistration'))}.
 					</span>
 					<div className='medium-separator'></div>
 					{/* Show any error that happens when processing the payment */}
@@ -350,22 +350,27 @@ class PaymentForm extends React.Component {
 							<div className='small-separator'></div>
 						</div>
 					}
-					<button
-						className={
-							isPrepaying ?
-								'full-width-action-button' :
-								'full-width-action-button disabled-button'
-						}
-						disabled={!isPrepaying}
-						id='submit'
-					>
-						<span id='button-text' className='big-text'>
-							{capitalize(t('payNow'))}
-						</span>
-					</button>
+					<div className='button-container flex-center'>
+						<button
+							className={
+								isPrepaying ?
+									'filled-button' :
+									'filled-button disabled-button'
+							}
+							disabled={!isPrepaying}
+							id='submit'
+						>
+							<span id='button-text' className='small-title citrusWhite'>
+								{capitalize(t('payNow'))}
+							</span>
+						</button>
+					</div>
         </form>
 				<style jsx='true'>
 					{`
+						.payment-form {
+							background-color: #FFFFFF;
+						}
 						.row {
 							width: 100%;
 						}
@@ -374,6 +379,15 @@ class PaymentForm extends React.Component {
 						input#card-expiry.credit-card-input::placeholder {
 							color: #808080;
 						}
+						.button-container {
+							width: 100%;
+						}
+						@media only screen and (max-width: 640px) {
+						.button-container {
+							width: 96%;
+							margin: 0 2%;
+						}
+					}
 				`}
 				</style>
 			</div>

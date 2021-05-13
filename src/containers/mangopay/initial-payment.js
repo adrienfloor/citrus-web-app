@@ -94,53 +94,38 @@ class InitialPayment extends React.Component {
 		return (
 			<div className='full-container flex-column flex-center'>
 				<div className='card billing-card'>
-						<div className='big-text' style={{ textAlign: 'center', marginTop: '5px' }}>
-							{
-							sub == 2 ?
-								`${uppercase(t('unlimited'))} ${uppercase(t('plan'))}` :
-								`${uppercase(t('aLaCarte'))} ${uppercase(t('plan'))}`
-							}
-						</div>
-						<PaymentForm
-							customer={user}
-							t={t}
-							isPrepaying={isPrepaying}
-							onSuccess={this.updateUserVideos}
-							isProcessingPayment={bool => this.setState({ isProcessingPayment: bool})}
-							onError={err => this.setState({
-								isProcessingPayment: false,
-								errorMessage: err
-							})}
-						/>
+					<div className='small-title' style={{ textAlign: 'center', marginTop: '5px' }}>
 						{
-							errorMessage &&
-							<div className='medium-text red' style={{textAlign: 'center', marginTop: '3px' }}>
-								{errorMessage}
-							</div>
-						}
-						{
-							(isPrepaying == 15 || isPrepaying == 20) && !isProcessingPayment &&
-							<div className='flex-column flex-center'>
-								<div className='medium-separator'></div>
-								<span className='small-text padded'>{capitalize(t('youCanCancelYourSubscriptionAnytime'))}</span>
-							</div>
-						}
-						{
-							(isPrepaying !=15 && isPrepaying != 20) && !isProcessingPayment &&
-							<div className='flex-column flex-center'>
-								<div className='flex-row flex-center'>
-									<Checkbox
-										checked={automaticTopUp}
-										onChange={() => this.setState({ automaticTopUp: !automaticTopUp })}
-										inputProps={{ 'aria-label': 'topup checkbox' }}
-										color='primary'
-									/>
-									<span className='small-text'>{capitalize(t('automaticTopUp'))}</span>
-								</div>
-								<span className='small-text padded disclaimer'>{t('topUpDisclaimer')}</span>
-							</div>
+						sub == 2 ?
+							`${uppercase(t('unlimited'))}` :
+							`${uppercase(t('aLaCarte'))}`
 						}
 					</div>
+					<PaymentForm
+						customer={user}
+						t={t}
+						isPrepaying={isPrepaying}
+						onSuccess={this.updateUserVideos}
+						isProcessingPayment={bool => this.setState({ isProcessingPayment: bool})}
+						onError={err => this.setState({
+							isProcessingPayment: false,
+							errorMessage: err
+						})}
+					/>
+					{
+						errorMessage &&
+						<div className='medium-text-high red' style={{textAlign: 'center', marginTop: '3px' }}>
+							{errorMessage}
+						</div>
+					}
+					{
+						(isPrepaying == 15 || isPrepaying == 20) && !isProcessingPayment &&
+						<div className='flex-column flex-center'>
+							<div className='medium-separator'></div>
+							<span className='small-text padded'>{capitalize(t('youCanCancelYourSubscriptionAnytime'))}</span>
+						</div>
+					}
+				</div>
 				<style jsx='true'>
 					{`
 					.padded {

@@ -21,25 +21,7 @@ class ChoosePlan extends React.Component {
 			history
 		} = this.props
 		return (
-			<div className='full-container flex-center flex-column choose-plan'>
-				<div className="flex-center">
-					<div
-						style={{ textAlign: 'center' }}
-						className='medium-text'
-					>
-						{capitalize(t('moneySpentGoesDirectlyToTheTrainer'))}
-					</div>
-				</div>
-				<div className='small-separator'></div>
-				<div className="flex-center">
-					<div
-						className='medium-text cta'
-						onClick={() => history.push('/dashboard')}
-					>
-						{uppercase(t('tryForFree'))}
-					</div>
-					<div className='big-separator'></div>
-				</div>
+			<div className='full-container flex-column choose-plan'>
 				<div className='small-separator'></div>
 				<div className='payments-plans'>
 					<div
@@ -48,16 +30,20 @@ class ChoosePlan extends React.Component {
 						style={{ alignItems: 'center', justifyContent: 'space-around' }}
 					>
 						<div className="flex-column flex-center">
-							<div className='medium-text'>{uppercase(t('basic'))}</div>
-							<div className='medium-title'>{capitalize(t('aLaCarte'))}</div>
+							<div className='small-text'>{uppercase(t('basic'))}</div>
+							<div className='small-title'>{capitalize(t('aLaCarte'))}</div>
 						</div>
 						<div className="flex-column flex-center">
-							<div className='medium-text price'>€10</div>
+							<div className='small-text price'>€10</div>
 							<div className='big-separator'></div>
-							<div className='medium-text'>{uppercase(t('perMonth'))}</div>
+							<div className='small-text'>{uppercase(t('perMonth'))}</div>
 						</div>
-						<div className="flex-column flex-center">
-							<div className='medium-text cta'>{uppercase(t('startNow'))}</div>
+						<div className='flex-center button-container'>
+							<button className='filled-button'>
+								<span className='small-title citrusWhite'>
+									{uppercase(t('startNow'))}
+								</span>
+							</button>
 						</div>
 					</div>
 					<div
@@ -66,18 +52,39 @@ class ChoosePlan extends React.Component {
 						style={{ alignItems: 'center', justifyContent: 'space-around' }}
 					>
 						<div className="flex-column flex-center">
-							<div className='medium-text'>{uppercase(t('pro'))}</div>
-							<div className='medium-title'>{capitalize(t('unlimited'))}</div>
+							<div className='small-text'>{uppercase(t('pro'))}</div>
+							<div className='small-title'>{capitalize(t('unlimited'))}</div>
 						</div>
 						<div className="flex-column flex-center">
-							<div className='medium-text price'>€20</div>
+							<div className='small-text price'>€20</div>
 							<div className='big-separator'></div>
-							<div className='medium-text'>{uppercase(t('perMonth'))}</div>
+							<div className='small-text'>{uppercase(t('perMonth'))}</div>
 						</div>
-						<div className="flex-column flex-center">
-							<div className='medium-text cta'>{uppercase(t('iChooseFullAccess'))}</div>
+						<div className='flex-center button-container'>
+							<button className='filled-button'>
+								<span className='small-title citrusWhite'>
+									{uppercase(t('startNow'))}
+								</span>
+							</button>
 						</div>
 					</div>
+				</div>
+				<div className='big-separator'></div>
+				<div className='flex-center flex-column bottom-container'>
+					<div className="flex-center">
+						<div
+							style={{ textAlign: 'center' }}
+							className='small-title'
+						>
+							{capitalize(t('moneySpentGoesDirectlyToTheTrainer'))}
+						</div>
+					</div>
+					<div className='medium-separator'></div>
+					<button className='filled-button' onClick={() => history.push('/dashboard')}>
+						<span className='small-title citrusWhite'>
+							{uppercase(t('tryForFree'))}
+						</span>
+					</button>
 				</div>
 				<style jsx='true'>
 					{`
@@ -87,13 +94,18 @@ class ChoosePlan extends React.Component {
 					.price {
 						font-size: 100px;
 					}
-					.cta {
-						padding: 5px;
-						border: 1px solid black;
-						border-radius: 3px;
+					.button-container,
+					.bottom-container {
+						width: 100%;
 					}
-					.cta:hover {
-						cursor: pointer;
+					@media only screen and (max-width: 640px) {
+						.bottom-container {
+							width: 90% !important;
+							margin: 0 5% 100px 5%;
+						}
+						.filled-button {
+							width: 100%;
+						}
 					}
 				`}
 				</style>
