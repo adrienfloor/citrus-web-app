@@ -224,6 +224,8 @@ class PaymentsMethods extends React.Component {
 							text-overflow: ellipsis;
 							overflow: hidden;
 							margin: 0 5px;
+							display: flex;
+    					align-items: center;
 						}
 						.title {
 							margin-bottom: 10px;

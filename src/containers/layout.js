@@ -67,10 +67,10 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 					.header {
 						justify-content: space-between;
 						align-items: center;
-						position: sticky;
+						position: fixed;
 						top: 0;
 						background-color: #FFF;
-						z-index: 12;
+						z-index: 13;
 						height: 80px;
 						width: 100%;
 					}
@@ -94,15 +94,19 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 						padding: 20px;
 					}
 					.children {
-						height: 100%;
+						flex: 1;
+						margin-top: 80px;
+						margin-bottom: 80px;
 						background-color: #F8F8F8;
 					}
 					.footer {
 						background-color: #FFFFFF;
-						position: sticky;
+						position: fixed;
 						bottom: 0;
 						height: 80px;
 						justify-content: space-between;
+						width: 100%;
+						z-index: 13;
 					}
 					.footer-link {
 						margin-right: 20px;
@@ -148,9 +152,6 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 							margin: 0;
 							padding: 0;
 							min-width: 100%;
-						}
-						.children {
-							height: 100%;
 						}
 						.margin-logo {
 							margin-left: 10px;

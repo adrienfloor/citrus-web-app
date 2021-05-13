@@ -338,11 +338,9 @@ class LegalUserCreation extends React.Component {
 							margin-bottom: 30px;
 						}
 						.legal-user-creation-form {
-							height: 400px;
 							background-color: #FFFFFF;
 							width: 690px;
-							overflow-y: auto;
-							margin-bottom: 20px;
+							margin-bottom: 200px;
 						}
 						.button-container {
 							padding-top: 10px;

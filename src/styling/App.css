@@ -84,6 +84,9 @@ input:focus {
 .row-dashboard {
 	height: 50px;
 	width: 690px;
+	border-bottom: 1px solid #FFFFFF;
+	display: flex;
+	align-items: center;
 }
 
 .card {

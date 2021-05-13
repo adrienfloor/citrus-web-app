@@ -299,7 +299,7 @@ class CreditCardForm extends React.Component {
 			)
 		}
 		return (
-			<div className='full-container flex-column'>
+			<div className='full-container flex-column credit-card'>
 				<div
 					style={{
 						width: '100%',
@@ -430,6 +430,15 @@ class CreditCardForm extends React.Component {
 						@media only screen and (max-width: 640px) {
 							.title {
 								margin-bottom: 10px;
+							}
+							.credit-card {
+								width: 98%;
+								margin: 0 1%;
+							}
+							.filled-button,
+							.light-button {
+								width: 98%;
+								margin: 0 1%;
 							}
 						}
 				`}

@@ -307,6 +307,7 @@ class TopUp extends React.Component {
 					}
 					.left-input {
 						width: 80%;
+						color: #000000
 					}
 					.right-input {
 						width: 20%;
@@ -331,6 +332,10 @@ class TopUp extends React.Component {
 							width: 96%;
 							margin: 0 2%;
 						}
+						.top-up-card {
+							width: 98%;
+							padding: 0 1%;
+						}
 						.title {
 							margin-bottom: 10px;
 							margin-top: 0;
@@ -338,14 +343,19 @@ class TopUp extends React.Component {
 							line-height: 40px !important;
 						}
 						.minimum-topup {
-							margin-bottom: 10px;
+							width: 100%;
+							margin-top: 20px;
+							height: 52px;
+							margin-bottom: 0;
 						}
-						.checkbox-row,
+						.checkbox-row {
+							width: 100%;
+							margin-top: 10px;
+						}
 						.input-container,
-						.minimum-topup,
 						.topup-disclaimer {
 							width: 100%;
-							margin-bottom: 10px;
+							margin-bottom: 20px;
 						}
 						.left-input {
 							width: 80% !important;

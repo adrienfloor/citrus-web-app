@@ -72,6 +72,8 @@ class Profile extends React.Component {
 							.row-item {
 								margin: 0 5px;
 								height: 50px;
+								display: flex;
+    						align-items: center;
 							}
 							.title {
 								margin-bottom: 10px;

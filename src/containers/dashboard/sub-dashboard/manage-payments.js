@@ -248,6 +248,15 @@ class ManagePayments extends React.Component {
 								margin-bottom: 10px;
 								font-size: 36px !important;
 							}
+							.payments {
+								width: 96%;
+								margin: 0 2%;
+							}
+							.filled-button,
+							.light-button {
+								width: 98%;
+								margin: 0 1%;
+							}
 						}
 					`}
 					</style>
@@ -323,6 +332,15 @@ class ManagePayments extends React.Component {
 							.title {
 								margin-bottom: 10px;
 								font-size: 36px !important;
+							}
+							.payments {
+								width: 96%;
+								margin: 0 2%;
+							}
+							.filled-button,
+							.light-button {
+								width: 98%;
+								margin: 0 1%;
 							}
 						}
 					`}
@@ -453,7 +471,7 @@ class ManagePayments extends React.Component {
 							this.setState({ isTopingUpAccount: true })
 						}}
 					>
-						{t('topUp')}
+						{capitalize(t('topUp'))}
 					</span>
 					<span
 						className='small-text row-item simple-link desktop'
@@ -485,6 +503,8 @@ class ManagePayments extends React.Component {
 							text-overflow: ellipsis;
 							overflow: hidden;
 							margin: 0 5px;
+							display: flex;
+    					align-items: center;
 						}
 						.title {
 							margin-bottom: 10px;

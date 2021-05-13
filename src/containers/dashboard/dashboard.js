@@ -102,7 +102,7 @@ class Dashboard extends React.Component {
 		return (
 			<div className='full-container flex-row main'>
 				{/* Desktop fixed menu */}
-				<div className='padded desktop menu-column'>
+				<div className='desktop menu-column'>
 					<span className='small-title'>
 						{capitalize(t('account'))}
 					</span>
@@ -182,17 +182,11 @@ class Dashboard extends React.Component {
 					</div>
 					<div className='medium-separator'></div>
 				</div>
-				<div
-					className='padded desktop'
-					style={{
-						width: '60%',
-						height: '90%'
-					}}
-				>
+				<div className='main-content desktop'>
 					{this.renderMainContent()}
 				</div>
 				<div
-					className='card padded mobile'
+					className='padded mobile'
 					style={{
 						width: '100%',
 						height: '90%'
@@ -206,17 +200,22 @@ class Dashboard extends React.Component {
 						align-items: center;
 						width: 85%;
 						padding-left: 15%;
-						padding-top: 2%;
 					}
-					.padded {
-						padding: 0 10px;
+					.main-content {
+						width: 60%;
+						max-width: 690px;
+						height: 90%;
+						padding: 2% 10px 0 10px;
 					}
 					.menu-column {
 						justify-content: flex-start;
 						width: 15%;
 						height: 90%;
 						margin: 0 3%;
-						padding-top: 2%;
+						padding: 4% 10px 0 10px;
+					}
+					.padded {
+						padding: 0 10px;
 					}
 					.menu-item {
 						margin: 10px 0;
