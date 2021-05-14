@@ -34,46 +34,97 @@ class Signin extends React.Component {
 		this.state = {
 			email: '',
 			password: '',
-			message: '',
-			showPassword: false
+			errorMessage: '',
+			showPassword: false,
+			signinDisabled: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
-		this.onToggleCheck = this.onToggleCheck.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
+		this.checkErrors = this.checkErrors.bind(this)
 	}
 
-	isValidSignUp() {
-		if (
-			isValidEmailInput(this.state.email) &&
-			isValidPassword(this.state.password).includes('length') &&
-			isValidPassword(this.state.password).includes('uppercase') &&
-			isValidPassword(this.state.password).includes('number')
-		) {
+	checkErrors() {
+		const { email, password } = this.state
+		const { t } = this.props
+
+		if (!email.length > 0 || !password.length > 0) {
+			this.setState({
+				errorMessage: capitalize(t('pleaseEnterAllFields'))
+			})
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
 			return true
 		}
+
+		if (!isValidEmailInput(email)) {
+			this.setState({
+				errorMessage: capitalize(t('wrongEmailFormat'))
+			})
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
+			return true
+		}
+		return false
 	}
 
 	onTextInputChange(e, name) {
 		this.setState({ [name]: e.target.value })
 	}
 
-	onToggleCheck() {
-		this.setState({ agreedTermsAndConditions: !this.state.agreedTermsAndConditions })
-	}
-
 	onSubmit(e) {
 		e.preventDefault()
 		const {
 			email,
-			password,
+			password
 		} = this.state
-		this.props.signin(
+		const {
+			signin,
+			t
+		} = this.props
+
+		this.setState({ isSigninDisabled: true })
+		if (this.checkErrors()) {
+			this.setState({ signinDisabled: false })
+			return
+		}
+
+		signin(
 			email.toLowerCase(),
 			password
 		).then(res => {
-			if(res.type === 'LOGIN_SUCCESS') {
+			if(res && res.type === 'LOGIN_SUCCESS') {
 				this.props.history.push('/dashboard')
+				return
 			}
+
+			if (res && res.type === 'LOGIN_FAIL') {
+				this.setState({
+					errorMessage: capitalize(t('wrongEmailOrPassword')),
+					signinDisabled: false
+				})
+				setTimeout(function () {
+					this.setState({
+						errorMessage: ''
+					})
+				}.bind(this), 3000)
+				return
+			}
+			this.setState({
+				errorMessage: capitalize(t('somethingWentWrong')),
+				signinDisabled: false
+			})
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
+
 		})
 	}
 
@@ -81,7 +132,9 @@ class Signin extends React.Component {
 		const {
 			email,
 			password,
-			showPassword
+			showPassword,
+			errorMessage,
+			signinDisabled
 		} = this.state
 		const {
 			t,
@@ -110,13 +163,6 @@ class Signin extends React.Component {
 						onChange={e => this.onTextInputChange(e, 'email')}
 						name='email'
 					/>
-					{/* {this.state.password ? (
-						<div className='container'>
-							<span className={isValidPassword(password).includes('length') ? 'green' : 'red'}>At least 8 characters long</span>
-							<span className={isValidPassword(password).includes('uppercase') ? 'green' : 'red'}>with one uppercase</span>
-							<span className={isValidPassword(password).includes('number') ? 'green' : 'red'}>and one number</span>
-						</div>
-					) : null} */}
 					<div className='password-container'>
 						<input
 							placeholder={capitalize(t('password'))}
@@ -148,24 +194,32 @@ class Signin extends React.Component {
 					<div className='medium-separator'></div>
 					<div className='button-container flex-column flex-center'>
 						<button
-							className={this.isValidSignUp() ? 'filled-button button' : 'filled-button disabled-button button'}
+							className={!signinDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
 							type='submit'
 							form='login-form'
-							disabled={this.isValidSignUp() ? false : true}
+							disabled={signinDisabled}
 						>
 							<span className='small-title citrusWhite'>
 								{capitalize(t('logIn'))}
 							</span>
 						</button>
 						<button
-							className={this.isValidSignUp() ? 'light-button button' : 'light-button disabled-button button'}
+							className='light-button button'
 							type='submit'
 							form='login-form'
-							disabled={this.isValidSignUp() ? false : true}
 						>
 							<Link className='small-title citrusBlue' to="/signup">{capitalize(t('createAnAccount'))}</Link>
 						</button>
 					</div>
+					{
+						errorMessage.length > 0 &&
+						<span
+							className='small-text citrusRed'
+							style={{ marginTop: 2 }}
+						>
+							{errorMessage}
+						</span>
+					}
 				</form>
 				<style jsx='true'>
 					{`
