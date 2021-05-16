@@ -13,6 +13,8 @@ import { cardRegistration } from 'mangopay-cardregistration-js-kit'
 import {
 	capitalize
 } from '../../utils/various'
+import { checkDateValue } from '../../utils/validations'
+
 import '../../styling/spacings.css'
 import '../../styling/buttons.css'
 import '../../styling/colors.css'
@@ -43,7 +45,7 @@ class CreditCardForm extends React.Component {
 			number: '',
 			FirstName: '',
 			LastName: '',
-			Birthday: '2000-05-24',
+			Birthday: '',
 			Nationality: '',
 			CountryOfResidence: '',
 			isLoading: false,
@@ -54,7 +56,7 @@ class CreditCardForm extends React.Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleDateChange = this.handleDateChange.bind(this)
+		this.handleDateInputChange = this.handleDateInputChange.bind(this)
 	}
 
 	handleMissingParam(newUser) {
@@ -78,8 +80,18 @@ class CreditCardForm extends React.Component {
 		}
 	}
 
-	handleDateChange(e) {
-		this.setState({ Birthday: e.target.value })
+	handleDateInputChange(e) {
+		let input = e.target.value
+		if (/\D\/$/.test(input)) input = input.substr(0, input.length - 3)
+		const values = input.split('/').map(function (v) {
+			return v.replace(/\D/g, '')
+		})
+		if (values[0]) values[0] = checkDateValue(values[0], 12)
+		if (values[1]) values[1] = checkDateValue(values[1], 31)
+		const output = values.map(function (v, i) {
+			return v.length == 2 && i < 2 ? v + ' / ' : v
+		})
+		return this.setState({ Birthday: output.join('').substr(0, 14) })
 	}
 
 	handleInputChange(e, name) {
@@ -372,12 +384,12 @@ class CreditCardForm extends React.Component {
 							>
 								<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
 								<TextField
-									onChange={this.handleDateChange}
-									type="date"
-									defaultValue={Birthday}
-									InputLabelProps={{
-										shrink: true
-									}}
+									placeholder={t('datePlaceHolder')}
+									onChange={e => this.handleDateInputChange(e)}
+									style={{ width: '45%', margin: '2% 2.5%' }}
+									variant='standard'
+									helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
+									value={Birthday}
 								/>
 							</div>
 						</div>

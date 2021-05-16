@@ -219,11 +219,7 @@ class Signup extends React.Component {
 								{capitalize(t('createAnAccount'))}
 							</span>
 						</button>
-						<button
-							className='light-button button'
-							type='submit'
-							form='login-form'
-						>
+						<button className='light-button button'>
 							<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
 						</button>
 					</div>

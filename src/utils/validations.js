@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 // validate string longer than 5 characters
 export const isValidStringLength = (input, length) => {
 	if (input.length >= length) {
@@ -49,3 +51,12 @@ export const isEven = (n) => {
 export const isOdd = (n) => {
 	return Math.abs(Number(n) % 2) === 1
 }
+
+export const checkDateValue = (str, max) => {
+	if (str.charAt(0) !== '0' || str == '00') {
+		var num = parseInt(str)
+		if (isNaN(num) || num <= 0 || num > max) num = 1
+		str = num > parseInt(max.toString().charAt(0)) && num.toString().length == 1 ? '0' + num : num.toString()
+	}
+	return str
+};

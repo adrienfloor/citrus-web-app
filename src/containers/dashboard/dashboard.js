@@ -7,6 +7,7 @@ import Profile from './sub-dashboard/profile'
 import ManagePayments from './sub-dashboard/manage-payments'
 import PaymentsMethods from './sub-dashboard/payments-methods'
 import LegalUserCreation from './sub-dashboard/legal-user-creation'
+import Invoices from './sub-dashboard/invoices'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -71,7 +72,7 @@ class Dashboard extends React.Component {
 				component = <ManagePayments history={this.props.history} />
 				break;
 			case 'invoices':
-				component = null
+				component = <Invoices />
 				break;
 			case 'stats':
 				component = null
@@ -141,7 +142,7 @@ class Dashboard extends React.Component {
 						{capitalize(t('videos'))}
 					</span>
 					<div className='medium-separator'></div>
-					<div className={currentFocus === 'stats' ? 'active menu-item' : 'menu-item'}>
+					{/* <div className={currentFocus === 'stats' ? 'active menu-item' : 'menu-item'}>
 						<span
 							onClick={() => this.setState({ currentFocus: 'stats' })}
 							style={{ fontSize: '16px' }}
@@ -149,8 +150,8 @@ class Dashboard extends React.Component {
 						>
 							{capitalize(t('stats'))}
 						</span>
-					</div>
-					<div className={currentFocus === 'paymentsReceipts' ? 'active menu-item' : 'menu-item'}>
+					</div> */}
+					{/* <div className={currentFocus === 'paymentsReceipts' ? 'active menu-item' : 'menu-item'}>
 						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'paymentsReceipts' })}
@@ -159,9 +160,9 @@ class Dashboard extends React.Component {
 						>
 							{capitalize(t('paymentsReceipts'))}
 						</span>
-					</div>
-					<div className='small-separator'></div>
-					<div className={currentFocus === 'paymentsHistory' ? 'active menu-item' : 'menu-item'}>
+					</div> */}
+					{/* <div className={currentFocus === 'paymentsHistory' ? 'active menu-item' : 'menu-item'}>
+						<div className='small-separator'></div>
 						<span
 							onClick={() => this.setState({ currentFocus: 'paymentsHistory' })}
 							style={{ fontSize: '16px' }}
@@ -169,7 +170,7 @@ class Dashboard extends React.Component {
 						>
 							{capitalize(t('paymentsHistory'))}
 						</span>
-					</div>
+					</div> */}
 					<div className={currentFocus === 'cashOut' ? 'active menu-item' : 'menu-item'}>
 						<div className='small-separator'></div>
 						<span

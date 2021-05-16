@@ -143,5 +143,8 @@
 	"cashYourEarnings": "cash your earnings",
 	"weNeedYourConfirmation": "in order for you to withdraw your earnings, we need confirmation from you. A payout can take a few days to appear on your bank account",
 	"amoutToCashOut": "amount to cash out",
-	"currentGains": "current gains"
+	"currentGains": "current gains",
+	"featureSoonAvailable": "this feature will soon be available",
+	"dateFormatMustBe": "Format : Month/Day/Year",
+	"datePlaceHolder": "mm/dd/yyyy"
 }

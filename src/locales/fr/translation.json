@@ -108,7 +108,7 @@
 	"perMonth": "par mois",
 	"startNow": "commencer maintenant",
 	"iChooseFullAccess": "i choose full access",
-	"moneySpentGoesDirectlyToTheTrainer": "as much money as possible goes to the trainer",
+	"moneySpentGoesDirectlyToTheTrainer": "les bénéfices vont directement au coach",
 	"tryForFree": "essayer gratuitement",
 	"plan": "plan",
 	"welcome": "félicitations et bienvenue parmi nous",
@@ -145,5 +145,8 @@
 	"cashYourEarnings": "retirez vos gains",
 	"weNeedYourConfirmation": "dans le but de retirer vos gains nous avons besoin de votre confirmation. La somme apparaitra sur votre compte dans quelques jours",
 	"amoutToCashOut": "valeur du paiement",
-	"currentGains": "gains actuels"
+	"currentGains": "gains actuels",
+	"featureSoonAvailable": "cette fonctionnalité sera bientôt disponible",
+	"dateFormatMustBe": "Format : Mois / Jour / Année",
+	"datePlaceHolder": "mm / jj / aaaa"
 }

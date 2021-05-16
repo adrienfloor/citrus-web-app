@@ -22,7 +22,10 @@ import {
 	capitalize,
 	uppercase
 } from '../../../utils/various'
-import { isValidEmailInput } from '../../../utils/validations'
+import {
+	isValidEmailInput,
+	checkDateValue
+} from '../../../utils/validations'
 
 import {
 	createMpLegalUser
@@ -36,7 +39,7 @@ class LegalUserCreation extends React.Component {
 			Name: '',
 			LegalRepresentativeFirstName: '',
 			LegalRepresentativeLastName: '',
-			LegalRepresentativeBirthday: '2000-05-24',
+			LegalRepresentativeBirthday: '',
 			LegalRepresentativeNationality: '',
 			LegalRepresentativeCountryOfResidence: '',
 			LegalRepresentativeEmail: '',
@@ -51,13 +54,23 @@ class LegalUserCreation extends React.Component {
 		}
 
 		this.handleInputChange = this.handleInputChange.bind(this)
-		this.handleDateChange = this.handleDateChange.bind(this)
+		this.handleDateInputChange = this.handleDateInputChange.bind(this)
 		this.handleMissingParam = this.handleMissingParam.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 
-	handleDateChange(e) {
-		this.setState({ LegalRepresentativeBirthday: e.target.value })
+	handleDateInputChange(e) {
+		let input = e.target.value
+		if (/\D\/$/.test(input)) input = input.substr(0, input.length - 3)
+		const values = input.split('/').map(function (v) {
+			return v.replace(/\D/g, '')
+		})
+		if (values[0]) values[0] = checkDateValue(values[0], 12)
+		if (values[1]) values[1] = checkDateValue(values[1], 31)
+		const output = values.map(function (v, i) {
+			return v.length == 2 && i < 2 ? v + ' / ' : v
+		})
+		return this.setState({ Birthday: output.join('').substr(0, 14) })
 	}
 
 	handleInputChange(e, name) {
@@ -296,12 +309,12 @@ class LegalUserCreation extends React.Component {
 						>
 							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Legal Representative Birthday : </span>
 							<TextField
-								onChange={this.handleDateChange}
-								type="date"
-								defaultValue={LegalRepresentativeBirthday}
-								InputLabelProps={{
-									shrink: true
-								}}
+								placeholder={t('datePlaceHolder')}
+								onChange={e => this.handleDateInputChange(e)}
+								style={{ width: '45%', margin: '2% 2.5%' }}
+								variant='standard'
+								helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
+								value={Birthday}
 							/>
 						</div>
 					</div>

@@ -92,7 +92,7 @@ class InitialPayment extends React.Component {
 		} = this.state
 		const { sub } = queryString.parse(this.props.location.search)
 		return (
-			<div className='full-container flex-column flex-center'>
+			<div className='full-container flex-column flex-center initial-payment'>
 				<div className='card billing-card'>
 					<div className='small-title' style={{ textAlign: 'center', marginTop: '5px' }}>
 						{
