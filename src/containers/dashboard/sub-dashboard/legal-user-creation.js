@@ -70,7 +70,7 @@ class LegalUserCreation extends React.Component {
 		const output = values.map(function (v, i) {
 			return v.length == 2 && i < 2 ? v + ' / ' : v
 		})
-		return this.setState({ Birthday: output.join('').substr(0, 14) })
+		return this.setState({ LegalRepresentativeBirthday: output.join('').substr(0, 14) })
 	}
 
 	handleInputChange(e, name) {
@@ -313,8 +313,8 @@ class LegalUserCreation extends React.Component {
 								onChange={e => this.handleDateInputChange(e)}
 								style={{ width: '45%', margin: '2% 2.5%' }}
 								variant='standard'
-								helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
-								value={Birthday}
+								helperText={LegalRepresentativeBirthday.length > 0 && capitalize(t('dateFormatMustBe'))}
+								value={LegalRepresentativeBirthday}
 							/>
 						</div>
 					</div>
