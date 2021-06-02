@@ -222,7 +222,7 @@ class Cashout extends React.Component {
 						<div className='button-container'>
 							<button
 								className='filled-button'
-								onClick={() => this.handleCashoutStatusChange(selectedCashout)}
+								onClick={() => this.handleCashoutStatusChange(selectedCashOut)}
 							>
 								<span className='small-title citrusWhite'>
 									{this.returnButtonWording(selectedCashOut.status)}
