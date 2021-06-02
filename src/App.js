@@ -18,6 +18,7 @@ import ChoosePlan from './containers/choose-plan'
 import DownloadApp from './containers/download-app'
 import InitialPayment from './containers/mangopay/initial-payment'
 import Dashboard from './containers/dashboard/dashboard'
+import AdminCashout from './containers/admin/cash-out-dashboard'
 
 import Layout from './containers/layout'
 
@@ -57,6 +58,7 @@ class App extends React.Component {
                 <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
                 <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />
                 <PrivateRoute auth={isAuthenticated} path='/dashboard' component={Dashboard} />
+                <PrivateRoute auth={isAuthenticated} path='/cashout/admin' component={AdminCashout} />
                 <Route component={NotFound} />
               </Switch>
             </BrowserRouter>

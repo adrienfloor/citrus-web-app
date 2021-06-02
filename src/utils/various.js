@@ -16,3 +16,22 @@ export const titleCase = string => {
 		.map(word => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ')
 }
+
+export const returnCurrency = locale => {
+	switch (locale) {
+		case 'fr':
+		case 'nl':
+		case 'es':
+		case 'it':
+			return '€'
+			break;
+		case 'en-US':
+			return '$'
+			break;
+		case 'en':
+			return '£'
+			break;
+		default:
+			return '€'
+	}
+}
