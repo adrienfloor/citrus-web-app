@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import moment from 'moment'
 import 'moment/locale/fr'
+import Loader from 'react-loader-spinner'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -27,7 +28,8 @@ class Cashout extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			selectedCashOut: null
+			selectedCashOut: null,
+			isLoading: false
 		}
 		this.handleCashoutStatusChange = this.handleCashoutStatusChange.bind(this)
 		this.returnButtonWording = this.returnButtonWording.bind(this)
@@ -35,10 +37,18 @@ class Cashout extends React.Component {
 
 	handleCashoutStatusChange(cashout) {
 		const { onReload } = this.props
+		this.setState({ isLoading: true })
 		updateCashOut(cashout)
 		.then(res => {
 			console.log(res)
+			this.setState({
+				selectedCashOut: null,
+				isLoading: false
+			})
 			onReload()
+		})
+		.catch(err => {
+			console.log(err)
 		})
 	}
 
@@ -56,6 +66,7 @@ class Cashout extends React.Component {
 	}
 
 	render() {
+		const { isLoading } = this.state
 		const {
 			t,
 			user,
@@ -79,6 +90,21 @@ class Cashout extends React.Component {
 		if(cashoutType === 'pending') {
 			title = capitalize(t('pending'))
 			color = 'orange'
+		}
+
+		if (isLoading) {
+			return (
+				<div className='flex-column flex-center'>
+					<div className='big-separator'></div>
+					<div className='big-separator'></div>
+					<Loader
+						type="Grid"
+						color="#0075FF"
+						height={100}
+						width={100}
+					/>
+				</div>
+			)
 		}
 
 		return (
@@ -123,7 +149,7 @@ class Cashout extends React.Component {
 					</div>
 				}
 				{
-					selectedCashOut &&
+					selectedCashOut && cashouts.length > 0 &&
 					<div className='cashout'>
 						<div
 							style={{
@@ -215,7 +241,11 @@ class Cashout extends React.Component {
 								{capitalize(t('cashoutValue'))}
 							</span>
 							<span className='small-text-bold row-item row-item-right'>
-								{`${capitalize(selectedCashOut.user.currentGains.toString())} ${returnCurrency(moment.locale())}`}
+								{
+									selectedCashOut.status === 0 ?
+									`${selectedCashOut.user.currentGains.toString()} ${returnCurrency(moment.locale())}` :
+									`${selectedCashOut.value.toString()} ${returnCurrency(moment.locale())}`
+								}
 							</span>
 						</div>
 						<div className='medium-separator'></div>
@@ -244,12 +274,13 @@ class Cashout extends React.Component {
 							padding: 10px;
 						}
 						.row-item {
-							width: 50%;
+							width: 45%;
 							margin: 0 5px;
 						}
 						.row-item-right {
 							display: flex;
 							justify-content: flex-end;
+							width: 55%;
 						}
 						.title {
 							margin-bottom: 30px;

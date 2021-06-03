@@ -2,8 +2,7 @@ import axios from 'axios'
 
 const { REACT_APP_API_URL } = process.env
 
-export const fetchAllCashouts = async (receipt) => {
-
+export const fetchAllCashouts = async () => {
 	try {
 		const response = await axios.get(`${REACT_APP_API_URL}/payments/cash_outs`)
 		return response.data

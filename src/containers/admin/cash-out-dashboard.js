@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
+import Loader from 'react-loader-spinner'
 
 import Cashout from './cashout'
 
@@ -25,7 +26,8 @@ class Dashboard extends React.Component {
 			currentFocus: 'new',
 			newCashouts: [],
 			pendingCashouts: [],
-			processedCashouts: []
+			processedCashouts: [],
+			isLoading: true
 		}
 		this.renderMainContent = this.renderMainContent.bind(this)
 		this.loadCashouts = this.loadCashouts.bind(this)
@@ -46,19 +48,23 @@ class Dashboard extends React.Component {
 	}
 
 	loadCashouts() {
+		this.setState({ isLoading: true })
 		fetchAllCashouts()
 			.then(cashouts => {
-				console.log(cashouts)
 				const newCashouts = cashouts.filter(cashout => cashout.status === 0)
 				const pendingCashouts = cashouts.filter(cashout => cashout.status === 1)
 				const processedCashouts = cashouts.filter(cashout => cashout.status === 2)
 				this.setState({
 					newCashouts,
 					pendingCashouts,
-					processedCashouts
+					processedCashouts,
+					isLoading: false
 				})
 			})
-			.catch(err => console.log(err))
+			.catch(err => {
+				this.setState({ isLoading: false })
+				console.log(err)
+			})
 	}
 
 	renderMainContent() {
@@ -71,8 +77,24 @@ class Dashboard extends React.Component {
 			currentFocus,
 			newCashouts,
 			pendingCashouts,
-			processedCashouts
+			processedCashouts,
+			isLoading
 		} = this.state
+
+		if(isLoading) {
+			return (
+				<div className='flex-column flex-center'>
+					<div className='big-separator'></div>
+					<div className='big-separator'></div>
+					<Loader
+						type="Grid"
+						color="#0075FF"
+						height={100}
+						width={100}
+					/>
+				</div>
+			)
+		}
 
 		let component = null
 
