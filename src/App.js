@@ -19,6 +19,7 @@ import DownloadApp from './containers/download-app'
 import InitialPayment from './containers/mangopay/initial-payment'
 import Dashboard from './containers/dashboard/dashboard'
 import AdminCashout from './containers/admin/cash-out-dashboard'
+import ResetPassword from './containers/auth/reset-password'
 
 import Layout from './containers/layout'
 
@@ -53,7 +54,8 @@ class App extends React.Component {
               <Switch>
                 <Route exact path='/' component={Signin} />
                 <Route exact path='/signin' component={Signin} />
-                <Route path='/signup' component={Signup} />
+                <Route exact path='/signup' component={Signup} />
+                <Route exact path='/reset_password' component={ResetPassword} />
                 <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
                 <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
                 <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />

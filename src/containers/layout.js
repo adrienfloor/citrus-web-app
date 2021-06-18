@@ -55,8 +55,8 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 					{/* <a target='_blank' className='small-text' href='https://thecitrusapp.com'>Legals</a> */}
 					<div className='footer-links'>
 						<a target='_blank' className='footer-link simple-link' href='https://thecitrusapp.com'>{capitalize(t('howItWorks'))}</a>
-						<a target='_blank' className='footer-link simple-link' href='https://thecitrusapp.com'>Terms</a>
-						<a target='_blank' className='footer-link simple-link' href='https://thecitrusapp.com'>CGU/GGV</a>
+						<a target='_blank' className='footer-link simple-link' href='https://thecitrusapp.com/privacy-policy/'>{capitalize(t('privacy'))}</a>
+						<a target='_blank' className='footer-link simple-link' href='https://thecitrusapp.com/cgu-cgv/'>{capitalize(t('terms'))}</a>
 						<a href="mailto:contact@thecitrusapp.com" className='footer-link simple-link'>Contact</a>
 					</div>
 					<div className='small-text copyright'>© 2021 All rights Reserved. Design by The Citrus Company</div>

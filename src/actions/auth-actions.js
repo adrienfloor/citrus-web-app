@@ -10,7 +10,9 @@ import {
 	REGISTER_SUCCESS,
 	REGISTER_FAIL,
 	UPDATE_USER,
-	DELETE_USER
+	DELETE_USER,
+	RESET_PASSWORD,
+	RESET_PASSWORD_FAIL
 } from './types'
 import { returnErrors } from './errors-actions'
 
@@ -111,5 +113,24 @@ export const deleteUser = id => async dispatch => {
 		return dispatch({ type: DELETE_USER })
 	} catch (err) {
 		return dispatch(returnErrors(err, err.response.status))
+	}
+}
+
+export const resetPassword = (password, token) => async dispatch => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+	// BODY
+	const body = JSON.stringify({ password, token })
+	try {
+		const response = await axios.post(`${REACT_APP_API_URL}/users/reset_password`, body, config)
+		return dispatch({ type: RESET_PASSWORD })
+	} catch (err) {
+		console.log('kirikou', err)
+		dispatch(returnErrors(err.response.data, err.response.status, 'RESET_PASSWORD'))
+		return dispatch({ type: RESET_PASSWORD_FAIL })
 	}
 }

@@ -6,6 +6,14 @@
 	line-height: 47px;
 }
 
+.big-title {
+	font-family: Raleway-Bold;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 32px;
+	line-height: 47px;
+}
+
 .small-title {
 	font-family: Raleway-Bold;
 	font-style: normal;

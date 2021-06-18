@@ -170,5 +170,12 @@
 	"subjectToTaxes": "soumis à la TVA",
 	"changeStatusForPending": "changer le statut pour en 'cours'",
 	"changeStatusForProcessed": "changer le statut pour 'traité'",
-	"cashoutValue": "valeur du cashout"
+	"cashoutValue": "valeur du cashout",
+	"passwordsMustBeIdentical": "les mots de passe doivent être identiques",
+	"privacy": "confidentialité",
+	"terms": "CGU/CGV",
+	"resetPassword": "réinitialise ton mot de passe",
+	"confirmPassword": "confirmer le mot de passe",
+	"passwordConfirmationMessage": "ton mot de passe a été changé avec succès, tu peux maintenant fermer cette fenêtre, ouvrir l'app et te connecter.",
+	"passwordChangeFailed": "Le changement de mot de passe à échoué. Essayez à nouveau ou contactez-nous"
 }

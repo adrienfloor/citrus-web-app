@@ -168,5 +168,12 @@
 	"subjectToTaxes": "subject to taxes",
 	"changeStatusForPending": "change status for 'pending'",
 	"changeStatusForProcessed": "change status for 'processed'",
-	"cashoutValue": "cashout value"
+	"cashoutValue": "cashout value",
+	"passwordsMustBeIdentical": "passwords must be identical",
+	"privacy": "privacy",
+	"terms": "terms",
+	"resetPassword": "reset your password",
+	"confirmPassword": "confirm password",
+	"passwordConfirmationMessage": "your password has been changed successfully, you can now close this window, open the app and login.",
+	"passwordChangeFailed": "The password reset failed. Please try again or contact us"
 }

@@ -9,7 +9,9 @@ import {
 	REGISTER_FAIL,
 	UPDATE_USER,
 	UPDATE_USER_CREDENTIALS,
-	DELETE_USER
+	DELETE_USER,
+	RESET_PASSWORD,
+	RESET_PASSWORD_FAIL
 } from '../actions/types'
 
 const initialState = {
@@ -61,6 +63,8 @@ export default function (state = initialState, action) {
 			}
 		case UPDATE_USER_CREDENTIALS:
 		case DELETE_USER:
+		case RESET_PASSWORD:
+		case RESET_PASSWORD_FAIL:
 		default:
 			return state
 	}
