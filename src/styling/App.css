@@ -145,6 +145,7 @@ input:focus {
 
 input[type="password"] {
 	padding: 0 !important;
+	-webkit-appearance : none;
 }
 
 @media only screen and (max-width: 640px) {
@@ -164,6 +165,7 @@ input[type="password"] {
 		height: 52px;
 		width: 95%;
 		margin: 0 2.5%;
+		-webkit-appearance : none;
 	}
 	.choose-plan {
 		overflow-y: auto;
