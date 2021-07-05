@@ -303,7 +303,7 @@ class ResetPassword extends React.Component {
 						.password-eye {
 							width: 20%;
 							border-bottom: 1px solid #C2C2C2;
-							height: 54px !important;
+							height: 52px !important;
 							display: flex;
 							flex-direction: column;
 							justify-content: center;

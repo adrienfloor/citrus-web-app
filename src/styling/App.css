@@ -143,11 +143,11 @@ input:focus {
 	cursor: pointer;
 }
 
-@media only screen and (max-width: 640px) {
+input[type="password"] {
+	padding: 0 !important;
+}
 
-	input[type="password"] {
-		padding: 0 !important;
-	}
+@media only screen and (max-width: 640px) {
 
 	.billing-card {
 		width: 100%;
