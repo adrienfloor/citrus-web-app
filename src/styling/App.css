@@ -145,7 +145,12 @@ input:focus {
 
 input[type="password"] {
 	padding: 0 !important;
-	-webkit-appearance : none;
+	-webkit-appearance : none !important;
+}
+
+input:matches([type="password"], [type="search"]) {
+	-webkit-appearance : none !important;
+	background-color: #FFFFFF;
 }
 
 @media only screen and (max-width: 640px) {
@@ -165,7 +170,7 @@ input[type="password"] {
 		height: 52px;
 		width: 95%;
 		margin: 0 2.5%;
-		-webkit-appearance : none;
+		-webkit-appearance : none !important;
 	}
 	.choose-plan {
 		overflow-y: auto;
