@@ -325,8 +325,8 @@ class ResetPassword extends React.Component {
 								margin: 0 1%;
 								margin-bottom: 20px;
 							}
-							.password-eye {
-								padding-bottom: 2px;
+							.password-input {
+								margin: 0;
 							}
 							.button-container {
 								width: 98%;
