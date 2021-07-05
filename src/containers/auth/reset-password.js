@@ -184,7 +184,11 @@ class ResetPassword extends React.Component {
 		return (
 			<div className='full-container flex-column flex-center main'>
 				<div className='big-title title'>
-					{`${capitalize(t('resetPassword'))} ${userName.replace('}', '')}`}
+					{
+						userName ?
+						`${capitalize(t('resetPassword'))} ${userName.replace('}', '')}` :
+						capitalize(t('resetPassword'))
+					}
 				</div>
 				<form
 					id='login-form'
