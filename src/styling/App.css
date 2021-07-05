@@ -145,6 +145,10 @@ input:focus {
 
 @media only screen and (max-width: 640px) {
 
+	input[type="password"] {
+		padding: 0 !important;
+	}
+
 	.billing-card {
 		width: 100%;
 		height: 400px;
