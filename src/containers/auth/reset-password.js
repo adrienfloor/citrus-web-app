@@ -308,7 +308,6 @@ class ResetPassword extends React.Component {
 							flex-direction: column;
 							justify-content: center;
 							align-items: center;
-							padding-bottom: 2px;
 						}
 						.title {
 							width: 690px;
@@ -326,8 +325,8 @@ class ResetPassword extends React.Component {
 								margin: 0 1%;
 								margin-bottom: 20px;
 							}
-							.password-input {
-								margin: 0;
+							.password-eye {
+								padding-bottom: 2px;
 							}
 							.button-container {
 								width: 98%;
