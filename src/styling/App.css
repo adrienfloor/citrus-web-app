@@ -153,6 +153,10 @@ input:matches([type="password"], [type="search"]) {
 	background-color: #FFFFFF;
 }
 
+input {
+	border-radius: 0;
+}
+
 @media only screen and (max-width: 640px) {
 
 	.billing-card {
