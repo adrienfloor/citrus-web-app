@@ -46,6 +46,14 @@
 	line-height: 19px;
 }
 
+.smaller-text-bold {
+	font-family: Raleway-Medium;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px !important;
+	line-height: 19px;
+}
+
 .simple-link {
 	font-family: Raleway-Medium;
 	font-style: normal;
@@ -61,4 +69,14 @@
 
 .hover:hover {
 	cursor: pointer;
+}
+
+.big-number {
+	font-family: Raleway-Bold;
+	font-size: 32px;
+	font-style: normal;
+	font-weight: 700;
+	/* line-height: 39; */
+	letter-spacing: -0.24;
+	color: #000000;
 }

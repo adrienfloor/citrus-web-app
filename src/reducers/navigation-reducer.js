@@ -1,10 +1,12 @@
 import {
 	SET_DASHBOARD_FOCUS,
-	SET_IS_DASHBOARD
+	SET_IS_DASHBOARD,
+	SET_APP_SCREEN
 } from '../actions/types'
 
 const initialState = {
-	focus: 'profile'
+	focus: 'profile',
+	appScreen: 1
 }
 
 export default function (state = initialState, action) {
@@ -18,6 +20,11 @@ export default function (state = initialState, action) {
 			return {
 				...state,
 				isDashboard: action.payload
+			}
+		case SET_APP_SCREEN:
+			return {
+				...state,
+				appScreen: action.payload
 			}
 		default:
 			return state

@@ -128,6 +128,7 @@ class Signup extends React.Component {
 			lng
 		).then(res => {
 			if (res.type === 'REGISTER_SUCCESS') {
+				this.props.loadUser()
 				this.props.history.push('/download-app')
 			}
 		})
@@ -147,7 +148,7 @@ class Signup extends React.Component {
 			isAuthenticated
 		} = this.props
 		if (isAuthenticated) {
-			history.push('/dashboard')
+			history.push('/app')
 			return null
 		}
 		return (

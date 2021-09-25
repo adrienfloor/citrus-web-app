@@ -5,6 +5,7 @@ import {
   MuiThemeProvider,
   createMuiTheme
 } from '@material-ui/core'
+import { withTranslation } from 'react-i18next'
 
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -20,6 +21,10 @@ import InitialPayment from './containers/mangopay/initial-payment'
 import Dashboard from './containers/dashboard/dashboard'
 import AdminCashout from './containers/admin/cash-out-dashboard'
 import ResetPassword from './containers/auth/reset-password'
+import AdminDashboard from './containers/admin/admin-dashboard'
+import AdminAccountsLedger from './containers/admin/accounts-ledger'
+import AdminStoreTransfer from './containers/admin/store-transfer'
+import WebApp from './containers/web-app/web-app-layout'
 
 import Layout from './containers/layout'
 
@@ -43,7 +48,15 @@ class App extends React.Component {
   }
 
   render() {
-    const { isAuthenticated, notification } = this.props
+    const {
+      isAuthenticated,
+      notification,
+      user
+    } = this.props
+    let isAdmin = false
+    if(user) {
+      isAdmin = user.email === 'adrien@thecitrusapp.com' || user.email === 'quentin@thecitrusapp.com'
+    }
     if (isAuthenticated === null) {
       return null
     } else {
@@ -56,11 +69,15 @@ class App extends React.Component {
                 <Route exact path='/signin' component={Signin} />
                 <Route exact path='/signup' component={Signup} />
                 <Route exact path='/reset_password' component={ResetPassword} />
+                <PrivateRoute auth={isAuthenticated} path='/app' component={WebApp} />
                 <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
                 <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
                 <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />
                 <PrivateRoute auth={isAuthenticated} path='/dashboard' component={Dashboard} />
-                <PrivateRoute auth={isAuthenticated} path='/cashout/admin' component={AdminCashout} />
+                <PrivateRoute auth={isAdmin} path='/admin/dashboard' component={AdminDashboard} />
+                <PrivateRoute auth={isAdmin} path='/admin/cashout' component={AdminCashout} />
+                <PrivateRoute auth={isAdmin} path='/admin/store_transfer' component={AdminStoreTransfer} />
+                <PrivateRoute auth={isAdmin} path='/admin/accounts_ledger' component={AdminAccountsLedger} />
                 <Route component={NotFound} />
               </Switch>
             </BrowserRouter>

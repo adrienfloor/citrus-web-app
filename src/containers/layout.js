@@ -4,7 +4,10 @@ import { withTranslation } from 'react-i18next'
 
 import MobileDrawer from '../components/mobile-drawer'
 import { logout } from '../actions/auth-actions'
-import { setDashboardFocus } from '../actions/navigation-actions'
+import {
+	setDashboardFocus,
+	setAppScreen
+} from '../actions/navigation-actions'
 import { capitalize } from '../utils/various'
 
 import '../styling/headings.css'
@@ -13,7 +16,24 @@ import '../styling/buttons.css'
 
 const logoUri = 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1620220417/VonageApp/logos/CITRUS_1_yetxqf.png'
 
-const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashboard, t }) => {
+const Layout = ({
+	logout,
+	isAuthenticated,
+	children,
+	setDashboardFocus,
+	isDashboard,
+	t,
+	setAppScreen,
+	appScreen
+}) => {
+
+	const isActiveTab = nav => {
+		if (appScreen === nav) {
+			return 'active-nav smaller-text-bold citrusGrey hover'
+		}
+		return 'smaller-text-bold citrusGrey hover'
+	}
+
 	return (
 		<div
 			className='full-container flex-column'
@@ -29,7 +49,7 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 							/>
 						</div>
 					}
-					<a href='http://localhost:3000/dashboard'>
+					<a>
 						<img
 							className={isDashboard ? 'logo' : 'logo margin-logo'}
 							src={logoUri}
@@ -39,14 +59,41 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 				</div>
 				{
 					isAuthenticated &&
-					<div
-						onClick={logout}
-						className='medium-text hover logout small-button'
-					>
-						<span className='small-text-bold citrusWhite'>
-							{capitalize(t('logOut'))}
-						</span>
-					</div>
+					<>
+						<div onClick={() => setAppScreen(1)}>
+							<span className={isActiveTab(1)}>
+								{capitalize(t('home'))}
+							</span>
+						</div>
+						<div onClick={() => setAppScreen(2)}>
+							<span className={isActiveTab(2)}>
+								{capitalize(t('explore'))}
+							</span>
+						</div>
+						<div onClick={() => setAppScreen(3)}>
+							<span className={isActiveTab(3)}>
+								{capitalize(t('post'))}
+							</span>
+						</div>
+						<div onClick={() => setAppScreen(4)}>
+							<span className={isActiveTab(4)}>
+								{capitalize(t('profile'))}
+							</span>
+						</div>
+						<div onClick={() => setAppScreen(5)}>
+							<span className={isActiveTab(5)}>
+								{capitalize(t('settings'))}
+							</span>
+						</div>
+						<div
+							onClick={logout}
+							className='medium-text hover logout small-button'
+						>
+							<span className='small-text-bold citrusWhite'>
+								{capitalize(t('logOut'))}
+							</span>
+						</div>
+					</>
 				}
 			</header>
 			<div className='children'>{children}</div>
@@ -96,14 +143,14 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 					.children {
 						flex: 1;
 						margin-top: 80px;
-						margin-bottom: 80px;
+						margin-bottom: 40px;
 						background-color: #F8F8F8;
 					}
 					.footer {
 						background-color: #FFFFFF;
 						position: fixed;
 						bottom: 0;
-						height: 80px;
+						height: 40px;
 						justify-content: space-between;
 						width: 100%;
 						z-index: 13;
@@ -113,6 +160,10 @@ const Layout = ({ logout, isAuthenticated, children, setDashboardFocus, isDashbo
 					}
 					.hover:hover {
 						cursor: pointer;
+					}
+					.active-nav {
+						border-bottom: 2px solid #C2C2C2;
+						padding-bottom: 2px;
 					}
 					@media only screen and (max-width: 640px) {
 						.header {
@@ -175,12 +226,14 @@ const mapStateToProps = state => ({
 	isAuthenticated: state.auth.isAuthenticated,
 	user: state.auth.user,
 	error: state.error,
-	isDashboard: state.navigation.isDashboard
+	isDashboard: state.navigation.isDashboard,
+	appScreen: state.navigation.appScreen
 })
 
 const mapDispatchToProps = dispatch => ({
 	logout: () => dispatch(logout()),
-	setDashboardFocus: focus => dispatch(setDashboardFocus(focus))
+	setDashboardFocus: focus => dispatch(setDashboardFocus(focus)),
+	setAppScreen: screen => dispatch(setAppScreen(screen))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Layout))

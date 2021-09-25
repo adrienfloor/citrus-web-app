@@ -14,8 +14,10 @@ import { ReactComponent as EyeOpen } from '../../assets/svg/eye-open.svg'
 
 import {
 	signin,
-	loadUser
+	loadUser,
+	fetchUserReplays
 } from '../../actions/auth-actions'
+import { 	fetchTrainerCoachings } from '../../actions/coachings-actions'
 
 import {
 	isValidEmailInput,
@@ -36,7 +38,8 @@ class Signin extends React.Component {
 			password: '',
 			errorMessage: '',
 			showPassword: false,
-			signinDisabled: false
+			signinDisabled: false,
+			isLoading: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
@@ -83,12 +86,21 @@ class Signin extends React.Component {
 			email,
 			password
 		} = this.state
+
 		const {
+			fetchNotifications,
+			t,
+			user,
+			selectScreen,
 			signin,
-			t
+			executeExploreSearch,
+			fetchTrainerCoachings
 		} = this.props
 
-		this.setState({ isSigninDisabled: true })
+		this.setState({
+			isSigninDisabled: true,
+			isLoading: true
+		})
 		if (this.checkErrors()) {
 			this.setState({ signinDisabled: false })
 			return
@@ -98,15 +110,22 @@ class Signin extends React.Component {
 			email.toLowerCase(),
 			password
 		).then(res => {
-			if(res && res.type === 'LOGIN_SUCCESS') {
-				this.props.history.push('/dashboard')
+			if(res && res.payload && res.payload.user && res.payload.user._id) {
+				const userId = res.payload.user._id
+				// executeExploreSearch('all', userId, 0)
+				fetchUserReplays(userId)
+				// fetchNotifications(userId)
+				fetchTrainerCoachings(userId, true)
+				this.setState({ isLoading: false })
+				this.props.history.push('/app')
 				return
 			}
 
 			if (res && res.type === 'LOGIN_FAIL') {
 				this.setState({
 					errorMessage: capitalize(t('wrongEmailOrPassword')),
-					signinDisabled: false
+					signinDisabled: false,
+					isLoading: false
 				})
 				setTimeout(function () {
 					this.setState({
@@ -117,7 +136,8 @@ class Signin extends React.Component {
 			}
 			this.setState({
 				errorMessage: capitalize(t('somethingWentWrong')),
-				signinDisabled: false
+				signinDisabled: false,
+				isLoading: false
 			})
 			setTimeout(function () {
 				this.setState({
@@ -139,10 +159,11 @@ class Signin extends React.Component {
 		const {
 			t,
 			history,
-			isAuthenticated
+			isAuthenticated,
+			user
 		} = this.props
-		if(isAuthenticated) {
-			history.push('/dashboard')
+		if(isAuthenticated && user) {
+			history.push('/app')
 			return null
 		}
 		return (
@@ -293,9 +314,10 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	signin: (email, password) =>
-		dispatch(signin(email, password)),
-	loadUser: () => dispatch(loadUser())
+	signin: (email, password) => dispatch(signin(email, password)),
+	loadUser: () => dispatch(loadUser()),
+	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signin))

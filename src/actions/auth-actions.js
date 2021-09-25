@@ -12,7 +12,11 @@ import {
 	UPDATE_USER,
 	DELETE_USER,
 	RESET_PASSWORD,
-	RESET_PASSWORD_FAIL
+	RESET_PASSWORD_FAIL,
+	FETCH_USER_REPLAYS,
+	FETCH_USER_INFO,
+	CREATE_FOLLOWER,
+	DELETE_FOLLOWER
 } from './types'
 import { returnErrors } from './errors-actions'
 
@@ -46,7 +50,7 @@ export const signup = (userName, email, password, language) => async dispatch =>
 		const response = await axios.post(`${REACT_APP_API_URL}/users`, body, config)
 		return dispatch({ type: REGISTER_SUCCESS, payload: response.data })
 	} catch (err) {
-		dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'))
+		dispatch(returnErrors(err, err, 'REGISTER_FAIL'))
 		return dispatch({ type: REGISTER_FAIL })
 	}
 }
@@ -63,10 +67,10 @@ export const signin = (email, password) => async dispatch => {
 	const body = JSON.stringify({ email, password })
 	try {
 		const response = await axios.post(`${REACT_APP_API_URL}/auth`, body, config)
+		console.log('kirikou response', response)
 		return dispatch({ type: LOGIN_SUCCESS, payload: response.data })
 	} catch (err) {
-		console.log('kirikou', err)
-		dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
+		dispatch(returnErrors(err, err, 'LOGIN_FAIL'))
 		return dispatch({ type: LOGIN_FAIL })
 	}
 }
@@ -132,5 +136,51 @@ export const resetPassword = (password, token) => async dispatch => {
 		console.log('kirikou', err)
 		dispatch(returnErrors(err.response.data, err.response.status, 'RESET_PASSWORD'))
 		return dispatch({ type: RESET_PASSWORD_FAIL })
+	}
+}
+
+// FETCH USER REPLAYS
+export const fetchUserReplays = id => async (dispatch, getState) => {
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/users/user_replays?userId=${id}`)
+		return dispatch({ type: FETCH_USER_REPLAYS, payload: response.data })
+	} catch (err) {
+		return dispatch(returnErrors(err, err.response.status))
+	}
+}
+
+// FETCH USER INFO
+export const fetchUserInfo = id => async (dispatch, getState) => {
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/auth/user_info?user_id=${id}`)
+		return dispatch({ type: FETCH_USER_INFO, payload: response.data })
+	} catch (err) {
+		return dispatch(returnErrors(err, err.response.status))
+	}
+}
+
+
+export const createFollower = properties => async dispatch => {
+	try {
+		const config = {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}
+
+		const body = JSON.stringify(properties)
+		const response = await axios.put(`${REACT_APP_API_URL}/users/create_follower`, body, config)
+		return dispatch({ type: CREATE_FOLLOWER, payload: response.data })
+	} catch (err) {
+		return dispatch(returnErrors(err, err.response.status))
+	}
+}
+
+export const deleteFollower = (followedId, followerId) => async dispatch => {
+	try {
+		const response = await axios.delete(`${REACT_APP_API_URL}/users/delete_follower?followed_id=${followedId}&follower_id=${followerId}`)
+		return dispatch({ type: DELETE_FOLLOWER, payload: response.data })
+	} catch (err) {
+		return dispatch(returnErrors(err, err.response.status))
 	}
 }

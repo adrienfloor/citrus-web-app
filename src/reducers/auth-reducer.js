@@ -11,14 +11,19 @@ import {
 	UPDATE_USER_CREDENTIALS,
 	DELETE_USER,
 	RESET_PASSWORD,
-	RESET_PASSWORD_FAIL
+	RESET_PASSWORD_FAIL,
+	FETCH_USER_REPLAYS,
+	FETCH_USER_INFO,
+	CREATE_FOLLOWER,
+	DELETE_FOLLOWER
 } from '../actions/types'
 
 const initialState = {
 	token: localStorage.getItem('token'),
 	isAuthenticated: null,
 	isLoading: false,
-	user: null
+	user: null,
+	userReplays: []
 }
 
 export default function (state = initialState, action) {
@@ -40,7 +45,8 @@ export default function (state = initialState, action) {
 			localStorage.setItem('token', action.payload.token)
 			return {
 				...state,
-				...action.payload,
+				user: action.payload.user,
+				token: action.payload.token,
 				isAuthenticated: true,
 				isLoading: false
 			}
@@ -56,6 +62,16 @@ export default function (state = initialState, action) {
 				isAuthenticated: false,
 				isLoading: false
 			}
+		case FETCH_USER_REPLAYS:
+			return {
+				...state,
+				userReplays: action.payload
+			}
+		case FETCH_USER_INFO:
+			return {
+				...state,
+				userInfo: action.payload
+			}
 		case UPDATE_USER:
 			return {
 				...state,
@@ -65,6 +81,8 @@ export default function (state = initialState, action) {
 		case DELETE_USER:
 		case RESET_PASSWORD:
 		case RESET_PASSWORD_FAIL:
+		case CREATE_FOLLOWER:
+		case DELETE_FOLLOWER:
 		default:
 			return state
 	}

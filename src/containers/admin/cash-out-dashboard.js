@@ -14,6 +14,7 @@ import '../../styling/App.css'
 import {
 	capitalize
 } from '../../utils/various'
+import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 import { loadUser, updateUser } from '../../actions/auth-actions'
 import { setIsDashboard } from '../../actions/navigation-actions'
@@ -23,8 +24,7 @@ class Dashboard extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			currentFocus: 'new',
-			newCashouts: [],
+			currentFocus: 'pending',
 			pendingCashouts: [],
 			processedCashouts: [],
 			isLoading: true
@@ -51,11 +51,9 @@ class Dashboard extends React.Component {
 		this.setState({ isLoading: true })
 		fetchAllCashouts()
 			.then(cashouts => {
-				const newCashouts = cashouts.filter(cashout => cashout.status === 0)
-				const pendingCashouts = cashouts.filter(cashout => cashout.status === 1)
-				const processedCashouts = cashouts.filter(cashout => cashout.status === 2)
+				const pendingCashouts = cashouts.filter(cashout => cashout.status === 0)
+				const processedCashouts = cashouts.filter(cashout => cashout.status === 1)
 				this.setState({
-					newCashouts,
 					pendingCashouts,
 					processedCashouts,
 					isLoading: false
@@ -75,7 +73,6 @@ class Dashboard extends React.Component {
 		} = this.props
 		const {
 			currentFocus,
-			newCashouts,
 			pendingCashouts,
 			processedCashouts,
 			isLoading
@@ -117,17 +114,8 @@ class Dashboard extends React.Component {
 					/>
 				)
 				break;
-			case 'new':
-				component = (
-					<Cashout
-						cashoutType='new'
-						cashouts={newCashouts}
-						onReload={() => this.loadCashouts()}
-					/>
-				)
-				break;
 			default:
-				component = <Cashout cashoutType='new' />
+				component = <Cashout cashoutType='pending' />
 				break;
 		}
 		return component
@@ -138,25 +126,31 @@ class Dashboard extends React.Component {
 		const {
 			t,
 			user,
-			focus
+			focus,
+			history
 		} = this.props
 		return (
 			<div className='full-container flex-row main'>
+				<div
+					onClick={() => history.push('/admin/dashboard')}
+					className='back hover'
+				>
+					<CaretBack
+						width={25}
+						height={25}
+						stroke={'#000000'}
+						strokeWidth={2}
+					/>
+					<span className='small-text citrusGrey'>
+						{capitalize(t('back'))}
+					</span>
+				</div>
 				{/* Desktop fixed menu */}
 				<div className='desktop menu-column'>
 					<span className='small-title'>
 						{capitalize(t('adminCashoutPanel'))}
 					</span>
 					<div className='medium-separator'></div>
-					<div className={currentFocus === 'new' ? 'active menu-item' : 'menu-item'}>
-						<span
-							onClick={() => this.setState({ currentFocus: 'new' })}
-							style={{ fontSize: '16px' }}
-							className={currentFocus === 'new' ? 'small-title hover' : 'small-text hover citrusGrey'}
-						>
-							{capitalize(t('new'))}
-						</span>
-					</div>
 					<div className={currentFocus === 'pending' ? 'active menu-item' : 'menu-item'}>
 						<div className='small-separator'></div>
 						<span
@@ -210,6 +204,14 @@ class Dashboard extends React.Component {
 					.active {
 						width: fit-content;
 						color: #000000;
+					}
+					.back {
+						position: absolute;
+						top: 140px;
+						left: 100px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
 					}
 				`}
 				</style>

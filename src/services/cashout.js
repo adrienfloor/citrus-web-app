@@ -31,3 +31,15 @@ export const updateCashOut = async (cashout) => {
 		return err
 	}
 }
+
+// Get available amount to cash out
+
+export const getCashoutAmount = async (userId) => {
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/payments/cash_out_amount?_id=${userId}`)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}

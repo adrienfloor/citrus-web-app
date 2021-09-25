@@ -15,7 +15,9 @@ import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 import {
 	updateUser
 } from '../../actions/auth-actions'
-import { updateCashOut } from '../../services/cashout'
+import {
+	updateCashOut
+} from '../../services/cashout'
 
 import {
 	capitalize,
@@ -32,7 +34,6 @@ class Cashout extends React.Component {
 			isLoading: false
 		}
 		this.handleCashoutStatusChange = this.handleCashoutStatusChange.bind(this)
-		this.returnButtonWording = this.returnButtonWording.bind(this)
 	}
 
 	handleCashoutStatusChange(cashout) {
@@ -50,19 +51,6 @@ class Cashout extends React.Component {
 		.catch(err => {
 			console.log(err)
 		})
-	}
-
-	returnButtonWording(status){
-		const { t } = this.props
-		if(status === 0){
-			return capitalize(t('changeStatusForPending'))
-		}
-		if (status === 1) {
-			return capitalize(t('changeStatusForProcessed'))
-		}
-		if (status === 2) {
-			return capitalize(t('changeStatusForPending'))
-		}
 	}
 
 	render() {
@@ -118,7 +106,7 @@ class Cashout extends React.Component {
 				</span>
 				{
 					!selectedCashOut && !cashouts || cashouts.length === 0 &&
-					<div className='flex-row row-dashboard'>
+					<div className='flex-row row-dashboard small-row'>
 						<span className='small-text row-item citrusGrey'>{capitalize(t('noCashoutsYet'))}</span>
 					</div>
 				}
@@ -129,7 +117,7 @@ class Cashout extends React.Component {
 							cashouts.map(cashout => (
 								<div
 									key={cashout._id}
-									className='flex-row row-dashboard hover'
+									className='flex-row row-dashboard small-row hover'
 									onClick={() => this.setState({ selectedCashOut: cashout })}
 								>
 									<span className='small-text row-item citrusGrey'>
@@ -172,7 +160,7 @@ class Cashout extends React.Component {
 								{capitalize(t('back'))}
 							</span>
 						</div>
-						<div className='flex-row row-dashboard'>
+						<div className='flex-row row-dashboard small-row'>
 							<span className='small-text citrusGrey row-item'>
 								{`${capitalize(t('firstName'))} ${capitalize(t('lastName'))}`}
 							</span>
@@ -180,7 +168,31 @@ class Cashout extends React.Component {
 								{`${capitalize(selectedCashOut.user.firstName)} ${capitalize(selectedCashOut.user.lastName)}`}
 							</span>
 						</div>
-						<div className='flex-row row-dashboard'>
+						<div className='flex-row row-dashboard small-row'>
+							<span className='small-text citrusGrey row-item'>
+								{capitalize(t('nationality'))}
+							</span>
+							<span className='small-text-bold row-item row-item-right'>
+								{capitalize(selectedCashOut.user.nationality)}
+							</span>
+						</div>
+						<div className='flex-row row-dashboard small-row'>
+							<span className='small-text citrusGrey row-item'>
+								{capitalize(t('countryOfResidence'))}
+							</span>
+							<span className='small-text-bold row-item row-item-right'>
+								{capitalize(selectedCashOut.user.countryOfResidence)}
+							</span>
+						</div>
+						<div className='flex-row row-dashboard small-row'>
+							<span className='small-text citrusGrey row-item'>
+								{capitalize(t('birthday'))}
+							</span>
+							<span className='small-text-bold row-item row-item-right'>
+								{moment(selectedCashOut.user.birthday).format('L')}
+							</span>
+						</div>
+						<div className='flex-row row-dashboard small-row'>
 							<span className='small-text citrusGrey row-item'>
 								{capitalize(t('companyName'))}
 							</span>
@@ -188,39 +200,7 @@ class Cashout extends React.Component {
 								{capitalize(selectedCashOut.user.companyName)}
 							</span>
 						</div>
-						<div className='flex-row row-dashboard'>
-							<span className='small-text citrusGrey row-item'>
-								{capitalize(t('companyAddress'))}
-							</span>
-							<span className='small-text-bold row-item row-item-right'>
-								{`${capitalize(selectedCashOut.user.companyAddress.addressLine)} ${capitalize(selectedCashOut.user.companyAddress.zipCode)} ${capitalize(selectedCashOut.user.companyAddress.city)} ${capitalize(selectedCashOut.user.companyAddress.country)}`}
-							</span>
-						</div>
-						<div className='flex-row row-dashboard'>
-							<span className='small-text citrusGrey row-item'>
-								{capitalize(t('companyNumber'))}
-							</span>
-							<span className='small-text-bold row-item row-item-right'>
-								{capitalize(selectedCashOut.user.companyNumber)}
-							</span>
-						</div>
-						<div className='flex-row row-dashboard'>
-							<span className='small-text citrusGrey row-item'>
-								{capitalize(t('companyLegalStatus'))}
-							</span>
-							<span className='small-text-bold row-item row-item-right'>
-								{capitalize(selectedCashOut.user.companyLegalStatus)}
-							</span>
-						</div>
-						<div className='flex-row row-dashboard'>
-							<span className='small-text citrusGrey row-item'>
-								{capitalize(t('companyType'))}
-							</span>
-							<span className='small-text-bold row-item row-item-right'>
-								{capitalize(selectedCashOut.user.companyType)}
-							</span>
-						</div>
-						<div className='flex-row row-dashboard'>
+						<div className='flex-row row-dashboard small-row'>
 							<span className='small-text citrusGrey row-item'>
 								{capitalize(t('subjectToTaxes'))}
 							</span>
@@ -228,7 +208,7 @@ class Cashout extends React.Component {
 								{selectedCashOut.user.isCompanySubjectToTax ? capitalize(t('yes')) : capitalize(t('no'))}
 							</span>
 						</div>
-						<div className='flex-row row-dashboard'>
+						<div className='flex-row row-dashboard small-row'>
 							<span className='small-text citrusGrey row-item'>
 								{capitalize(t('companyIban'))}
 							</span>
@@ -236,29 +216,28 @@ class Cashout extends React.Component {
 								{capitalize(selectedCashOut.user.companyIban)}
 							</span>
 						</div>
-						<div className='flex-row row-dashboard'>
+						<div className='flex-row row-dashboard small-row'>
 							<span className='small-text citrusGrey row-item'>
 								{capitalize(t('cashoutValue'))}
 							</span>
 							<span className='small-text-bold row-item row-item-right'>
-								{
-									selectedCashOut.status === 0 ?
-									`${selectedCashOut.user.currentGains.toString()} ${returnCurrency(moment.locale())}` :
-									`${selectedCashOut.value.toString()} ${returnCurrency(moment.locale())}`
-								}
+								{selectedCashOut.value.toString()} {returnCurrency(moment.locale())}
 							</span>
 						</div>
 						<div className='medium-separator'></div>
-						<div className='button-container'>
-							<button
-								className='filled-button'
-								onClick={() => this.handleCashoutStatusChange(selectedCashOut)}
-							>
-								<span className='small-title citrusWhite'>
-									{this.returnButtonWording(selectedCashOut.status)}
-								</span>
-							</button>
-						</div>
+						{
+							selectedCashOut.status === 0 &&
+							<div className='button-container'>
+								<button
+									className='filled-button'
+									onClick={() => this.handleCashoutStatusChange(selectedCashOut)}
+								>
+									<span className='small-title citrusWhite'>
+										{capitalize(t('changeStatusForProcessed'))}
+									</span>
+								</button>
+							</div>
+						}
 					</div>
 				}
 				<style jsx='true'>
@@ -270,6 +249,8 @@ class Cashout extends React.Component {
 						}
 						.cashout {
 							background-color: #FFFFFF;
+							overflow-y: auto;
+							height: 400px;
 							width: 690px;
 							padding: 10px;
 						}
@@ -290,6 +271,9 @@ class Cashout extends React.Component {
 							display: flex;
 							justify-content: center;
 							align-items: center;
+						}
+						.small-row {
+							width: 670px;
 						}
         `}
 				</style>
