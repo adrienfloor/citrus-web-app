@@ -5,10 +5,11 @@ import { withTranslation } from 'react-i18next'
 
 import { fetchUserReplays } from '../../actions/auth-actions'
 import { fetchTrainerCoachings } from '../../actions/coachings-actions'
+import { executeExploreSearch } from '../../actions/search-actions'
 
 import Home from './home'
 import Explore from './explore'
-import Post from './post'
+import Schedule from './schedule'
 import Profile from './profile'
 import Settings from './settings'
 
@@ -31,6 +32,7 @@ class WebApp extends React.Component {
 
 		this.props.fetchUserReplays(this.props.user._id)
 		this.props.fetchTrainerCoachings(this.props.user._id, true)
+		this.props.executeExploreSearch('all', this.props.user._id, 5)
 	}
 
 	renderScreen() {
@@ -41,7 +43,7 @@ class WebApp extends React.Component {
 			case 2:
 				return <Explore />
 			case 3:
-				return <Post />
+				return <Schedule coaching={{}} />
 			case 4:
 				return <Profile coach={user} />
 			case 5:
@@ -67,7 +69,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
-	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe))
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
+	executeExploreSearch: (sport, userId, skipValue) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WebApp)

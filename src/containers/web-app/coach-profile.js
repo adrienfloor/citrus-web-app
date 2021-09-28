@@ -4,6 +4,7 @@ import moment from 'moment'
 import { withTranslation } from 'react-i18next'
 import io from 'socket.io-client'
 import Loader from 'react-loader-spinner'
+import Dialog from '@material-ui/core/Dialog'
 
 import Coaching from './coaching'
 import Tag from '../../components/web-app/tag'
@@ -212,27 +213,6 @@ class CoachProfile extends React.Component {
 			)
 		}
 
-		if (selectedCoaching) {
-			return null
-			// return (
-			// 	<Coaching
-			// 		coaching={selectedCoaching}
-			// 		onCancel={() => {
-			// 			this.setState({
-			// 				selectedCoaching: null
-			// 			})
-			// 			if (coachings && coachings.length > 0) {
-			// 				this.scrollToPreviousPosition(3, true)
-			// 			}
-			// 			this.scrollToPreviousPosition(1)
-			// 			this.scrollToPreviousPosition(2, true)
-			// 		}}
-			// 		isMyCoaching={false}
-			// 		onCoachingDeleted={() => { }}
-			// 	/>
-			// )
-		}
-
 		const isDefaultProfilePic = avatarUrl === 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1623317757/VonageApp/avatar/noun_avatar_2309777_jhlofy.png'
 
 		return (
@@ -339,6 +319,22 @@ class CoachProfile extends React.Component {
 					</div>
 					<div className='small-separator'></div>
 				</div>
+				{
+					selectedCoaching &&
+					<Dialog
+						open={selectedCoaching}
+						onClose={() => this.setState({ selectedCoaching: null })}
+					>
+						<div style={{ maxWidth: '800px' }}>
+							<Coaching
+								coaching={selectedCoaching}
+								onCancel={() => this.setState({ selectedCoaching: null })}
+								isMyCoaching={false}
+								onCoachingDeleted={() => { }}
+							/>
+						</div>
+					</Dialog>
+				}
 			</div>
 		)
 	}

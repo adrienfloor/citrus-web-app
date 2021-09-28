@@ -333,105 +333,45 @@ class Coaching extends React.Component {
 		}
 
 		if (muxReplayPlaybackId) {
-			return <ReactPlayer controls width='400px' url={muxReplayPlaybackId}/>
-			// return (
-			// 	<Modal
-			// 		visible={true}
-			// 		contentContainerStyle={{
-			// 			...styles.mainVideoContainer,
-			// 			backgroundColor: '#000000',
-			// 		}}
-			// 		supportedOrientations={[
-			// 			'portrait',
-			// 			'portrait-upside-down',
-			// 			'landscape',
-			// 		]}>
-			// 		<View style={styles.videoTopContainer}>
-			// 			<TouchableOpacity
-			// 				onPress={() => {
-			// 					this.setState({
-			// 						isMenuOpen: true,
-			// 						isVideoPaused: true,
-			// 					})
-			// 				}}>
-			// 				<Close
-			// 					width={35}
-			// 					height={35}
-			// 					stroke={'#FFFFFF'}
-			// 					strokeWidth={5}
-			// 				/>
-			// 			</TouchableOpacity>
-			// 		</View>
-			// 		{isBuffering && (
-			// 			<View style={styles.bufferContainer}>
-			// 				<Spinner color="#FFFFFF" />
-			// 			</View>
-			// 		)}
-			// 		<VideoPlayer
-			// 			paused={isVideoPaused}
-			// 			fullscreen={true}
-			// 			ref={(ref) => {
-			// 				this.player = ref
-			// 			}}
-			// 			resizeMode={ratio && ratio === 'landscape' ? 'contain' : 'cover'}
-			// 			ignoreSilentSwitch="ignore"
-			// 			source={{ uri: muxReplayPlaybackId }}
-			// 			fullscreenOrientation="portrait"
-			// 			onBuffer={() => console.log('buffering replay ...')}
-			// 			onError={(e) => console.log('error playing video : ', e)}
-			// 			onLoadStart={() => this.setState({ isBuffering: true })}
-			// 			onReadyForDisplay={() => this.setState({ isBuffering: false })}
-			// 			style={styles.videoContainer}
-			// 			disableVolume
-			// 			disableBack
-			// 			disableFullscreen
-			// 			disablePlayPause
-			// 			onHideControls={() => this.setState({ showPlayPauseButton: false })}
-			// 			onShowControls={() => this.setState({ showPlayPauseButton: true })}
-			// 			controlTimeout={5000}
-			// 		/>
-			// 		{showPlayPauseButton && (
-			// 			<TouchableOpacity
-			// 				style={styles.pauseButtonContainer}
-			// 				onPress={() => this.setState({ isVideoPaused: !isVideoPaused })}>
-			// 				{isVideoPaused ? (
-			// 					<Play
-			// 						width={30}
-			// 						height={30}
-			// 						stroke={'#FFFFFF'}
-			// 						strokeWidth={2}
-			// 					/>
-			// 				) : (
-			// 					<Pause
-			// 						width={30}
-			// 						height={30}
-			// 						stroke={'#FFFFFF'}
-			// 						strokeWidth={2}
-			// 					/>
-			// 				)}
-			// 			</TouchableOpacity>
-			// 		)}
-			// 		{isMenuOpen && (
-			// 			<OverlayBottomMenu
-			// 				secondItemText={t('coach.goLive.endVideo')}
-			// 				thirdItemText={t('common.cancel')}
-			// 				onSecondItemAction={() => {
-			// 					this.setState({
-			// 						isMenuOpen: false,
-			// 						muxReplayPlaybackId: null,
-			// 						coaching: this.state.coaching,
-			// 					})
-			// 				}}
-			// 				onThirdItemAction={() => {
-			// 					this.setState({
-			// 						isMenuOpen: false,
-			// 						isVideoPaused: false,
-			// 					})
-			// 				}}
-			// 			/>
-			// 		)}
-			// 	</Modal>
-			// )
+			return (
+				<div style={{ backgroundColor: '#000000' }}>
+					<div
+						style={{
+							width: '100%',
+							height: '50px',
+							display: 'flex',
+							justifyContent: 'flex-start',
+							alignItems: 'center',
+							zIndex: 1000,
+							backgroundColor: 'transparent',
+							position: 'absolute'
+						}}
+						onClick={() => this.setState({ muxReplayPlaybackId: null })}
+						className='hover'
+					>
+						<CaretBack
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
+						/>
+						<span className='small-text citrusGrey'>
+							{capitalize(t('back'))}
+						</span>
+					</div>
+					<ReactPlayer
+						controls
+						playing
+						// style={{
+						// 	maxHeight: 'calc(100% - 64px)',
+						// 	maxWidth: '800px'
+						// }}
+						// height='calc(100% - 64px)'
+						// width='800px'
+						url={muxReplayPlaybackId}
+					/>
+				</div>
+			)
 		}
 
 		if (isEditingCoaching) {

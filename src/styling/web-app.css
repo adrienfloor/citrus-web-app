@@ -30,6 +30,7 @@
 
 .scroll-div-horizontal {
 	overflow-x: auto;
+	overflow-y: hidden;
 	display: flex;
 	width: 100%;
 	padding-bottom: 15px;
@@ -56,6 +57,21 @@
 	justify-content: center;
 	align-items: center;
 	padding: 0 10px 5px 10px;
+}
+
+.small-active-tab {
+	border-bottom: 2px solid #000000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 10px 2.5px 10px;
+}
+
+.small-tab {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 10px 2.5px 10px;
 }
 
 .category-block {
@@ -154,6 +170,50 @@
 	padding: 10px 0 10px 0;
 }
 
+.search-container {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+}
+
+.empty-coaching-card {
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	background-color: #f1f1f1;
+}
+
+.upload-form {
+	width: 50%;
+	height: 90%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.form-input {
+	width: 80%;
+	margin: 0 10%;
+}
+
+.more-details-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: 10px 0 10px 0;
+	width: 80%;
+	margin: 0 10%;
+	/* border-bottom: 1px solid #BEBEBE; */
+	padding-bottom: 10px;
+}
+
 /* SCROLLBAR */
 
 /* width */
@@ -175,6 +235,11 @@
 /* Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
 	background: #ABABAB;
+}
+
+/* Material ui dialog window */
+.MuiDialog-paperWidthSm {
+	max-width: 800px !important;
 }
 
 @media only screen and (max-width: 640px) {

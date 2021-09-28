@@ -4,12 +4,7 @@ import { withTranslation } from 'react-i18next'
 import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import ProgressBar from '@ramonak/react-progress-bar'
-
 import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
 
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
@@ -420,10 +415,11 @@ class Home extends React.Component {
 											style={{
 												display: 'flex',
 												flexDirection: 'row',
-												alignItems: 'center'
+												alignItems: 'flex-end',
+												justifyContent: 'flex-start'
 											}}
 										>
-											<span className='big-number'>
+											<span className='big-number' style={{ marginRight: '5px' }}>
 												{coachRating}
 											</span>
 											<WavyCheck
@@ -484,14 +480,10 @@ class Home extends React.Component {
 						open={selectedCoaching}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div style={{ width: '400px' }}>
+						<div style={{ maxWidth: '800px' }}>
 							<Coaching
 								coaching={selectedCoaching}
-								onCancel={() => {
-									this.setState({
-										selectedCoaching: null
-									})
-								}}
+								onCancel={() => this.setState({ selectedCoaching: null })}
 								isMyCoaching={user._id === selectedCoaching.coachId}
 							/>
 						</div>
