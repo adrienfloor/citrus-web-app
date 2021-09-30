@@ -346,5 +346,9 @@
 	"equipment": "matériel",
 	"createCoaching": "créer le coaching",
 	"showMore": "voir plus",
-	"showLess": "voir moins"
+	"showLess": "voir moins",
+	"addAPhoto": "ajouter une photo",
+	"uploadingImage": "chargement de l'image",
+	"edit": "éditer",
+	"moreInfo": "plus d'info"
 }

@@ -8,6 +8,8 @@ import moment from 'moment'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 
+import ImageUploader from '../../components/web-app/image-uploader'
+
 import '../../styling/headings.css'
 import '../../styling/colors.css'
 import '../../styling/buttons.css'
@@ -63,7 +65,7 @@ class Schedule extends React.Component {
 			equipment: equipment || [],
 			focus: focus || [],
 			language: coachingLanguage || '',
-			freeAccess: freeAccess || null,
+			freeAccess: freeAccess || '',
 			isDatePickerOpen: false,
 			isLoading: false,
 			isSelecting: '',
@@ -80,7 +82,51 @@ class Schedule extends React.Component {
 		// this.handleSubmit = this.handleSubmit.bind(this)
 		this.returnFreeAccessWording = this.returnFreeAccessWording.bind(this)
 		this.handleDeleteCoaching = this.handleDeleteCoaching.bind(this)
+		this.handleSecondPart = this.handleSecondPart.bind(this)
 		// this.createDeletingAlert = this.createDeletingAlert.bind(this)
+	}
+
+	handleSecondPart() {
+		const {
+			title,
+			sport,
+			pictureUri,
+			startingDate,
+			duration,
+			level,
+			equipment,
+			focus,
+			language,
+			freeAccess,
+		} = this.state
+		const {
+			createCoaching,
+			coaching,
+			updateCoaching,
+			onCoachingCreated,
+		} = this.props
+		const {
+			firstName,
+			lastName,
+			userName,
+			_id,
+			coachRating,
+		} = this.props.user
+
+		this.setState({
+			stateButtonDisabled: true,
+		})
+
+
+		if (this.hasMissingParams()) {
+			this.setState({
+				stateButtonDisabled: false,
+			})
+			return this.createMissingAlert(
+				this.hasMissingParams()
+			)
+		}
+
 	}
 
 	onTextInputChange(value, name) {
@@ -239,13 +285,14 @@ class Schedule extends React.Component {
 				</span>
 				<form
 					id='upload-form'
-					onSubmit={e => this.onSubmit(e)}
+					onSubmit={this.handleSecondPart}
 					className='scroll-div-vertical card upload-form'
 				>
 					<input
 						className='text-input smaller-text-bold citrusGrey input form-input'
 						placeholder={capitalize(t('title'))}
 						onChange={e => this.onTextInputChange(e.target.value, 'title')}
+						style={{ color: '#000000' }}
 					/>
 					<div className='medium-separator'></div>
 					<span className='smaller-text-bold citrusGrey form-input'>
@@ -278,14 +325,20 @@ class Schedule extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='media-row'>
-						<input type='image' />
+						<ImageUploader
+							t={t}
+							onSetPictureUri={pictureUri => {
+								this.setState({ pictureUri })
+							}}
+							pictureUri={pictureUri ? pictureUri : null}
+						/>
 					</div>
 					<div className='medium-separator'></div>
 					<div className='more-details-row'>
 						<span className='smaller-text-bold citrusGrey'>
 							{
 								!isShowingAllParams &&
-								capitalize(t('showMore'))
+								capitalize(t('moreInfo'))
 							}
 						</span>
 						<div
@@ -393,6 +446,7 @@ class Schedule extends React.Component {
 							</Select>
 						</>
 					}
+					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					<div className='button-container flex-column flex-center'>
 						<button

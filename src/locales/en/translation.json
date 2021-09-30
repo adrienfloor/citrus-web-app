@@ -343,6 +343,10 @@
 	"required": "required",
 	"equipment": "equipment",
 	"createCoaching": "create coaching",
-	"showMore": "see more",
-	"showLess": "see less"
+	"showMore": "show more",
+	"showLess": "show less",
+	"addAPhoto": "add a photo",
+	"uploadingImage": "uploading image",
+	"edit": "edit",
+	"moreInfo": "more info"
 }

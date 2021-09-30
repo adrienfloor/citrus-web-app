@@ -1,7 +1,9 @@
 import React from 'react'
 import axios from 'axios'
-
-import { generateRandomString } from '../../utils/image-upload'
+import Dialog from '@material-ui/core/Dialog'
+import ReactCrop from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
+import Loader from 'react-loader-spinner'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -16,39 +18,35 @@ import {
 	titleCase
 } from '../../utils/various'
 
-import ImageSquare from '../../assets/icons/svg/image-square.svg'
+import { ReactComponent as ImageSquare } from '../../assets/svg/image-square.svg'
 
-import { CLOUDINARY_UPLOAD_URL } from '../../env.json'
-const cloudinaryUploadUrl = 'https://api.cloudinary.com/v1_1/dho1rqbwk/image/upload'
-
-const deviceWidth = Dimensions.get("window").width
-const deviceHeight = Dimensions.get("window").height
+const { REACT_APP_CLOUDINARY_UPLOAD_URL } = process.env
 
 class ImageUploader extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			picPreviewUri: '',
-			picFinalUri: this.props.pictureUri,
 			isImageLoading: false,
-			isMenuOpen: false
+			imgSrc: this.props.pictureUri,
+			crop: {
+				unit: '%',
+				width: 50,
+				aspect: this.props.aspect || 3/2
+			},
+			croppedImage: null,
+			isCropping: false
 		}
-
-		if (this.props.pictureUri) {
-			FastImage.preload([{ uri: this.props.pictureUri }])
-		}
-
-		this.uploadPic = this.uploadPic.bind(this)
 		this.cloudinaryUpload = this.cloudinaryUpload.bind(this)
-
+		this.handleOnCropChange = this.handleOnCropChange.bind(this)
+		this.handleOnImageLoaded = this.handleOnImageLoaded.bind(this)
+		this.handleOnCropComplete = this.handleOnCropComplete.bind(this)
+		this.handleUploadClick = this.handleUploadClick.bind(this)
 	}
 
 	componentWillUnmount() {
 		this.setState({
-			picPreviewUri: '',
-			picFinalUri: '',
-			isImageLoading: false,
-			isMenuOpen: false
+			imgSrc: '',
+			isImageLoading: false
 		})
 	}
 
@@ -59,265 +57,438 @@ class ImageUploader extends React.Component {
 		data.append('cloud_name', 'dho1rqbwk')
 
 		try {
-			const res = await axios.post(cloudinaryUploadUrl, data)
+			const res = await axios.post(REACT_APP_CLOUDINARY_UPLOAD_URL, data)
 			return res.data.secure_url
 		} catch (e) {
 			console.log('Something went wrong uploading the photo: ', e)
 		}
 	}
 
-	uploadPic(type) {
+	handleOnImageLoaded(image) {
+		this.imageRef = image
+	}
 
-		const { onSetPictureUri } = this.props
+	handleOnCropComplete(crop, pixelCrop) {
+		this.makeClientCrop(crop)
+	}
 
-		const options = {
-			mediaType: 'photo',
-			quality: 0.5,
-			cameraType: 'front'
-		}
+	handleOnCropChange(crop) {
+		this.setState({ crop })
+	}
 
-		this.setState({
-			isImageLoading: true,
-			picPreviewUri: '',
-			picFinalUri: ''
-		})
-
-		ImagePicker.clean().then(() => {
-			console.log('removed all tmp images from tmp directory')
-		}).catch(e => {
-			console.log(e)
-		})
-
-		const handleResponse = response => {
-			const uri = response.uri || ''
-			const type = response.type || 'image/jpg'
-			const name = response.fileName || generateRandomString()
-
-			ImageResizer.createResizedImage(uri, 1024, 1024, 'JPEG', 50)
-				.then(res => {
-					// response.uri is the URI of the new image that can now be displayed, uploaded...
-					// response.path is the path of the new image
-					// response.name is the name of the new image with the extension
-					// response.size is the size of the new image
-					const source = {
-						uri: res.uri,
-						type,
-						name
-					}
-					this.setState({
-						picPreviewUri: uri
-					})
-					this.cloudinaryUpload(source)
-						.then(imgUri => {
-							this.setState({
-								isImageLoading: false
-							})
-							onSetPictureUri(imgUri)
-						})
-				})
-				.catch(err => {
-					console.log(err)
-					this.setState({ isImageLoading: false })
-					// Oops, something went wrong. Check that the filename is correct and
-					// inspect err to get more details.
-				})
-		}
-
-		if (type === 'library') {
-			ImagePicker.openPicker({
-				cropping: true,
-				freeStyleCropEnabled: true,
-				width: 1024,
-				height: 1024,
-				loadingLabelText: capitalize(i18n.t('coach.goLive.processingPhoto'))
-			}).then(image => {
-				this.setState({ isMenuOpen: false })
-				const response = {
-					uri: image.sourceURL || image.path,
-					fileName: image.filename,
-					type: image.mime
-				}
-				return handleResponse(response)
-			})
-				.catch(err => {
-					console.log('User canceled image picking : ', err)
-					this.setState({ isMenuOpen: false })
-				})
-		} else {
-			ImagePicker.openCamera({
-				cropping: true,
-				freeStyleCropEnabled: true,
-				width: 1024,
-				height: 1024,
-				useFrontCamera: true
-			}).then(image => {
-				this.setState({ isMenuOpen: false })
-				const response = {
-					uri: image.path || image.sourceURL,
-					fileName: image.filename,
-					type: image.mime
-				}
-				return handleResponse(response)
-			})
-				.catch(err => {
-					console.log('User canceled image picking : ', err)
-					this.setState({ isMenuOpen: false })
-				})
+	async makeClientCrop(crop) {
+		if (this.imageRef && crop.width && crop.height) {
+			const croppedImageBlob = await this.getCroppedImg(
+				this.imageRef,
+				crop,
+				'newFile.jpeg'
+			)
+			this.setState({ croppedImage: croppedImageBlob })
 		}
 	}
+
+	getCroppedImg(image, crop, fileName) {
+		const canvas = document.createElement('canvas')
+		const pixelRatio = window.devicePixelRatio
+		const scaleX = image.naturalWidth / image.width
+		const scaleY = image.naturalHeight / image.height
+		const ctx = canvas.getContext('2d')
+
+		canvas.width = crop.width * pixelRatio * scaleX
+		canvas.height = crop.height * pixelRatio * scaleY
+
+		ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+		ctx.imageSmoothingQuality = 'high'
+
+		ctx.drawImage(
+			image,
+			crop.x * scaleX,
+			crop.y * scaleY,
+			crop.width * scaleX,
+			crop.height * scaleY,
+			0,
+			0,
+			crop.width * scaleX,
+			crop.height * scaleY
+		)
+
+		return new Promise((resolve, reject) => {
+			canvas.toBlob(
+				(blob) => {
+					if (!blob) {
+						//reject(new Error('Canvas is empty'))
+						console.error('Canvas is empty')
+						return
+					}
+					blob.name = fileName
+					window.URL.revokeObjectURL(this.fileUrl)
+					this.fileUrl = window.URL.createObjectURL(blob)
+					// resolve(this.fileUrl)
+					resolve(blob)
+				},
+				'image/jpeg',
+				1
+			)
+		})
+	}
+
+	async handleUploadClick(e) {
+		e.preventDefault()
+		this.setState({
+			isCropping: false,
+			isImageLoading: true
+		})
+		const { croppedImage } = this.state
+		const { onSetPictureUri } = this.props
+		const source = {
+			uri: croppedImage,
+			type: 'image/jpg',
+			name: 'newFile.jpeg'
+		}
+		this.cloudinaryUpload(croppedImage)
+			.then(imgUri => {
+				this.setState({
+					croppedImage: null,
+					imgSrc: imgUri,
+					isImageLoading: false
+				})
+				onSetPictureUri(imgUri)
+			})
+
+	}
+
 
 	render() {
 		const {
-			picPreviewUri,
-			picFinalUri,
+			imgSrc,
 			isImageLoading,
-			isMenuOpen
+			isCropping,
+			crop,
+			croppedImageUrl
 		} = this.state
+
 		const {
 			onCancel,
-			onSetPictureUri
+			onSetPictureUri,
+			t
 		} = this.props
 
-		const isImagePresent = picPreviewUri.length > 0 || picFinalUri.length > 0
+		const isImagePresent = imgSrc && imgSrc.length > 0
 
-		if (isImagePresent) {
 			return (
-				<View style={styles.mainContainer}>
-					<TouchableOpacity
-						onPress={() => this.setState({ isMenuOpen: true })}
-						style={styles.editButton}
-					>
-						<Text
-							style={[
-								headingStyles.bbigText,
-								colorStyles.citrusGrey
-							]}
-						>
-							{capitalize(i18n.t('coach.schedule.edit'))}
-						</Text>
-					</TouchableOpacity>
-					<FastImage
-						style={styles.image}
-						source={{
-							uri: picPreviewUri || picFinalUri,
-							priority: FastImage.priority.high
-						}}
-						resizeMode={FastImage.resizeMode.cover}
-					>
+				<div
+					className='uploader-container'
+					style={
+						isImagePresent &&
 						{
-							isImageLoading &&
-							<View>
-								<Spinner color="#FFFFFF" />
-								<Text
+							backgroundPosition: 'center',
+							backgroundRepeat: 'no-repeat',
+							backgroundImage: !isImageLoading ? `url(${imgSrc})` : '',
+							backgroundSize: 'cover',
+							width: '270px',
+							height: '180px'
+						}
+					}
+				>
+					{
+						isImageLoading &&
+						<>
+							<Loader
+								type='Grid'
+								color='#0075FF'
+								height={50}
+								width={50}
+							/>
+							<div className='small-separator'></div>
+							<span className='small-text citrusBlue'>
+								{capitalize(t('uploadingImage'))} ...
+							</span>
+						</>
+					}
+					{
+						!isImagePresent && !isImageLoading &&
+						<>
+							<ImageSquare
+								height={120}
+								width={120}
+								stroke={'#FFFFFF'}
+								strokeWidth={2}
+							/>
+							<label className="custom-file-upload">
+								<input
+									onChange={e => {
+										const fReader = new FileReader()
+										fReader.readAsDataURL(e.target.files[0])
+										fReader.onloadend = e => {
+											this.setState({
+												imgSrc: e.target.result,
+												isCropping: true
+											})
+										}
+									}}
+									type='file'
+									accept='image/png, image/jpeg'
+								/>
+								<div className='light-button' style={{ width: '150px', height: '30px' }}>
+									<span className='smaller-text-bold citrusBlue'>
+										{capitalize(t('addAPhoto'))}
+									</span>
+								</div>
+							</label>
+						</>
+					}
+					{
+						isImagePresent && !isImageLoading &&
+						<>
+							<label className="custom-file-upload">
+								<input
+									onChange={e => {
+										const fReader = new FileReader()
+										fReader.readAsDataURL(e.target.files[0])
+										fReader.onloadend = e => {
+											this.setState({
+												croppedImage: null,
+												imgSrc: e.target.result,
+												isCropping: true
+											})
+										}
+									}}
+									type='file'
+									accept='image/png, image/jpeg'
+								/>
+								<div
+									className='light-button'
 									style={{
-										...headingStyles.bbigText,
-										...colorStyles.white,
-										textAlign: 'center'
+										width: '100px',
+										height: '25px',
+										marginTop: '130px'
 									}}
 								>
-									{capitalize(i18n.t('coach.schedule.uploadingImage'))} ...
-								</Text>
-							</View>
-						}
-					</FastImage>
-					{
-						isMenuOpen &&
-						<OverlayBottomMenu
-							firstItemText={i18n.t('common.takePicture')}
-							secondItemText={i18n.t('common.chooseFromLibrary')}
-							thirdItemText={i18n.t('common.cancel')}
-							onFirstItemAction={this.uploadPic}
-							onSecondItemAction={() => this.uploadPic('library')}
-							onThirdItemAction={() => this.setState({ isMenuOpen: false })}
-						/>
+									<span className='smaller-text-bold citrusBlue'>
+										{capitalize(t('edit'))}
+									</span>
+								</div>
+							</label>
+						</>
 					}
-				</View>
+					{
+						isCropping &&
+						<Dialog
+							className='crop-dialog'
+							open={true}
+							onClose={() => {
+								this.setState({
+									isCropping: false,
+									imgSrc: null
+								})
+							}}
+						>
+							<div className='crop-container'>
+								<div className='cropper'>
+									<ReactCrop
+										src={imgSrc}
+										crop={crop}
+										onChange={this.handleOnCropChange}
+										onImageLoaded={this.handleOnImageLoaded}
+										onComplete={this.handleOnCropComplete}
+									/>
+								</div>
+									<div
+										className='filled-button'
+										style={{
+											width: '150px',
+											margin: '5px 0 10px 0',
+										}}
+										onClick={this.handleUploadClick}
+									>
+									<span className='smaller-text-bold citrusWhite'>
+										{capitalize(t('submit'))}
+									</span>
+								</div>
+							</div>
+						</Dialog>
+					}
+					<style jsx='true'>
+						{`
+							.crop-dialog {
+								width: 50%;
+								padding: 0px 25%;
+								margin-bottom: 15px;
+							}
+							.crop-container {
+								display: flex;
+								flex-direction: column;
+								justify-content: center;
+								align-items: center;
+								width: 100%;
+								margin-top: 15px;
+							}
+							.cropper {
+								width: 50%;
+								padding: 0px 25%;
+							}
+							.uploader-container {
+								display: flex;
+								flex-direction: column;
+								height: 100%;
+								width: 100%;
+								align-items: center;
+								justify-content: center;
+								background-color: #F8F8F8;
+								height: 180px;
+								width: 270px;
+							}
+							.upload-row {
+								justify-content: space-between;
+								align-items: center;
+								margin-top: 10px;
+							}
+							input[type="file"] {
+								display: none;
+							}
+							.custom-empty-file-upload {
+								display: inline-block;
+								cursor: pointer;
+								width: 454px;
+								height: 50px;
+								background-color: #FFFFFF;
+								border: 2px solid #0075FF;
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								color: #0075FF;
+							}
+							.custom-file-upload {
+								display: inline-block;
+								cursor: pointer;
+								font-family: Raleway-Bold;
+								font-style: normal;
+								font-weight: bold !important;
+								font-size: 20px;
+							}
+							.file-name {
+								max-width: 300px;
+								overflow: hidden;
+								text-overflow: ellipsis;
+							}
+						`}
+					</style>
+				</div>
 			)
-		}
 
-		return (
-			<View style={styles.mainContainer}>
-				<ImageSquare
-					width={90}
-					height={90}
-					stroke={'#FFFFFF'}
-					strokeWidth={2}
-				/>
-				<TouchableOpacity
-					onPress={() => this.setState({ isMenuOpen: true })}
-					style={[
-						buttonStyles.lightButton,
-						styles.uploadButton
-					]}
-				>
-					<Text
-						style={{
-							...headingStyles.bbigText,
-							...colorStyles.citrusBlue,
-							fontWeight: '700',
-							fontSize: Platform.OS === 'ios' ? 16 : 14,
-						}}
-					>
-						{capitalize(i18n.t('coach.schedule.addAPhoto'))}
-					</Text>
-				</TouchableOpacity>
-				{
-					isMenuOpen &&
-					<OverlayBottomMenu
-						firstItemText={i18n.t('common.takePicture')}
-						secondItemText={i18n.t('common.chooseFromLibrary')}
-						thirdItemText={i18n.t('common.cancel')}
-						onFirstItemAction={this.uploadPic}
-						onSecondItemAction={() => this.uploadPic('library')}
-						onThirdItemAction={() => this.setState({
-							isMenuOpen: false,
-							isImageLoading: false
-						})}
-					/>
-				}
-			</View>
-		)
+		// if (isImagePresent) {
+		// 	return (
+		// 		<View style={styles.mainContainer}>
+		// 			<TouchableOpacity
+		// 				onPress={() => this.setState({ isMenuOpen: true })}
+		// 				style={styles.editButton}
+		// 			>
+		// 				<Text
+		// 					style={[
+		// 						headingStyles.bbigText,
+		// 						colorStyles.citrusGrey
+		// 					]}
+		// 				>
+		// 					{capitalize(i18n.t('coach.schedule.edit'))}
+		// 				</Text>
+		// 			</TouchableOpacity>
+		// 			<FastImage
+		// 				style={styles.image}
+		// 				source={{
+		// 					uri: picPreviewUri || picFinalUri,
+		// 					priority: FastImage.priority.high
+		// 				}}
+		// 				resizeMode={FastImage.resizeMode.cover}
+		// 			>
+		// 				{
+		// 					isImageLoading &&
+		// 					<View>
+		// 						<Spinner color="#FFFFFF" />
+		// 						<Text
+		// 							style={{
+		// 								...headingStyles.bbigText,
+		// 								...colorStyles.white,
+		// 								textAlign: 'center'
+		// 							}}
+		// 						>
+		// 							{capitalize(i18n.t('coach.schedule.uploadingImage'))} ...
+		// 						</Text>
+		// 					</View>
+		// 				}
+		// 			</FastImage>
+		// 		</View>
+		// 	)
+		// }
+
+		// return (
+		// 	<View style={styles.mainContainer}>
+		// 		<ImageSquare
+		// 			width={90}
+		// 			height={90}
+		// 			stroke={'#FFFFFF'}
+		// 			strokeWidth={2}
+		// 		/>
+		// 		<TouchableOpacity
+		// 			onPress={() => this.setState({ isMenuOpen: true })}
+		// 			style={[
+		// 				buttonStyles.lightButton,
+		// 				styles.uploadButton
+		// 			]}
+		// 		>
+		// 			<Text
+		// 				style={{
+		// 					...headingStyles.bbigText,
+		// 					...colorStyles.citrusBlue,
+		// 					fontWeight: '700',
+		// 					fontSize: Platform.OS === 'ios' ? 16 : 14,
+		// 				}}
+		// 			>
+		// 				{capitalize(i18n.t('coach.schedule.addAPhoto'))}
+		// 			</Text>
+		// 		</TouchableOpacity>
+		// 	</View>
+		// )
 	}
 }
 
-const styles = StyleSheet.create({
-	spinnerContainer: {
-		flex: 1,
-		height: '100%',
-		width: '100%',
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	mainContainer: {
-		flex: 0,
-		justifyContent: 'center',
-		alignItems: 'center',
-		height: '100%',
-		width: '100%',
-		backgroundColor: '#F8F8F8'
-	},
-	uploadButton: {
-		width: 124,
-		height: 35
-	},
-	editButton: {
-		position: 'absolute',
-		backgroundColor: '#FFFFFF',
-		right: 0,
-		top: 0,
-		zIndex: 1000,
-		height: 35,
-		width: 60,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	image: {
-		height: 335,
-		width: '100%',
-		flex: 0,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-})
+// const styles = StyleSheet.create({
+// 	spinnerContainer: {
+// 		flex: 1,
+// 		height: '100%',
+// 		width: '100%',
+// 		alignItems: 'center',
+// 		justifyContent: 'center'
+// 	},
+// 	mainContainer: {
+// 		flex: 0,
+// 		justifyContent: 'center',
+// 		alignItems: 'center',
+// 		height: '100%',
+// 		width: '100%',
+// 		backgroundColor: '#F8F8F8'
+// 	},
+// 	uploadButton: {
+// 		width: 124,
+// 		height: 35
+// 	},
+// 	editButton: {
+// 		position: 'absolute',
+// 		backgroundColor: '#FFFFFF',
+// 		right: 0,
+// 		top: 0,
+// 		zIndex: 1000,
+// 		height: 35,
+// 		width: 60,
+// 		justifyContent: 'center',
+// 		alignItems: 'center'
+// 	},
+// 	image: {
+// 		height: 335,
+// 		width: '100%',
+// 		flex: 0,
+// 		justifyContent: 'center',
+// 		alignItems: 'center',
+// 	},
+// })
 
 export default ImageUploader
