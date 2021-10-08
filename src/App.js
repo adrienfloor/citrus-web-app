@@ -23,7 +23,6 @@ import ResetPassword from './containers/auth/reset-password'
 import AdminDashboard from './containers/admin/admin-dashboard'
 import AdminAccountsLedger from './containers/admin/accounts-ledger'
 import AdminStoreTransfer from './containers/admin/store-transfer'
-import WebApp from './containers/web-app/web-app-layout'
 
 import Home from './containers/web-app/home'
 import Explore from './containers/web-app/explore'
@@ -85,7 +84,6 @@ class App extends React.Component {
                 <Route exact path='/signin' component={Signin} />
                 <Route exact path='/signup' component={Signup} />
                 <Route exact path='/reset_password' component={ResetPassword} />
-                {/* <PrivateRoute auth={isAuthenticated} path='/app' component={WebApp} /> */}
                 <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
                 <PrivateRoute auth={isAuthenticated} path='/explore' component={Explore} />
                 <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />

@@ -8,8 +8,8 @@ import Divider from '@material-ui/core/Divider'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import { Link } from 'react-router-dom'
 
-import { ReactComponent as User } from '../assets/svg/user.svg'
 import { ReactComponent as Card } from '../assets/svg/card.svg'
 import { ReactComponent as Stats } from '../assets/svg/stats.svg'
 import { ReactComponent as Invoice } from '../assets/svg/invoice.svg'
@@ -18,10 +18,18 @@ import { ReactComponent as Receipt } from '../assets/svg/receipt.svg'
 import { ReactComponent as Money } from '../assets/svg/money.svg'
 import { ReactComponent as Burger } from '../assets/svg/burger.svg'
 
+import { ReactComponent as Home } from '../assets/svg/home.svg'
+import { ReactComponent as Compass } from '../assets/svg/compass.svg'
+import { ReactComponent as Plus } from '../assets/svg/plus-button.svg'
+import { ReactComponent as User } from '../assets/svg/user.svg'
+import { ReactComponent as Gear } from '../assets/svg/gear.svg'
+
 
 import { withTranslation } from 'react-i18next'
 
 import { capitalize } from '../utils/various'
+
+const logoUri = 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1620220417/VonageApp/logos/CITRUS_1_yetxqf.png'
 
 const useStyles = makeStyles({
 	list: {
@@ -38,7 +46,7 @@ const useStyles = makeStyles({
 	}
 })
 
-function MobileDrawer({ t, currentFocus }) {
+function MobileDrawer({ t, currentFocus, history }) {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
@@ -58,7 +66,66 @@ function MobileDrawer({ t, currentFocus }) {
 			onClick={toggleDrawer(false)}
 			onKeyDown={toggleDrawer(false)}
 		>
-			<div className={`${classes.padded} small-title drawer-title`}>
+			<List>
+				<img
+					style={{ paddingLeft: '16px' }}
+					className='logo'
+					src={logoUri}
+					alt='citrus-logo'
+				/>
+				<Link to='/home'>
+					<ListItem button>
+						<ListItemIcon>
+							<Home />
+						</ListItemIcon>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('home'))}
+							</span>
+					</ListItem>
+				</Link>
+				<Link to='/explore'>
+					<ListItem button>
+						<ListItemIcon>
+							<Compass />
+						</ListItemIcon>
+						<span className='smaller-text-bold citrusGrey'>
+							{capitalize(t('explore'))}
+						</span>
+					</ListItem>
+				</Link>
+				<Link to='/schedule'>
+					<ListItem button>
+						<ListItemIcon>
+							<Plus />
+						</ListItemIcon>
+						<span className='smaller-text-bold citrusGrey'>
+							{capitalize(t('post'))}
+						</span>
+					</ListItem>
+				</Link>
+				<Link to='/profile'>
+					<ListItem button>
+						<ListItemIcon>
+							<User />
+						</ListItemIcon>
+						<span className='smaller-text-bold citrusGrey'>
+							{capitalize(t('profile'))}
+						</span>
+					</ListItem>
+				</Link>
+				<Link to='/settings'>
+					<ListItem button>
+						<ListItemIcon>
+							<Gear />
+						</ListItemIcon>
+						<span className='smaller-text-bold citrusGrey'>
+							{capitalize(t('settings'))}
+						</span>
+					</ListItem>
+				</Link>
+			</List>
+
+			{/* <div className={`${classes.padded} small-title drawer-title`}>
 				{capitalize(t('account'))}
 			</div>
 			<List>
@@ -130,7 +197,7 @@ function MobileDrawer({ t, currentFocus }) {
 					</ListItemIcon>
 					<ListItemText primary={capitalize(t('cashOut'))} />
 				</ListItem>
-			</List>
+			</List> */}
 		</div>
 	)
 

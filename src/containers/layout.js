@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link, withRouter } from 'react-router-dom'
@@ -21,10 +21,9 @@ const Layout = ({
 	setDashboardFocus,
 	isDashboard,
 	t,
-	location
+	location,
+	history
 }) => {
-
-	const [activeTab, setActiveTab] = useState('/home')
 
 	const isActiveTab = tab => {
 		if (tab === location.pathname) {
@@ -41,9 +40,10 @@ const Layout = ({
 			<header className='header flex-row'>
 				<div className='header-left-box'>
 					{
-						isDashboard &&
+						// isDashboard &&
 						<div className='mobile-drawer'>
 							<MobileDrawer
+								history={history}
 								currentFocus={focus => setDashboardFocus(focus)}
 							/>
 						</div>
@@ -118,7 +118,8 @@ const Layout = ({
 						background-color: #FFF;
 						z-index: 13;
 						height: 80px;
-						width: 100%;
+						width: 95%;
+						margin: 0 2.5%;
 					}
 					.header-left-box {
 						height: 80px;
@@ -129,10 +130,6 @@ const Layout = ({
 					.logo {
 						height: 30px;
 						width: 197px;
-						margin-left: 20px;
-					}
-					.logout {
-						margin-right: 20px;
 					}
 					.contact-row {
 						justify-content: space-between;
@@ -225,8 +222,7 @@ const mapStateToProps = state => ({
 	isAuthenticated: state.auth.isAuthenticated,
 	user: state.auth.user,
 	error: state.error,
-	isDashboard: state.navigation.isDashboard,
-	appScreen: state.navigation.appScreen
+	isDashboard: state.navigation.isDashboard
 })
 
 const mapDispatchToProps = dispatch => ({

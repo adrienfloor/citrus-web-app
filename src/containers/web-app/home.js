@@ -206,22 +206,25 @@ class Home extends React.Component {
 											))
 										}
 									</div> :
-									<div className='padding-horizontal'>
-										<Link
-											to='/explore'
-											className='plus-container'
-										>
+									<div>
+										<Link to='/explore' className='empty-coaching-card hover'>
 											<PlusButton
-												width={90}
-												height={90}
+												width={180}
+												height={180}
 												stroke={'#FFFFFF'}
 												strokeWidth={2}
 											/>
+											<div className='small-separator'></div>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('noTrainingsYet'))}
+											</span>
+											<div className='small-separator'></div>
 											<div className='light-button plus-button'>
-												<span className='small-text-bold citrusBlue'>
-													{capitalize(t('common.checkoutTrainings'))}
+												<span className='small-title citrusBlue'>
+													{capitalize(t('checkoutTrainings'))}
 												</span>
 											</div>
+											<div className='small-separator'></div>
 										</Link>
 									</div>
 							}
@@ -376,22 +379,27 @@ class Home extends React.Component {
 											))
 										}
 									</div> :
-									<Link
-										to='/schedule'
-										className='plus-container'
-									>
-										<PlusButton
-											width={90}
-											height={90}
-											stroke={'#FFFFFF'}
-											strokeWidth={2}
-										/>
-										<div className='light-button plus-button'>
-											<span className='small-text-bold citrusBlue'>
-												{capitalize(t('common.startNow'))}
+									<div>
+										<Link to='/schedule' className='empty-coaching-card hover'>
+											<PlusButton
+												width={180}
+												height={180}
+												stroke={'#FFFFFF'}
+												strokeWidth={2}
+											/>
+											<div className='small-separator'></div>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('noCoachingsYet'))}
 											</span>
-										</div>
-									</Link>
+											<div className='small-separator'></div>
+											<div className='light-button plus-button'>
+												<span className='small-title citrusBlue'>
+													{capitalize(t('startNow'))}
+												</span>
+											</div>
+											<div className='small-separator'></div>
+										</Link>
+									</div>
 							}
 						</div>
 
@@ -463,7 +471,7 @@ class Home extends React.Component {
 								<div className='small-separator'></div>
 								<div
 									className='filled-button'
-									style={{ width: '195px' }}
+									style={{ width: '250px' }}
 									onClick={() => this.setState({ isCashingOut: true })}
 								>
 									<span className='small-title citrusWhite'>
@@ -481,7 +489,7 @@ class Home extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div style={{ maxWidth: '800px' }}>
+						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

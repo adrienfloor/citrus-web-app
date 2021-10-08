@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { withTranslation } from 'react-i18next'
-import Dialog from '@material-ui/core/Dialog'
 import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import Select from '@material-ui/core/Select'
@@ -354,22 +353,29 @@ class Schedule extends React.Component {
 				>
 					<input
 						className='text-input smaller-text-bold citrusGrey input form-input'
-						placeholder={capitalize(t('title'))}
+						placeholder={capitalize(t('addTitle'))}
 						onChange={(e) => this.setState({ title: e.target.value })}
-						style={{ color: '#000000' }}
+						style={{ color: '#000000', border: 'none', height: 'unset' }}
 						disabled={progress || progress === 0 ? true : false}
 					/>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
-						{capitalize(t('sport'))}
-					</span>
 					<Select
 						className='form-input'
 						id='simple-select'
 						value={sport}
 						onChange={e => this.setState({ sport: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return <em className='smaller-text-bold citrusGrey'>{t('sportsPlaceholder')}</em>
+							}
+							return t(selected)
+						}}
 					>
+						<MenuItem disabled value="">
+							<em className='smaller-text-bold citrusGrey'>{t('sportsPlaceholder')}</em>
+						</MenuItem>
 						{
 							sportsItems.map((sport, i) => (
 								<MenuItem key={i} value={sport}>{capitalize(t(sport))}</MenuItem>
@@ -377,16 +383,27 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
-						{capitalize(t('price'))}
-					</span>
 					<Select
 						className='form-input'
 						id='simple-select'
 						value={price}
 						onChange={e => this.setState({ price: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='smaller-text-bold citrusGrey'>
+										{t('pricePlaceholder')}
+									</em>
+								)
+							}
+							return t(selected)
+						}}
 					>
+						<MenuItem disabled value="">
+							<em className='smaller-text-bold citrusGrey'>{t('pricePlaceholder')}</em>
+						</MenuItem>
 						{
 							pricesItems.map((price, i) => (
 								<MenuItem value={price} key={i}>
@@ -402,8 +419,9 @@ class Schedule extends React.Component {
 						<div className='more-details-row'>
 							<span className='smaller-text-bold citrusGrey'>
 								{
-									!isShowingAllParams &&
-									capitalize(t('moreInfo'))
+									!isShowingAllParams ?
+									t('moreInfo') :
+									t('showLess')
 								}
 							</span>
 							<div
@@ -429,15 +447,26 @@ class Schedule extends React.Component {
 					{
 						isShowingAllParams && !progress &&
 						<>
-							<span className='smaller-text-bold citrusGrey form-input'>
-								{capitalize(t('duration'))}
-							</span>
 							<Select
 								className='form-input'
 								id='simple-select'
 								value={duration}
 								onChange={e => this.setState({ duration: e.target.value })}
+								displayEmpty
+								renderValue={(selected) => {
+									if (selected.length === 0) {
+										return (
+											<em className='smaller-text-bold citrusGrey'>
+												{t('durationPlaceholder')}
+											</em>
+										)
+									}
+									return t(selected)
+								}}
 							>
+								<MenuItem disabled value="">
+									<em className='smaller-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
+								</MenuItem>
 								{
 									durationsItems.map((duration, i) => (
 										<MenuItem key={i} value={duration}>{capitalize(t(duration))}</MenuItem>
@@ -445,15 +474,26 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='smaller-text-bold citrusGrey form-input'>
-								{capitalize(t('level'))}
-							</span>
 							<Select
 								className='form-input'
 								id='simple-select'
 								value={level}
 								onChange={e => this.setState({ level: e.target.value })}
+								displayEmpty
+								renderValue={(selected) => {
+									if (selected.length === 0) {
+										return (
+											<em className='smaller-text-bold citrusGrey'>
+												{t('levelPlaceholder')}
+											</em>
+										)
+									}
+									return t(selected)
+								}}
 							>
+								<MenuItem disabled value="">
+									<em className='smaller-text-bold citrusGrey'>{t('levelPlaceholder')}</em>
+								</MenuItem>
 								{
 									levelsItems.map((level, i) => (
 										<MenuItem key={i} value={level}>{capitalize(t(level))}</MenuItem>
@@ -461,16 +501,27 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='smaller-text-bold citrusGrey form-input'>
-								{capitalize(t('equipment'))}
-							</span>
 							<Select
 								multiple
 								className='form-input'
 								id='simple-select'
 								value={equipment}
 								onChange={e => this.setState({ equipment: e.target.value })}
+								displayEmpty
+								renderValue={(selected) => {
+									if (selected.length === 0) {
+										return (
+											<em className='smaller-text-bold citrusGrey'>
+												{t('equipmentPlaceholder')}
+											</em>
+										)
+									}
+									return selected.map(el => t(el)).join(', ')
+								}}
 							>
+								<MenuItem disabled value="">
+									<em className='smaller-text-bold citrusGrey'>{t('equipmentPlaceholder')}</em>
+								</MenuItem>
 								{
 									equipmentsItems.map((equipment, i) => (
 										<MenuItem key={i} value={equipment}>{capitalize(t(equipment))}</MenuItem>
@@ -478,16 +529,27 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='smaller-text-bold citrusGrey form-input'>
-								{capitalize(t('focus'))}
-							</span>
 							<Select
 								multiple
 								className='form-input'
 								id='simple-select'
 								value={focus}
 								onChange={e => this.setState({ focus: e.target.value })}
+								displayEmpty
+								renderValue={(selected) => {
+									if (selected.length === 0) {
+										return (
+											<em className='smaller-text-bold citrusGrey'>
+												{t('focusPlaceholder')}
+											</em>
+										)
+									}
+									return selected.map(el => t(el)).join(', ')
+								}}
 							>
+								<MenuItem disabled value="">
+									<em className='smaller-text-bold citrusGrey'>{t('focusPlaceholder')}</em>
+								</MenuItem>
 								{
 									focusItems.map((fc, i) => (
 										<MenuItem key={i} value={fc}>{capitalize(t(fc))}</MenuItem>
@@ -495,15 +557,26 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='smaller-text-bold citrusGrey form-input'>
-								{capitalize(t('language'))}
-							</span>
 							<Select
 								className='form-input'
 								id='simple-select'
 								value={language}
 								onChange={e => this.setState({ language: e.target.value })}
+								displayEmpty
+								renderValue={(selected) => {
+									if (selected.length === 0) {
+										return (
+											<em className='smaller-text-bold citrusGrey'>
+												{t('languagePlaceholder')}
+											</em>
+										)
+									}
+									return t(selected)
+								}}
 							>
+								<MenuItem disabled value="">
+									<em className='smaller-text-bold citrusGrey'>{t('languagePlaceholder')}</em>
+								</MenuItem>
 								{
 									languagesItems.map((language, i) => (
 										<MenuItem key={i} value={language}>{capitalize(t(language))}</MenuItem>

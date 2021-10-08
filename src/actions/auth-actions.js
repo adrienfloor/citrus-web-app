@@ -16,7 +16,8 @@ import {
 	FETCH_USER_REPLAYS,
 	FETCH_USER_INFO,
 	CREATE_FOLLOWER,
-	DELETE_FOLLOWER
+	DELETE_FOLLOWER,
+	UPDATE_USER_CREDENTIALS
 } from './types'
 import { returnErrors } from './errors-actions'
 
@@ -105,6 +106,22 @@ export const updateUser = userInfo => async dispatch => {
 		const body = JSON.stringify(userInfo)
 		const response = await axios.put(`${REACT_APP_API_URL}/users/update_user`, body, config)
 		return dispatch({ type: UPDATE_USER, payload: response.data })
+	} catch (err) {
+		return dispatch(returnErrors(err, err.response.status))
+	}
+}
+
+export const updateUserCredentials = credentials => async dispatch => {
+	try {
+		const config = {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		}
+
+		const body = JSON.stringify(credentials)
+		const response = await axios.put(`${REACT_APP_API_URL}/users/update_user_credentials`, body, config)
+		return dispatch({ type: UPDATE_USER_CREDENTIALS, payload: response.data })
 	} catch (err) {
 		return dispatch(returnErrors(err, err.response.status))
 	}

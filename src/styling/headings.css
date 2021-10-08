@@ -1,7 +1,7 @@
 .maxi-title {
 	font-family: Raleway-Bold;
 	font-style: normal;
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 40px;
 	line-height: 47px;
 }
@@ -9,7 +9,7 @@
 .big-title {
 	font-family: Raleway-Bold;
 	font-style: normal;
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 32px;
 	line-height: 47px;
 }
@@ -17,7 +17,7 @@
 .small-title {
 	font-family: Raleway-Bold;
 	font-style: normal;
-	font-weight: bold !important;
+	font-weight: 600 !important;
 	font-size: 20px;
 	line-height: 23px;
 }
@@ -25,7 +25,7 @@
 .small-text {
 	font-family: Raleway-Regular;
 	font-style: normal;
-	font-weight: 500;
+	font-weight: 400;
 	font-size: 16px;
 	line-height: 19px;
 }
@@ -33,7 +33,7 @@
 .smaller-text {
 	font-family: Raleway-Regular;
 	font-style: normal;
-	font-weight: 700;
+	font-weight: 600;
 	font-size: 12px;
 	line-height: 19px;
 }
@@ -41,7 +41,7 @@
 .small-text-high {
 	font-family: Raleway-Regular;
 	font-style: normal;
-	font-weight: 500;
+	font-weight: 400;
 	font-size: 16px;
 	line-height: 21px !important;
 }
@@ -49,7 +49,7 @@
 .small-text-bold {
 	font-family: Raleway-Medium;
 	font-style: normal;
-	font-weight: 700;
+	font-weight: 600;
 	font-size: 18px !important;
 	line-height: 19px;
 }
@@ -57,7 +57,7 @@
 .smaller-text-bold {
 	font-family: Raleway-Medium;
 	font-style: normal;
-	font-weight: 700;
+	font-weight: 600;
 	font-size: 16px !important;
 	line-height: 19px;
 }
@@ -65,7 +65,7 @@
 .simple-link {
 	font-family: Raleway-Medium;
 	font-style: normal;
-	font-weight: bold;
+	font-weight: 600;
 	font-size: 16px;
 	line-height: 19px;
 	color: #0075FF;
@@ -83,7 +83,7 @@
 	font-family: Raleway-Bold;
 	font-size: 32px;
 	font-style: normal;
-	font-weight: 700;
+	font-weight: 600;
 	/* line-height: 39; */
 	letter-spacing: -0.24;
 	color: #000000;

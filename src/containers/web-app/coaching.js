@@ -9,11 +9,6 @@ import ReactPlayer from 'react-player'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
 
-
-// import OverlayConfirmation from '../../components/overlay-confirmation'
-// import NotAvailableCard from '../../components/not-available-card'
-// import OverlayBottomMenu from '../../components/overlay-bottom-menu'
-
 import '../../styling/headings.css'
 import '../../styling/colors.css'
 import '../../styling/buttons.css'
@@ -22,6 +17,7 @@ import '../../styling/App.css'
 import '../../styling/web-app.css'
 
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	uppercase,
@@ -336,37 +332,27 @@ class Coaching extends React.Component {
 				<div style={{ backgroundColor: '#000000' }}>
 					<div
 						style={{
-							width: '100%',
-							height: '50px',
-							display: 'flex',
-							justifyContent: 'flex-start',
-							alignItems: 'center',
+							margin: '10px',
 							zIndex: 1000,
 							backgroundColor: 'transparent',
-							position: 'absolute'
+							position: 'absolute',
+							top: 0,
+							right: 0
 						}}
-						onClick={() => this.setState({ muxReplayPlaybackId: null })}
-						className='hover'
 					>
-						<CaretBack
+						<Close
+							onClick={() => this.setState({ muxReplayPlaybackId: null })}
+							className='hover'
 							width={25}
 							height={25}
 							stroke={'#C2C2C2'}
 							strokeWidth={2}
 						/>
-						<span className='small-text citrusGrey'>
-							{capitalize(t('back'))}
-						</span>
 					</div>
 					<ReactPlayer
+						playing={false}
+						autoPlay
 						controls
-						playing
-						// style={{
-						// 	maxHeight: 'calc(100% - 64px)',
-						// 	maxWidth: '800px'
-						// }}
-						// height='calc(100% - 64px)'
-						// width='800px'
 						url={muxReplayPlaybackId}
 					/>
 				</div>
@@ -402,16 +388,15 @@ class Coaching extends React.Component {
 		return (
 			<div className='coaching-container'>
 				<div className='scroll-div-vertical'>
-					<div className='small-separator'></div>
 					<div
 						style={{
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: `url(${pictureUri})`,
 							backgroundSize: 'cover',
-							width: '100%',
 							height: '300px'
-						}}>
+						}}
+					>
 					</div>
 					<div className='small-separator'></div>
 					<div className='coaching-column'>
@@ -505,22 +490,21 @@ class Coaching extends React.Component {
 								</span>
 							</div>
 						}
-						<div className='medium-separator'></div>
-						<div className='small-separator'></div>
-						<div
-							disabled={
-								!products ||
-								(products && products.length < 0) ||
-								isBuyingCoaching
-							}
-							className='filled-button'
-							onClick={this.handleSubmit}
-						>
-							<span className='small-title citrusWhite'>
-								{this.renderButtonText()}
-							</span>
-						</div>
-						<div className='small-separator'></div>
+					</div>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<div
+						disabled={
+							!products ||
+							(products && products.length < 0) ||
+							isBuyingCoaching
+						}
+						className='filled-button'
+						onClick={this.handleSubmit}
+					>
+						<span className='small-title citrusWhite'>
+							{this.renderButtonText()}
+						</span>
 					</div>
 					{/* {isConfirmationOpen && (
 						<OverlayConfirmation

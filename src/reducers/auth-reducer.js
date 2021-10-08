@@ -83,6 +83,7 @@ export default function (state = initialState, action) {
 		case RESET_PASSWORD_FAIL:
 		case CREATE_FOLLOWER:
 		case DELETE_FOLLOWER:
+		case UPDATE_USER_CREDENTIALS:
 		default:
 			return state
 	}

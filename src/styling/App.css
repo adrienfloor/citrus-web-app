@@ -3,28 +3,66 @@
 @font-face {
 	font-family: 'Raleway-Bold';
 	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Bold.ttf) format('truetype');
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased !important;
 }
 
 @font-face {
 	font-family: 'Raleway-Semi-Bold';
 	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-SemiBold.ttf) format('truetype');
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased !important;
 }
 
 @font-face {
 	font-family: 'Raleway-Regular';
 	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Regular.ttf) format('truetype');
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased !important;
 }
 
 @font-face {
 	font-family: 'Raleway-Medium';
 	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Medium.ttf) format('truetype');
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased !important;
 }
 
 @font-face {
 	font-family: 'Raleway-Black';
 	src: local('Raleway'), url(../fonts/Raleway/static/Raleway-Black.ttf) format('truetype');
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased !important;
 }
 
+* {
+	-webkit-font-smoothing: antialiased !important;
+}
 
 html, body, #root {
 	height: 100%;
@@ -95,6 +133,35 @@ input:focus {
 
 .action-icon:hover {
 	cursor: pointer;
+}
+
+.MuiInput-underline:before {
+	border: none !important;
+}
+
+.MuiInput-underline:after {
+	border: none !important;
+}
+
+.MuiSelect-icon {
+	color: #C2C2C2 !important;
+}
+
+::placeholder {
+	/* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: #C2C2C2;
+	opacity: 1;
+	/* Firefox */
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: #C2C2C2;
+}
+
+::-ms-input-placeholder {
+	/* Microsoft Edge */
+	color: #C2C2C2;
 }
 
 /* AUTH */

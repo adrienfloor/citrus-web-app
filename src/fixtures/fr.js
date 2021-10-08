@@ -79,7 +79,6 @@ export default {
 		sixty: "60 min"
 	},
 	equipments: {
-		none: "aucun",
 		rings: "anneaux",
 		pullUpBar: "barre de traction",
 		elasticBands: "elastique",

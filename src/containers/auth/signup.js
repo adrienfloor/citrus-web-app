@@ -148,7 +148,7 @@ class Signup extends React.Component {
 			isAuthenticated
 		} = this.props
 		if (isAuthenticated) {
-			history.push('/app')
+			history.push('/home')
 			return null
 		}
 		return (

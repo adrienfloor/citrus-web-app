@@ -79,7 +79,6 @@ export default {
 		sixty: "60 min"
 	},
 	equipments: {
-		none: "none",
 		elasticBands: "elastic bands",
 		homeTrainer: "home trainer",
 		kettlebell: "kettlebell",

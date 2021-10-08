@@ -95,7 +95,8 @@ class Signin extends React.Component {
 			selectScreen,
 			signin,
 			executeExploreSearch,
-			fetchTrainerCoachings
+			fetchTrainerCoachings,
+			fetchUserReplays
 		} = this.props
 
 		this.setState({
@@ -110,19 +111,18 @@ class Signin extends React.Component {
 		signin(
 			email.toLowerCase(),
 			password
-		).then(res => {
+		).then(async (res) => {
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const userId = res.payload.user._id
-				executeExploreSearch('all', userId, 5)
-				fetchUserReplays(userId)
+				const search = await executeExploreSearch('all', userId, 5)
+				const replays = await fetchUserReplays(userId)
 				// fetchNotifications(userId)
-				fetchTrainerCoachings(userId, true)
-				this.setState({ isLoading: false })
-				this.props.history.push('/home')
-				return
-			}
-
-			if (res && res.type === 'LOGIN_FAIL') {
+				const trainings = await fetchTrainerCoachings(userId, true)
+				if(search && replays && trainings) {
+					this.setState({ isLoading: false })
+					return this.props.history.push('/home')
+				}
+			} else if (res && res.type === 'LOGIN_FAIL') {
 				this.setState({
 					errorMessage: capitalize(t('wrongEmailOrPassword')),
 					signinDisabled: false,
@@ -134,17 +134,18 @@ class Signin extends React.Component {
 					})
 				}.bind(this), 3000)
 				return
-			}
-			this.setState({
-				errorMessage: capitalize(t('somethingWentWrong')),
-				signinDisabled: false,
-				isLoading: false
-			})
-			setTimeout(function () {
+			} else {
 				this.setState({
-					errorMessage: ''
+					errorMessage: capitalize(t('somethingWentWrong')),
+					signinDisabled: false,
+					isLoading: false
 				})
-			}.bind(this), 3000)
+				setTimeout(function () {
+					this.setState({
+						errorMessage: ''
+					})
+				}.bind(this), 3000)
+			}
 
 		})
 	}
@@ -164,7 +165,7 @@ class Signin extends React.Component {
 			user
 		} = this.props
 		if(isAuthenticated && user) {
-			history.push('/app')
+			history.push('/home')
 			return null
 		}
 		return (
