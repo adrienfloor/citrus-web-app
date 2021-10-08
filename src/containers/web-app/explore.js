@@ -6,6 +6,7 @@ import Dialog from '@material-ui/core/Dialog'
 import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
+import { Link } from 'react-router-dom'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -26,7 +27,6 @@ import {
 	capitalize
 } from '../../utils/various'
 
-import { setAppScreen } from '../../actions/navigation-actions'
 import { loadUser } from '../../actions/auth-actions'
 import {
 	executeExploreSearch,
@@ -143,8 +143,7 @@ class Explore extends React.Component {
 			sessionsSearch,
 			accountsSearch,
 			executeSearch,
-			t,
-			setAppScreen
+			t
 		} = this.props
 		const { sports } = user
 
@@ -373,7 +372,7 @@ class Explore extends React.Component {
 								exploreSpecificSportSearch &&
 								exploreSpecificSportSearch.length === 0 &&
 								activeTabIndex !== 'all' && searchInputText === '' && (
-								<div onClick={() => setAppScreen(3)} className='empty-coaching-card hover'>
+								<Link to='/schedule' className='empty-coaching-card hover'>
 									<PlusButton
 										width={180}
 										height={180}
@@ -391,7 +390,7 @@ class Explore extends React.Component {
 										</span>
 									</div>
 									<div className='small-separator'></div>
-								</div>
+								</Link>
 							)}
 						</div>
 					)
@@ -436,7 +435,7 @@ class Explore extends React.Component {
 				{
 					selectedCoaching &&
 					<Dialog
-						open={selectedCoaching}
+						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
 						<div style={{ maxWidth: '800px' }}>
@@ -470,8 +469,7 @@ const mapDispatchToProps = (dispatch) => ({
 		dispatch(executeSearch(query, type, userId)),
 	resetSearch: () => dispatch(resetSearch()),
 	resetExploreSearch: () => dispatch(resetExploreSearch()),
-	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
-	setAppScreen: (screen) => dispatch(setAppScreen(screen))
+	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Explore))

@@ -30,6 +30,14 @@
 	line-height: 19px;
 }
 
+.smaller-text {
+	font-family: Raleway-Regular;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 12px;
+	line-height: 19px;
+}
+
 .small-text-high {
 	font-family: Raleway-Regular;
 	font-style: normal;

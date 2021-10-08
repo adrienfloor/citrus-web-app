@@ -34,7 +34,8 @@ class ImageUploader extends React.Component {
 				aspect: this.props.aspect || 3/2
 			},
 			croppedImage: null,
-			isCropping: false
+			isCropping: false,
+			imgToCropSrc: ''
 		}
 		this.cloudinaryUpload = this.cloudinaryUpload.bind(this)
 		this.handleOnCropChange = this.handleOnCropChange.bind(this)
@@ -46,7 +47,8 @@ class ImageUploader extends React.Component {
 	componentWillUnmount() {
 		this.setState({
 			imgSrc: '',
-			isImageLoading: false
+			isImageLoading: false,
+			imgToCropSrc: ''
 		})
 	}
 
@@ -164,13 +166,15 @@ class ImageUploader extends React.Component {
 			isImageLoading,
 			isCropping,
 			crop,
-			croppedImageUrl
+			croppedImageUrl,
+			imgToCropSrc
 		} = this.state
 
 		const {
 			onCancel,
 			onSetPictureUri,
-			t
+			t,
+			disabled
 		} = this.props
 
 		const isImagePresent = imgSrc && imgSrc.length > 0
@@ -181,12 +185,14 @@ class ImageUploader extends React.Component {
 					style={
 						isImagePresent &&
 						{
+							justifyContent: isImageLoading ? 'center' : 'flex-start',
+							alignItems: isImageLoading ? 'center' : 'flex-end',
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: !isImageLoading ? `url(${imgSrc})` : '',
 							backgroundSize: 'cover',
-							width: '270px',
-							height: '180px'
+							width: '300px',
+							height: '200px'
 						}
 					}
 				>
@@ -194,13 +200,13 @@ class ImageUploader extends React.Component {
 						isImageLoading &&
 						<>
 							<Loader
-								type='Grid'
-								color='#0075FF'
+								type='Oval'
+								color='#C2C2C2'
 								height={50}
 								width={50}
 							/>
 							<div className='small-separator'></div>
-							<span className='small-text citrusBlue'>
+							<span className='small-text citrusGrey'>
 								{capitalize(t('uploadingImage'))} ...
 							</span>
 						</>
@@ -214,61 +220,62 @@ class ImageUploader extends React.Component {
 								stroke={'#FFFFFF'}
 								strokeWidth={2}
 							/>
-							<label className="custom-file-upload">
-								<input
-									onChange={e => {
-										const fReader = new FileReader()
-										fReader.readAsDataURL(e.target.files[0])
-										fReader.onloadend = e => {
-											this.setState({
-												imgSrc: e.target.result,
-												isCropping: true
-											})
-										}
-									}}
-									type='file'
-									accept='image/png, image/jpeg'
-								/>
-								<div className='light-button' style={{ width: '150px', height: '30px' }}>
-									<span className='smaller-text-bold citrusBlue'>
-										{capitalize(t('addAPhoto'))}
-									</span>
-								</div>
-							</label>
+							{
+								!disabled &&
+								<label className="custom-file-upload">
+									<input
+										onChange={e => {
+											const fReader = new FileReader()
+											fReader.readAsDataURL(e.target.files[0])
+											fReader.onloadend = e => {
+												this.setState({
+													// imgSrc: e.target.result,
+													imgToCropSrc: e.target.result,
+													isCropping: true
+												})
+											}
+										}}
+										type='file'
+										accept='image/png, image/jpeg'
+									/>
+									<div className='light-button' style={{ width: '150px', height: '30px' }}>
+										<span className='smaller-text-bold citrusBlue'>
+											{capitalize(t('addAPhoto'))}
+										</span>
+									</div>
+								</label>
+							}
 						</>
 					}
 					{
 						isImagePresent && !isImageLoading &&
 						<>
-							<label className="custom-file-upload">
-								<input
-									onChange={e => {
-										const fReader = new FileReader()
-										fReader.readAsDataURL(e.target.files[0])
-										fReader.onloadend = e => {
-											this.setState({
-												croppedImage: null,
-												imgSrc: e.target.result,
-												isCropping: true
-											})
-										}
-									}}
-									type='file'
-									accept='image/png, image/jpeg'
-								/>
-								<div
-									className='light-button'
-									style={{
-										width: '100px',
-										height: '25px',
-										marginTop: '130px'
-									}}
-								>
-									<span className='smaller-text-bold citrusBlue'>
-										{capitalize(t('edit'))}
-									</span>
-								</div>
-							</label>
+							{
+								!disabled &&
+								<label className='custom-file-upload' style={{ position: 'relative' }}>
+									<input
+										onChange={e => {
+											const fReader = new FileReader()
+											fReader.readAsDataURL(e.target.files[0])
+											fReader.onloadend = e => {
+												this.setState({
+													croppedImage: null,
+													// imgSrc: e.target.result,
+													imgToCropSrc: e.target.result,
+													isCropping: true
+												})
+											}
+										}}
+										type='file'
+										accept='image/png, image/jpeg'
+									/>
+									<div className='edit-button'>
+										<span className='smaller-text-bold citrusGrey'>
+											{capitalize(t('edit'))}
+										</span>
+									</div>
+								</label>
+							}
 						</>
 					}
 					{
@@ -278,15 +285,14 @@ class ImageUploader extends React.Component {
 							open={true}
 							onClose={() => {
 								this.setState({
-									isCropping: false,
-									imgSrc: null
+									isCropping: false
 								})
 							}}
 						>
 							<div className='crop-container'>
 								<div className='cropper'>
 									<ReactCrop
-										src={imgSrc}
+										src={imgToCropSrc}
 										crop={crop}
 										onChange={this.handleOnCropChange}
 										onImageLoaded={this.handleOnImageLoaded}
@@ -335,8 +341,8 @@ class ImageUploader extends React.Component {
 								align-items: center;
 								justify-content: center;
 								background-color: #F8F8F8;
-								height: 180px;
-								width: 270px;
+								height: 200px;
+								width: 300px;
 							}
 							.upload-row {
 								justify-content: space-between;
@@ -371,124 +377,18 @@ class ImageUploader extends React.Component {
 								overflow: hidden;
 								text-overflow: ellipsis;
 							}
+							.edit-button {
+								position: absolute;
+								padding: 0 10px;
+								height: 25px;
+								top: 0;
+								right: 0;
+								background-color: #FFFFFF;
+							}
 						`}
 					</style>
 				</div>
 			)
-
-		// if (isImagePresent) {
-		// 	return (
-		// 		<View style={styles.mainContainer}>
-		// 			<TouchableOpacity
-		// 				onPress={() => this.setState({ isMenuOpen: true })}
-		// 				style={styles.editButton}
-		// 			>
-		// 				<Text
-		// 					style={[
-		// 						headingStyles.bbigText,
-		// 						colorStyles.citrusGrey
-		// 					]}
-		// 				>
-		// 					{capitalize(i18n.t('coach.schedule.edit'))}
-		// 				</Text>
-		// 			</TouchableOpacity>
-		// 			<FastImage
-		// 				style={styles.image}
-		// 				source={{
-		// 					uri: picPreviewUri || picFinalUri,
-		// 					priority: FastImage.priority.high
-		// 				}}
-		// 				resizeMode={FastImage.resizeMode.cover}
-		// 			>
-		// 				{
-		// 					isImageLoading &&
-		// 					<View>
-		// 						<Spinner color="#FFFFFF" />
-		// 						<Text
-		// 							style={{
-		// 								...headingStyles.bbigText,
-		// 								...colorStyles.white,
-		// 								textAlign: 'center'
-		// 							}}
-		// 						>
-		// 							{capitalize(i18n.t('coach.schedule.uploadingImage'))} ...
-		// 						</Text>
-		// 					</View>
-		// 				}
-		// 			</FastImage>
-		// 		</View>
-		// 	)
-		// }
-
-		// return (
-		// 	<View style={styles.mainContainer}>
-		// 		<ImageSquare
-		// 			width={90}
-		// 			height={90}
-		// 			stroke={'#FFFFFF'}
-		// 			strokeWidth={2}
-		// 		/>
-		// 		<TouchableOpacity
-		// 			onPress={() => this.setState({ isMenuOpen: true })}
-		// 			style={[
-		// 				buttonStyles.lightButton,
-		// 				styles.uploadButton
-		// 			]}
-		// 		>
-		// 			<Text
-		// 				style={{
-		// 					...headingStyles.bbigText,
-		// 					...colorStyles.citrusBlue,
-		// 					fontWeight: '700',
-		// 					fontSize: Platform.OS === 'ios' ? 16 : 14,
-		// 				}}
-		// 			>
-		// 				{capitalize(i18n.t('coach.schedule.addAPhoto'))}
-		// 			</Text>
-		// 		</TouchableOpacity>
-		// 	</View>
-		// )
+		}
 	}
-}
-
-// const styles = StyleSheet.create({
-// 	spinnerContainer: {
-// 		flex: 1,
-// 		height: '100%',
-// 		width: '100%',
-// 		alignItems: 'center',
-// 		justifyContent: 'center'
-// 	},
-// 	mainContainer: {
-// 		flex: 0,
-// 		justifyContent: 'center',
-// 		alignItems: 'center',
-// 		height: '100%',
-// 		width: '100%',
-// 		backgroundColor: '#F8F8F8'
-// 	},
-// 	uploadButton: {
-// 		width: 124,
-// 		height: 35
-// 	},
-// 	editButton: {
-// 		position: 'absolute',
-// 		backgroundColor: '#FFFFFF',
-// 		right: 0,
-// 		top: 0,
-// 		zIndex: 1000,
-// 		height: 35,
-// 		width: 60,
-// 		justifyContent: 'center',
-// 		alignItems: 'center'
-// 	},
-// 	image: {
-// 		height: 335,
-// 		width: '100%',
-// 		flex: 0,
-// 		justifyContent: 'center',
-// 		alignItems: 'center',
-// 	},
-// })
-
 export default ImageUploader

@@ -36,7 +36,6 @@ import {
 	loadUser,
 	fetchUserReplays
 } from '../../actions/auth-actions'
-import { setAppScreen } from '../../actions/navigation-actions'
 
 import { updateCoaching } from '../../actions/coachings-actions'
 
@@ -309,8 +308,8 @@ class Coaching extends React.Component {
 					<div className='big-separator'></div>
 					<div className='big-separator'></div>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
@@ -470,7 +469,7 @@ class Coaching extends React.Component {
 
 						<div className='thin-row'>
 							<span className='small-text-bold citrusGrey'>
-								{capitalize(t('lamguage'))}
+								{capitalize(t('language'))}
 							</span>
 							<span className='small-text-bold citrusBlack'>
 								{capitalize(t(coachingLanguage))}
@@ -480,7 +479,7 @@ class Coaching extends React.Component {
 						{focus.length > 0 &&
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
-									{capitalize(t('level'))}
+									{capitalize(t('focus'))}
 								</span>
 								<span className='small-text-bold citrusBlack'>
 								{
@@ -537,106 +536,6 @@ class Coaching extends React.Component {
 	}
 }
 
-// const styles = StyleSheet.create({
-// 	main: {
-// 		height: '100%',
-// 		width: '100%',
-// 		flex: 0,
-// 	},
-// 	coachingPicture: {
-// 		flex: 0,
-// 		width: '100%',
-// 		height: '30%',
-// 	},
-// 	pictureView: {
-// 		width: '100%',
-// 		height: '100%',
-// 		backgroundColor: 'rgba(0,0,0,0.2)',
-// 		paddingHorizontal: 20,
-// 		paddingTop: 30,
-// 	},
-// 	bottomContainer: {
-// 		flex: 0,
-// 		width: '100%',
-// 		height: '70%',
-// 		paddingBottom: 20,
-// 		justifyContent: 'space-around',
-// 		alignItems: 'flex-start',
-// 		backgroundColor: '#FFF',
-// 	},
-// 	titleRow: {
-// 		width: '100%',
-// 		flex: 0,
-// 		flexDirection: 'row',
-// 		justifyContent: 'space-between',
-// 		alignItems: 'flex-start',
-// 	},
-// 	row: {
-// 		width: '100%',
-// 		flex: 0,
-// 		flexDirection: 'row',
-// 		justifyContent: 'flex-start',
-// 	},
-
-// 	mainVideoContainer: {
-// 		height: '100%',
-// 		width: '100%',
-// 		flex: 1,
-// 		alignItems: 'center',
-// 		justifyContent: 'flex-start',
-// 	},
-// 	bufferContainer: {
-// 		position: 'absolute',
-// 		zIndex: 2000,
-// 		top: '45%',
-// 		left: '45%',
-// 	},
-// 	videoTopContainer: {
-// 		position: 'absolute',
-// 		height: '12%',
-// 		width: '100%',
-// 		paddingRight: 15,
-// 		paddingTop: 25,
-// 		flex: 0,
-// 		justifyContent: 'center',
-// 		alignItems: 'flex-end',
-// 		zIndex: 1000,
-// 		backgroundColor: 'transparent',
-// 	},
-// 	videoContainer: {
-// 		width: '100%',
-// 		height: '100%',
-// 		backgroundColor: '#000000',
-// 	},
-// 	pauseButtonContainer: {
-// 		position: 'absolute',
-// 		width: '100%',
-// 		flex: 0,
-// 		zIndex: 1000,
-// 		backgroundColor: 'transparent',
-// 		// bottom: '100%' <= 667 ? '2%' : '5.5%',
-// 		left: 15,
-// 	},
-// 	category: {
-// 		flex: 0,
-// 		flexDirection: 'row',
-// 		justifyContent: 'space-between',
-// 		alignItems: 'center',
-// 		height: 41,
-// 		width: '100%',
-// 		borderBottomWidth: 1,
-// 		borderBottomColor: '#F8F8F8',
-// 		paddingLeft: 20,
-// 	},
-// 	leftRow: {
-// 		maxWidth: '55%',
-// 		fontWeight: '500',
-// 	},
-// 	rightRow: {
-// 		maxWidth: '45%',
-// 	},
-// })
-
 const mapStateToProps = (state) => ({
 	user: state.auth.user,
 	userInfo: state.auth.userInfo,
@@ -647,7 +546,6 @@ const mapDispatchToProps = (dispatch) => ({
 	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
 	fetchUserInfo: (id) => dispatch(fetchUserInfo(id)),
 	loadUser: () => dispatch(loadUser()),
-	setAppScreen: screen => dispatch(setAppScreen(screen)),
 	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
 	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
 	fetchUserReplays: (id) => dispatch(fetchUserReplays(id))

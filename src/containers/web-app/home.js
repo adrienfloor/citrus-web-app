@@ -5,13 +5,13 @@ import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import ProgressBar from '@ramonak/react-progress-bar'
 import Dialog from '@material-ui/core/Dialog'
+import { Link } from 'react-router-dom'
 
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
 import Card from '../../components/web-app/card'
 import Tag from '../../components/web-app/tag'
 
-import { setAppScreen } from '../../actions/navigation-actions'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -37,13 +37,13 @@ let tabs = []
 class Home extends React.Component {
 	constructor(props) {
 		super(props)
+		const { t, location } = this.props
 		this.state = {
 			isLoading: false,
 			selectedCoach: null,
 			selectedCoaching: null,
-			activeTabName: '',
-			activeTabName: this.props.t('training'),
-			activeTabIndex: 0,
+			activeTabName: location.search === '?tab=coaching' ? t('coaching') : t('training'),
+			activeTabIndex: location.search === '?tab=coaching' ? 1 : 0,
 			isMenuOpen: false,
 			isCashingOut: false
 		}
@@ -54,13 +54,17 @@ class Home extends React.Component {
 		]
 
 		this.handleTabSelection = this.handleTabSelection.bind(this)
-		// this.alertWithType = this.alertWithType.bind(this)
 		this.returnTopActivities = this.returnTopActivities.bind(this)
-		// this.handleScroll = this.handleScroll.bind(this)
-		// this.scrollToPreviousPosition = this.scrollToPreviousPosition.bind(this)
 	}
 
 	handleTabSelection(tab, index) {
+		const { history, location } = this.props
+		if(index === 0 && location.search === '?tab=coaching') {
+			history.push('/home')
+		}
+		if (index === 1 && location.search !== '?tab=coaching') {
+			history.push('/home?tab=coaching')
+		}
 		this.setState({
 			activeTabIndex: index,
 			activeTabName: tab
@@ -77,10 +81,11 @@ class Home extends React.Component {
 		const {
 			user,
 			fetchUserInfo,
-			setAppScreen,
 			myCoachings,
 			userReplays,
-			t
+			t,
+			history,
+			location
 		} = this.props
 		const {
 			following,
@@ -107,8 +112,8 @@ class Home extends React.Component {
 					<div className='big-separator'></div>
 					<div className='big-separator'></div>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
@@ -202,8 +207,8 @@ class Home extends React.Component {
 										}
 									</div> :
 									<div className='padding-horizontal'>
-										<div
-											onClick={() => setAppScreen(2)}
+										<Link
+											to='/explore'
 											className='plus-container'
 										>
 											<PlusButton
@@ -217,7 +222,7 @@ class Home extends React.Component {
 													{capitalize(t('common.checkoutTrainings'))}
 												</span>
 											</div>
-										</div>
+										</Link>
 									</div>
 							}
 						</div>
@@ -293,11 +298,7 @@ class Home extends React.Component {
 								</div>
 								<div className='small-separator'></div>
 								<ProgressBar
-									completed={
-										activitiesIHaveAttended.length /
-										returnUserStatusProgressBar(activitiesIHaveAttended.length)
-									}
-									completed={returnUserStatusProgressBar(activitiesIHaveAttended.length)}
+									completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
 									height='10px'
 									bgColor='#B4B4B4'
 									baseBgColor='#FFFFFF'
@@ -375,8 +376,8 @@ class Home extends React.Component {
 											))
 										}
 									</div> :
-									<div
-										onClick={() => setAppScreen(3)}
+									<Link
+										to='/schedule'
 										className='plus-container'
 									>
 										<PlusButton
@@ -390,7 +391,7 @@ class Home extends React.Component {
 												{capitalize(t('common.startNow'))}
 											</span>
 										</div>
-									</div>
+									</Link>
 							}
 						</div>
 
@@ -477,7 +478,7 @@ class Home extends React.Component {
 				{
 					selectedCoaching &&
 					<Dialog
-						open={selectedCoaching}
+						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
 						<div style={{ maxWidth: '800px' }}>
@@ -500,8 +501,6 @@ const mapStateToProps = (state) => ({
 	userReplays: state.auth.userReplays
 })
 
-const mapDispatchToProps = (dispatch) => ({
-	setAppScreen: screen => dispatch(setAppScreen(screen))
-})
+const mapDispatchToProps = (dispatch) => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Home))

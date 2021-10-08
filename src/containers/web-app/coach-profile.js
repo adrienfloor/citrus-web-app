@@ -32,7 +32,6 @@ import {
 	loadUser
 } from '../../actions/auth-actions'
 // import { createNotification } from '../../actions/notifications-actions'
-import { setAppScreen } from '../../actions/navigation-actions'
 
 const { REACT_APP_SERVER_URL } = process.env
 
@@ -204,8 +203,8 @@ class CoachProfile extends React.Component {
 					<div className='big-separator'></div>
 					<div className='big-separator'></div>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
@@ -242,12 +241,12 @@ class CoachProfile extends React.Component {
 					<div className='profile-row'>
 						<div
 							style={{
-								backgroundPosition: 'center',
+								backgroundPosition: 'contain',
 								backgroundRepeat: 'no-repeat',
 								backgroundImage: `url(${avatarUrl})`,
 								backgroundSize: 'cover',
 								width: '300px',
-								height: '300px'
+								height: '200px'
 							}}>
 						</div>
 						<div
@@ -322,7 +321,7 @@ class CoachProfile extends React.Component {
 				{
 					selectedCoaching &&
 					<Dialog
-						open={selectedCoaching}
+						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
 						<div style={{ maxWidth: '800px' }}>
@@ -353,8 +352,7 @@ const mapDispatchToProps = dispatch => ({
 	createFollower: properties => dispatch(createFollower(properties)),
 	deleteFollower: (followedId, followerId) => dispatch(deleteFollower(followedId, followerId)),
 	// createNotification: notification => dispatch(createNotification(notification)),
-	loadUser: () => dispatch(loadUser()),
-	setAppScreen: screen => dispatch(setAppScreen(screen))
+	loadUser: () => dispatch(loadUser())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(CoachProfile))

@@ -143,6 +143,12 @@ input:focus {
 	cursor: pointer;
 }
 
+textarea {
+	outline: none;
+	resize: none;
+	overflow: auto;
+}
+
 input[type="password"] {
 	padding: 0 !important;
 	-webkit-appearance : none !important;

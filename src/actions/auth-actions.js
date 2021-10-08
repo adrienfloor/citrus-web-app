@@ -67,7 +67,6 @@ export const signin = (email, password) => async dispatch => {
 	const body = JSON.stringify({ email, password })
 	try {
 		const response = await axios.post(`${REACT_APP_API_URL}/auth`, body, config)
-		console.log('kirikou response', response)
 		return dispatch({ type: LOGIN_SUCCESS, payload: response.data })
 	} catch (err) {
 		dispatch(returnErrors(err, err, 'LOGIN_FAIL'))

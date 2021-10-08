@@ -137,3 +137,19 @@ export const renderCoachingButtonText = (coaching, user, isAttendingActivity) =>
 		return 'playVideo'
 	}
 }
+
+export const countryCodeToLanguage = countryCode => {
+	if (typeof countryCode !== 'string') return ''
+	switch (countryCode) {
+		case 'en':
+		case 'EN':
+			return 'english'
+			break;
+		case 'fr':
+		case 'FR':
+			return 'french'
+			break;
+		default:
+			return 'english'
+	}
+}

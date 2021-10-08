@@ -160,8 +160,8 @@ class ResetPassword extends React.Component {
 			return (
 				<div className='full-container flex-column flex-center main'>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={150}
 						width={150}
 					/>

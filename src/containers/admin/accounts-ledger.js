@@ -107,8 +107,8 @@ class AdminAccountsLedger extends React.Component {
 			return (
 				<div className='loader'>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>

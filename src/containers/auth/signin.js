@@ -18,6 +18,7 @@ import {
 	fetchUserReplays
 } from '../../actions/auth-actions'
 import { 	fetchTrainerCoachings } from '../../actions/coachings-actions'
+import { executeExploreSearch } from '../../actions/search-actions'
 
 import {
 	isValidEmailInput,
@@ -112,12 +113,12 @@ class Signin extends React.Component {
 		).then(res => {
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const userId = res.payload.user._id
-				// executeExploreSearch('all', userId, 0)
+				executeExploreSearch('all', userId, 5)
 				fetchUserReplays(userId)
 				// fetchNotifications(userId)
 				fetchTrainerCoachings(userId, true)
 				this.setState({ isLoading: false })
-				this.props.history.push('/app')
+				this.props.history.push('/home')
 				return
 			}
 
@@ -317,7 +318,9 @@ const mapDispatchToProps = dispatch => ({
 	signin: (email, password) => dispatch(signin(email, password)),
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
-	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe))
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
+	executeExploreSearch: (sport, userId, skipValue) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signin))

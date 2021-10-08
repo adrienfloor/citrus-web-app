@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
+import { Link, withRouter } from 'react-router-dom'
 
 import MobileDrawer from '../components/mobile-drawer'
 import { logout } from '../actions/auth-actions'
-import {
-	setDashboardFocus,
-	setAppScreen
-} from '../actions/navigation-actions'
+import { setDashboardFocus } from '../actions/navigation-actions'
 import { capitalize } from '../utils/various'
 
 import '../styling/headings.css'
@@ -23,12 +21,13 @@ const Layout = ({
 	setDashboardFocus,
 	isDashboard,
 	t,
-	setAppScreen,
-	appScreen
+	location
 }) => {
 
-	const isActiveTab = nav => {
-		if (appScreen === nav) {
+	const [activeTab, setActiveTab] = useState('/home')
+
+	const isActiveTab = tab => {
+		if (tab === location.pathname) {
 			return 'active-nav smaller-text-bold citrusGrey hover'
 		}
 		return 'smaller-text-bold citrusGrey hover'
@@ -60,31 +59,31 @@ const Layout = ({
 				{
 					isAuthenticated &&
 					<>
-						<div onClick={() => setAppScreen(1)}>
-							<span className={isActiveTab(1)}>
+						<Link to='/home'>
+							<span className={isActiveTab('/home')}>
 								{capitalize(t('home'))}
 							</span>
-						</div>
-						<div onClick={() => setAppScreen(2)}>
-							<span className={isActiveTab(2)}>
+						</Link>
+						<Link to='/explore'>
+							<span className={isActiveTab('/explore')}>
 								{capitalize(t('explore'))}
 							</span>
-						</div>
-						<div onClick={() => setAppScreen(3)}>
-							<span className={isActiveTab(3)}>
+						</Link>
+						<Link to='/schedule'>
+							<span className={isActiveTab('/schedule')}>
 								{capitalize(t('post'))}
 							</span>
-						</div>
-						<div onClick={() => setAppScreen(4)}>
-							<span className={isActiveTab(4)}>
+						</Link>
+						<Link to='/profile'>
+							<span className={isActiveTab('/profile')}>
 								{capitalize(t('profile'))}
 							</span>
-						</div>
-						<div onClick={() => setAppScreen(5)}>
-							<span className={isActiveTab(5)}>
+						</Link>
+						<Link to='/settings'>
+							<span className={isActiveTab('/settings')}>
 								{capitalize(t('settings'))}
 							</span>
-						</div>
+						</Link>
 						<div
 							onClick={logout}
 							className='medium-text hover logout small-button'
@@ -232,8 +231,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	logout: () => dispatch(logout()),
-	setDashboardFocus: focus => dispatch(setDashboardFocus(focus)),
-	setAppScreen: screen => dispatch(setAppScreen(screen))
+	setDashboardFocus: focus => dispatch(setDashboardFocus(focus))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Layout))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter((withTranslation()(Layout))))

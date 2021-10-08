@@ -117,4 +117,41 @@ export default {
 		vietnamese: "vietnamese",
 		westernPunjabi: "western punjabi"
 	},
+	pricesAvailable: {
+		zero: 0,
+		zero99: 0.99,
+		one99: 1.99,
+		two99: 2.99,
+		three99: 3.99,
+		four99: 4.99,
+		five99: 5.99,
+		six99: 6.99,
+		seven99: 7.99,
+		eight99: 8.99,
+		nine99: 9.99,
+		ten99: 10.99,
+		eleven99: 11.99,
+		twelve99: 12.99,
+		thirtenn99: 13.99,
+		fourteen99: 14.99,
+		fifteen99: 15.99,
+		sixteen99: 16.99,
+		seventeen99: 17.99,
+		eighteen99: 18.99,
+		nineteen99: 19.99,
+		twenty99: 20.99,
+		twentyOne99: 21.99,
+		twentyTwo99: 22.99,
+		twentyThree99: 23.99,
+		twentyFour99: 24.99,
+		twentyFive99: 25.99,
+		twentySix99: 26.99,
+		twentySeven99: 27.99,
+		twentyEight99: 28.99,
+		twentyNine99: 29.99
+	},
+	metricsAvailable: {
+		milesAndPounds: "miles and pounds",
+		kilometersAndKilos: "kilometers and kilos"
+	}
 }

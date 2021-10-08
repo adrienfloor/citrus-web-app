@@ -7,8 +7,13 @@ import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import * as UpChunk from '@mux/upchunk'
+import axios from 'axios'
+import io from 'socket.io-client'
+import ProgressBar from '@ramonak/react-progress-bar'
 
 import ImageUploader from '../../components/web-app/image-uploader'
+import Uploader from '../../components/web-app/uploader'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -19,13 +24,19 @@ import '../../styling/web-app.css'
 import { ReactComponent as CaretDown } from '../../assets/svg/caret-down.svg'
 import { ReactComponent as CaretUp } from '../../assets/svg/caret-up.svg'
 
-import { capitalize } from '../../utils/various'
+import {
+	capitalize,
+	countryCodeToLanguage,
+	returnCurrency
+} from '../../utils/various'
 
 import {
 	createCoaching,
 	updateCoaching,
 	deleteCoaching,
+	fetchTrainerCoachings
 } from '../../actions/coachings-actions'
+import { setNotification } from '../../actions/notifications-actions'
 
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
@@ -37,56 +48,121 @@ const levelsItems = Object.keys(translations.default.levels)
 const durationsItems = Object.keys(translations.default.durationsByTen)
 const equipmentsItems = Object.keys(translations.default.equipments)
 const languagesItems = Object.keys(translations.default.languagesAvailable)
+const pricesItems = Object.keys(translations.default.pricesAvailable)
 
+const {
+	REACT_APP_API_URL,
+	REACT_APP_SERVER_URL
+} = process.env
 
 class Schedule extends React.Component {
 	constructor(props) {
 		super(props)
-		const {
-			title,
-			sport,
-			pictureUri,
-			duration,
-			level,
-			equipment,
-			focus,
-			coachingLanguage,
-			freeAccess,
-			startingDate,
-		} = this.props.coaching
-
+		const { coaching } = this.props
 		this.state = {
-			title: title || '',
-			sport: sport || '',
-			pictureUri: pictureUri || '',
-			startingDate: startingDate || '',
-			duration: duration || '',
-			level: level || '',
-			equipment: equipment || [],
-			focus: focus || [],
-			language: coachingLanguage || '',
-			freeAccess: freeAccess || '',
+			// title: title || 'qwertqwr',
+			// sport: sport || 'calisthenics',
+			// pictureUri: pictureUri || 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1632923814/VonageApp/rddzvgcwql1yni6amvqt.jpg',
+			title: (coaching || {}).title || '',
+			sport: (coaching || {}).sport || '',
+			pictureUri: (coaching || {}).pictureUri || '',
+			startingDate: (coaching || {}).startingDate || '',
+			duration: (coaching || {}).duration || '',
+			level: (coaching || {}).level || '',
+			equipment: (coaching || {}).equipment || [],
+			focus: (coaching || {}).focus || [],
+			language: (coaching || {}).coachingLanguage || '',
+			freeAccess: (coaching || {}).freeAccess || '',
+			price: (coaching || {}).freeAccess || '',
 			isDatePickerOpen: false,
 			isLoading: false,
 			isSelecting: '',
 			isShowingAllParams: false,
-			stateButtonDisabled: false,
-			errorMessage: ''
+			isButtonDisabled: false,
+			errorMessage: '',
+			videoFile: '',
+			isReadingFile: false,
+			progress: null,
+			isProcessingVideo: false
 		}
 		this.handleDateSelection = this.handleDateSelection.bind(this)
-		// this.hasMissingParams = this.hasMissingParams.bind(this)
-		// this.createMissingAlert = this.createMissingAlert.bind(this)
-		this.onTextInputChange = this.onTextInputChange.bind(this)
-		// this.renderSelectors = this.renderSelectors.bind(this)
-		// this.handleToggleShowParams = this.handleToggleShowParams.bind(this)
-		// this.handleSubmit = this.handleSubmit.bind(this)
-		this.returnFreeAccessWording = this.returnFreeAccessWording.bind(this)
-		this.handleDeleteCoaching = this.handleDeleteCoaching.bind(this)
-		this.handleSecondPart = this.handleSecondPart.bind(this)
-		// this.createDeletingAlert = this.createDeletingAlert.bind(this)
+		this.returnPriceWording = this.returnPriceWording.bind(this)
+		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
+		this.upload = this.upload.bind(this)
 	}
 
-	handleSecondPart() {
+	componentDidMount() {
+		this.socket = io(REACT_APP_SERVER_URL)
+	}
+
+	async upload(coachingId) {
+		const { videoFile } = this.state
+		const {
+			updateCoaching,
+			fetchTrainerCoachings,
+			user,
+			setNotification,
+			t,
+			history
+		} = this.props
+		// this.setState({ isReadingFile: true })
+		// const file = await fetch(videoFile).then(res => res.blob()).then(blobFile => new File([blobFile], "new_video", { type: 'video/mp4,video/x-m4v,video/*' }))
+		// if (file) { this.setState({ isReadingFile: false }) }
+		try {
+			const config = {
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}
+			const muxResponse = await axios.get(`${REACT_APP_API_URL}/stream/create_mux_upload_url`, {}, config)
+			const muxUploadUrl = muxResponse.data.data.url
+			const passthrough = muxResponse.data.data.new_asset_settings.passthrough
+
+			const updatedCoaching = {
+				_id: coachingId,
+				passthrough
+			}
+
+			updateCoaching(updatedCoaching)
+			.then(res => console.log('updated coaching : ', res))
+
+			const upload = UpChunk.createUpload({
+				endpoint: muxUploadUrl,
+				file: videoFile,
+				chunkSize: 5120
+			})
+
+			// subscribe to events
+			upload.on('error', err => {
+				console.error('💥 🙀', err.detail)
+			})
+
+			upload.on('progress', progress => {
+				console.log(`So far we've uploaded ${progress.detail}% of this file.`)
+				this.setState({ progress: Math.round(progress.detail * 100) / 100 })
+			})
+
+			upload.on('success', () => {
+				console.log("Wrap it up, we're done here. 👋")
+				this.setState({
+					isProcessingVideo: true
+				})
+				this.socket.on(`coaching_ready_${passthrough}`, coaching => {
+					console.log('socket on coaching ready')
+					fetchTrainerCoachings(user._id, true)
+						.then(res => {
+							setNotification({ message: capitalize(t('successFullyUploadedCoaching')) })
+							history.push('/home?tab=coaching')
+						})
+					console.log('coaching ready : ', coaching)
+				})
+			})
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	handleCreateCoaching(e) {
 		const {
 			title,
 			sport,
@@ -98,12 +174,14 @@ class Schedule extends React.Component {
 			focus,
 			language,
 			freeAccess,
+			price
 		} = this.state
 		const {
 			createCoaching,
 			coaching,
 			updateCoaching,
 			onCoachingCreated,
+			t
 		} = this.props
 		const {
 			firstName,
@@ -113,26 +191,62 @@ class Schedule extends React.Component {
 			coachRating,
 		} = this.props.user
 
+		e.preventDefault()
+
 		this.setState({
-			stateButtonDisabled: true,
+			isButtonDisabled: true,
+			progress: 0
 		})
 
 
 		if (this.hasMissingParams()) {
 			this.setState({
-				stateButtonDisabled: false,
+				isButtonDisabled: false,
+				progress: null,
+				errorMessage: `${t('pleaseFillIn')} : ${this.hasMissingParams().join(', ')}`
 			})
-			return this.createMissingAlert(
-				this.hasMissingParams()
-			)
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
+			return
 		}
 
-	}
-
-	onTextInputChange(value, name) {
-		return (value) => {
-			this.setState({ [name]: value })
+		const newCoaching = {
+			title: title.toLowerCase(),
+			sport,
+			duration,
+			level: level && level.length > 0 ? level : 'allLevel',
+			equipment: equipment && equipment.length > 0 ? equipment : [],
+			startingDate: startingDate || Date.now(),
+			startingTime: startingDate ? moment(startingDate).format('h') : moment(Date.now()).format('h'),
+			focus: focus && focus.length > 0 ? focus : [],
+			coachingLanguage: language.length > 0 ? language : countryCodeToLanguage(moment.locale()),
+			freeAccess: price === 0 ? true : false,
+			price,
+			coachFirstName: firstName.toLowerCase(),
+			coachLastName: lastName.toLowerCase(),
+			coachUserName: userName.toLowerCase(),
+			coachId: _id,
+			pictureUri,
+			coachRating,
 		}
+
+		if (coaching && coaching._id) {
+			newCoaching._id = coaching._id;
+			return updateCoaching(newCoaching)
+				.then(res => {
+					const coachingId = res.payload._id
+					this.upload(coachingId)
+				})
+		}
+
+		return createCoaching(newCoaching)
+			.then(res => {
+				const coachingId = res.payload._id
+				this.upload(coachingId)
+			})
 	}
 
 	handleDateSelection(date) {
@@ -148,16 +262,24 @@ class Schedule extends React.Component {
 			title,
 			sport,
 			pictureUri,
+			videoFile,
+			price
 		} = this.state
 		const { t } = this.props
 		if (!title) {
-			missingParams.push(capitalize(t('title')))
+			missingParams.push(t('title'))
 		}
 		if (!sport) {
-			missingParams.push(capitalize(t('sport')))
+			missingParams.push(t('sport'))
 		}
 		if (!pictureUri) {
-			missingParams.push(capitalize(t('picture')))
+			missingParams.push(t('picture'))
+		}
+		if (!videoFile) {
+			missingParams.push(t('video'))
+		}
+		if (!price) {
+			missingParams.push(t('price'))
 		}
 		if (missingParams.length > 0) {
 			return missingParams
@@ -165,71 +287,12 @@ class Schedule extends React.Component {
 		return false
 	}
 
-	// createMissingAlert(missingElements) {
-	// 	missingElements.map(el => capitalize(el))
-
-	// 	Alert.alert(
-	// 		capitalize(t('coach.schedule.missingProperties')),
-	// 		missingElements.join(', '),
-	// 		[
-	// 			{
-	// 				text: "OK",
-	// 				onPress: () => console.log("Cancel Pressed"),
-	// 			},
-	// 		],
-	// 		{ cancelable: false }
-	// 	)
-	// }
-
-	// createDeletingAlert() {
-	// 	const { coaching } = this.props
-
-	// 	Alert.alert(
-	// 		capitalize(coaching.title),
-	// 		capitalize(t('coach.schedule.areYouSUreYouWantToDeleteCoaching')),
-	// 		[
-	// 			{
-	// 				text: capitalize(t('common.no')),
-	// 				onPress: () => console.log("Cancel deleting coaching"),
-	// 				style: "cancel",
-	// 			},
-	// 			{
-	// 				text: capitalize(t('common.yes')),
-	// 				onPress: () => this.handleDeleteCoaching(),
-	// 			},
-	// 		]
-	// 	)
-	// }
-
-	handleDeleteCoaching() {
-		const {
-			deleteCoaching,
-			coaching,
-			onCoachingCreated,
-			onCoachingDeleted,
-		} = this.props
-
-		this.setState({
-			isLoading: true,
-			stateButtonDisabled: true,
-		})
-
-		return deleteCoaching(coaching._id)
-			.then(res => {
-				this.setState({
-					isLoading: false,
-					stateButtonDisabled: false,
-				})
-				onCoachingDeleted()
-			})
-	}
-
-	returnFreeAccessWording(freeAccess) {
+	returnPriceWording(price) {
 		const { t } = this.props
-		if (freeAccess === capitalize(t('no')) || freeAccess === false) {
-			return `${capitalize(t('freeAccess'))} : ${capitalize(t('no'))}`
+		if (price === "zero") {
+			return capitalize(t('freeAccess'))
 		}
-		return `${capitalize(t('freeAccess'))} : ${capitalize(t('yes'))}`
+		return `${t(price)} ${returnCurrency(moment.locale())}`
 	}
 
 
@@ -257,11 +320,12 @@ class Schedule extends React.Component {
 			isLoading,
 			isSelecting,
 			isShowingAllParams,
-			stateButtonDisabled,
-			errorMessage
+			isButtonDisabled,
+			errorMessage,
+			progress,
+			isProcessingVideo,
+			price
 		} = this.state
-
-		const isButtonDisabled = (title.length === 0 || sport.length === 0 || pictureUri.length === 0) && !stateButtonDisabled
 
 		if (isLoading) {
 			return (
@@ -269,8 +333,8 @@ class Schedule extends React.Component {
 					<div className='big-separator'></div>
 					<div className='big-separator'></div>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
@@ -285,14 +349,15 @@ class Schedule extends React.Component {
 				</span>
 				<form
 					id='upload-form'
-					onSubmit={this.handleSecondPart}
+					onSubmit={this.handleCreateCoaching}
 					className='scroll-div-vertical card upload-form'
 				>
 					<input
 						className='text-input smaller-text-bold citrusGrey input form-input'
 						placeholder={capitalize(t('title'))}
-						onChange={e => this.onTextInputChange(e.target.value, 'title')}
+						onChange={(e) => this.setState({ title: e.target.value })}
 						style={{ color: '#000000' }}
+						disabled={progress || progress === 0 ? true : false}
 					/>
 					<div className='medium-separator'></div>
 					<span className='smaller-text-bold citrusGrey form-input'>
@@ -303,6 +368,7 @@ class Schedule extends React.Component {
 						id='simple-select'
 						value={sport}
 						onChange={e => this.setState({ sport: e.target.value })}
+						disabled={progress || progress === 0 ? true : false}
 					>
 						{
 							sportsItems.map((sport, i) => (
@@ -312,56 +378,56 @@ class Schedule extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<span className='smaller-text-bold citrusGrey form-input'>
-						{capitalize(t('freeAccess'))}
+						{capitalize(t('price'))}
 					</span>
 					<Select
 						className='form-input'
 						id='simple-select'
-						value={freeAccess}
-						onChange={e => this.setState({ freeAccess: e.target.value })}
+						value={price}
+						onChange={e => this.setState({ price: e.target.value })}
+						disabled={progress || progress === 0 ? true : false}
 					>
-						<MenuItem value={true}>{capitalize(t('yes'))}</MenuItem>
-						<MenuItem value={false}>{capitalize(t('no'))}</MenuItem>
+						{
+							pricesItems.map((price, i) => (
+								<MenuItem value={price} key={i}>
+									{this.returnPriceWording(price)}
+								</MenuItem>
+							))
+						}
 					</Select>
 					<div className='medium-separator'></div>
-					<div className='media-row'>
-						<ImageUploader
-							t={t}
-							onSetPictureUri={pictureUri => {
-								this.setState({ pictureUri })
-							}}
-							pictureUri={pictureUri ? pictureUri : null}
-						/>
-					</div>
-					<div className='medium-separator'></div>
-					<div className='more-details-row'>
-						<span className='smaller-text-bold citrusGrey'>
-							{
-								!isShowingAllParams &&
-								capitalize(t('moreInfo'))
-							}
-						</span>
-						<div
-							onClick={() => this.setState({ isShowingAllParams: !isShowingAllParams })}
-							className='hover'
-						>
-							{
-								isShowingAllParams ?
-									<CaretUp
-										width={25}
-										height={25}
-										strokeWidth={2}
-									/> :
-									<CaretDown
-										width={25}
-										height={25}
-										strokeWidth={2}
-									/>
-							}
-						</div>
-					</div>
 					{
-						isShowingAllParams &&
+						progress || progress === 0 ?
+						null :
+						<div className='more-details-row'>
+							<span className='smaller-text-bold citrusGrey'>
+								{
+									!isShowingAllParams &&
+									capitalize(t('moreInfo'))
+								}
+							</span>
+							<div
+								onClick={() => this.setState({ isShowingAllParams: !isShowingAllParams })}
+								className='hover'
+							>
+								{
+									isShowingAllParams ?
+										<CaretUp
+											width={25}
+											height={25}
+											strokeWidth={2}
+										/> :
+										<CaretDown
+											width={25}
+											height={25}
+											strokeWidth={2}
+										/>
+								}
+							</div>
+						</div>
+					}
+					{
+						isShowingAllParams && !progress &&
 						<>
 							<span className='smaller-text-bold citrusGrey form-input'>
 								{capitalize(t('duration'))}
@@ -446,25 +512,90 @@ class Schedule extends React.Component {
 							</Select>
 						</>
 					}
+					<div className='medium-separator'></div>
+					<div className='media-row'>
+						<ImageUploader
+							disabled={progress || progress === 0 ? true : false}
+							t={t}
+							onSetPictureUri={pictureUri => {
+								this.setState({ pictureUri })
+							}}
+							pictureUri={pictureUri ? pictureUri : null}
+						/>
+						<Uploader
+							disabled={progress || progress === 0 ? true : false}
+							t={t}
+							onVideoSelected={videoFile => this.setState({ videoFile })}
+						/>
+					</div>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<div className='button-container flex-column flex-center'>
-						<button
-							className={!stateButtonDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
-							type='submit'
-							form='upload-form'
-							disabled={stateButtonDisabled}
-						>
-							<span className='small-title citrusWhite'>
-								{capitalize(t('createCoaching'))}
-							</span>
-						</button>
+					<div className='flex-row' style={{ width: '80%', margin: '0 10%' }}>
+						{
+							!progress && progress != 0 && !isProcessingVideo &&
+							<button
+								className={!isButtonDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
+								style={{ width: '100%' }}
+								type='submit'
+								form='upload-form'
+								disabled={isButtonDisabled}
+							>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('createCoaching'))}
+								</span>
+							</button>
+						}
+						{
+							progress !== null && progress >= 0 && !isProcessingVideo ?
+							<div style={{ height: '50px', width: '100%' }}>
+								<div className='flex-row' style={{ alignItems: 'center'}}>
+									<span className='smaller-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
+										{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
+									</span>
+									<Loader
+										type="Oval"
+										color="#C2C2C2"
+										height={20}
+										width={20}
+									/>
+								</div>
+								<ProgressBar
+									completed={progress}
+									height='10px'
+									baseBgColor='#DFDFDF'
+									bgColor='#C2C2C2'
+									isLabelVisible={false}
+								/>
+							</div> : null
+						}
+						{
+							isProcessingVideo &&
+							<div style={{ height: '50px', width: '100%' }}>
+								<div className='flex-row' style={{ alignItems: 'center' }}>
+									<span className='smaller-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+										{capitalize(t('processingVideo'))}
+									</span>
+									<Loader
+										type="Oval"
+										color="#C2C2C2"
+										height={20}
+										width={20}
+									/>
+								</div>
+							</div>
+						}
 					</div>
+					{
+						progress !== null && progress >= 0 && !isProcessingVideo ?
+							<span className='smaller-text-bold citrusBlack' style={{ width: '80%' }}>
+								{capitalize(t('dontClose'))}
+							</span> : null
+					}
 					{
 						errorMessage.length > 0 &&
 						<span
-							className='small-text citrusRed'
-							style={{ marginTop: 2 }}
+							className='smaller-text-bold citrusRed'
+							style={{ marginTop: 10 }}
 						>
 							{errorMessage}
 						</span>
@@ -479,6 +610,11 @@ const mapStateToProps = (state) => ({
 	user: state.auth.user
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = (dispatch) => ({
+	createCoaching: coachingInfo => dispatch(createCoaching(coachingInfo)),
+	updateCoaching: coachingInfo => dispatch(updateCoaching(coachingInfo)),
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
+	setNotification: notification => dispatch(setNotification(notification))
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Schedule))

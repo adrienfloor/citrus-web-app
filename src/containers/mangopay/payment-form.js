@@ -246,8 +246,8 @@ class PaymentForm extends React.Component {
 				<div className='flex-column flex-center'>
 					<div className='big-separator'></div>
 					<Loader
-						type="Grid"
-						color="#0075FF"
+						type='Oval'
+						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
