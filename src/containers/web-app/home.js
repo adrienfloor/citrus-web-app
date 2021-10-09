@@ -130,17 +130,6 @@ class Home extends React.Component {
 			// )
 		}
 
-		if (selectedCoach) {
-			return (
-				<CoachProfile
-					coach={selectedCoach}
-					onCancel={() => {
-						this.setState({ selectedCoach: null })
-					}}
-				/>
-			)
-		}
-
 		return (
 			<div className='main-container'>
 				<div className='tabs-bar'>
@@ -470,8 +459,7 @@ class Home extends React.Component {
 								<div className='medium-separator'></div>
 								<div className='small-separator'></div>
 								<div
-									className='filled-button'
-									style={{ width: '250px' }}
+									className='filled-button cashout-button'
 									onClick={() => this.setState({ isCashingOut: true })}
 								>
 									<span className='small-title citrusWhite'>
@@ -496,6 +484,20 @@ class Home extends React.Component {
 								isMyCoaching={user._id === selectedCoaching.coachId}
 							/>
 						</div>
+					</Dialog>
+				}
+				{
+					selectedCoach &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ selectedCoach: null })}
+					>
+						<CoachProfile
+							coach={selectedCoach}
+							onCancel={() => {
+								this.setState({ selectedCoach: null })
+							}}
+						/>
 					</Dialog>
 				}
 			</div>

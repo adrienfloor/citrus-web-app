@@ -53,7 +53,7 @@ class Explore extends React.Component {
 			selectedCoaching: null,
 			isFilterOpen: false,
 			filters: {},
-			searchInputText: '',
+			searchInputText: 'kam',
 			searchingSessions: true,
 			searchingAccounts: false,
 			selectedCoach: null,
@@ -158,7 +158,7 @@ class Explore extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack' style={{ width: '100%'}}>
+				<span className='big-title citrusBlack' style={{ width: '100%' }}>
 					{capitalize(t('explore'))}
 				</span>
 				<div
@@ -167,21 +167,47 @@ class Explore extends React.Component {
 							{ display: 'flex', width: '100%', alignItems: 'flex-end', paddingBottom: '30px' } :
 							{ display: 'flex', width: '100%', alignItems: 'flex-end' }
 					}
+					className={searchInputText.length ?'search-input-text-mobile' : ''}
 				>
-					<div style={{ width: '20%' }}>
+					<div className={searchInputText.length ? 'explore-search-bar-long' : 'explore-search-bar'}>
 						<input
-							className='text-input small-text-bold citrusGrey input'
+							className='text-input small-text-bold citrusGrey input search-input'
 							style={{ backgroundColor: '#F8F8F8', width: '100%' }}
 							placeholder={capitalize(t('search'))}
 							value={searchInputText}
 							onChange={e => this.handleSearch(e.target.value)}
 						/>
+						{
+							searchInputText.length > 0 &&
+							<div
+								style={{
+									marginTop: '20px',
+									width: '10%',
+									display: 'flex',
+									justifyContent: 'flex-end'
+								}}
+								className='hover mobile-only'
+								onClick={() => {
+									this.setState({ searchInputText: '' })
+									this.handleResetSearch()
+								}}>
+								<Close
+									width={20}
+									height={20}
+									stroke={'#C2C2C2'}
+									strokeWidth={2}
+								/>
+							</div>
+						}
 					</div>
 					{searchInputText.length ? (
-						<div className='thin-row' style={{ width: '350px'}}>
+						<div
+							style={{ width: '350px'}}
+							className='thin-row mobile-thin-row'
+						>
 							<div
 								style={{ marginLeft: '20px' }}
-								className='hover'
+								className='hover desktop-only'
 								onClick={() => {
 									this.setState({ searchInputText: '' })
 									this.handleResetSearch()
@@ -248,8 +274,8 @@ class Explore extends React.Component {
 					searchInputText === '' &&
 					<>
 						<div className='small-separator'></div>
-						<div className='medium-separator'></div>
-						<div className='scroll-div-horizontal' style={{ paddingBottom: '20px' }}>
+						<div className='medium-separator desktop-only'></div>
+						<div className='scroll-div-horizontal sports-scroll'>
 							<div onClick={() => this.handleSportSelection('all', 'all')}>
 								<div
 									className={activeTabIndex === 'all' ? 'small-active-tab hover' : 'small-tab hover'}
@@ -288,7 +314,7 @@ class Explore extends React.Component {
 							}
 						</div>
 						<div className='small-separator'></div>
-						<div className='medium-separator'></div>
+						<div className='medium-separator desktop-only'></div>
 					</>
 				}
 				{
@@ -298,7 +324,7 @@ class Explore extends React.Component {
 								searchInputText === '' &&
 								activeSportType === 'all' ?
 								exploreSearch.map((coaching, i) => (
-									<div style={{ margin: '0 30px 0 0' }} key={i}>
+									<div className='explore-cards-container'key={i}>
 										<Card
 											onClick={() =>
 												this.setState({
@@ -314,7 +340,7 @@ class Explore extends React.Component {
 									</div>
 									))
 									: exploreSpecificSportSearch.map((coaching, i) => (
-										<div style={{ margin: '0 30px 0 0' }} key={i}>
+										<div className='explore-cards-container'key={i}>
 											<Card
 												onClick={() =>
 													this.setState({
@@ -330,14 +356,13 @@ class Explore extends React.Component {
 										</div>
 									))
 							}
-							<div>
+							<div className='full-width-on-mobile'>
 								{
 									activeSportType !== 'all' &&
 									searchInputText === '' &&
 									!exploreSpecificSportSearch.length ? null : (
 									<div
-										className='light-button hover'
-										style={{ width: '300px' }}
+										className='light-button hover cashout-button button-load-more-mobile'
 										onClick={() => {
 											this.setState({
 												skip: skip + 5,
@@ -403,7 +428,7 @@ class Explore extends React.Component {
 							searchInputText &&
 							sessionsSearch.length ?
 							sessionsSearch.map((coaching, i) => (
-								<div style={{ margin: '0 30px 0 0' }} key={i}>
+								<div className='explore-cards-container'key={i}>
 									<Card
 										onClick={() => this.setState({ selectedCoaching: coaching })}
 										fullWidth
@@ -419,13 +444,14 @@ class Explore extends React.Component {
 							searchInputText &&
 							accountsSearch.length ?
 							accountsSearch.map((coach, i) => (
-								<div style={{ margin: '0 30px 0 0' }} key={i}>
+								<div className='explore-cards-container'key={i}>
 									<Card
 										onClick={() => this.setState({ selectedCoach: coach })}
 										size='medium'
 										title={capitalize(coach.userName)}
 										subtitle={`${coach.followers.length} ${coach.followers.length > 1 ? t('followers') : t('follower')}`}
 										imgUri={coach.avatarUrl}
+										fullWidth
 									/>
 								</div>)) :
 							null

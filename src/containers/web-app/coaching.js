@@ -329,7 +329,7 @@ class Coaching extends React.Component {
 
 		if (muxReplayPlaybackId) {
 			return (
-				<div style={{ backgroundColor: '#000000' }}>
+				<div className='player-wrapper'>
 					<div
 						style={{
 							margin: '10px',
@@ -350,7 +350,10 @@ class Coaching extends React.Component {
 						/>
 					</div>
 					<ReactPlayer
+						className='react-player'
 						playing={false}
+						width='100%'
+						height='100%'
 						autoPlay
 						controls
 						url={muxReplayPlaybackId}
@@ -390,11 +393,30 @@ class Coaching extends React.Component {
 				<div className='scroll-div-vertical'>
 					<div
 						style={{
+							margin: '10px',
+							zIndex: 1000,
+							backgroundColor: 'transparent',
+							position: 'absolute',
+							top: 0,
+							right: 0
+						}}
+					>
+						<Close
+							onClick={onCancel}
+							className='hover'
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
+						/>
+					</div>
+					<div
+						className='mobile-card-image'
+						style={{
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: `url(${pictureUri})`,
-							backgroundSize: 'cover',
-							height: '300px'
+							backgroundSize: 'cover'
 						}}
 					>
 					</div>
@@ -408,7 +430,7 @@ class Coaching extends React.Component {
 							<span className='small-text-bold citrusGrey'>
 								{capitalize(t('activity'))}
 							</span>
-							<span className='small-text-bold citrusBlack'>
+							<span className='small-text-bold citrusBlack ellipsis-mobile'>
 								{capitalize(t(sport))}
 							</span>
 						</div>
@@ -419,7 +441,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('duration'))}
 								</span>
-								<span className='small-text-bold citrusBlack'>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{capitalize(t(duration))}
 								</span>
 							</div>
@@ -431,7 +453,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('freeAccess'))}
 								</span>
-								<span className='small-text-bold citrusBlack'>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{freeAccess
 										? capitalize(t('yes'))
 										: capitalize(t('no'))
@@ -445,18 +467,17 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('level'))}
 								</span>
-								<span className='small-text-bold citrusBlack'>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{capitalize(t(level))}
 								</span>
 							</div>
 						}
 
-
 						<div className='thin-row'>
 							<span className='small-text-bold citrusGrey'>
 								{capitalize(t('language'))}
 							</span>
-							<span className='small-text-bold citrusBlack'>
+							<span className='small-text-bold citrusBlack ellipsis-mobile'>
 								{capitalize(t(coachingLanguage))}
 							</span>
 						</div>
@@ -466,7 +487,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('focus'))}
 								</span>
-								<span className='small-text-bold citrusBlack'>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 								{
 									focus
 									.map((fc) => capitalize(t(fc)))
@@ -481,7 +502,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('level'))}
 								</span>
-								<span className='small-text-bold citrusBlack'>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{
 										equipment
 											.map((eq) => capitalize(t(eq)))
@@ -491,21 +512,6 @@ class Coaching extends React.Component {
 							</div>
 						}
 					</div>
-					<div className='medium-separator'></div>
-					<div className='small-separator'></div>
-					<div
-						disabled={
-							!products ||
-							(products && products.length < 0) ||
-							isBuyingCoaching
-						}
-						className='filled-button'
-						onClick={this.handleSubmit}
-					>
-						<span className='small-title citrusWhite'>
-							{this.renderButtonText()}
-						</span>
-					</div>
 					{/* {isConfirmationOpen && (
 						<OverlayConfirmation
 							itemText={t('common.confirmAccess')}
@@ -514,6 +520,20 @@ class Coaching extends React.Component {
 							onCancel={() => this.setState({ isConfirmationOpen: false })}
 						/>
 					)} */}
+				</div>
+				<div className='small-separator'></div>
+				<div
+					disabled={
+						!products ||
+						(products && products.length < 0) ||
+						isBuyingCoaching
+					}
+					className='filled-button button-mobile'
+					onClick={this.handleSubmit}
+				>
+					<span className='small-title citrusWhite'>
+						{this.renderButtonText()}
+					</span>
 				</div>
 			</div>
 		)

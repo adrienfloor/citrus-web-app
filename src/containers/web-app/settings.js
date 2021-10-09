@@ -7,6 +7,7 @@ import moment from 'moment'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Dialog from '@material-ui/core/Dialog'
+import { Link } from 'react-router-dom'
 
 import {
 	updateUser,
@@ -286,6 +287,50 @@ class Settings extends React.Component {
 					>
 						{capitalize(t('deleteMyAccount'))}
 					</span>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+						<span className='small-title citrusBlack form-input mobile-only'>
+						{capitalize(t('help'))}
+					</span>
+					<div className='medium-separator mobile-only'></div>
+						<Link
+							to={{ pathname: 'https://thecitrusapp.com' }}
+							target='_blank'
+							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+						>
+							{capitalize(t('howItWorks'))}
+						</Link>
+						<div className='small-separator mobile-only'></div>
+						<Link
+							to={{ pathname: 'https://thecitrusapp.com/privacy-policy' }}
+							target='_blank'
+							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+						>
+							{capitalize(t('privacy'))}
+						</Link>
+						<div className='small-separator mobile-only'></div>
+						<Link
+							to={{ pathname: 'https://thecitrusapp.com/cgu-cgv/' }}
+							target='_blank'
+							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+						>
+							{capitalize(t('terms'))}
+						</Link>
+						<div className='small-separator mobile-only'></div>
+						<Link
+							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+							to='#'
+							onClick={e => {
+								e.preventDefault()
+								window.location = "mailto:contact@thecitrusapp.com"
+							}}
+						>
+							{capitalize(t('contact'))}
+						</Link>
+						<div className='small-separator mobile-only'></div>
+						<span className='small-text citrusGrey form-input mobile-only'>
+							© 2021 All rights Reserved. Design by The Citrus Company
+						</span>
 				</div>
 				{
 					isDeletingAccount &&

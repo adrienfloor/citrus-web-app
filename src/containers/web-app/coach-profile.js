@@ -18,6 +18,7 @@ import '../../styling/App.css'
 import '../../styling/web-app.css'
 
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	capitalize
@@ -61,7 +62,6 @@ class CoachProfile extends React.Component {
 		this.loadCoachInfo()
 
 		this.loadCoachInfo = this.loadCoachInfo.bind(this)
-		// this.alertWithType = this.alertWithType.bind(this)
 		this.handleFollowCoach = this.handleFollowCoach.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
@@ -215,50 +215,64 @@ class CoachProfile extends React.Component {
 		const isDefaultProfilePic = avatarUrl === 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1623317757/VonageApp/avatar/noun_avatar_2309777_jhlofy.png'
 
 		return (
-			<div className='main-container'>
+			<div className='coach-profile-container'>
 				<div
 					style={{
-						width: '100%',
+						width: '98.5%',
 						height: '50px',
 						display: 'flex',
-						justifyContent: 'flex-start',
+						justifyContent: 'flex-end',
 						alignItems: 'center'
 					}}
 					onClick={onCancel}
-					className='hover'
+					className='hover desktop-only'
 				>
-					<CaretBack
+					<Close
 						width={25}
 						height={25}
 						stroke={'#C2C2C2'}
 						strokeWidth={2}
 					/>
-					<span className='small-text citrusGrey'>
-						{capitalize(t('back'))}
-					</span>
 				</div>
 				<div className='scroll-div-vertical'>
 					<div className='profile-row'>
 						<div
+							className='mobile-coach-image'
 							style={{
-								backgroundPosition: 'contain',
+								position: 'relative',
+								backgroundPosition: 'center',
 								backgroundRepeat: 'no-repeat',
 								backgroundImage: `url(${avatarUrl})`,
-								backgroundSize: 'cover',
-								width: '300px',
-								height: '200px'
+								backgroundSize: 'cover'
 							}}>
+							<div
+								style={{
+									margin: '10px',
+									zIndex: 1000,
+									backgroundColor: 'transparent',
+									position: 'absolute',
+									top: 0,
+									right: 0
+								}}
+								className='mobile-only'
+							>
+								<Close
+									onClick={onCancel}
+									className='hover'
+									width={25}
+									height={25}
+									stroke={'#C2C2C2'}
+									strokeWidth={2}
+								/>
+							</div>
 						</div>
-						<div
-							style={{ paddingLeft: '30px', maxWidth: '600px' }}
-							className='profile-column'
-						>
+						<div className='profile-column'>
 							<div className='profile-title-row'>
 								<span className='small-title citrusBlack'>
 									{capitalize(userName)}
 								</span>
 								<div
-									className='filled-button hover'
+									className='filled-button hover desktop-only'
 									style={{ width: '90px', height: '25px', marginLeft: '10px' }}
 									onClick={this.handleSubmit}
 								>
@@ -290,7 +304,7 @@ class CoachProfile extends React.Component {
 							}
 						</div>
 					</div>
-					<div className='category-block'>
+					<div className='category-block coaching-block-mobile'>
 						<span className='small-title citrusBlack'>
 							{capitalize(t('coachings'))}
 						</span>
@@ -317,6 +331,15 @@ class CoachProfile extends React.Component {
 						}
 					</div>
 					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<div
+						className='filled-button button-mobile mobile-only-flex'
+						onClick={this.handleSubmit}
+					>
+						<span className='small-title citrusWhite'>
+							{isFollowingCoachWording}
+						</span>
+					</div>
 				</div>
 				{
 					selectedCoaching &&
@@ -324,7 +347,7 @@ class CoachProfile extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div style={{ maxWidth: '800px' }}>
+						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

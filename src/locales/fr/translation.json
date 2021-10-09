@@ -424,5 +424,7 @@
 	"successFullyChangedPassword": "mot de passe changé avec succès",
 	"checkoutTrainings": "voir les trainings",
 	"noTrainingsYet": "pas encore de trainings",
-	"noCoachingsYet": "pas encore de coachings"
+	"noCoachingsYet": "pas encore de coachings",
+	"help": "aide",
+	"contact": "contact"
 }

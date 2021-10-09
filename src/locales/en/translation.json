@@ -422,5 +422,7 @@
 	"successFullyChangedPassword": "successfully changed password",
 	"checkoutTrainings": "check out trainings",
 	"noTrainingsYet": "no trainings yet",
-	"noCoachingsYet": "no coachings yet"
+	"noCoachingsYet": "no coachings yet",
+	"help": "help",
+	"contact": "contact"
 }

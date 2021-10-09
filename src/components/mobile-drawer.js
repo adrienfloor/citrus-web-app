@@ -23,6 +23,8 @@ import { ReactComponent as Compass } from '../assets/svg/compass.svg'
 import { ReactComponent as Plus } from '../assets/svg/plus-button.svg'
 import { ReactComponent as User } from '../assets/svg/user.svg'
 import { ReactComponent as Gear } from '../assets/svg/gear.svg'
+import { ReactComponent as Logo } from '../assets/svg/logo.svg'
+import { ReactComponent as Close } from '../assets/svg/close.svg'
 
 
 import { withTranslation } from 'react-i18next'
@@ -46,7 +48,7 @@ const useStyles = makeStyles({
 	}
 })
 
-function MobileDrawer({ t, currentFocus, history }) {
+function MobileDrawer({ t, currentFocus, logout }) {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
@@ -65,64 +67,101 @@ function MobileDrawer({ t, currentFocus, history }) {
 			role="presentation"
 			onClick={toggleDrawer(false)}
 			onKeyDown={toggleDrawer(false)}
+			style={{ height: '95%', marginBottom: '5%' }}
 		>
-			<List>
-				<img
-					style={{ paddingLeft: '16px' }}
-					className='logo'
-					src={logoUri}
-					alt='citrus-logo'
-				/>
-				<Link to='/home'>
-					<ListItem button>
-						<ListItemIcon>
-							<Home />
-						</ListItemIcon>
+			<List
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'space-between',
+					height: '100%'
+				}}
+			>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'flex-start',
+						marginTop: '5px'
+					}}
+				>
+					<div style={{ marginLeft: '16px' }}>
+						<Logo />
+					</div>
+					<div
+						style={{ marginRight: '10px' }}
+						onClick={toggleDrawer(false)}
+					>
+						<Close />
+					</div>
+				</div>
+				<div>
+					<Link to='/home'>
+						<ListItem button>
+							<ListItemIcon>
+								<Home />
+							</ListItemIcon>
 							<span className='smaller-text-bold citrusGrey'>
 								{capitalize(t('home'))}
 							</span>
-					</ListItem>
-				</Link>
-				<Link to='/explore'>
-					<ListItem button>
-						<ListItemIcon>
-							<Compass />
-						</ListItemIcon>
-						<span className='smaller-text-bold citrusGrey'>
-							{capitalize(t('explore'))}
+						</ListItem>
+					</Link>
+					<div className='small-separator'></div>
+					<Link to='/explore'>
+						<ListItem button>
+							<ListItemIcon>
+								<Compass />
+							</ListItemIcon>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('explore'))}
+							</span>
+						</ListItem>
+					</Link>
+					<div className='small-separator'></div>
+					<Link to='/schedule'>
+						<ListItem button>
+							<ListItemIcon>
+								<Plus />
+							</ListItemIcon>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('post'))}
+							</span>
+						</ListItem>
+					</Link>
+					<div className='small-separator'></div>
+					<Link to='/profile'>
+						<ListItem button>
+							<ListItemIcon>
+								<User />
+							</ListItemIcon>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('profile'))}
+							</span>
+						</ListItem>
+					</Link>
+					<div className='small-separator'></div>
+					<Link to='/settings'>
+						<ListItem button>
+							<ListItemIcon>
+								<Gear />
+							</ListItemIcon>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('settings'))}
+							</span>
+						</ListItem>
+					</Link>
+				</div>
+				<div className='small-separator'></div>
+				<ListItem button>
+					<div
+						onClick={logout}
+						className='medium-text hover logout filled-button'
+					>
+						<span className='small-text-bold citrusWhite'>
+							{capitalize(t('logOut'))}
 						</span>
-					</ListItem>
-				</Link>
-				<Link to='/schedule'>
-					<ListItem button>
-						<ListItemIcon>
-							<Plus />
-						</ListItemIcon>
-						<span className='smaller-text-bold citrusGrey'>
-							{capitalize(t('post'))}
-						</span>
-					</ListItem>
-				</Link>
-				<Link to='/profile'>
-					<ListItem button>
-						<ListItemIcon>
-							<User />
-						</ListItemIcon>
-						<span className='smaller-text-bold citrusGrey'>
-							{capitalize(t('profile'))}
-						</span>
-					</ListItem>
-				</Link>
-				<Link to='/settings'>
-					<ListItem button>
-						<ListItemIcon>
-							<Gear />
-						</ListItemIcon>
-						<span className='smaller-text-bold citrusGrey'>
-							{capitalize(t('settings'))}
-						</span>
-					</ListItem>
-				</Link>
+					</div>
+				</ListItem>
 			</List>
 
 			{/* <div className={`${classes.padded} small-title drawer-title`}>

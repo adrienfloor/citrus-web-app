@@ -12,7 +12,7 @@ import io from 'socket.io-client'
 import ProgressBar from '@ramonak/react-progress-bar'
 
 import ImageUploader from '../../components/web-app/image-uploader'
-import Uploader from '../../components/web-app/uploader'
+import VideoUploader from '../../components/web-app/video-uploader'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -595,7 +595,7 @@ class Schedule extends React.Component {
 							}}
 							pictureUri={pictureUri ? pictureUri : null}
 						/>
-						<Uploader
+						<VideoUploader
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
 							onVideoSelected={videoFile => this.setState({ videoFile })}

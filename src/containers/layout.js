@@ -41,9 +41,10 @@ const Layout = ({
 				<div className='header-left-box'>
 					{
 						// isDashboard &&
+						isAuthenticated &&
 						<div className='mobile-drawer'>
 							<MobileDrawer
-								history={history}
+								logout={logout}
 								currentFocus={focus => setDashboardFocus(focus)}
 							/>
 						</div>
@@ -59,34 +60,34 @@ const Layout = ({
 				{
 					isAuthenticated &&
 					<>
-						<Link to='/home'>
+						<Link to='/home' className='desktop-only'>
 							<span className={isActiveTab('/home')}>
 								{capitalize(t('home'))}
 							</span>
 						</Link>
-						<Link to='/explore'>
+						<Link to='/explore' className='desktop-only'>
 							<span className={isActiveTab('/explore')}>
 								{capitalize(t('explore'))}
 							</span>
 						</Link>
-						<Link to='/schedule'>
+						<Link to='/schedule' className='desktop-only'>
 							<span className={isActiveTab('/schedule')}>
 								{capitalize(t('post'))}
 							</span>
 						</Link>
-						<Link to='/profile'>
+						<Link to='/profile' className='desktop-only'>
 							<span className={isActiveTab('/profile')}>
 								{capitalize(t('profile'))}
 							</span>
 						</Link>
-						<Link to='/settings'>
+						<Link to='/settings' className='desktop-only'>
 							<span className={isActiveTab('/settings')}>
 								{capitalize(t('settings'))}
 							</span>
 						</Link>
 						<div
 							onClick={logout}
-							className='medium-text hover logout small-button'
+							className='medium-text hover logout small-button desktop-only'
 						>
 							<span className='small-text-bold citrusWhite'>
 								{capitalize(t('logOut'))}
@@ -96,7 +97,7 @@ const Layout = ({
 				}
 			</header>
 			<div className='children'>{children}</div>
-			<footer className='footer flex-row'>
+			<footer className='footer flex-row desktop-only'>
 				<div className='flex-row flex-center contact-row'>
 					{/* <a target='_blank' className='small-text' href='https://thecitrusapp.com'>Legals</a> */}
 					<div className='footer-links'>
@@ -191,6 +192,7 @@ const Layout = ({
 							display: flex;
 							flex-direction: row;
 							align-items: center;
+							height: 60px;
 						}
 						.contact-row {
 							flex-direction: column;
@@ -206,6 +208,10 @@ const Layout = ({
 						.footer-link {
 							margin-right: 5px;
 							font-size: 14px !important;
+						}
+						.children {
+							margin-top: 60px;
+							margin-bottom: 0;
 						}
 					}
 					@media only screen and (min-width: 640px) {

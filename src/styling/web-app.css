@@ -40,6 +40,7 @@
 	min-width: 454px;
 	overflow-y: hidden;
 	overflow-x: hidden;
+	background-color: #000000;
 }
 
 .tabs-bar {
@@ -78,6 +79,7 @@
 	justify-content: center;
 	align-items: center;
 	padding: 0 10px 2.5px 10px;
+	white-space: nowrap;
 }
 
 .category-block {
@@ -148,6 +150,18 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: flex-start;
+	padding-left: 30px;
+	max-width: 600px;
+}
+
+.coach-profile-container {
+	width: 97.5%;
+	height: 100%;
+	margin-left: 2.5%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 }
 
 .coaching-container {
@@ -156,7 +170,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: space-between;
+	background-color: #FFFFFF;
 }
 
 .coaching-column {
@@ -168,6 +183,18 @@
 	margin: 0 2.5%;
 }
 
+.mobile-card-image {
+	width: 100% !important;
+	height: 300px;
+	background-position: center;
+}
+
+.mobile-coach-image {
+		width: 300px;
+		height: 200px;
+		background-position: center;
+}
+
 .thin-row {
 	display: flex;
 	justify-content: space-between;
@@ -176,12 +203,37 @@
 	padding: 10px 0 10px 0;
 }
 
+.explore-search-bar {
+	width: 20%;
+}
+
 .search-container {
 	width: 100%;
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
 	flex-wrap: wrap;
+}
+
+.sports-scroll {
+	padding-bottom: 20px;
+}
+
+.explore-cards-container {
+	margin: 0 30px 0 0;
+}
+
+.full-width-container {
+	flex: 0;
+	justify-content: center;
+	align-items: flex-start;
+	margin-bottom: 30px;
+	width: 300px;
+}
+
+.full-width-image {
+	width: 300px;
+	height: 200px;
 }
 
 .empty-coaching-card {
@@ -227,6 +279,27 @@
 	margin: 0 10%;
 }
 
+.mobile-only,
+.mobile-only-flex {
+	display: none;
+}
+
+.cashout-button {
+	width: 250px;
+}
+
+.player-wrapper {
+	position: relative;
+	padding-top: 56.25%
+}
+
+.react-player {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #000000;
+}
+
 /* SCROLLBAR */
 
 /* width */
@@ -250,6 +323,12 @@
 	background: #ABABAB;
 }
 
+/* MATERIAL UI OVERIDE */
+
+.MuiList-root {
+	height: 100% !important;
+}
+
 /* Material ui dialog window */
 .MuiDialog-paperWidthSm {
 	max-width: 800px !important;
@@ -260,5 +339,133 @@
 }
 
 @media only screen and (max-width: 640px) {
+	.desktop-only {
+		display: none !important;
+	}
+	.mobile-only {
+		display: block;
+	}
+	.mobile-only-flex {
+		display: flex;
+	}
+	.stats-container {
+		width: 97.5%;
+	}
+	.cashout-button {
+		width: 100%;
+	}
+	.mobile-button {
+		width: 100%;
+	}
+	.dialog-modal {
+		min-width: 100% !important;
+		height: 100%;
+	}
+	.profile-row {
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+	}
+	.coach-profile-container {
+		width: 100%;
+		margin-left: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	.profile-column {
+		padding-left: 2.5%;
+		margin-top: 20px;
+	}
+	.coaching-block-mobile {
+		margin-left: 2.5%;
+	}
+	.mobile-coach-image {
+		width: 100% !important;
+		height: 300px;
+		background-position: center;
+	}
+	.explore-search-bar {
+		width: 88.5%;
+		display: flex;
+		align-items: center;
+	}
+	.explore-search-bar-long {
+		width: 97.5%;
+		display: flex;
+		align-items: center;
+	}
+	.search-input {
+		margin: 0  !important;
+	}
+	.mobile-thin-row {
+		width: 90% !important;
+		justify-content: space-around;
+		margin-top: 5px;
+	}
+	.sports-scroll {
+		padding-bottom: 40px;
+	}
+	.explore-cards-container {
+		width: 98.5% !important;
+		margin: 0 !important;
+	}
+	.full-width-container {
+		flex: 0;
+		justify-content: center;
+		align-items: flex-start;
+		margin-bottom: 30px;
+		width: 100% !important;
+	}
+	.full-width-image {
+		max-height: 300px;
+		width: 100% !important;
+	}
+	.search-input-text-mobile {
+		flex-direction: column;
+		align-items: flex-start !important;
+		padding-bottom: 10px !important;
+	}
+	.button-mobile {
+		width: 95%;
+		margin: 0 2.5% 10px 2.5%;
+	}
+	.full-width-on-mobile {
+		width: 100% !important;
+	}
+	.button-load-more-mobile {
+		width: 97.5%;
+		margin: 0 2.5% 10px 0;
+	}
+	.ellipsis-mobile {
+		text-align: right;
+		width: 50%;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		display: block;
+		overflow: hidden;
+		min-height: 22px;
+	}
+
+	/* MATERIAL UI OVERIDE */
+
+	/* Material ui dialog window */
+	.MuiDialog-paperWidthSm {
+		width: 100% !important;
+		height: 100% !important;
+	}
+	.MuiDialog-paperScrollPaper {
+		max-height: 100% !important;
+	}
+	.MuiDialog-paper {
+		margin: 0 !important;
+	}
+	.MuiButton-root {
+		min-width: unset !important;
+	}
+	.MuiButton-text {
+		padding: 0 !important;
+	}
 
 }

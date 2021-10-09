@@ -238,7 +238,7 @@ class ImageUploader extends React.Component {
 										type='file'
 										accept='image/png, image/jpeg'
 									/>
-									<div className='light-button' style={{ width: '150px', height: '30px' }}>
+									<div className='light-button' style={{ width: '100%', height: '30px' }}>
 										<span className='smaller-text-bold citrusBlue'>
 											{capitalize(t('addAPhoto'))}
 										</span>

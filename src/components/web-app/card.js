@@ -18,21 +18,19 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 				onClick={onClick}
 				className={
 					fullWidth ?
-						'fullWidthContainer hover' :
+						'full-width-container hover' :
 						'card-container hover'
 				}
 			>
-				<div
-					className={fullWidth ? 'fullWidthImage loadingImage' : `${imageType} loadingImage`}
-				>
+				<div className={fullWidth ? 'full-width-image loadingImage' : `${imageType} loadingImage`}>
 					<div
 						style={{
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: `url(${imgUri})`,
 							backgroundSize: 'cover',
-							width: '300px',
-							height: '200px'
+							width: fullWidth ? '100%' : '300px',
+							height: fullWidth ? '100%' : '200px'
 						}}>
 					</div>
 				</div>
@@ -60,13 +58,6 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 						margin-right: 30px;
 						min-width: 300px;
 					}
-					.fullWidthContainer {
-						flex: 0;
-						justify-content: center;
-						align-items: flex-start;
-						margin-bottom: 30px;
-						width: 300px;
-					}
 					.imageSmall {
 						height: 130px;
 						width: 150px;
@@ -78,10 +69,6 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 					.imageLarge {
 						height: 300px;
 						width: 400px;
-					}
-					.fullWidthImage {
-						max-height: 335px;
-						width: 300px;
 					}
 					.textContainer {
 						display: flex;

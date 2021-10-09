@@ -19,7 +19,7 @@ import {
 } from '../../utils/various'
 
 
-class Uploader extends React.Component {
+class VideoUploader extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -81,7 +81,7 @@ class Uploader extends React.Component {
 									type='file'
 									accept='video/mp4,video/x-m4v,video/*'
 								/>
-								<div className='light-button' style={{ width: '150px', height: '30px' }}>
+								<div className='light-button' style={{ width: '100%', height: '30px' }}>
 									<span className='smaller-text-bold citrusBlue'>
 										{capitalize(t('chooseVideo'))}
 									</span>
@@ -198,4 +198,4 @@ class Uploader extends React.Component {
 	}
 }
 
-export default Uploader
+export default VideoUploader
