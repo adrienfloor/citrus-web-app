@@ -53,7 +53,7 @@ class Explore extends React.Component {
 			selectedCoaching: null,
 			isFilterOpen: false,
 			filters: {},
-			searchInputText: 'kam',
+			searchInputText: '',
 			searchingSessions: true,
 			searchingAccounts: false,
 			selectedCoach: null,
