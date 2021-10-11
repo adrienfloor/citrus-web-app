@@ -23,7 +23,8 @@ import {
 	uppercase,
 	capitalize,
 	titleCase,
-	renderCoachingButtonText
+	renderCoachingButtonText,
+	returnCurrency
 } from '../../utils/various'
 
 import {
@@ -296,6 +297,7 @@ class Coaching extends React.Component {
 			freeAccess,
 			pictureUri,
 			ratio,
+			price
 		} = coaching
 
 		if (isLoading) {
@@ -450,7 +452,7 @@ class Coaching extends React.Component {
 						}
 
 						{
-							freeAccess !== undefined &&
+							freeAccess && price === 0 &&
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('freeAccess'))}
@@ -460,6 +462,18 @@ class Coaching extends React.Component {
 										? capitalize(t('yes'))
 										: capitalize(t('no'))
 									}
+								</span>
+							</div>
+						}
+
+						{
+							price && price !== 0 &&
+							<div className='thin-row'>
+								<span className='small-text-bold citrusGrey'>
+									{capitalize(t('price'))}
+								</span>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
+									{`${price}${returnCurrency(moment.locale())}`}
 								</span>
 							</div>
 						}

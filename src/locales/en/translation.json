@@ -409,6 +409,7 @@
 	"focusPlaceholder": "select a focus",
 	"languagePlaceholder": "select a language",
 	"addTitle": "indicate a title",
+	"addPrice": "indicate a price (in number only)",
 	"changeMyPassword": "change my password",
 	"aboutMyAccount": "about my account",
 	"deleteMyAccount": "delete my account",
@@ -424,5 +425,6 @@
 	"noTrainingsYet": "no trainings yet",
 	"noCoachingsYet": "no coachings yet",
 	"help": "help",
-	"contact": "contact"
+	"contact": "contact",
+	"priceFormatMustBe": "Price must be only numbers and dots"
 }

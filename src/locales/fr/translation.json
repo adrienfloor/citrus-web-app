@@ -411,6 +411,7 @@
 	"focusPlaceholder": "sélectionner un focus",
 	"languagePlaceholder": "sélectionner une langue",
 	"addTitle": "indiquer un titre",
+	"addPrice": "indiquer un prix (en chiffres uniquement)",
 	"changeMyPassword": "changer mon mot de passe",
 	"aboutMyAccount": "à propos de mon compte",
 	"deleteMyAccount": "supprimer mon compte",
@@ -426,5 +427,6 @@
 	"noTrainingsYet": "pas encore de trainings",
 	"noCoachingsYet": "pas encore de coachings",
 	"help": "aide",
-	"contact": "contact"
+	"contact": "contact",
+	"priceFormatMustBe": "Le prix doit contenir uniquement chiffres et points"
 }

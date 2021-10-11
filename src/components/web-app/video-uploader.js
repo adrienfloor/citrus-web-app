@@ -97,6 +97,7 @@ class VideoUploader extends React.Component {
 							key={videoSrc}
 							controls
 							style={{ width: '300px', height: '200px' }}
+							className='video-preview'
 						>
 							<source
 								type="video/mp4"
@@ -136,8 +137,6 @@ class VideoUploader extends React.Component {
 							align-items: flex-start;
 						}
 						.video-container {
-							height: 200px;
-							width: 300px;
 							position: relative;
 							background-color: #000000;
 						}

@@ -537,6 +537,10 @@
 		width: 100% !important;
 		margin-left: 0 !important;
 	}
+	.video-preview {
+		width: 200px !important;
+		height: 135px !important;
+	}
 
 	/* MATERIAL UI OVERIDE */
 

@@ -72,7 +72,7 @@ class Schedule extends React.Component {
 			focus: (coaching || {}).focus || [],
 			language: (coaching || {}).coachingLanguage || '',
 			freeAccess: (coaching || {}).freeAccess || '',
-			price: (coaching || {}).freeAccess || '',
+			price: (coaching || {}).price || '',
 			isDatePickerOpen: false,
 			isLoading: false,
 			isSelecting: '',
@@ -212,6 +212,21 @@ class Schedule extends React.Component {
 			return
 		}
 
+		if(this.checkPriceInput()) {
+			this.setState({
+				isButtonDisabled: false,
+				progress: null,
+				errorMessage: capitalize(t('priceFormatMustBe'))
+			})
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
+		}
+
+		return
+
 		const newCoaching = {
 			title: title.toLowerCase(),
 			sport,
@@ -283,6 +298,18 @@ class Schedule extends React.Component {
 		if (missingParams.length > 0) {
 			return missingParams
 		}
+		return false
+	}
+
+	checkPriceInput() {
+		const { price } = this.state
+		const allowedChars = ['0','1','2','3','4','5','6','7','8','9','.']
+		const arrOfPriceChars = price.split()
+		arrOfPriceChars.forEach(char => {
+			if(!allowedChars.includes(char.toString())) {
+				return true
+			}
+		})
 		return false
 	}
 
@@ -386,7 +413,7 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<Select
+					{/* <Select
 						className='form-input'
 						id='simple-select'
 						value={price}
@@ -414,7 +441,17 @@ class Schedule extends React.Component {
 								</MenuItem>
 							))
 						}
-					</Select>
+					</Select> */}
+					<input
+						type='number'
+						pattern='/^[0-9]+([.][0-9]+)?$/'
+						value={price}
+						className='text-input smaller-text-bold citrusGrey input form-input'
+						placeholder={capitalize(t('addPrice'))}
+						onChange={(e) => this.setState({ price: e.target.value })}
+						style={{ color: '#000000', border: 'none', height: 'unset' }}
+						disabled={progress || progress === 0 ? true : false}
+					/>
 					<div className='medium-separator'></div>
 					{
 						progress || progress === 0 ?
