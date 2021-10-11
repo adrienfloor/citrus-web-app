@@ -342,8 +342,11 @@ class Schedule extends React.Component {
 		}
 
 		return (
-			<div className='main-container'>
-				<span className='big-title citrusBlack' style={{ width: '100%' }}>
+			<div className='schedule-container'>
+				<span
+					style={{ width: '100%' }}
+					className='big-title citrusBlack responsive-title'
+				>
 					{capitalize(t('post'))}
 				</span>
 				<form

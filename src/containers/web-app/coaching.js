@@ -350,13 +350,15 @@ class Coaching extends React.Component {
 						/>
 					</div>
 					<ReactPlayer
+						volume={1}
 						className='react-player'
-						playing={false}
 						width='100%'
 						height='100%'
-						autoPlay
+						autoPlay={false}
+						// autoplay={true}
 						controls
 						url={muxReplayPlaybackId}
+						// muted
 					/>
 				</div>
 			)

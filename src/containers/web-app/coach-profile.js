@@ -235,7 +235,7 @@ class CoachProfile extends React.Component {
 					/>
 				</div>
 				<div className='scroll-div-vertical'>
-					<div className='profile-row'>
+					<div className='coach-profile-row'>
 						<div
 							className='mobile-coach-image'
 							style={{
@@ -266,7 +266,7 @@ class CoachProfile extends React.Component {
 								/>
 							</div>
 						</div>
-						<div className='profile-column'>
+						<div className='coach-profile-column'>
 							<div className='profile-title-row'>
 								<span className='small-title citrusBlack'>
 									{capitalize(userName)}

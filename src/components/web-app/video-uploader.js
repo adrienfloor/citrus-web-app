@@ -141,15 +141,6 @@ class VideoUploader extends React.Component {
 							position: relative;
 							background-color: #000000;
 						}
-						.uploader-container {
-							display: flex;
-							flex-direction: column;
-							align-items: center;
-							justify-content: center;
-							background-color: #F8F8F8;
-							height: 200px;
-							width: 300px;
-						}
 						.upload-row {
 							justify-content: space-between;
 							align-items: center;

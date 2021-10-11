@@ -170,18 +170,16 @@ class Profile extends React.Component {
 								isAvatar={true}
 							/> :
 							<div
+								className='mobile-coach-image'
 								style={{
 									backgroundPosition: 'center',
 									backgroundRepeat: 'no-repeat',
 									backgroundImage: `url(${avatarUrl})`,
 									backgroundSize: 'cover',
-									width: '300px',
-									height: '200px'
 								}}>
 							</div>
 						}
 						<div
-							className='profile-column'
 							style={{
 								paddingLeft: '30px',
 								width: '100%',
@@ -189,12 +187,13 @@ class Profile extends React.Component {
 								height: '200px',
 								justifyContent: 'space-between'
 							}}
+							className='profile-column'
 						>
 							<div className='profile-title-row'>
 								{
 									isEditing ?
 										<input
-											className='text-input smaller-text-bold citrusGrey'
+											className='text-input smaller-text-bold citrusGrey edit-profile-input-mobile'
 											placeholder={capitalize(t('userName'))}
 											onChange={(e) => this.setState({ userName: e.target.value })}
 											style={{ color: '#000000', width: '100%', backgroundColor: 'inherit' }}
@@ -214,6 +213,7 @@ class Profile extends React.Component {
 									</>
 								}
 							</div>
+							<div className='mobile-only-small-separator'></div>
 							{bio && bio.length > 0 && !isEditing &&
 								<span className='small-text citrusBlack'>
 									{capitalize(bio)}
@@ -240,6 +240,7 @@ class Profile extends React.Component {
 								</>
 							}
 							<div className='small-separator'></div>
+							<div className='mobile-only-small-separator'></div>
 							{
 								sports && sports.length > 0 && !isEditing &&
 								<div style={{ display: 'flex', width: '100%', flexWrap: 'wrap' }}>
@@ -280,7 +281,7 @@ class Profile extends React.Component {
 					{
 						isEditing &&
 						<div
-							className='flex-row'
+							className='flex-row edit-submit-row-mobile'
 							style={{
 								width: '100%',
 								justifyContent: 'flex-end',
@@ -291,8 +292,8 @@ class Profile extends React.Component {
 							{
 								userName.length === 0 &&
 								<span
-									className='smaller-text citrusRed'
 									style={{ marginRight: '50px' }}
+									className='smaller-text citrusRed edit-profile-input-mobile'
 								>
 									{t('userNameRequired')}
 								</span>
@@ -300,8 +301,8 @@ class Profile extends React.Component {
 							{
 								warning.length === 0 &&
 								<span
-									className='smaller-text citrusRed'
 									style={{ marginRight: '50px' }}
+									className='smaller-text citrusRed edit-profile-input-mobile'
 								>
 									{warning}
 								</span>

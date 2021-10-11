@@ -181,7 +181,6 @@ class ImageUploader extends React.Component {
 
 			return (
 				<div
-					className='uploader-container'
 					style={
 						isImagePresent &&
 						{
@@ -195,6 +194,7 @@ class ImageUploader extends React.Component {
 							height: '200px'
 						}
 					}
+					className='uploader-container'
 				>
 					{
 						isImageLoading &&
@@ -332,17 +332,6 @@ class ImageUploader extends React.Component {
 							.cropper {
 								width: 50%;
 								padding: 0px 25%;
-							}
-							.uploader-container {
-								display: flex;
-								flex-direction: column;
-								height: 100%;
-								width: 100%;
-								align-items: center;
-								justify-content: center;
-								background-color: #F8F8F8;
-								height: 200px;
-								width: 300px;
 							}
 							.upload-row {
 								justify-content: space-between;

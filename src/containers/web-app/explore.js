@@ -149,16 +149,21 @@ class Explore extends React.Component {
 
 		if (selectedCoach) {
 			return (
-				<CoachProfile
-					coach={selectedCoach}
-					onCancel={() => this.setState({ selectedCoach: null })}
-				/>
+				<Dialog
+					open={true}
+					onClose={() => this.setState({ selectedCoach: null })}
+				>
+					<CoachProfile
+						coach={selectedCoach}
+						onCancel={() => this.setState({ selectedCoach: null })}
+					/>
+				</Dialog>
 			)
 		}
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack' style={{ width: '100%' }}>
+				<span className='big-title citrusBlack' style={{ width: '100%', display: 'block' }}>
 					{capitalize(t('explore'))}
 				</span>
 				<div

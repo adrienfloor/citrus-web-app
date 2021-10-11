@@ -189,8 +189,11 @@ class Settings extends React.Component {
 		} = this.state
 
 	 	return (
-			<div className='main-container'>
-				<span className='big-title citrusBlack' style={{ width: '100%' }}>
+			<div className='settings-container'>
+				<span
+					style={{ width: '100%' }}
+					className='big-title citrusBlack responsive-title'
+				>
 					{capitalize(t('settings'))}
 				</span>
 				<div
