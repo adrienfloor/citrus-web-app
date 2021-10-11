@@ -174,7 +174,8 @@ class ImageUploader extends React.Component {
 			onCancel,
 			onSetPictureUri,
 			t,
-			disabled
+			disabled,
+			isProfile
 		} = this.props
 
 		const isImagePresent = imgSrc && imgSrc.length > 0
@@ -189,12 +190,10 @@ class ImageUploader extends React.Component {
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: !isImageLoading ? `url(${imgSrc})` : '',
-							backgroundSize: 'cover',
-							width: '300px',
-							height: '200px'
+							backgroundSize: 'cover'
 						}
 					}
-					className='uploader-container'
+					className={ isProfile ? 'uploader-container-profile' : 'uploader-container'}
 				>
 					{
 						isImageLoading &&

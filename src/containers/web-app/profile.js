@@ -7,6 +7,7 @@ import Dialog from '@material-ui/core/Dialog'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 import {
 	updateUser,
@@ -18,6 +19,7 @@ import Coaching from './coaching'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
 import ImageUploader from '../../components/web-app/image-uploader'
+import { ReactComponent as PlusButton } from '../../assets/svg/plus-button.svg'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -168,6 +170,7 @@ class Profile extends React.Component {
 								}}
 								pictureUri={avatarUrl ? avatarUrl : null}
 								isAvatar={true}
+								isProfile
 							/> :
 							<div
 								className='mobile-coach-image'
@@ -219,13 +222,19 @@ class Profile extends React.Component {
 									{capitalize(bio)}
 								</span>
 							}
-							{ bio && bio.length>0 && isEditing &&
+							{
+								(!bio || bio.length === 0 )&& !isEditing &&
+								<span className='small-text citrusBlack'>
+									{capitalize(t('tellUsMoreAboutYou'))}
+								</span>
+							}
+							{ isEditing &&
 								<>
 									<div className='medium-separator'></div>
 									<textarea
 										className='smaller-text-bold citrusGrey'
 										rows='3'
-										placeholder={capitalize(t('bio'))}
+										placeholder={capitalize(t('tellUsMoreAboutYou'))}
 										onChange={(e) => this.setState({ bio: e.target.value })}
 										style={{
 											color: '#000000',
@@ -265,6 +274,17 @@ class Profile extends React.Component {
 										multiple
 										value={sports.map(sport => sport.type)}
 										onChange={this.handleSportChange}
+										displayEmpty
+										renderValue={(selected) => {
+											if (selected.length === 0) {
+												return (
+													<em className='smaller-text-bold citrusGrey'>
+														{t('sportsPlaceholder')}
+													</em>
+												)
+											}
+											return selected.map(el => t(el)).join(', ')
+										}}
 									>
 									{
 										sportsItems.map((sport, i) => (
@@ -280,77 +300,99 @@ class Profile extends React.Component {
 					</div>
 					{
 						isEditing &&
-						<div
-							className='flex-row edit-submit-row-mobile'
-							style={{
-								width: '100%',
-								justifyContent: 'flex-end',
-								alignItems: 'center',
-								maxWidth: '930px'
-							}}
-						>
-							{
-								userName.length === 0 &&
-								<span
-									style={{ marginRight: '50px' }}
-									className='smaller-text citrusRed edit-profile-input-mobile'
-								>
-									{t('userNameRequired')}
-								</span>
-							}
-							{
-								warning.length === 0 &&
-								<span
-									style={{ marginRight: '50px' }}
-									className='smaller-text citrusRed edit-profile-input-mobile'
-								>
-									{warning}
-								</span>
-							}
-							<span
-								className='smaller-text-bold citrusGrey hover'
-								style={{ marginRight: '10px' }}
-								onClick={() => this.setState({ isEditing: false })}
-							>
-								{t('cancel')}
-							</span>
+						<>
+						<div className='medium-separator'></div>
 							<div
-								className='filled-button hover'
-								style={{ width: '90px', height: '25px' }}
-								onClick={this.handleSubmit}
+								className='flex-row edit-submit-row-mobile'
+								style={{
+									width: '100%',
+									justifyContent: 'flex-end',
+									alignItems: 'center',
+									maxWidth: '930px'
+								}}
 							>
-								<span className='smaller-text-bold citrusWhite'>
-									{capitalize(t('submit'))}
+								{
+									userName.length === 0 &&
+									<span
+										style={{ marginRight: '50px' }}
+										className='smaller-text citrusRed edit-profile-input-mobile'
+									>
+										{t('userNameRequired')}
+									</span>
+								}
+								{
+									warning.length === 0 &&
+									<span
+										style={{ marginRight: '50px' }}
+										className='smaller-text citrusRed edit-profile-input-mobile'
+									>
+										{warning}
+									</span>
+								}
+								<span
+									className='smaller-text-bold citrusGrey hover'
+									style={{ marginRight: '10px' }}
+									onClick={() => this.setState({ isEditing: false })}
+								>
+									{t('cancel')}
 								</span>
+								<div
+									className='filled-button hover'
+									style={{ width: '90px', height: '25px' }}
+									onClick={this.handleSubmit}
+								>
+									<span className='smaller-text-bold citrusWhite'>
+										{capitalize(t('submit'))}
+									</span>
+								</div>
 							</div>
+						</>
+					}
+					{
+						!isEditing &&
+						<div className='category-block'>
+							<span className='small-title citrusBlack'>
+								{capitalize(t('coachings'))}
+							</span>
+							<div className='small-separator'></div>
+							{
+								myCoachings && myCoachings.length > 0 ?
+									<div className='scroll-div-horizontal'>
+										{
+											myCoachings.map((coaching, i) => (
+												<Card
+													onClick={() => this.setState({ selectedCoaching: coaching })}
+													size='medium'
+													key={i}
+													title={capitalize(coaching.title)}
+													subtitle={capitalize(t(coaching.sport))}
+													imgUri={coaching.pictureUri}
+												/>
+											))
+										}
+									</div> :
+									<Link to='/schedule' className='empty-coaching-card hover'>
+										<PlusButton
+											width={180}
+											height={180}
+											stroke={'#FFFFFF'}
+											strokeWidth={2}
+										/>
+										<div className='small-separator'></div>
+										<span className='small-title citrusBlack'>
+											{capitalize(t('noCoachingsYet'))}
+										</span>
+										<div className='small-separator'></div>
+										<div className='light-button plus-button'>
+											<span className='small-title citrusBlue'>
+												{capitalize(t('startNow'))}
+											</span>
+										</div>
+										<div className='small-separator'></div>
+									</Link>
+							}
 						</div>
 					}
-					<div className='category-block'>
-						<span className='small-title citrusBlack'>
-							{capitalize(t('coachings'))}
-						</span>
-						<div className='small-separator'></div>
-						{
-							myCoachings && myCoachings.length > 0 ?
-								<div className='scroll-div-horizontal'>
-									{
-										myCoachings.map((coaching, i) => (
-											<Card
-												onClick={() => this.setState({ selectedCoaching: coaching })}
-												size='medium'
-												key={i}
-												title={capitalize(coaching.title)}
-												subtitle={capitalize(t(coaching.sport))}
-												imgUri={coaching.pictureUri}
-											/>
-										))
-									}
-								</div> :
-								<span className='small-text citrusBlack'>
-									{capitalize(t('noneYet'))}
-								</span>
-						}
-					</div>
 					<div className='small-separator'></div>
 				</div>
 				{

@@ -162,7 +162,7 @@ class Explore extends React.Component {
 		}
 
 		return (
-			<div className='main-container'>
+			<div className='explore-container'>
 				<span className='big-title citrusBlack' style={{ width: '100%', display: 'block' }}>
 					{capitalize(t('explore'))}
 				</span>

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import Loader from 'react-loader-spinner'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -14,8 +15,11 @@ import { ReactComponent as EyeOpen } from '../../assets/svg/eye-open.svg'
 
 import {
 	signup,
-	loadUser
+	loadUser,
+	fetchUserReplays
 } from '../../actions/auth-actions'
+import { fetchTrainerCoachings } from '../../actions/coachings-actions'
+import { executeExploreSearch } from '../../actions/search-actions'
 
 import {
 	isValidEmailInput,
@@ -115,9 +119,15 @@ class Signup extends React.Component {
 		} = this.props
 		const lng = i18n.language || 'en'
 
-		this.setState({ isSignupDisabled: true })
+		this.setState({
+			isSignupDisabled: true,
+			isLoading: true
+		})
 		if (this.checkErrors()) {
-			this.setState({ signupDisabled: false })
+			this.setState({
+				signupDisabled: false,
+				isLoading: false
+			})
 			return
 		}
 
@@ -126,11 +136,33 @@ class Signup extends React.Component {
 			email.toLowerCase(),
 			password,
 			lng
-		).then(res => {
+		).then(async (res) => {
 			if (res.type === 'REGISTER_SUCCESS') {
-				this.props.loadUser()
-				this.props.history.push('/download-app')
-			}
+				const userId = res.payload.user._id
+				const search = await executeExploreSearch('all', userId, 5)
+				const replays = await fetchUserReplays(userId)
+				const trainings = await fetchTrainerCoachings(userId, true)
+				if (search && replays && trainings) {
+					this.setState({
+						isLoading: false,
+						isSignupDisabled: true
+					})
+					return this.props.history.push('/explore')
+				}
+				// this.props.loadUser()
+				// this.props.history.push('/explore')
+			} else {
+				this.setState({
+					errorMessage: capitalize(t('somethingWentWrong')),
+					signupDisabled: false,
+					isLoading: false
+				})
+					setTimeout(function() {
+					this.setState({
+						errorMessage: ''
+					})
+				}.bind(this), 3000)
+		}
 		})
 	}
 
@@ -282,7 +314,6 @@ class Signup extends React.Component {
 							}
 							.form {
 								height: 450px;
-								overflow-y: auto;
 								margin-bottom: 60px;
 							}
 							.password-container {
@@ -317,7 +348,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	signup: (userName, email, password, language) =>
 		dispatch(signup(userName, email, password, language)),
-	loadUser: () => dispatch(loadUser())
+	loadUser: () => dispatch(loadUser()),
+	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
+	executeExploreSearch: (sport, userId, skipValue) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signup))

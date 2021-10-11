@@ -195,27 +195,25 @@ class Home extends React.Component {
 											))
 										}
 									</div> :
-									<div>
-										<Link to='/explore' className='empty-coaching-card hover'>
-											<PlusButton
-												width={180}
-												height={180}
-												stroke={'#FFFFFF'}
-												strokeWidth={2}
-											/>
-											<div className='small-separator'></div>
-											<span className='small-title citrusBlack'>
-												{capitalize(t('noTrainingsYet'))}
+									<Link to='/explore' className='empty-coaching-card hover'>
+										<PlusButton
+											width={180}
+											height={180}
+											stroke={'#FFFFFF'}
+											strokeWidth={2}
+										/>
+										<div className='small-separator'></div>
+										<span className='small-title citrusBlack'>
+											{capitalize(t('noTrainingsYet'))}
+										</span>
+										<div className='small-separator'></div>
+										<div className='light-button plus-button'>
+											<span className='small-title citrusBlue'>
+												{capitalize(t('checkoutTrainings'))}
 											</span>
-											<div className='small-separator'></div>
-											<div className='light-button plus-button'>
-												<span className='small-title citrusBlue'>
-													{capitalize(t('checkoutTrainings'))}
-												</span>
-											</div>
-											<div className='small-separator'></div>
-										</Link>
-									</div>
+										</div>
+										<div className='small-separator'></div>
+									</Link>
 							}
 						</div>
 
@@ -251,51 +249,50 @@ class Home extends React.Component {
 									{capitalize(t('achievements'))}
 								</span>
 								<div className='small-separator'></div>
-								<div
-									className='stats-row'
-									style={{
-										justifyContent: 'space-between',
-										height: '25px'
-									}}
-								>
-									<div
-										className='stats-row'
-										style={{ width: '50%' }}
-									>
-										<div
-											style={{
-												backgroundColor: returnUserStatusProgressBarColor(activitiesIHaveAttended.length),
-												borderRadius: 50,
-												width: 19,
-												height: 19,
-												marginRight: 10
-											}}
-										>
-										</div>
-										<span className='smaller-text-bold'>
-											{capitalize(t(returnUserStatus(activitiesIHaveAttended.length).status))}
-										</span>
-									</div>
+								<div className='progress-row'>
 									<div
 										className='stats-row'
 										style={{
-											justifyContent: 'flex-end',
-											width: '50%'
+											justifyContent: 'space-between',
+											height: '25px'
 										}}
 									>
-										<span className='smaller-text-bold'>
-											{`${activitiesIHaveAttended.length} / ${returnUserStatusProgressBar(activitiesIHaveAttended.length)}`}
-										</span>
+										<div className='stats-row'>
+											<div
+												style={{
+													backgroundColor: returnUserStatusProgressBarColor(activitiesIHaveAttended.length),
+													borderRadius: 50,
+													width: 19,
+													height: 19,
+													marginRight: 10
+												}}
+											>
+											</div>
+											<span className='smaller-text-bold'>
+												{capitalize(t(returnUserStatus(activitiesIHaveAttended.length).status))}
+											</span>
+										</div>
+										<div
+											className='stats-row'
+											style={{
+												justifyContent: 'flex-end',
+												width: '50%'
+											}}
+										>
+											<span className='smaller-text-bold'>
+												{`${activitiesIHaveAttended.length} / ${returnUserStatusProgressBar(activitiesIHaveAttended.length)}`}
+											</span>
+										</div>
 									</div>
+									<div className='small-separator'></div>
+									<ProgressBar
+										completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
+										height='10px'
+										bgColor='#B4B4B4'
+										baseBgColor='#FFFFFF'
+										isLabelVisible={false}
+									/>
 								</div>
-								<div className='small-separator'></div>
-								<ProgressBar
-									completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
-									height='10px'
-									bgColor='#B4B4B4'
-									baseBgColor='#FFFFFF'
-									isLabelVisible={false}
-								/>
 								<div className='medium-separator'></div>
 								<div className='medium-separator'></div>
 								<span className='small-title citrusBlack'>
@@ -305,7 +302,7 @@ class Home extends React.Component {
 								<div className='stats-row'>
 									<Tag
 										textValue={this.returnTopActivities()}
-										defaultspanValue={t('noTopActivitiesYet')}
+										defaultTextValue={t('noTopActivitiesYet')}
 									/>
 								</div>
 								<div className='medium-separator'></div>
@@ -368,27 +365,25 @@ class Home extends React.Component {
 											))
 										}
 									</div> :
-									<div>
-										<Link to='/schedule' className='empty-coaching-card hover'>
-											<PlusButton
-												width={180}
-												height={180}
-												stroke={'#FFFFFF'}
-												strokeWidth={2}
-											/>
-											<div className='small-separator'></div>
-											<span className='small-title citrusBlack'>
-												{capitalize(t('noCoachingsYet'))}
+									<Link to='/schedule' className='empty-coaching-card hover'>
+										<PlusButton
+											width={180}
+											height={180}
+											stroke={'#FFFFFF'}
+											strokeWidth={2}
+										/>
+										<div className='small-separator'></div>
+										<span className='small-title citrusBlack'>
+											{capitalize(t('noCoachingsYet'))}
+										</span>
+										<div className='small-separator'></div>
+										<div className='light-button plus-button'>
+											<span className='small-title citrusBlue'>
+												{capitalize(t('startNow'))}
 											</span>
-											<div className='small-separator'></div>
-											<div className='light-button plus-button'>
-												<span className='small-title citrusBlue'>
-													{capitalize(t('startNow'))}
-												</span>
-											</div>
-											<div className='small-separator'></div>
-										</Link>
-									</div>
+										</div>
+										<div className='small-separator'></div>
+									</Link>
 							}
 						</div>
 

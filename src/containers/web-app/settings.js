@@ -200,7 +200,7 @@ class Settings extends React.Component {
 					id='upload-form'
 					className='scroll-div-vertical card upload-form'
 				>
-					<span className='small-title citrusBlack form-input'>
+					<span className='small-title citrusBlack responsive-title'>
 						{capitalize(t('trainings'))}
 					</span>
 					<div className='medium-separator'></div>
@@ -273,7 +273,7 @@ class Settings extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					<span className='small-title citrusBlack form-input'>
+					<span className='small-title citrusBlack responsive-title'>
 						{capitalize(t('personal'))}
 					</span>
 					<div className='medium-separator'></div>

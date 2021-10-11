@@ -13,7 +13,10 @@ import '../../styling/App.css'
 import { ReactComponent as EyeClosed } from '../../assets/svg/eye-closed.svg'
 import { ReactComponent as EyeOpen } from '../../assets/svg/eye-open.svg'
 
-import { isValidPassword } from '../../utils/validations'
+import {
+	isValidPassword,
+	isValidEmailInput
+} from '../../utils/validations'
 
 import {
 	capitalize,
@@ -21,19 +24,17 @@ import {
 	titleCase
 } from '../../utils/various'
 
-import { resetPassword } from '../../actions/auth-actions'
+import { sendResetPasswordLink } from '../../actions/auth-actions'
+import { setNotification } from '../../actions/notifications-actions'
 
-class ResetPassword extends React.Component {
+class ForgetPassword extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			password: '',
-			passwordConfirmation: '',
+			email: '',
 			errorMessage: '',
-			showPassword: false,
-			isButtonDisabled: false,
 			isLoading: false,
-			isSuccess: false
+			isButtonDisabled: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
@@ -41,10 +42,11 @@ class ResetPassword extends React.Component {
 	}
 
 	checkErrors() {
-		const { password, passwordConfirmation } = this.state
+		const { email, password } = this.state
 		const { t } = this.props
 
-		if (passwordConfirmation.length < 1 || password.length < 1) {
+
+		if (!email.length > 0) {
 			this.setState({
 				errorMessage: capitalize(t('pleaseEnterAllFields'))
 			})
@@ -56,25 +58,9 @@ class ResetPassword extends React.Component {
 			return true
 		}
 
-		if (
-			!isValidPassword(password).includes('length') ||
-			!isValidPassword(password).includes('uppercase') ||
-			!isValidPassword(password).includes('number')
-		) {
+		if (!isValidEmailInput(email)) {
 			this.setState({
-				errorMessage: capitalize(t('passordFormat'))
-			})
-			setTimeout(function () {
-				this.setState({
-					errorMessage: ''
-				})
-			}.bind(this), 3000)
-			return true
-		}
-
-		if(password !== passwordConfirmation) {
-			this.setState({
-				errorMessage: capitalize(t('passwordsMustBeIdentical'))
+				errorMessage: capitalize(t('wrongEmailFormat'))
 			})
 			setTimeout(function () {
 				this.setState({
@@ -93,13 +79,13 @@ class ResetPassword extends React.Component {
 
 	onSubmit(e) {
 		e.preventDefault()
-		const { password } = this.state
+		const { email } = this.state
 		const {
 			t,
-			resetPassword,
-			history
+			sendResetPasswordLink,
+			onDone,
+			setNotification
 		} = this.props
-		const { rpt } = queryString.parse((this.props.location || {}).search)
 
 		this.setState({
 			isbuttonDisabled: true,
@@ -110,51 +96,56 @@ class ResetPassword extends React.Component {
 			this.setState({
 				isButtonDisabled: false,
 				isLoading: false
-		})
+			})
 			return
 		}
 
-		resetPassword(password, rpt)
-		.then(res => {
-			if(res && res.type == 'RESET_PASSWORD') {
-				this.setState({
-					isbuttonDisabled: false,
-					isLoading: false,
-					isSuccess: true
-				})
-				setTimeout(function () {
-					window.location.href = 'http://app.thecitrusapp.com/signin'
-				}.bind(this), 3000)
-			} else {
-				this.setState({
-					isbuttonDisabled: false,
-					isLoading: false,
-					isSuccess: false,
-					errorMessage: capitalize(t('passwordChangeFailed'))
-				})
-				setTimeout(function () {
+		sendResetPasswordLink(email.toLowerCase())
+			.then(res => {
+				if (res && res.type === 'RESET_PASSWORD') {
 					this.setState({
-						errorMessage: ''
+						isLoading: false
 					})
-				}.bind(this), 3000)
-			}
-		})
+					setNotification({ message: capitalize(t('successFullySentResetLink')) })
+					return onDone()
+				}
+				if (res && res.type == 'RESET_PASSWORD_FAIL') {
+					this.setState({
+						errorMessage: capitalize(t('unknownEmail')),
+						isLoading: false
+					})
+					setTimeout(function () {
+						this.setState({
+							errorMessage: ''
+						})
+					}.bind(this), 3000)
+					return
+				} else {
+					this.setState({
+						errorMessage: capitalize(t('somethingWentWrong')),
+						isLoading: false
+					})
+					setTimeout(function () {
+						this.setState({
+							errorMessage: ''
+						})
+					}.bind(this), 3000)
+				}
+			})
 	}
 
 	render() {
 
 		const {
 			email,
-			password,
-			passwordConfirmation,
-			showPassword,
 			errorMessage,
-			isButtonDisabled,
 			isLoading,
-			isSuccess
+			isButtonDisabled
 		} = this.state
-		const { t } = this.props
-		const { userName, rpt } = queryString.parse((this.props.location || {}).search)
+		const {
+			t,
+			onDone
+		} = this.props
 
 		if (isLoading) {
 			return (
@@ -169,88 +160,36 @@ class ResetPassword extends React.Component {
 			)
 		}
 
-		if (isSuccess) {
-			return (
-				<div className='full-container flex-column flex-center main'>
-					<div className='full-container flex-column flex-center main'>
-						<div style={{ padding: '0 20px' }} className='small-text'>
-							{capitalize(t('passwordConfirmationMessage'))}
-						</div>
-					</div>
-				</div>
-			)
-		}
-
 		return (
 			<div className='full-container flex-column flex-center main'>
-				<div className='big-title title'>
-					{
-						userName ?
-						`${capitalize(t('resetPassword'))} ${userName.replace('}', '')}` :
-						capitalize(t('resetPassword'))
-					}
-				</div>
 				<form
-					id='login-form'
-					onSubmit={e => this.onSubmit(e)}
+					style={{
+						justifyContent: 'flex-start',
+						paddingTop: '30px'
+					}}
+					id='forget-password-form'
+					onSubmit={this.onSubmit}
 					className='flex-column flex-start card auth-card form'
 				>
-					<div className='password-container'>
-						<input
-							placeholder={capitalize(t('password'))}
-							className='text-input small-text citrusGrey input password-input'
-							type={showPassword ? 'text' : 'password'}
-							onChange={e => this.onTextInputChange(e, 'password')}
-						/>
-						<div
-							className='password-eye hover'
-							onClick={() => this.setState({ showPassword: !showPassword })}
-						>
-							{
-								showPassword ?
-									<EyeOpen
-										width={25}
-										height={25}
-										stroke={'#C2C2C2'}
-										strokeWidth={2}
-									/> :
-									<EyeClosed
-										width={25}
-										height={25}
-										stroke={'#C2C2C2'}
-										strokeWidth={2}
-									/>
-							}
-						</div>
+					<div
+						style={{
+							maxWidth: '453px'
+						}}
+					>
+						<span className='small-title citrusGrey'>
+							{capitalize(t('youWillReceiveAResetLink'))}
+						</span>
 					</div>
-					<div className='password-container'>
-						<input
-							placeholder={capitalize(t('confirmPassword'))}
-							className='text-input small-text citrusGrey input password-input'
-							type={showPassword ? 'text' : 'password'}
-							onChange={e => this.onTextInputChange(e, 'passwordConfirmation')}
-						/>
-						<div
-							className='password-eye hover'
-							onClick={() => this.setState({ showPassword: !showPassword })}
-						>
-							{
-								showPassword ?
-									<EyeOpen
-										width={25}
-										height={25}
-										stroke={'#C2C2C2'}
-										strokeWidth={2}
-									/> :
-									<EyeClosed
-										width={25}
-										height={25}
-										stroke={'#C2C2C2'}
-										strokeWidth={2}
-									/>
-							}
-						</div>
-					</div>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<input
+						className='text-input small-text citrusGrey input'
+						placeholder={capitalize(t('email'))}
+						type='email'
+						autoComplete='email'
+						onChange={e => this.onTextInputChange(e, 'email')}
+						name='email'
+					/>
 					<div className='medium-separator'></div>
 					{
 						errorMessage.length > 0 &&
@@ -266,7 +205,7 @@ class ResetPassword extends React.Component {
 						<button
 							className={!isButtonDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
 							type='submit'
-							form='login-form'
+							form='forget-password-form'
 							disabled={isButtonDisabled}
 						>
 							<span className='small-title citrusWhite'>
@@ -350,7 +289,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	resetPassword: (password, token) => dispatch(resetPassword(password, token))
+	sendResetPasswordLink: email => dispatch(sendResetPasswordLink(email)),
+	setNotification: notification => dispatch(setNotification(notification))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ResetPassword))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(ForgetPassword))

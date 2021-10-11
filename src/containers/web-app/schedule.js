@@ -398,13 +398,13 @@ class Schedule extends React.Component {
 						displayEmpty
 						renderValue={(selected) => {
 							if (selected.length === 0) {
-								return <em className='smaller-text-bold citrusGrey'>{t('sportsPlaceholder')}</em>
+								return <em className='smaller-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
 							}
 							return t(selected)
 						}}
 					>
 						<MenuItem disabled value="">
-							<em className='smaller-text-bold citrusGrey'>{t('sportsPlaceholder')}</em>
+							<em className='smaller-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
 						</MenuItem>
 						{
 							sportsItems.map((sport, i) => (

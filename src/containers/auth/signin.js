@@ -2,6 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import {withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import Loader from 'react-loader-spinner'
+
+import ForgetPassword from './forget-password'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -40,7 +43,8 @@ class Signin extends React.Component {
 			errorMessage: '',
 			showPassword: false,
 			signinDisabled: false,
-			isLoading: false
+			isLoading: false,
+			hasForgotPassword: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
@@ -104,7 +108,10 @@ class Signin extends React.Component {
 			isLoading: true
 		})
 		if (this.checkErrors()) {
-			this.setState({ signinDisabled: false })
+			this.setState({
+				signinDisabled: false,
+				isLoading: false
+			})
 			return
 		}
 
@@ -156,7 +163,9 @@ class Signin extends React.Component {
 			password,
 			showPassword,
 			errorMessage,
-			signinDisabled
+			signinDisabled,
+			isLoading,
+			hasForgotPassword
 		} = this.state
 		const {
 			t,
@@ -164,10 +173,39 @@ class Signin extends React.Component {
 			isAuthenticated,
 			user
 		} = this.props
+
+		if (isLoading) {
+			return (
+				<div className='flex-column flex-center'>
+					<div className='big-separator'></div>
+					<div className='big-separator'></div>
+					<Loader
+						type='Oval'
+						color='#C2C2C2'
+						height={100}
+						width={100}
+					/>
+				</div>
+			)
+		}
+
 		if(isAuthenticated && user) {
 			history.push('/home')
 			return null
 		}
+
+		if (hasForgotPassword) {
+			return (
+				<ForgetPassword
+					onDone={() => {
+						this.setState({
+							hasForgotPassword: false
+						})
+					}}
+				/>
+			)
+		}
+
 		return (
 			<div className='full-container flex-column flex-center main'>
 				<div className='maxi-title title'>
@@ -239,6 +277,24 @@ class Signin extends React.Component {
 							{errorMessage}
 						</span>
 					}
+					<div className='medium-separator'></div>
+					<div
+						className='hover'
+						style={{
+							borderBottom: '1px solid #C2C2C2',
+							marginBottom: 5,
+							paddingBottom: 5
+						}}
+						onClick={() => {
+							this.setState({
+								hasForgotPassword: true
+							})
+						}}
+					>
+						<span className='smaller-text-bold citrusGrey'>
+							{capitalize(t('iForgotMyPassword'))}
+						</span>
+					</div>
 				</form>
 				<style jsx='true'>
 					{`

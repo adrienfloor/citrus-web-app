@@ -155,6 +155,26 @@ export const resetPassword = (password, token) => async dispatch => {
 	}
 }
 
+export const sendResetPasswordLink = email => async dispatch => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+	// BODY
+	const body = JSON.stringify({ email })
+	try {
+		const response = await axios.post(`${REACT_APP_API_URL}/users/reset_password_link`, body, config)
+		return dispatch({ type: RESET_PASSWORD })
+	} catch (err) {
+		console.log('error : ', err)
+		dispatch(returnErrors(err.response.data, err.response.status, 'RESET_PASSWORD'))
+		return dispatch({ type: RESET_PASSWORD_FAIL })
+	}
+}
+
+
 // FETCH USER REPLAYS
 export const fetchUserReplays = id => async (dispatch, getState) => {
 	try {
