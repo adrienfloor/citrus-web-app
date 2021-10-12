@@ -176,9 +176,7 @@ class Signin extends React.Component {
 
 		if (isLoading) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-separator'></div>
+				<div className='full-container flex-column flex-center main'>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'

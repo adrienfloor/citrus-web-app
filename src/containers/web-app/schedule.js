@@ -59,9 +59,6 @@ class Schedule extends React.Component {
 		super(props)
 		const { coaching } = this.props
 		this.state = {
-			// title: title || 'qwertqwr',
-			// sport: sport || 'calisthenics',
-			// pictureUri: pictureUri || 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1632923814/VonageApp/rddzvgcwql1yni6amvqt.jpg',
 			title: (coaching || {}).title || '',
 			sport: (coaching || {}).sport || '',
 			pictureUri: (coaching || {}).pictureUri || '',
@@ -197,7 +194,6 @@ class Schedule extends React.Component {
 			progress: 0
 		})
 
-
 		if (this.hasMissingParams()) {
 			this.setState({
 				isButtonDisabled: false,
@@ -212,21 +208,6 @@ class Schedule extends React.Component {
 			return
 		}
 
-		if(this.checkPriceInput()) {
-			this.setState({
-				isButtonDisabled: false,
-				progress: null,
-				errorMessage: capitalize(t('priceFormatMustBe'))
-			})
-			setTimeout(function () {
-				this.setState({
-					errorMessage: ''
-				})
-			}.bind(this), 3000)
-		}
-
-		return
-
 		const newCoaching = {
 			title: title.toLowerCase(),
 			sport,
@@ -238,7 +219,7 @@ class Schedule extends React.Component {
 			focus: focus && focus.length > 0 ? focus : [],
 			coachingLanguage: language.length > 0 ? language : countryCodeToLanguage(moment.locale()),
 			freeAccess: price === 0 ? true : false,
-			price,
+			price: t(price),
 			coachFirstName: firstName.toLowerCase(),
 			coachLastName: lastName.toLowerCase(),
 			coachUserName: userName.toLowerCase(),
@@ -301,24 +282,15 @@ class Schedule extends React.Component {
 		return false
 	}
 
-	checkPriceInput() {
-		const { price } = this.state
-		const allowedChars = ['0','1','2','3','4','5','6','7','8','9','.']
-		const arrOfPriceChars = price.split()
-		arrOfPriceChars.forEach(char => {
-			if(!allowedChars.includes(char.toString())) {
-				return true
-			}
-		})
-		return false
-	}
-
 	returnPriceWording(price) {
 		const { t } = this.props
-		if (price === "zero") {
+		if (t(price) === 0) {
 			return capitalize(t('freeAccess'))
 		}
-		return `${t(price)} ${returnCurrency(moment.locale())}`
+		if (t(price)>1) {
+			return `${t(price)} ${t('credits')}`
+		}
+		return `${t(price)} ${t('credit')}`
 	}
 
 
@@ -355,9 +327,10 @@ class Schedule extends React.Component {
 
 		if (isLoading) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-separator'></div>
+				<div
+					className='flex-column flex-center'
+					style={{ height: '100%' }}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
@@ -369,11 +342,9 @@ class Schedule extends React.Component {
 		}
 
 		return (
-			<div className='schedule-container'>
-				<span
-					style={{ width: '100%' }}
-					className='big-title citrusBlack responsive-title'
-				>
+			// <div className='schedule-container'>
+			<div className='main-container'>
+				<span className='big-title citrusBlack margin-responsive-title'>
 					{capitalize(t('post'))}
 				</span>
 				<form
@@ -381,6 +352,7 @@ class Schedule extends React.Component {
 					onSubmit={this.handleCreateCoaching}
 					className='scroll-div-vertical card upload-form'
 				>
+					<div className='medium-separator'></div>
 					<input
 						className='text-input smaller-text-bold citrusGrey input form-input'
 						placeholder={capitalize(t('addTitle'))}
@@ -413,7 +385,7 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					{/* <Select
+					<Select
 						className='form-input'
 						id='simple-select'
 						value={price}
@@ -424,11 +396,11 @@ class Schedule extends React.Component {
 							if (selected.length === 0) {
 								return (
 									<em className='smaller-text-bold citrusGrey'>
-										{t('pricePlaceholder')}
+										{`${t('pricePlaceholder')} ${returnCurrency(moment.locale())})`}
 									</em>
 								)
 							}
-							return t(selected)
+							return this.returnPriceWording(selected)
 						}}
 					>
 						<MenuItem disabled value="">
@@ -441,8 +413,8 @@ class Schedule extends React.Component {
 								</MenuItem>
 							))
 						}
-					</Select> */}
-					<input
+					</Select>
+					{/* <input
 						type='number'
 						pattern='/^[0-9]+([.][0-9]+)?$/'
 						value={price}
@@ -451,7 +423,7 @@ class Schedule extends React.Component {
 						onChange={(e) => this.setState({ price: e.target.value })}
 						style={{ color: '#000000', border: 'none', height: 'unset' }}
 						disabled={progress || progress === 0 ? true : false}
-					/>
+					/> */}
 					<div className='medium-separator'></div>
 					{
 						progress || progress === 0 ?
@@ -643,12 +615,11 @@ class Schedule extends React.Component {
 					</div>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<div className='flex-row' style={{ width: '80%', margin: '0 10%' }}>
+					<div className='flex-row' style={{ width: '100%', justifyContent: 'center' }}>
 						{
 							!progress && progress != 0 && !isProcessingVideo &&
 							<button
 								className={!isButtonDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
-								style={{ width: '100%' }}
 								type='submit'
 								form='upload-form'
 								disabled={isButtonDisabled}

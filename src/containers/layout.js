@@ -60,38 +60,56 @@ const Layout = ({
 				{
 					isAuthenticated &&
 					<>
-						<Link to='/home' className='desktop-only'>
-							<span className={isActiveTab('/home')}>
-								{capitalize(t('home'))}
-							</span>
-						</Link>
-						<Link to='/explore' className='desktop-only'>
-							<span className={isActiveTab('/explore')}>
-								{capitalize(t('explore'))}
-							</span>
-						</Link>
-						<Link to='/schedule' className='desktop-only'>
-							<span className={isActiveTab('/schedule')}>
-								{capitalize(t('post'))}
-							</span>
-						</Link>
-						<Link to='/profile' className='desktop-only'>
-							<span className={isActiveTab('/profile')}>
-								{capitalize(t('profile'))}
-							</span>
-						</Link>
-						<Link to='/settings' className='desktop-only'>
-							<span className={isActiveTab('/settings')}>
-								{capitalize(t('settings'))}
-							</span>
-						</Link>
+						<div className='navigation'>
+							<div
+								style={{
+									width: '50%',
+									display: 'flex',
+									justifyContent: 'space-between'
+								}}
+							>
+								<Link to='/home' className='desktop-only'>
+									<span className={isActiveTab('/home')}>
+										{capitalize(t('home'))}
+									</span>
+								</Link>
+								<Link to='/explore' className='desktop-only'>
+									<span className={isActiveTab('/explore')}>
+										{capitalize(t('explore'))}
+									</span>
+								</Link>
+								<Link to='/schedule' className='desktop-only'>
+									<span className={isActiveTab('/schedule')}>
+										{capitalize(t('post'))}
+									</span>
+								</Link>
+								<Link to='/profile' className='desktop-only'>
+									<span className={isActiveTab('/profile')}>
+										{capitalize(t('profile'))}
+									</span>
+								</Link>
+								<Link to='/settings' className='desktop-only'>
+									<span className={isActiveTab('/settings')}>
+										{capitalize(t('settings'))}
+									</span>
+								</Link>
+							</div>
+						</div>
 						<div
 							onClick={logout}
-							className='medium-text hover logout small-button desktop-only'
+							className='medium-text hover logout desktop-only'
 						>
-							<span className='small-text-bold citrusWhite'>
-								{capitalize(t('logOut'))}
-							</span>
+							<div
+								className='small-button'
+								style={{
+								width: '40%',
+								height: '35px'
+								}}
+							>
+								<span className='small-text-bold citrusWhite'>
+									{capitalize(t('logOut'))}
+								</span>
+							</div>
 						</div>
 					</>
 				}
@@ -119,18 +137,35 @@ const Layout = ({
 						background-color: #FFF;
 						z-index: 13;
 						height: 80px;
-						width: 95%;
-						margin: 0 2.5%;
+						width: 100%;
+						margin: 0;
 					}
 					.header-left-box {
 						height: 80px;
-						justify-content: center;
+						justify-content: flex-start;
 						align-items: center;
 						display: flex;
+						min-width: calc((92.5% - 1000px) / 2);
+						padding: 0 0 0 2.5%;
+					}
+					.navigation {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						width: 100%;
+						max-width: 1000px;
+					}
+					.logout {
+						min-width: calc((95% - 1000px) / 2);
+						padding: 0 2.5% 0 0;
+						display: flex;
+						justify-content: flex-end;
 					}
 					.logo {
-						height: 30px;
-						width: 197px;
+						// height: 30px;
+						// width: 197px;
+						height: 20px;
+						width: 131.5px;
 					}
 					.contact-row {
 						justify-content: space-between;

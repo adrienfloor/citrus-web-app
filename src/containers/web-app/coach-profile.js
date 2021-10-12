@@ -199,9 +199,10 @@ class CoachProfile extends React.Component {
 
 		if (isLoading) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-separator'></div>
+				<div
+					className='flex-column flex-center'
+					style={{ height: '100%' }}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'

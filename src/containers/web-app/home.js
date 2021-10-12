@@ -108,9 +108,10 @@ class Home extends React.Component {
 
 		if (isLoading || !user) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-separator'></div>
+				<div
+					className='flex-column flex-center'
+					style={{ height: '100%'}}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
@@ -154,318 +155,303 @@ class Home extends React.Component {
 						))
 					}
 				</div>
-				{activeTabIndex === 0 ?
-					<div className='scroll-div-vertical'>
-						{/* NOTIFICATIONS */}
-							{/* notifications && notifications.length > 0 &&
-							<div className='scroll-div-horizontal'>
+				<div className='upload-form card scroll-div-vertical home-container'>
+					{activeTabIndex === 0 ?
+						<div className='scroll-div-vertical'>
+							{/* MY REPLAYS */}
+							<div className='category-block'>
+								<span className='small-title citrusBlack paddingHorizontal'>
+									{capitalize(t('myTrainings'))}
+								</span>
+								<div className='small-separator'></div>
 								{
-									notifications && notifications.length > 0 && notifications.map((notification, i) => (
-										<NotificationCard
-											key={i}
-											onClose={() => {
-												deleteNotification(user._id, notification._id)
-													.then(() => fetchNotifications(user._id))
-											}}
-											span={notification.message}
-										/>
-									))
+									userReplays && userReplays.length > 0 ?
+										<div className='scroll-div-horizontal'>
+											{
+												userReplays.map((activity, i) => (
+													<Card
+														onClick={() => this.setState({ selectedCoaching: activity.coaching })}
+														size='medium'
+														key={i}
+														title={capitalize(activity.coaching.title)}
+														subtitle={`${capitalize(t(activity.coaching.sport))} ${t('with')} ${capitalize(activity.coaching.coachUserName)}`}
+														imgUri={activity.coaching.pictureUri}
+													/>
+												))
+											}
+										</div> :
+										<Link to='/explore' className='empty-coaching-card hover'>
+											<PlusButton
+												width={180}
+												height={180}
+												stroke={'#FFFFFF'}
+												strokeWidth={2}
+											/>
+											<div className='small-separator'></div>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('noTrainingsYet'))}
+											</span>
+											<div className='small-separator'></div>
+											<div className='light-button plus-button'>
+												<span className='small-title citrusBlue'>
+													{capitalize(t('checkoutTrainings'))}
+												</span>
+											</div>
+											<div className='small-separator'></div>
+										</Link>
 								}
-							</div> */}
+							</div>
 
-						{/* MY REPLAYS */}
-						<div className='category-block'>
-							<span className='small-title citrusBlack paddingHorizontal'>
-								{capitalize(t('myTrainings'))}
-							</span>
-							<div className='small-separator'></div>
+							{/* YOUR FAVOURITE COACHES */}
 							{
-								userReplays && userReplays.length > 0 ?
+								following && following.length > 0 &&
+								<div className='category-block'>
+									<span className='small-title citrusBlack paddingHorizontal'>
+										{capitalize(t('myCoaches'))}
+									</span>
+									<div className='small-separator'></div>
 									<div className='scroll-div-horizontal'>
 										{
-											userReplays.map((activity, i) => (
+											following.map((coach, i) => (
 												<Card
-													onClick={() => this.setState({ selectedCoaching: activity.coaching })}
+													onClick={() => this.setState({ selectedCoach: coach })}
 													size='medium'
 													key={i}
-													title={capitalize(activity.coaching.title)}
-													subtitle={`${capitalize(t(activity.coaching.sport))} ${t('with')} ${capitalize(activity.coaching.coachUserName)}`}
-													imgUri={activity.coaching.pictureUri}
+													title={capitalize(coach.userName)}
+													subtitle={`${coach.numberOfFollowers} ${coach.numberOfFollowers > 1 ? t('followers') : t('follower')}`}
+													imgUri={coach.avatarUrl}
 												/>
 											))
 										}
-									</div> :
-									<Link to='/explore' className='empty-coaching-card hover'>
-										<PlusButton
-											width={180}
-											height={180}
-											stroke={'#FFFFFF'}
-											strokeWidth={2}
-										/>
-										<div className='small-separator'></div>
-										<span className='small-title citrusBlack'>
-											{capitalize(t('noTrainingsYet'))}
-										</span>
-										<div className='small-separator'></div>
-										<div className='light-button plus-button'>
-											<span className='small-title citrusBlue'>
-												{capitalize(t('checkoutTrainings'))}
-											</span>
-										</div>
-										<div className='small-separator'></div>
-									</Link>
-							}
-						</div>
-
-						{/* YOUR FAVOURITE COACHES */}
-						{
-							following && following.length > 0 &&
-							<div className='category-block'>
-								<span className='small-title citrusBlack paddingHorizontal'>
-									{capitalize(t('myCoaches'))}
-								</span>
-								<div className='small-separator'></div>
-								<div className='scroll-div-horizontal'>
-									{
-										following.map((coach, i) => (
-											<Card
-												onClick={() => this.setState({ selectedCoach: coach })}
-												size='medium'
-												key={i}
-												title={capitalize(coach.userName)}
-												subtitle={`${coach.numberOfFollowers} ${coach.numberOfFollowers > 1 ? t('followers') : t('follower')}`}
-												imgUri={coach.avatarUrl}
-											/>
-										))
-									}
+									</div>
 								</div>
-							</div>
-						}
+							}
 
-						{/* ACHIEVEMENTS */}
-						<div className='category-block stats-container'>
-							<div className='stats'>
-								<span className='small-title citrusBlack'>
-									{capitalize(t('achievements'))}
-								</span>
-								<div className='small-separator'></div>
-								<div className='progress-row'>
-									<div
-										className='stats-row'
-										style={{
-											justifyContent: 'space-between',
-											height: '25px'
-										}}
-									>
-										<div className='stats-row'>
-											<div
-												style={{
-													backgroundColor: returnUserStatusProgressBarColor(activitiesIHaveAttended.length),
-													borderRadius: 50,
-													width: 19,
-													height: 19,
-													marginRight: 10
-												}}
-											>
-											</div>
-											<span className='smaller-text-bold'>
-												{capitalize(t(returnUserStatus(activitiesIHaveAttended.length).status))}
-											</span>
-										</div>
+							{/* ACHIEVEMENTS */}
+							<div className='category-block stats-container'>
+								<div className='stats'>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('achievements'))}
+									</span>
+									<div className='small-separator'></div>
+									<div className='progress-row'>
 										<div
 											className='stats-row'
 											style={{
-												justifyContent: 'flex-end',
-												width: '50%'
+												justifyContent: 'space-between',
+												height: '25px'
 											}}
 										>
-											<span className='smaller-text-bold'>
-												{`${activitiesIHaveAttended.length} / ${returnUserStatusProgressBar(activitiesIHaveAttended.length)}`}
+											<div className='stats-row'>
+												<div
+													style={{
+														backgroundColor: returnUserStatusProgressBarColor(activitiesIHaveAttended.length),
+														borderRadius: 50,
+														width: 19,
+														height: 19,
+														marginRight: 10
+													}}
+												>
+												</div>
+												<span className='smaller-text-bold'>
+													{capitalize(t(returnUserStatus(activitiesIHaveAttended.length).status))}
+												</span>
+											</div>
+											<div
+												className='stats-row'
+												style={{
+													justifyContent: 'flex-end',
+													width: '50%'
+												}}
+											>
+												<span className='smaller-text-bold'>
+													{`${activitiesIHaveAttended.length} / ${returnUserStatusProgressBar(activitiesIHaveAttended.length)}`}
+												</span>
+											</div>
+										</div>
+										<div className='small-separator'></div>
+										<ProgressBar
+											completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
+											height='10px'
+											bgColor='#B4B4B4'
+											baseBgColor='#FFFFFF'
+											isLabelVisible={false}
+										/>
+									</div>
+									<div className='medium-separator'></div>
+									<div className='medium-separator'></div>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('topActivities'))}
+									</span>
+									<div className='small-separator'></div>
+									<div className='stats-row'>
+										<Tag
+											textValue={this.returnTopActivities()}
+											defaultTextValue={t('noTopActivitiesYet')}
+										/>
+									</div>
+									<div className='medium-separator'></div>
+									<div className='medium-separator'></div>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('statistics'))}
+									</span>
+									<div className='small-separator'></div>
+									<div className='stats-row'>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{activitiesIHaveAttended.length}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('totalTrainings'))}
+											</span>
+										</div>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{totalLengthOfActivities}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('totalMinutes'))}
+											</span>
+										</div>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{averageFeeling}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('feelingAverage'))}
 											</span>
 										</div>
 									</div>
 									<div className='small-separator'></div>
-									<ProgressBar
-										completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
-										height='10px'
-										bgColor='#B4B4B4'
-										baseBgColor='#FFFFFF'
-										isLabelVisible={false}
-									/>
+									<div className='medium-separator'></div>
 								</div>
-								<div className='medium-separator'></div>
-								<div className='medium-separator'></div>
-								<span className='small-title citrusBlack'>
-									{capitalize(t('topActivities'))}
-								</span>
-								<div className='small-separator'></div>
-								<div className='stats-row'>
-									<Tag
-										textValue={this.returnTopActivities()}
-										defaultTextValue={t('noTopActivitiesYet')}
-									/>
-								</div>
-								<div className='medium-separator'></div>
-								<div className='medium-separator'></div>
-								<span className='small-title citrusBlack'>
-									{capitalize(t('statistics'))}
-								</span>
-								<div className='small-separator'></div>
-								<div className='stats-row'>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{activitiesIHaveAttended.length}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('totalTrainings'))}
-										</span>
-									</div>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{totalLengthOfActivities}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('totalMinutes'))}
-										</span>
-									</div>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{averageFeeling}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('feelingAverage'))}
-										</span>
-									</div>
-								</div>
-								<div className='small-separator'></div>
-								<div className='medium-separator'></div>
 							</div>
-						</div>
-					</div> :
-					<div className='scroll-div-vertical'>
-						{/* COACH PAST ACTIVITIES */}
-						<div className='category-block'>
-							<span className='small-title citrusBlack'>
-								{capitalize(t('myCoachings'))}
-							</span>
-							<div className='small-separator'></div>
-							{
-								myCoachings && myCoachings.length > 0 ?
-									<div className='scroll-div-horizontal'>
-										{
-											myCoachings.map((activity, i) => (
-												<Card
-													onClick={() => this.setState({ selectedCoaching: activity })}
-													size='medium'
-													key={i}
-													title={capitalize(activity.title)}
-													subtitle={capitalize(t(activity.sport))}
-													imgUri={activity.pictureUri}
-												/>
-											))
-										}
-									</div> :
-									<Link to='/schedule' className='empty-coaching-card hover'>
-										<PlusButton
-											width={180}
-											height={180}
-											stroke={'#FFFFFF'}
-											strokeWidth={2}
-										/>
-										<div className='small-separator'></div>
-										<span className='small-title citrusBlack'>
-											{capitalize(t('noCoachingsYet'))}
-										</span>
-										<div className='small-separator'></div>
-										<div className='light-button plus-button'>
-											<span className='small-title citrusBlue'>
-												{capitalize(t('startNow'))}
-											</span>
-										</div>
-										<div className='small-separator'></div>
-									</Link>
-							}
-						</div>
-
-						{/* STATISTICS */}
-						<div className='category-block stats-container'>
-							<div className='stats'>
+						</div> :
+						<div className='scroll-div-vertical'>
+							{/* COACH PAST ACTIVITIES */}
+							<div className='category-block'>
 								<span className='small-title citrusBlack'>
-									{capitalize(t('statistics'))}
+									{capitalize(t('myCoachings'))}
 								</span>
 								<div className='small-separator'></div>
-								<div className='stats-row'>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{myCoachings.length}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('totalCoachings'))}
-										</span>
-									</div>
-									<div className='stats-column'>
-										<div
-											style={{
-												display: 'flex',
-												flexDirection: 'row',
-												alignItems: 'flex-end',
-												justifyContent: 'flex-start'
-											}}
-										>
-											<span className='big-number' style={{ marginRight: '5px' }}>
-												{coachRating}
-											</span>
-											<WavyCheck
-												width={25}
-												height={25}
-												stroke={'#000000'}
+								{
+									myCoachings && myCoachings.length > 0 ?
+										<div className='scroll-div-horizontal'>
+											{
+												myCoachings.map((activity, i) => (
+													<Card
+														onClick={() => this.setState({ selectedCoaching: activity })}
+														size='medium'
+														key={i}
+														title={capitalize(activity.title)}
+														subtitle={capitalize(t(activity.sport))}
+														imgUri={activity.pictureUri}
+													/>
+												))
+											}
+										</div> :
+										<Link to='/schedule' className='empty-coaching-card hover'>
+											<PlusButton
+												width={180}
+												height={180}
+												stroke={'#FFFFFF'}
 												strokeWidth={2}
 											/>
-										</div>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('notation'))}
-										</span>
-									</div>
-								</div>
-								<div className='medium-separator'></div>
-								<div className='small-separator'></div>
-								<span className='small-title citrusBlack'>
-									{capitalize(t('payments'))}
-								</span>
-								<div className='small-separator'></div>
-								<div className='stats-row'>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{`${currentGains || 0} ${returnCurrency(moment.locale())}`}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('currentSold'))}
-										</span>
-									</div>
-									<div className='stats-column'>
-										<span className='big-number'>
-											{`${lifeTimeGains || 0} ${returnCurrency(moment.locale())}`}
-										</span>
-										<span className='small-title citrusGrey'>
-											{capitalize(t('totalEarnings'))}
-										</span>
-									</div>
-								</div>
-								<div className='medium-separator'></div>
-								<div className='small-separator'></div>
-								<div
-									className='filled-button cashout-button'
-									onClick={() => this.setState({ isCashingOut: true })}
-								>
-									<span className='small-title citrusWhite'>
-										{capitalize(t('withdrawNow'))}
+											<div className='small-separator'></div>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('noCoachingsYet'))}
+											</span>
+											<div className='small-separator'></div>
+											<div className='light-button plus-button'>
+												<span className='small-title citrusBlue'>
+													{capitalize(t('startNow'))}
+												</span>
+											</div>
+											<div className='small-separator'></div>
+										</Link>
+								}
+							</div>
+
+							{/* STATISTICS */}
+							<div className='category-block stats-container'>
+								<div className='stats'>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('statistics'))}
 									</span>
+									<div className='small-separator'></div>
+									<div className='stats-row'>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{myCoachings.length}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('totalCoachings'))}
+											</span>
+										</div>
+										<div className='stats-column'>
+											<div
+												style={{
+													display: 'flex',
+													flexDirection: 'row',
+													alignItems: 'flex-end',
+													justifyContent: 'flex-start'
+												}}
+											>
+												<span className='big-number' style={{ marginRight: '5px' }}>
+													{coachRating}
+												</span>
+												<WavyCheck
+													width={25}
+													height={25}
+													stroke={'#000000'}
+													strokeWidth={2}
+												/>
+											</div>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('notation'))}
+											</span>
+										</div>
+									</div>
+									<div className='medium-separator'></div>
+									<div className='small-separator'></div>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('payments'))}
+									</span>
+									<div className='small-separator'></div>
+									<div className='stats-row'>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{`${currentGains || 0} ${returnCurrency(moment.locale())}`}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('currentSold'))}
+											</span>
+										</div>
+										<div className='stats-column'>
+											<span className='big-number'>
+												{`${lifeTimeGains || 0} ${returnCurrency(moment.locale())}`}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('totalEarnings'))}
+											</span>
+										</div>
+									</div>
+									<div className='medium-separator'></div>
+									<div className='small-separator'></div>
+									<div
+										className='filled-button cashout-button'
+										onClick={() => this.setState({ isCashingOut: true })}
+									>
+										<span className='small-title citrusWhite'>
+											{capitalize(t('withdrawNow'))}
+										</span>
+									</div>
+									<div className='small-separator'></div>
 								</div>
-								<div className='small-separator'></div>
 							</div>
 						</div>
-					</div>
-				}
+					}
+				</div>
 				{
 					selectedCoaching &&
 					<Dialog

@@ -42,7 +42,8 @@ class Signup extends React.Component {
 			message: '',
 			showPassword: false,
 			errorMessage: '',
-			signupDisabled: false
+			signupDisabled: false,
+			isLoading: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
 		this.onToggleCheck = this.onToggleCheck.bind(this)
@@ -172,17 +173,33 @@ class Signup extends React.Component {
 			password,
 			showPassword,
 			signupDisabled,
-			errorMessage
+			errorMessage,
+			isLoading
 		} = this.state
 		const {
 			t,
 			history,
 			isAuthenticated
 		} = this.props
+
 		if (isAuthenticated) {
 			history.push('/home')
 			return null
 		}
+
+		if (isLoading) {
+			return (
+				<div className='full-container flex-column flex-center main'>
+					<Loader
+						type='Oval'
+						color='#C2C2C2'
+						height={100}
+						width={100}
+					/>
+				</div>
+			)
+		}
+
 		return (
 			<div className='full-container flex-column flex-center main'>
 				<div className='maxi-title title'>

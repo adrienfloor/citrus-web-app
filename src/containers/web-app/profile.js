@@ -156,10 +156,11 @@ class Profile extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack' style={{ width: '100%' }}>
+				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('profile'))}
 				</span>
-				<div className='scroll-div-vertical'>
+				<div className='upload-form card scroll-div-vertical profile-container'>
+					<div className='desktop-only-medium-separator'></div>
 					<div className='profile-row'>
 						{
 							isEditing ?

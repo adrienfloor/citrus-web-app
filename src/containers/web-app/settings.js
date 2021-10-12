@@ -190,17 +190,15 @@ class Settings extends React.Component {
 
 	 	return (
 			<div className='settings-container'>
-				<span
-					style={{ width: '100%' }}
-					className='big-title citrusBlack responsive-title'
-				>
+					<span className='big-title citrusBlack margin-responsive-title'>
 					{capitalize(t('settings'))}
 				</span>
 				<div
 					id='upload-form'
 					className='scroll-div-vertical card upload-form'
 				>
-					<span className='small-title citrusBlack responsive-title'>
+					<div className='medium-separator'></div>
+					<span className='small-title citrusBlack small-responsive-title'>
 						{capitalize(t('trainings'))}
 					</span>
 					<div className='medium-separator'></div>
@@ -273,7 +271,7 @@ class Settings extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					<span className='small-title citrusBlack responsive-title'>
+					<span className='small-title citrusBlack small-responsive-title'>
 						{capitalize(t('personal'))}
 					</span>
 					<div className='medium-separator'></div>

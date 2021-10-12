@@ -302,9 +302,10 @@ class Coaching extends React.Component {
 
 		if (isLoading) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
-					<div className='big-separator'></div>
+				<div
+					className='flex-column flex-center'
+					style={{ height: '100%' }}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
@@ -357,10 +358,8 @@ class Coaching extends React.Component {
 						width='100%'
 						height='100%'
 						autoPlay={false}
-						// autoplay={true}
 						controls
 						url={muxReplayPlaybackId}
-						// muted
 					/>
 				</div>
 			)
@@ -458,10 +457,7 @@ class Coaching extends React.Component {
 									{capitalize(t('freeAccess'))}
 								</span>
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
-									{freeAccess
-										? capitalize(t('yes'))
-										: capitalize(t('no'))
-									}
+									{capitalize(t('yes'))}
 								</span>
 							</div>
 						}
@@ -473,7 +469,7 @@ class Coaching extends React.Component {
 									{capitalize(t('price'))}
 								</span>
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
-									{`${price}${returnCurrency(moment.locale())}`}
+									{`${price} ${price === 0 ? t('credit') : t('credits')}`}
 								</span>
 							</div>
 						}
