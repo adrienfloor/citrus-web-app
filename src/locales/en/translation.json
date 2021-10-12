@@ -433,5 +433,7 @@
 	"tellUsMoreAboutYou": "tell us more about you by adding a bio",
 	"iForgotMyPassword": "i forgot my password",
 	"unknownEmail": "unknown email",
-	"youWillReceiveAResetLink": "you will receive a secure reset password link through email"
+	"youWillReceiveAResetLink": "you will receive a secure reset password link through email",
+	"youreNowFollowing": "you're now following",
+	"youveUnfollowed": "you've unfollowed"
 }

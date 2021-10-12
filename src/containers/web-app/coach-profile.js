@@ -25,6 +25,7 @@ import {
 } from '../../utils/various'
 
 import { fetchTrainerCoachings } from '../../actions/coachings-actions'
+import { setNotification } from '../../actions/notifications-actions'
 import {
 	fetchUserInfo,
 	updateUser,
@@ -32,7 +33,7 @@ import {
 	deleteFollower,
 	loadUser
 } from '../../actions/auth-actions'
-// import { createNotification } from '../../actions/notifications-actions'
+import { createNotification } from '../../actions/notifications-actions'
 
 const { REACT_APP_SERVER_URL } = process.env
 
@@ -113,8 +114,10 @@ class CoachProfile extends React.Component {
 			createFollower,
 			deleteFollower,
 			createNotification,
+			setNotification,
 			coach,
-			t
+			t,
+			onCancel
 		} = this.props
 
 		if (!followedId || !followerId) {
@@ -124,10 +127,7 @@ class CoachProfile extends React.Component {
 			})
 				.then(res => {
 					if (res.payload.msg === 'New follower') {
-						this.alertWithType(
-							capitalize(t('myCoachs')),
-							capitalize(`${t('youreNowFollowing')} ${coach.userName}`)
-						)
+						setNotification({ message: capitalize(`${t('youreNowFollowing')} ${coach.userName}`)})
 						loadUser()
 						createNotification({
 							message: `${user.userName} ${t('followedYou')}`,
@@ -144,10 +144,8 @@ class CoachProfile extends React.Component {
 		} else {
 			return deleteFollower(followedId, followerId)
 				.then(res => {
-					this.alertWithType(
-						capitalize(t('myCoachs')),
-						capitalize(`${t('youveUnfollowed')} ${coach.userName}`)
-					)
+					setNotification({ message: capitalize(`${t('youveUnfollowed')} ${coach.userName}`) })
+					onCancel()
 					loadUser()
 				})
 		}
@@ -375,8 +373,9 @@ const mapDispatchToProps = dispatch => ({
 	fetchUserInfo: id => dispatch(fetchUserInfo(id)),
 	createFollower: properties => dispatch(createFollower(properties)),
 	deleteFollower: (followedId, followerId) => dispatch(deleteFollower(followedId, followerId)),
-	// createNotification: notification => dispatch(createNotification(notification)),
-	loadUser: () => dispatch(loadUser())
+	createNotification: notification => dispatch(createNotification(notification)),
+	loadUser: () => dispatch(loadUser()),
+	setNotification: notification => dispatch(setNotification(notification))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(CoachProfile))

@@ -1,6 +1,8 @@
 import {
 	SET_NOTIFICATION,
-	CLEAN_NOTIFICATION
+	CLEAN_NOTIFICATION,
+	CREATE_NOTIFICATION,
+	DELETE_NOTIFICATION
 } from '../actions/types'
 
 const initialState = {
@@ -19,6 +21,8 @@ export default function (state = initialState, action) {
 				...state,
 				notification: null
 			}
+		case CREATE_NOTIFICATION:
+		case DELETE_NOTIFICATION:
 		default:
 			return state
 	}

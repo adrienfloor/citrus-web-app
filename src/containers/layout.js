@@ -27,9 +27,9 @@ const Layout = ({
 
 	const isActiveTab = tab => {
 		if (tab === location.pathname) {
-			return 'active-nav smaller-text-bold citrusGrey hover'
+			return 'active-nav small-text-bold citrusGrey hover'
 		}
-		return 'smaller-text-bold citrusGrey hover'
+		return 'small-text-bold citrusGrey hover'
 	}
 
 	return (
@@ -63,7 +63,7 @@ const Layout = ({
 						<div className='navigation'>
 							<div
 								style={{
-									width: '50%',
+									width: '90%',
 									display: 'flex',
 									justifyContent: 'space-between'
 								}}
@@ -102,7 +102,7 @@ const Layout = ({
 							<div
 								className='small-button'
 								style={{
-								width: '40%',
+								minWidth: '100px',
 								height: '35px'
 								}}
 							>
@@ -145,7 +145,7 @@ const Layout = ({
 						justify-content: flex-start;
 						align-items: center;
 						display: flex;
-						min-width: calc((92.5% - 1000px) / 2);
+						min-width: calc((97.5% - 1000px) / 2);
 						padding: 0 0 0 2.5%;
 					}
 					.navigation {
@@ -154,9 +154,10 @@ const Layout = ({
 						align-items: center;
 						width: 100%;
 						max-width: 1000px;
+						min-width: 500px;
 					}
 					.logout {
-						min-width: calc((95% - 1000px) / 2);
+						min-width: calc((97.5% - 1000px) / 2);
 						padding: 0 2.5% 0 0;
 						display: flex;
 						justify-content: flex-end;

@@ -190,7 +190,7 @@ class Settings extends React.Component {
 
 	 	return (
 			<div className='settings-container'>
-					<span className='big-title citrusBlack margin-responsive-title'>
+					<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('settings'))}
 				</span>
 				<div
@@ -202,7 +202,7 @@ class Settings extends React.Component {
 						{capitalize(t('trainings'))}
 					</span>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('coachingLanguages'))}
 					</span>
 					<Select
@@ -218,14 +218,14 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('myFavoriteSports'))}
 					</span>
 					<Select
 						className='form-input'
 						multiple
 						value={sports.map(sport => sport.type)}
-						onChange={e => this.handleSelectChange(e, 'sport')}
+						onChange={e => this.handleSelectChange(e, 'sports')}
 					>
 						{
 							sportsItems.map((sport, i) => (
@@ -236,7 +236,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('metricUnits'))}
 					</span>
 					<Select
@@ -253,7 +253,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='smaller-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('basedOnLocation'))}
 					</span>
 					<Select
@@ -276,14 +276,14 @@ class Settings extends React.Component {
 					</span>
 					<div className='medium-separator'></div>
 					<span
-						className='smaller-text-bold citrusGrey form-input hover'
+						className='small-text-bold citrusGrey form-input hover'
 						onClick={() => this.setState({ isChangingPassword: true })}
 					>
 						{capitalize(t('changeMyPassword'))}
 					</span>
 					<div className='medium-separator'></div>
 					<span
-						className='smaller-text-bold citrusGrey form-input hover'
+						className='small-text-bold citrusGrey form-input hover'
 						onClick={() => this.setState({ isDeletingAccount: true })}
 					>
 						{capitalize(t('deleteMyAccount'))}
@@ -297,7 +297,7 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com' }}
 							target='_blank'
-							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey form-input hover mobile-only'
 						>
 							{capitalize(t('howItWorks'))}
 						</Link>
@@ -305,7 +305,7 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/privacy-policy' }}
 							target='_blank'
-							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey form-input hover mobile-only'
 						>
 							{capitalize(t('privacy'))}
 						</Link>
@@ -313,13 +313,13 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/cgu-cgv/' }}
 							target='_blank'
-							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey form-input hover mobile-only'
 						>
 							{capitalize(t('terms'))}
 						</Link>
 						<div className='small-separator mobile-only'></div>
 						<Link
-							className='smaller-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey form-input hover mobile-only'
 							to='#'
 							onClick={e => {
 								e.preventDefault()
@@ -355,7 +355,7 @@ class Settings extends React.Component {
 						>
 							<div className='medium-separator'></div>
 							<span
-								className='smaller-text-bold citrusGrey'
+								className='small-text-bold citrusGrey'
 								style={{
 									width: '95%',
 									padding: '0 2.5%',
@@ -415,21 +415,21 @@ class Settings extends React.Component {
 							<div className='medium-separator'></div>
 								<input
 									type='password'
-									className='text-input smaller-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('currentPassword'))}
 									onChange={(e) => this.setState({ password: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
 								/>
 								<div className='medium-separator'></div>
 								<input
-									className='text-input smaller-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('newPassword'))}
 									onChange={(e) => this.setState({ newPassword: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
 								/>
 								<div className='medium-separator'></div>
 								<input
-									className='text-input smaller-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('confirmNewPassword'))}
 									onChange={(e) => this.setState({ newMatchingPassword: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
@@ -437,7 +437,7 @@ class Settings extends React.Component {
 								{
 									newPassword.length > 0 && isValidPassword(newPassword).length < 3 &&
 									<>
-										<span className='smaller-text citrusRed' style={{ width: '80%' }}>
+										<span className='small-text citrusRed' style={{ width: '80%' }}>
 											{capitalize(t('passwordMustBe'))}
 										</span>
 									</>
@@ -445,7 +445,7 @@ class Settings extends React.Component {
 								{
 									newMatchingPassword.length > 0 && !isSameString(newPassword, newMatchingPassword) &&
 									<>
-										<span className='smaller-text citrusRed' style={{ width: '80%' }}>
+										<span className='small-text citrusRed' style={{ width: '80%' }}>
 											{capitalize(t('passwordsDontMatch'))}
 										</span>
 									</>
@@ -453,7 +453,7 @@ class Settings extends React.Component {
 								{
 									warning &&
 									<>
-										<span className='smaller-text citrusRed' style={{ width: '80%' }}>
+										<span className='small-text citrusRed' style={{ width: '80%' }}>
 											{capitalize(warning)}
 										</span>
 									</>

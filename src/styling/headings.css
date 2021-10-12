@@ -2,7 +2,8 @@
 	font-family: Raleway-Bold;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 40px;
+	/* font-size: 40px; */
+	font-size: 36px;
 	line-height: 47px;
 }
 
@@ -10,7 +11,8 @@
 	font-family: Raleway-Bold;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 32px;
+	/* font-size: 32px; */
+	font-size: 26px;
 	line-height: 47px;
 }
 
@@ -18,7 +20,8 @@
 	font-family: Raleway-Bold;
 	font-style: normal;
 	font-weight: 600 !important;
-	font-size: 20px;
+	/* font-size: 20px; */
+	font-size: 16px;
 	line-height: 23px;
 }
 
@@ -26,7 +29,8 @@
 	font-family: Raleway-Regular;
 	font-style: normal;
 	font-weight: 400;
-	font-size: 16px;
+	/* font-size: 16px; */
+	font-size: 14px;
 	line-height: 19px;
 }
 
@@ -42,7 +46,8 @@
 	font-family: Raleway-Regular;
 	font-style: normal;
 	font-weight: 400;
-	font-size: 16px;
+	/* font-size: 16px; */
+	font-size: 14px;
 	line-height: 21px !important;
 }
 
@@ -50,7 +55,8 @@
 	font-family: Raleway-Medium;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 18px !important;
+	/* font-size: 18px !important; */
+	font-size: 14px !important;
 	line-height: 19px;
 }
 
@@ -58,7 +64,8 @@
 	font-family: Raleway-Medium;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 16px !important;
+	/* font-size: 16px !important; */
+	font-size: 12px !important;
 	line-height: 19px;
 }
 
@@ -66,7 +73,8 @@
 	font-family: Raleway-Medium;
 	font-style: normal;
 	font-weight: 600;
-	font-size: 16px;
+	/* font-size: 16px; */
+	font-size: 12px;
 	line-height: 19px;
 	color: #0075FF;
 }
@@ -81,7 +89,8 @@
 
 .big-number {
 	font-family: Raleway-Bold;
-	font-size: 32px;
+	/* font-size: 32px; */
+	font-size: 28px;
 	font-style: normal;
 	font-weight: 600;
 	/* line-height: 39; */

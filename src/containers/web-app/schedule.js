@@ -344,7 +344,7 @@ class Schedule extends React.Component {
 		return (
 			// <div className='schedule-container'>
 			<div className='main-container'>
-				<span className='big-title citrusBlack margin-responsive-title'>
+				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('post'))}
 				</span>
 				<form
@@ -354,7 +354,7 @@ class Schedule extends React.Component {
 				>
 					<div className='medium-separator'></div>
 					<input
-						className='text-input smaller-text-bold citrusGrey input form-input'
+						className='text-input small-text-bold citrusGrey input form-input'
 						placeholder={capitalize(t('addTitle'))}
 						onChange={(e) => this.setState({ title: e.target.value })}
 						style={{ color: '#000000', border: 'none', height: 'unset' }}
@@ -370,13 +370,13 @@ class Schedule extends React.Component {
 						displayEmpty
 						renderValue={(selected) => {
 							if (selected.length === 0) {
-								return <em className='smaller-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
+								return <em className='small-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
 							}
 							return t(selected)
 						}}
 					>
 						<MenuItem disabled value="">
-							<em className='smaller-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
+							<em className='small-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
 						</MenuItem>
 						{
 							sportsItems.map((sport, i) => (
@@ -395,7 +395,7 @@ class Schedule extends React.Component {
 						renderValue={(selected) => {
 							if (selected.length === 0) {
 								return (
-									<em className='smaller-text-bold citrusGrey'>
+									<em className='small-text-bold citrusGrey'>
 										{`${t('pricePlaceholder')} ${returnCurrency(moment.locale())})`}
 									</em>
 								)
@@ -404,7 +404,7 @@ class Schedule extends React.Component {
 						}}
 					>
 						<MenuItem disabled value="">
-							<em className='smaller-text-bold citrusGrey'>{t('pricePlaceholder')}</em>
+							<em className='small-text-bold citrusGrey'>{t('pricePlaceholder')}</em>
 						</MenuItem>
 						{
 							pricesItems.map((price, i) => (
@@ -418,7 +418,7 @@ class Schedule extends React.Component {
 						type='number'
 						pattern='/^[0-9]+([.][0-9]+)?$/'
 						value={price}
-						className='text-input smaller-text-bold citrusGrey input form-input'
+						className='text-input small-text-bold citrusGrey input form-input'
 						placeholder={capitalize(t('addPrice'))}
 						onChange={(e) => this.setState({ price: e.target.value })}
 						style={{ color: '#000000', border: 'none', height: 'unset' }}
@@ -429,7 +429,7 @@ class Schedule extends React.Component {
 						progress || progress === 0 ?
 						null :
 						<div className='more-details-row'>
-							<span className='smaller-text-bold citrusGrey'>
+							<span className='small-text-bold citrusGrey'>
 								{
 									!isShowingAllParams ?
 									t('moreInfo') :
@@ -468,7 +468,7 @@ class Schedule extends React.Component {
 								renderValue={(selected) => {
 									if (selected.length === 0) {
 										return (
-											<em className='smaller-text-bold citrusGrey'>
+											<em className='small-text-bold citrusGrey'>
 												{t('durationPlaceholder')}
 											</em>
 										)
@@ -477,7 +477,7 @@ class Schedule extends React.Component {
 								}}
 							>
 								<MenuItem disabled value="">
-									<em className='smaller-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
+									<em className='small-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
 								</MenuItem>
 								{
 									durationsItems.map((duration, i) => (
@@ -495,7 +495,7 @@ class Schedule extends React.Component {
 								renderValue={(selected) => {
 									if (selected.length === 0) {
 										return (
-											<em className='smaller-text-bold citrusGrey'>
+											<em className='small-text-bold citrusGrey'>
 												{t('levelPlaceholder')}
 											</em>
 										)
@@ -504,7 +504,7 @@ class Schedule extends React.Component {
 								}}
 							>
 								<MenuItem disabled value="">
-									<em className='smaller-text-bold citrusGrey'>{t('levelPlaceholder')}</em>
+									<em className='small-text-bold citrusGrey'>{t('levelPlaceholder')}</em>
 								</MenuItem>
 								{
 									levelsItems.map((level, i) => (
@@ -523,7 +523,7 @@ class Schedule extends React.Component {
 								renderValue={(selected) => {
 									if (selected.length === 0) {
 										return (
-											<em className='smaller-text-bold citrusGrey'>
+											<em className='small-text-bold citrusGrey'>
 												{t('equipmentPlaceholder')}
 											</em>
 										)
@@ -532,7 +532,7 @@ class Schedule extends React.Component {
 								}}
 							>
 								<MenuItem disabled value="">
-									<em className='smaller-text-bold citrusGrey'>{t('equipmentPlaceholder')}</em>
+									<em className='small-text-bold citrusGrey'>{t('equipmentPlaceholder')}</em>
 								</MenuItem>
 								{
 									equipmentsItems.map((equipment, i) => (
@@ -551,7 +551,7 @@ class Schedule extends React.Component {
 								renderValue={(selected) => {
 									if (selected.length === 0) {
 										return (
-											<em className='smaller-text-bold citrusGrey'>
+											<em className='small-text-bold citrusGrey'>
 												{t('focusPlaceholder')}
 											</em>
 										)
@@ -560,7 +560,7 @@ class Schedule extends React.Component {
 								}}
 							>
 								<MenuItem disabled value="">
-									<em className='smaller-text-bold citrusGrey'>{t('focusPlaceholder')}</em>
+									<em className='small-text-bold citrusGrey'>{t('focusPlaceholder')}</em>
 								</MenuItem>
 								{
 									focusItems.map((fc, i) => (
@@ -578,7 +578,7 @@ class Schedule extends React.Component {
 								renderValue={(selected) => {
 									if (selected.length === 0) {
 										return (
-											<em className='smaller-text-bold citrusGrey'>
+											<em className='small-text-bold citrusGrey'>
 												{t('languagePlaceholder')}
 											</em>
 										)
@@ -587,7 +587,7 @@ class Schedule extends React.Component {
 								}}
 							>
 								<MenuItem disabled value="">
-									<em className='smaller-text-bold citrusGrey'>{t('languagePlaceholder')}</em>
+									<em className='small-text-bold citrusGrey'>{t('languagePlaceholder')}</em>
 								</MenuItem>
 								{
 									languagesItems.map((language, i) => (
@@ -633,7 +633,7 @@ class Schedule extends React.Component {
 							progress !== null && progress >= 0 && !isProcessingVideo ?
 							<div style={{ height: '50px', width: '100%' }}>
 								<div className='flex-row' style={{ alignItems: 'center'}}>
-									<span className='smaller-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
+									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
 										{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
 									</span>
 									<Loader
@@ -656,7 +656,7 @@ class Schedule extends React.Component {
 							isProcessingVideo &&
 							<div style={{ height: '50px', width: '100%' }}>
 								<div className='flex-row' style={{ alignItems: 'center' }}>
-									<span className='smaller-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
 										{capitalize(t('processingVideo'))}
 									</span>
 									<Loader
@@ -671,14 +671,14 @@ class Schedule extends React.Component {
 					</div>
 					{
 						progress !== null && progress >= 0 && !isProcessingVideo ?
-							<span className='smaller-text-bold citrusBlack' style={{ width: '80%' }}>
+							<span className='small-text-bold citrusBlack' style={{ width: '80%' }}>
 								{capitalize(t('dontClose'))}
 							</span> : null
 					}
 					{
 						errorMessage.length > 0 &&
 						<span
-							className='smaller-text-bold citrusRed'
+							className='small-text-bold citrusRed'
 							style={{ marginTop: 10 }}
 						>
 							{errorMessage}
