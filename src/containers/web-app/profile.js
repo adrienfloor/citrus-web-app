@@ -55,7 +55,8 @@ class Profile extends React.Component {
 			userName,
 			sports: sports.length ? sports : [],
 			bio,
-			avatarUrl
+			avatarUrl,
+			myCoachingsSkip: 3
 		}
 		this.handleSportChange = this.handleSportChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -133,7 +134,8 @@ class Profile extends React.Component {
 			sports,
 			bio,
 			avatarUrl,
-			warning
+			warning,
+			myCoachingsSkip
 		} = this.state
 
 		if (isLoading) {
@@ -358,20 +360,75 @@ class Profile extends React.Component {
 							<div className='small-separator'></div>
 							{
 								myCoachings && myCoachings.length > 0 ?
-									<div className='scroll-div-horizontal'>
+									<>
+										<div className='flex-row-cards'>
+											{
+												myCoachings.slice(0, myCoachingsSkip).map((activity, i) => (
+													<Card
+														onClick={() => this.setState({ selectedCoaching: activity })}
+														size='medium'
+														key={i}
+														title={capitalize(activity.title)}
+														subtitle={capitalize(t(activity.sport))}
+														imgUri={activity.pictureUri}
+													/>
+												))
+											}
+											{
+												!(myCoachingsSkip >= myCoachings.length) &&
+												<div
+													className='mobile-only'
+													style={{
+														height: '100%',
+														minWidth: '125px',
+														marginRight: '15px',
+														paddingBottom: '50px'
+													}}
+												>
+													<span
+														className='small-text-bold citrusGrey hover'
+														style={{
+															borderBottom: '1px solid #C2C2C2',
+															paddingBottom: '2px',
+															width: '100%',
+															display: 'block'
+														}}
+														onClick={() => {
+															this.setState({ myCoachingsSkip: myCoachingsSkip + 3 })
+														}}
+													>
+														{capitalize(t('moreCoachings'))}
+													</span>
+												</div>
+											}
+										</div>
 										{
-											myCoachings.map((coaching, i) => (
-												<Card
-													onClick={() => this.setState({ selectedCoaching: coaching })}
-													size='medium'
-													key={i}
-													title={capitalize(coaching.title)}
-													subtitle={capitalize(t(coaching.sport))}
-													imgUri={coaching.pictureUri}
-												/>
-											))
+											!(myCoachingsSkip >= myCoachings.length) &&
+											<div
+												className='desktop-only'
+												style={{ width: '100%' }}
+											>
+												<div className='medium-separator'></div>
+												<div
+													className='desktop-load-more'
+													style={{ marginBottom: '20px' }}
+												>
+													<span
+														className='small-text-bold citrusGrey hover'
+														style={{
+															borderBottom: '1px solid #C2C2C2',
+															paddingBottom: '2px'
+														}}
+														onClick={() => {
+															this.setState({ myCoachingsSkip: myCoachingsSkip + 3 })
+														}}
+													>
+														{capitalize(t('moreCoachings'))}
+													</span>
+												</div>
+											</div>
 										}
-									</div> :
+									</> :
 									<Link to='/schedule' className='empty-coaching-card hover'>
 										<PlusButton
 											width={180}

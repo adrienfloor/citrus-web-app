@@ -51,10 +51,10 @@ class DownloadApp extends React.Component {
 					}
 					.qr-code {
 						margin-top: 30px;
-						max-width: 250px;
+						max-width: 300px;
 					}
 					.app-store-logo {
-						max-width: 250px;
+						max-width: 300px;
 					}
 					.mobile {
 						text-align: center;

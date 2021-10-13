@@ -58,7 +58,8 @@ class Explore extends React.Component {
 			searchingAccounts: false,
 			selectedCoach: null,
 			isMenuOpen: false,
-			skip: 5
+			skip: 0,
+			showLoadMore: true
 		}
 
 		const {
@@ -105,6 +106,7 @@ class Explore extends React.Component {
 		const {
 			executeExploreSearch,
 			resetSpecificSportSearch,
+			resetExploreSearch,
 			user,
 		} = this.props
 		const { activeTitleTabName } = this.state
@@ -114,10 +116,14 @@ class Explore extends React.Component {
 		})
 
 		resetSpecificSportSearch()
-		if (sport === 'all') {
-			return
-		}
-		executeExploreSearch(sport, user._id, 0)
+		executeExploreSearch(sport, user._id, 0, 5)
+			.then(res => {
+				if (res && res.payload && res.payload.length < 5) {
+					this.setState({ showLoadMore: false })
+				} else {
+					this.setState({ showLoadMore: true })
+				}
+			})
 	}
 
 	render() {
@@ -132,7 +138,8 @@ class Explore extends React.Component {
 			isMenuOpen,
 			skip,
 			isFetchingCoachings,
-			activeSportType
+			activeSportType,
+			showLoadMore
 		} = this.state
 		const {
 			executeExploreSearch,
@@ -153,10 +160,12 @@ class Explore extends React.Component {
 					open={true}
 					onClose={() => this.setState({ selectedCoach: null })}
 				>
-					<CoachProfile
-						coach={selectedCoach}
-						onCancel={() => this.setState({ selectedCoach: null })}
-					/>
+					<div className='coach-profile-dialog'>
+						<CoachProfile
+							coach={selectedCoach}
+							onCancel={() => this.setState({ selectedCoach: null })}
+						/>
+					</div>
 				</Dialog>
 			)
 		}
@@ -362,43 +371,61 @@ class Explore extends React.Component {
 											</div>
 										))
 								}
-								<div className='full-width-on-mobile'>
-									{
-										activeSportType !== 'all' &&
-											searchInputText === '' &&
-											!exploreSpecificSportSearch.length ? null : (
-											<div
-												className='light-button hover cashout-button button-load-more-mobile'
-												onClick={() => {
-													this.setState({
-														skip: skip + 5,
-														isFetchingCoachings: true
-													})
-													executeExploreSearch(
-														activeSportType,
-														user._id,
-														skip + 5,
-													).then((res) =>
-														this.setState({ isFetchingCoachings: false }),
-													)
-												}}
-											>
-												{isFetchingCoachings ? (
-													<Loader
-														type="ThreeDots"
-														color="#0075FF"
-														height={25}
-														width={25}
-													/>
-												) : (
-													<span className='small-title citrusBlue'>
-														{capitalize(t('loadMore'))}
-														...
-													</span>
-												)}
-											</div>
-										)}
-								</div>
+								{
+									showLoadMore &&
+									<div className='full-width-on-mobile'>
+										{
+											activeSportType !== 'all' &&
+												searchInputText === '' &&
+												!exploreSpecificSportSearch.length ? null : (
+												<div
+													style={{ height: '200px', display: 'flex', alignItems: 'flex-end' }}
+													className='hover button-load-more-mobile'
+													onClick={() => {
+														this.setState({
+															skip: skip + 5,
+															isFetchingCoachings: true
+														})
+														executeExploreSearch(
+															activeSportType,
+															user._id,
+															skip + 6,
+															6
+														).then((res) => {
+															if (res && res.payload && res.payload.length < 5) {
+																this.setState({ showLoadMore: false })
+															} else {
+																this.setState({ showLoadMore: true })
+															}
+															this.setState({ isFetchingCoachings: false })
+														})
+													}}
+												>
+													{isFetchingCoachings ?
+														<Loader
+															type="ThreeDots"
+															color="#C2C2C2"
+															height={25}
+															width={25}
+														/> :
+														<span
+															className='small-text-bold citrusGrey hover'
+															style={{
+																borderBottom: '1px solid #C2C2C2',
+																paddingBottom: '2px'
+															}}
+														>
+															{capitalize(t('loadMore'))}
+														</span>
+														// <span className='small-title citrusBlue'>
+														// 	{capitalize(t('loadMore'))}
+														// 	...
+														// </span>
+													}
+												</div>
+											)}
+									</div>
+								}
 								{
 									exploreSpecificSportSearch &&
 									exploreSpecificSportSearch.length === 0 &&
@@ -496,8 +523,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	loadUser: () => dispatch(loadUser()),
 	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
-	executeExploreSearch: (sport, userId, skipValue) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue)),
+	executeExploreSearch: (sport, userId, skipValue, limit) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
 	executeSearch: (query, type, userId) =>
 		dispatch(executeSearch(query, type, userId)),
 	resetSearch: () => dispatch(resetSearch()),

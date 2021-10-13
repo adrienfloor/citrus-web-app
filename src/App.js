@@ -52,7 +52,7 @@ class App extends React.Component {
       if(user) {
         this.props.fetchUserReplays(user._id)
         this.props.fetchTrainerCoachings(user._id, true)
-        this.props.executeExploreSearch('all', user._id, 5)
+        this.props.executeExploreSearch('all', user._id, 0, 5)
       }
     })
     this.notify = this.notify.bind(this)
@@ -131,8 +131,8 @@ const mapDispatchToProps = dispatch => ({
   loadUser: () => dispatch(loadUser()),
   fetchUserReplays: id => dispatch(fetchUserReplays(id)),
   fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-  executeExploreSearch: (sport, userId, skipValue) =>
-    dispatch(executeExploreSearch(sport, userId, skipValue))
+  executeExploreSearch: (sport, userId, skipValue, limit) =>
+    dispatch(executeExploreSearch(sport, userId, skipValue, limit))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

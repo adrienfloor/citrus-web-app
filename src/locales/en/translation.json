@@ -435,5 +435,8 @@
 	"unknownEmail": "unknown email",
 	"youWillReceiveAResetLink": "you will receive a secure reset password link through email",
 	"youreNowFollowing": "you're now following",
-	"youveUnfollowed": "you've unfollowed"
+	"youveUnfollowed": "you've unfollowed",
+	"moreTrainings": "more trainings",
+	"moreCoachs": "more coachs",
+	"moreCoachings": "more coachings"
 }

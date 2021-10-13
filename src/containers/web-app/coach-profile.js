@@ -57,7 +57,8 @@ class CoachProfile extends React.Component {
 		this.state = {
 			isLoading: false,
 			isRefreshing: false,
-			coachings: []
+			coachings: [],
+			coachingsSkip: 3
 		}
 
 		this.loadCoachInfo()
@@ -187,7 +188,8 @@ class CoachProfile extends React.Component {
 			selectedCoaching,
 			isLoading,
 			isRefreshing,
-			coachings
+			coachings,
+			coachingsSkip
 		} = this.state
 
 		const isFollowingCoach = coach && user.following.find(
@@ -310,20 +312,72 @@ class CoachProfile extends React.Component {
 						<div className='small-separator'></div>
 						{
 							coachings && coachings.length > 0 ?
-								<div className='scroll-div-horizontal'>
+								<>
+									<div className='flex-row-cards'>
+										{
+											coachings.slice(0, coachingsSkip).map((coaching, i) => (
+												<Card
+													onClick={() => this.setState({ selectedCoaching: coaching })}
+													size='medium'
+													key={i}
+													title={capitalize(coaching.title)}
+													subtitle={capitalize(t(coaching.sport))}
+													imgUri={coaching.pictureUri}
+												/>
+											))
+										}
+										{
+											!(coachingsSkip >= coachings.length) &&
+											<div
+												className='mobile-only'
+												style={{
+													height: '100%',
+													minWidth: '115px',
+													marginRight: '15px',
+													paddingBottom: '50px'
+												}}
+											>
+												<span
+													className='small-text-bold citrusGrey hover'
+													style={{
+														borderBottom: '1px solid #C2C2C2',
+														paddingBottom: '2px',
+														width: '100%',
+														display: 'block'
+													}}
+													onClick={() => {
+														this.setState({ coachingsSkip: coachingsSkip + 3 })
+													}}
+												>
+													{capitalize(t('moreCoachings'))}
+												</span>
+											</div>
+										}
+									</div>
 									{
-										coachings.map((coaching, i) => (
-											<Card
-												onClick={() => this.setState({ selectedCoaching: coaching })}
-												size='medium'
-												key={i}
-												title={capitalize(coaching.title)}
-												subtitle={capitalize(t(coaching.sport))}
-												imgUri={coaching.pictureUri}
-											/>
-										))
+										!(coachingsSkip >= coachings.length) &&
+										<div
+											className='desktop-only'
+											style={{ width: '100%' }}
+										>
+											<div className='medium-separator'></div>
+											<div className='desktop-load-more'>
+												<span
+													className='small-text-bold citrusGrey hover'
+													style={{
+														borderBottom: '1px solid #C2C2C2',
+														paddingBottom: '2px'
+													}}
+													onClick={() => {
+														this.setState({ coachingsSkip: coachingsSkip + 3 })
+													}}
+												>
+													{capitalize(t('moreCoachings'))}
+												</span>
+											</div>
+										</div>
 									}
-								</div> :
+								</> :
 								<span className='small-text citrusBlack'>
 									{capitalize(t('noneYet'))}
 								</span>

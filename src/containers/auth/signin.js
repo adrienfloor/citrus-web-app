@@ -121,7 +121,7 @@ class Signin extends React.Component {
 		).then(async (res) => {
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 5)
+				const search = await executeExploreSearch('all', userId, 0, 5)
 				const replays = await fetchUserReplays(userId)
 				// fetchNotifications(userId)
 				const trainings = await fetchTrainerCoachings(userId, true)
@@ -374,8 +374,8 @@ const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-	executeExploreSearch: (sport, userId, skipValue) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue))
+	executeExploreSearch: (sport, userId, skipValue, limit) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signin))

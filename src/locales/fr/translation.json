@@ -437,5 +437,8 @@
 	"unknownEmail": "email inconnu",
 	"youWillReceiveAResetLink": "tu recevras par email un lien sécurisé pour réinitailiser ton mot de passe",
 	"youreNowFollowing": "tu suis desormais",
-	"youveUnfollowed": "tu ne suis plus"
+	"youveUnfollowed": "tu ne suis plus",
+	"moreTrainings": "plus de trainings",
+	"moreCoachs": "plus de coachs",
+	"moreCoachings": "plus de coachings"
 }

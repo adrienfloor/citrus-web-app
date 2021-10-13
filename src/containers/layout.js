@@ -129,39 +129,6 @@ const Layout = ({
 			</footer>
 			<style jsx='true'>
 				{`
-					.header {
-						justify-content: space-between;
-						align-items: center;
-						position: fixed;
-						top: 0;
-						background-color: #FFF;
-						z-index: 13;
-						height: 80px;
-						width: 100%;
-						margin: 0;
-					}
-					.header-left-box {
-						height: 80px;
-						justify-content: flex-start;
-						align-items: center;
-						display: flex;
-						min-width: calc((97.5% - 1000px) / 2);
-						padding: 0 0 0 2.5%;
-					}
-					.navigation {
-						display: flex;
-						justify-content: space-between;
-						align-items: center;
-						width: 100%;
-						max-width: 1000px;
-						min-width: 500px;
-					}
-					.logout {
-						min-width: calc((97.5% - 1000px) / 2);
-						padding: 0 2.5% 0 0;
-						display: flex;
-						justify-content: flex-end;
-					}
 					.logo {
 						// height: 30px;
 						// width: 197px;
@@ -175,7 +142,8 @@ const Layout = ({
 					}
 					.children {
 						flex: 1;
-						margin-top: 80px;
+						// margin-top: 80px;
+						margin-top: 60px;
 						margin-bottom: 40px;
 						background-color: #F8F8F8;
 					}

@@ -140,7 +140,7 @@ class Signup extends React.Component {
 		).then(async (res) => {
 			if (res.type === 'REGISTER_SUCCESS') {
 				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 5)
+				const search = await executeExploreSearch('all', userId, 0, 5)
 				const replays = await fetchUserReplays(userId)
 				const trainings = await fetchTrainerCoachings(userId, true)
 				if (search && replays && trainings) {
