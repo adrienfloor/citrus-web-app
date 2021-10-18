@@ -135,13 +135,13 @@ input:focus {
 	cursor: pointer;
 }
 
-.MuiInput-underline:before {
+/* .MuiInput-underline:before {
 	border: none !important;
-}
+} */
 
-.MuiInput-underline:after {
+/* .MuiInput-underline:after {
 	border: none !important;
-}
+} */
 
 .MuiSelect-icon {
 	color: #C2C2C2 !important;

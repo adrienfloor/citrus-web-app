@@ -205,7 +205,9 @@ class Settings extends React.Component {
 					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('coachingLanguages'))}
 					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
 						multiple
 						value={coachingLanguagePreference}
@@ -221,7 +223,9 @@ class Settings extends React.Component {
 					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('myFavoriteSports'))}
 					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
 						multiple
 						value={sports.map(sport => sport.type)}
@@ -239,7 +243,9 @@ class Settings extends React.Component {
 					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('metricUnits'))}
 					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
 						value={weightMetricPreference}
 						onChange={e => this.handleSelectChange(e, 'units')}
@@ -256,7 +262,9 @@ class Settings extends React.Component {
 					<span className='small-text-bold citrusGrey form-input'>
 						{capitalize(t('basedOnLocation'))}
 					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
 						value={basedOnLocationPreference === false ? capitalize(t('no')) : capitalize(t('yes'))}
 						onChange={e => this.handleSelectChange(e, 'basedOnLocationPreference')}

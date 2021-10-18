@@ -316,6 +316,8 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	/* width: calc(97.5% - 14px);
+	margin: 0 calc(1.25% + 14px); */
 	width: 97.5%;
 	margin: 0 1.25%;
 	padding-bottom: 10px;
@@ -551,11 +553,11 @@ input[type=number] {
 	.form-input {
 		width: 95% !important;
 		margin: 0 0 0 2.5% !important;
-		min-height: 20px !important;
+		min-height: 30px !important;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		display: block;
-		overflow: hidden;
+		/* overflow: hidden; */
 	}
 	.more-details-row {
 		width: 95% !important;

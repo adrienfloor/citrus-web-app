@@ -6,6 +6,7 @@ import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField'
 import * as UpChunk from '@mux/upchunk'
 import axios from 'axios'
 import io from 'socket.io-client'
@@ -101,9 +102,6 @@ class Schedule extends React.Component {
 			t,
 			history
 		} = this.props
-		// this.setState({ isReadingFile: true })
-		// const file = await fetch(videoFile).then(res => res.blob()).then(blobFile => new File([blobFile], "new_video", { type: 'video/mp4,video/x-m4v,video/*' }))
-		// if (file) { this.setState({ isReadingFile: false }) }
 		try {
 			const config = {
 				headers: {
@@ -301,7 +299,8 @@ class Schedule extends React.Component {
 			isGoingLive,
 			user,
 			videoThumbnail,
-			t
+			t,
+			classes
 		} = this.props
 		const {
 			title,
@@ -325,6 +324,8 @@ class Schedule extends React.Component {
 			price
 		} = this.state
 
+		console.log(classes)
+
 		if (isLoading) {
 			return (
 				<div
@@ -342,7 +343,6 @@ class Schedule extends React.Component {
 		}
 
 		return (
-			// <div className='schedule-container'>
 			<div className='main-container'>
 				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('post'))}
@@ -353,17 +353,25 @@ class Schedule extends React.Component {
 					className='scroll-div-vertical card upload-form'
 				>
 					<div className='medium-separator'></div>
-					<input
-						className='text-input small-text-bold citrusGrey input form-input'
+					<span className='small-text-bold citrusGrey form-input'>
+						{capitalize(t('title'))}
+					</span>
+					<div className='small-separator'></div>
+					<TextField
 						placeholder={capitalize(t('addTitle'))}
+						variant='outlined'
+						className='small-text-bold citrusGrey form-input'
 						onChange={(e) => this.setState({ title: e.target.value })}
-						style={{ color: '#000000', border: 'none', height: 'unset' }}
 						disabled={progress || progress === 0 ? true : false}
 					/>
 					<div className='medium-separator'></div>
+					<span className='small-text-bold citrusGrey form-input'>
+						{capitalize(t('sport'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
-						id='simple-select'
 						value={sport}
 						onChange={e => this.setState({ sport: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
@@ -385,9 +393,13 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<span className='small-text-bold citrusGrey form-input'>
+						{capitalize(t('price'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
 					<Select
+						variant='outlined'
 						className='form-input'
-						id='simple-select'
 						value={price}
 						onChange={e => this.setState({ price: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
@@ -414,16 +426,6 @@ class Schedule extends React.Component {
 							))
 						}
 					</Select>
-					{/* <input
-						type='number'
-						pattern='/^[0-9]+([.][0-9]+)?$/'
-						value={price}
-						className='text-input small-text-bold citrusGrey input form-input'
-						placeholder={capitalize(t('addPrice'))}
-						onChange={(e) => this.setState({ price: e.target.value })}
-						style={{ color: '#000000', border: 'none', height: 'unset' }}
-						disabled={progress || progress === 0 ? true : false}
-					/> */}
 					<div className='medium-separator'></div>
 					{
 						progress || progress === 0 ?
@@ -459,9 +461,13 @@ class Schedule extends React.Component {
 					{
 						isShowingAllParams && !progress &&
 						<>
+							<span className='small-text-bold citrusGrey form-input'>
+								{capitalize(t('duration'))}
+							</span>
+							<div className='desktop-only-small-separator'></div>
 							<Select
+								variant='outlined'
 								className='form-input'
-								id='simple-select'
 								value={duration}
 								onChange={e => this.setState({ duration: e.target.value })}
 								displayEmpty
@@ -486,9 +492,13 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<span className='small-text-bold citrusGrey form-input'>
+								{capitalize(t('level'))}
+							</span>
+							<div className='desktop-only-small-separator'></div>
 							<Select
+								variant='outlined'
 								className='form-input'
-								id='simple-select'
 								value={level}
 								onChange={e => this.setState({ level: e.target.value })}
 								displayEmpty
@@ -513,10 +523,14 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<span className='small-text-bold citrusGrey form-input'>
+								{capitalize(t('equipment'))}
+							</span>
+							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
+								variant='outlined'
 								className='form-input'
-								id='simple-select'
 								value={equipment}
 								onChange={e => this.setState({ equipment: e.target.value })}
 								displayEmpty
@@ -541,10 +555,14 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<span className='small-text-bold citrusGrey form-input'>
+								{capitalize(t('focus'))}
+							</span>
+							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
+								variant='outlined'
 								className='form-input'
-								id='simple-select'
 								value={focus}
 								onChange={e => this.setState({ focus: e.target.value })}
 								displayEmpty
@@ -569,9 +587,13 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<span className='small-text-bold citrusGrey form-input'>
+								{capitalize(t('language'))}
+							</span>
+							<div className='desktop-only-small-separator'></div>
 							<Select
+								variant='outlined'
 								className='form-input'
-								id='simple-select'
 								value={language}
 								onChange={e => this.setState({ language: e.target.value })}
 								displayEmpty
