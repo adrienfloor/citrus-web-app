@@ -36,6 +36,25 @@ export const returnCurrency = locale => {
 	}
 }
 
+export const returnCurrencyCode = locale => {
+	switch (locale) {
+		case 'fr':
+		case 'nl':
+		case 'es':
+		case 'it':
+			return 'EUR'
+			break;
+		case 'en-US':
+			return 'USD'
+			break;
+		case 'en':
+			return 'GBP'
+			break;
+		default:
+			return 'EUR'
+	}
+}
+
 export const returnTheHighestOccurrence = arrayOfStrings => {
 	if (arrayOfStrings.length == 0)
 		return null

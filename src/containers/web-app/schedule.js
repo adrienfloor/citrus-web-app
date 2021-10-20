@@ -344,7 +344,7 @@ class Schedule extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack responsive-title'>
+				<span className='big-title citrusBlack form-title'>
 					{capitalize(t('post'))}
 				</span>
 				<form
@@ -353,10 +353,9 @@ class Schedule extends React.Component {
 					className='scroll-div-vertical card upload-form'
 				>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('title'))}
 					</span>
-					<div className='small-separator'></div>
 					<TextField
 						placeholder={capitalize(t('addTitle'))}
 						variant='outlined'
@@ -365,7 +364,7 @@ class Schedule extends React.Component {
 						disabled={progress || progress === 0 ? true : false}
 					/>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('sport'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -393,7 +392,7 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('price'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -461,7 +460,7 @@ class Schedule extends React.Component {
 					{
 						isShowingAllParams && !progress &&
 						<>
-							<span className='small-text-bold citrusGrey form-input'>
+							<span className='small-text-bold citrusGrey titles-form-input'>
 								{capitalize(t('duration'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
@@ -492,7 +491,7 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey form-input'>
+							<span className='small-text-bold citrusGrey titles-form-input'>
 								{capitalize(t('level'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
@@ -523,7 +522,7 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey form-input'>
+							<span className='small-text-bold citrusGrey titles-form-input'>
 								{capitalize(t('equipment'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
@@ -555,7 +554,7 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey form-input'>
+							<span className='small-text-bold citrusGrey titles-form-input'>
 								{capitalize(t('focus'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
@@ -587,7 +586,7 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey form-input'>
+							<span className='small-text-bold citrusGrey titles-form-input'>
 								{capitalize(t('language'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>

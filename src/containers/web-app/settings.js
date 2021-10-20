@@ -7,7 +7,11 @@ import moment from 'moment'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Dialog from '@material-ui/core/Dialog'
+import TextField from '@material-ui/core/TextField'
 import { Link } from 'react-router-dom'
+
+import Plan from './payments/choose-plan'
+import CreditCardForm from './payments/credit-card-from'
 
 import {
 	updateUser,
@@ -49,6 +53,8 @@ class Settings extends React.Component {
 		this.state = {
 			isChangingPassword: false,
 			isDeletingAccount: false,
+			isChoosingPlan: false,
+			isCreditCardOpen: false,
 			password: '',
 			newPassword: '',
 			newMatchingPassword: '',
@@ -185,12 +191,14 @@ class Settings extends React.Component {
 			password,
 			newPassword,
 			newMatchingPassword,
-			isLoading
+			isLoading,
+			isChoosingPlan,
+			isCreditCardOpen
 		} = this.state
 
 	 	return (
 			<div className='settings-container'>
-					<span className='big-title citrusBlack responsive-title'>
+					<span className='big-title citrusBlack form-title'>
 					{capitalize(t('settings'))}
 				</span>
 				<div
@@ -202,7 +210,7 @@ class Settings extends React.Component {
 						{capitalize(t('trainings'))}
 					</span>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('coachingLanguages'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -220,7 +228,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('myFavoriteSports'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -240,7 +248,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('metricUnits'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -259,7 +267,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey form-input'>
+					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('basedOnLocation'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
@@ -280,32 +288,54 @@ class Settings extends React.Component {
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title'>
+						{capitalize(t('membership'))}
+					</span>
+					<div className='medium-separator'></div>
+					<span
+						className='small-text-bold citrusGrey titles-form-input hover'
+						onClick={() => this.setState({ isChoosingPlan: true })}
+					>
+						{capitalize(t('plan'))}
+					</span>
+					<span
+						className='small-text-bold citrusGrey titles-form-input hover'
+						onClick={() => this.setState({ isCreditCardOpen: true })}
+					>
+						{capitalize(t('paymentMethod'))}
+					</span>
+					<span
+						className='small-text-bold citrusGrey titles-form-input hover'
+						onClick={() => this.setState({ isChangingPassword: true })}
+					>
+						{capitalize(t('billing'))}
+					</span>
+					<div className='medium-separator'></div>
+					<span className='small-title citrusBlack small-responsive-title'>
 						{capitalize(t('personal'))}
 					</span>
 					<div className='medium-separator'></div>
 					<span
-						className='small-text-bold citrusGrey form-input hover'
+						className='small-text-bold citrusGrey titles-form-input hover'
 						onClick={() => this.setState({ isChangingPassword: true })}
 					>
 						{capitalize(t('changeMyPassword'))}
 					</span>
-					<div className='medium-separator'></div>
 					<span
-						className='small-text-bold citrusGrey form-input hover'
+						className='small-text-bold citrusGrey titles-form-input hover'
 						onClick={() => this.setState({ isDeletingAccount: true })}
 					>
 						{capitalize(t('deleteMyAccount'))}
 					</span>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-						<span className='small-title citrusBlack form-input mobile-only'>
+					<span className='citrusBlack mobile-only small-title small-responsive-title'>
 						{capitalize(t('help'))}
 					</span>
 					<div className='medium-separator mobile-only'></div>
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com' }}
 							target='_blank'
-							className='small-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
 						>
 							{capitalize(t('howItWorks'))}
 						</Link>
@@ -313,7 +343,7 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/privacy-policy' }}
 							target='_blank'
-							className='small-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
 						>
 							{capitalize(t('privacy'))}
 						</Link>
@@ -321,13 +351,13 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/cgu-cgv/' }}
 							target='_blank'
-							className='small-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
 						>
 							{capitalize(t('terms'))}
 						</Link>
 						<div className='small-separator mobile-only'></div>
 						<Link
-							className='small-text-bold citrusGrey form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
 							to='#'
 							onClick={e => {
 								e.preventDefault()
@@ -337,7 +367,7 @@ class Settings extends React.Component {
 							{capitalize(t('contact'))}
 						</Link>
 						<div className='small-separator mobile-only'></div>
-						<span className='small-text citrusGrey form-input mobile-only'>
+						<span className='small-text citrusGrey titles-form-input mobile-only'>
 							© 2021 All rights Reserved. Design by The Citrus Company
 						</span>
 				</div>
@@ -421,22 +451,24 @@ class Settings extends React.Component {
 							}}
 						>
 							<div className='medium-separator'></div>
-								<input
-									type='password'
+								<TextField
+									variant='outlined'
 									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('currentPassword'))}
 									onChange={(e) => this.setState({ password: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
 								/>
 								<div className='medium-separator'></div>
-								<input
+								<TextField
+									variant='outlined'
 									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('newPassword'))}
 									onChange={(e) => this.setState({ newPassword: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
 								/>
 								<div className='medium-separator'></div>
-								<input
+								<TextField
+									variant='outlined'
 									className='text-input small-text-bold citrusGrey input form-input'
 									placeholder={capitalize(t('confirmNewPassword'))}
 									onChange={(e) => this.setState({ newMatchingPassword: e.target.value })}
@@ -504,6 +536,34 @@ class Settings extends React.Component {
 								/>
 							}
 							</div>
+						</div>
+					</Dialog>
+				}
+				{
+					isChoosingPlan &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isChoosingPlan: false })}
+					>
+						<div className='full-width-and-height-dialog'>
+							<Plan
+								onCancel={() => {
+									this.setState({ isChoosingPlan: false })
+								}}
+							/>
+						</div>
+					</Dialog>
+				}
+				{
+					isCreditCardOpen &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isCreditCardOpen: false })}
+					>
+						<div className='full-width-and-height-dialog'>
+							<CreditCardForm
+								onCancel={() => this.setState({ isCreditCardOpen: false })}
+							/>
 						</div>
 					</Dialog>
 				}

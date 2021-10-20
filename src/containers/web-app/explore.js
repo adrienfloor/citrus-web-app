@@ -160,7 +160,7 @@ class Explore extends React.Component {
 					open={true}
 					onClose={() => this.setState({ selectedCoach: null })}
 				>
-					<div className='coach-profile-dialog'>
+					<div className='full-width-and-height-dialog'>
 						<CoachProfile
 							coach={selectedCoach}
 							onCancel={() => this.setState({ selectedCoach: null })}

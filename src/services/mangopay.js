@@ -83,7 +83,7 @@ export const createMpLegalUser = async (
 
 // CREATE USER WALLET
 
-export const createMpUserWallet = async (id) => {
+export const createMpUserWallet = async (id, currency) => {
 	// HEADERS
 	const config = {
 		headers: {
@@ -94,10 +94,10 @@ export const createMpUserWallet = async (id) => {
 	const body = JSON.stringify({
 		Owners: [ id ],
 		Description: `${id} user wallet`,
-		Currency: 'EUR'
+		Currency: currency
 	})
 	try {
-		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_wallet`, body, config)
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_user_wallet`, body, config)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -353,7 +353,7 @@ export const fetchMpBankAccount = async (UserId) => {
 
 export const fetchMpWalletInfo = async (UserId) => {
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_w_info?UserId=${UserId}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_wallet_info?UserId=${UserId}`)
 		return response.data
 	} catch (err) {
 		console.log(err)

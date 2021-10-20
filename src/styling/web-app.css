@@ -196,7 +196,20 @@
 .coach-profile-container {
 	height: 100%;
 	min-width: 990px;
+	min-height: 700px;
 	margin-left: 2.5%;
+	width: 97.5%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+}
+.choose-plan-container,
+.credit-card-container {
+	height: 100%;
+	min-width: 990px;
+	min-height: 700px;
+	margin: 0 1.25%;
 	width: 97.5%;
 	display: flex;
 	flex-direction: column;
@@ -212,7 +225,7 @@
 	justify-content: space-between;
 	background-color: #FFFFFF;
 }
-.coach-profile-dialog {
+.full-width-and-height-dialog {
 	min-width: 1020px;
 }
 .coaching-column {
@@ -311,6 +324,15 @@
 .form-input {
 	width: 97.5%;
 	margin: 0 1.25%;
+	min-height: 56px !important;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: block;
+}
+.titles-form-input {
+	width: 97.5%;
+	margin: 0 1.25%;
+	min-height: 30px !important;
 }
 .more-details-row {
 	display: flex;
@@ -331,7 +353,7 @@
 }
 .mobile-only,
 .mobile-only-flex {
-	display: none;
+	display: none !important;
 }
 .cashout-button {
 	width: 300px;
@@ -361,6 +383,11 @@
 	max-width: 1000px;
 	padding: 10px 0 10px 2.5%;
 }
+.form-title {
+	width: 97.5%;
+	max-width: 1000px;
+	padding: 10px 0 10px 1.25%;
+}
 .small-responsive-title {
 	max-width: 1000px;
 	width: 97.5%;
@@ -369,6 +396,20 @@
 .progress-row {
 	max-width: 82%;
 }
+
+.card-like {
+	/* Add shadows to create the "card" effect */
+	/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	transition: 0.3s; */
+	width: 350px;
+	padding: 20px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card-like:hover {
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
 /* SCROLLBAR */
 
 /* width */
@@ -436,7 +477,7 @@ input[type=number] {
 		display: none !important;
 	}
 	.mobile-only {
-		display: block;
+		display: flex !important;
 	}
 	.mobile-only-flex {
 		display: flex;
@@ -456,16 +497,19 @@ input[type=number] {
 		flex-direction: column;
 		padding: 0;
 	}
-	.coach-profile-container {
+	.coach-profile-container,
+	.choose-plan-container,
+	.credit-card-container {
 		width: 100%;
 		min-width: 100% !important;
+		min-height: 100% !important;
 		margin-left: 0;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
 	}
-	.coach-profile-dialog {
+	.full-width-and-height-dialog {
 		min-width: 100% !important;
 	}
 	.coach-profile-column {
@@ -553,11 +597,11 @@ input[type=number] {
 	.form-input {
 		width: 95% !important;
 		margin: 0 0 0 2.5% !important;
+	}
+	.titles-form-input {
+		width: 95% !important;
+		margin: 0 0 0 2.5% !important;
 		min-height: 30px !important;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		display: block;
-		/* overflow: hidden; */
 	}
 	.more-details-row {
 		width: 95% !important;
@@ -611,13 +655,14 @@ input[type=number] {
 		height: 135px !important;
 	}
 	.responsive-title,
-	.small-responsive-title {
+	.small-responsive-title,
+	.form-title {
 		width: 95% !important;
-		margin-left: 2.5%;
+		margin-left: 1.25%;
 	}
 	.tabs-bar {
 		width: 95% !important;
-		margin-left: 2.5%;
+		margin-left: 1.25%;
 	}
 	.scroll-div-horizontal-mobile {
 		overflow-x: auto;
@@ -639,6 +684,12 @@ input[type=number] {
 	.profile-coachings-block {
 		padding: 15px 0 15px 0 !important;
 	}
+
+	.card-like {
+		width: 97.5%;
+		padding: 0 1.25%;
+	}
+
 	/* MATERIAL UI OVERIDE */
 
 	/* Material ui dialog window */
