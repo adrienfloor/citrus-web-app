@@ -10,8 +10,8 @@ import Dialog from '@material-ui/core/Dialog'
 import TextField from '@material-ui/core/TextField'
 import { Link } from 'react-router-dom'
 
-import Plan from './payments/choose-plan'
-import CreditCardForm from './payments/credit-card-from'
+import MyPlan from './payments/my-plan'
+import PaymentMethod from './payments/payment-method'
 
 import {
 	updateUser,
@@ -175,7 +175,8 @@ class Settings extends React.Component {
 	render() {
 		const {
 			t,
-			user
+			user,
+			history
 		} = this.props
 		const {
 			coachingLanguagePreference,
@@ -303,12 +304,12 @@ class Settings extends React.Component {
 					>
 						{capitalize(t('paymentMethod'))}
 					</span>
-					<span
+					{/* <span
 						className='small-text-bold citrusGrey titles-form-input hover'
 						onClick={() => this.setState({ isChangingPassword: true })}
 					>
 						{capitalize(t('billing'))}
-					</span>
+					</span> */}
 					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title'>
 						{capitalize(t('personal'))}
@@ -381,16 +382,7 @@ class Settings extends React.Component {
 							})
 						}}
 					>
-						<div
-							style={{
-								width: '500px',
-								height: '300px',
-								display: 'flex',
-								flexDirection: 'column',
-								justifyContent: 'space-between',
-								alignItems: 'center'
-							}}
-						>
+						<div className='delete-account-container'>
 							<div className='medium-separator'></div>
 							<span
 								className='small-text-bold citrusGrey'
@@ -403,7 +395,7 @@ class Settings extends React.Component {
 								{capitalize(t('deleteAccountText'))}
 							</span>
 							<div
-								className='flex-row'
+								className='flex-row desktop-only'
 								style={{
 									width: '100%',
 									padding: '2.5% 0',
@@ -418,15 +410,41 @@ class Settings extends React.Component {
 									{capitalize(t('cancel'))}
 								</span>
 								<button
-									className='filled-button button'
-									style={{ width: '35%', margin: '0 15% 0 2.5%' }}
+									className='light-button button'
+									style={{ width: '40%', margin: '0 10% 0 2.5%' }}
 									onClick={this.handleDeleteAccount}
 								>
-									<span className='small-title citrusWhite'>
+									<span className='small-title citrusBlue'>
 										{capitalize(t('deleteMyAccount'))}
 									</span>
 								</button>
 							</div>
+								<div
+									className='flex-column mobile-only'
+									style={{
+										width: '100%',
+										padding: '2.5% 0',
+										alignItems: 'center'
+									}}
+								>
+									<button
+										className='light-button button'
+										style={{ width: '90%', margin: '0 10%' }}
+										onClick={this.handleDeleteAccount}
+									>
+										<span className='small-title citrusBlue'>
+											{capitalize(t('deleteMyAccount'))}
+										</span>
+									</button>
+									<div className='small-separator'></div>
+									<span
+										onClick={() => this.setState({ isDeletingAccount: false })}
+										className='small-title citrusGrey hover'
+										// style={{ width: '25%', margin: '0 2.5% 0 20%' }}
+									>
+										{capitalize(t('cancel'))}
+									</span>
+								</div>
 						</div>
 					</Dialog>
 				}
@@ -440,16 +458,7 @@ class Settings extends React.Component {
 							})
 						}}
 					>
-						<div
-							style={{
-								width: '500px',
-								height: '350px',
-								display: 'flex',
-								flexDirection: 'column',
-								justifyContent: 'space-between',
-								alignItems: 'center'
-							}}
-						>
+						<div className='change-password-container'>
 							<div className='medium-separator'></div>
 								<TextField
 									variant='outlined'
@@ -546,10 +555,11 @@ class Settings extends React.Component {
 						onClose={() => this.setState({ isChoosingPlan: false })}
 					>
 						<div className='full-width-and-height-dialog'>
-							<Plan
+							<MyPlan
 								onCancel={() => {
 									this.setState({ isChoosingPlan: false })
 								}}
+								history={history}
 							/>
 						</div>
 					</Dialog>
@@ -561,7 +571,7 @@ class Settings extends React.Component {
 						onClose={() => this.setState({ isCreditCardOpen: false })}
 					>
 						<div className='full-width-and-height-dialog'>
-							<CreditCardForm
+							<PaymentMethod
 								onCancel={() => this.setState({ isCreditCardOpen: false })}
 							/>
 						</div>

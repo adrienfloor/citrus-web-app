@@ -23,6 +23,7 @@ import ResetPassword from './containers/auth/reset-password'
 import AdminDashboard from './containers/admin/admin-dashboard'
 import AdminAccountsLedger from './containers/admin/accounts-ledger'
 import AdminStoreTransfer from './containers/admin/store-transfer'
+import PayInConfirmation from './containers/web-app/payments/pay-in-confirmation'
 
 import Home from './containers/web-app/home'
 import Explore from './containers/web-app/explore'
@@ -89,6 +90,7 @@ class App extends React.Component {
                 <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
                 <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />
                 <PrivateRoute auth={isAuthenticated} path='/settings' component={Settings} />
+                <PrivateRoute auth={isAuthenticated} path='/pay-in-confirmation' component={PayInConfirmation} />
                 <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
                 <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
                 <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />

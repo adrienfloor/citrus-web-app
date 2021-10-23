@@ -21,16 +21,16 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 
 	if(planType === 20) {
 		title = `20${returnCurrency(moment.locale())} / ${t('month')}`
-		text = capitalize(t('youGet25CreditsAmonth'))
-		subtext = capitalize(t('rollUpTo10Credits'))
+		text = capitalize(t('youGet20CreditsAmonth'))
+		subtext = capitalize(t('rollOverUpTo5Credits'))
 	} else if(planType === 30) {
 		title = `30${returnCurrency(moment.locale())} / ${t('month')}`
-		text = capitalize(t('youGet40CreditsAmonth'))
-		subtext = capitalize(t('rollUpTo15Credits'))
+		text = capitalize(t('youGet30CreditsAmonth'))
+		subtext = capitalize(t('rollOverUpTo10Credits'))
 	} else if (planType === 10) {
 		title = `10${returnCurrency(moment.locale())} / ${t('month')}`
 		text = capitalize(t('youGet10CreditsAmonth'))
-		subtext = capitalize(t('rollUpTo5Credits'))
+		subtext = capitalize(t('noRollOverOnCredits'))
 	} else {
 		title = capitalize(t('aLaCarte'))
 		text = `${capitalize(t('youPayTheClassCost'))}${returnCurrency(moment.locale())})`
@@ -40,7 +40,11 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 
 	return (
 		<div
-			className='full-container flex-column hover card-container'
+			className={
+				isCurrent ?
+				'full-container flex-column card-container' :
+				'full-container flex-column hover card-container'
+			}
 			onClick={onClick}
 		>
 			<span className='big-title citrusBlack'>
@@ -69,7 +73,7 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 			{
 				isCurrent && planType &&
 				<div
-					className='button warning-button '
+					className='button warning-button hover'
 					style={{ width: '100%' }}
 				>
 					<span className='small-title citrusRed'>

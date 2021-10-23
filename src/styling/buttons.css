@@ -161,6 +161,20 @@
 	cursor: pointer;
 }
 
+.small-no-color-button {
+	width: 72px !important;
+	height: 27px !important;
+}
+
+.small-no-color-light-button {
+	width: 68px !important;
+	height: 23px !important;
+}
+
+.no-width {
+	width: unset !important;
+}
+
 /* @media only screen and (max-width: 640px) {
 	.light-button,
 	.filled-button {

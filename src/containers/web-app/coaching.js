@@ -23,7 +23,6 @@ import {
 	uppercase,
 	capitalize,
 	titleCase,
-	renderCoachingButtonText,
 	returnCurrency
 } from '../../utils/various'
 
@@ -48,7 +47,6 @@ class Coaching extends React.Component {
 			coaching: this.props.coaching,
 			isMenuOpen: false,
 			isBuffering: false,
-			products: [],
 			showPlayPauseButton: true,
 			isBuyingCoaching: false,
 			isVideoPaused: false,
@@ -67,28 +65,13 @@ class Coaching extends React.Component {
 
 	renderButtonText() {
 		const { coaching, user, t } = this.props
-		const { products } = this.state
 
-		const hasAttendedActivity = user.activitiesIHaveAttended.find(
-			(activity) => activity._id === coaching._id,
-		)
-
-		if (user._id == coaching.coachId || coaching.freeAccess) {
-			const str = renderCoachingButtonText(coaching, user)
-			return titleCase(t(str))
-		}
-
-		const replayProduct = products.find(
-			(product) => product.productId === 'replay_coaching',
-		)
-
-		if (hasAttendedActivity && hasAttendedActivity.boughtReplay) {
+		if(user._id === coaching.coachId) {
 			return capitalize(t('playVideo'))
 		}
-		if (products && products.length) {
-			return `${capitalize(t('buyFor'))} ${replayProduct.localizedPrice
-				}`
-		}
+
+		return capitalize(t('playVideo'))
+		return `${capitalize(t('buyFor'))} ${coaching.price}`
 		return capitalize(t('loading'))
 	}
 
@@ -98,165 +81,83 @@ class Coaching extends React.Component {
 			loadUser,
 			onCancel,
 			user,
-			selectScreen,
 			updateUser,
-			fetchUserReplays,
-			updateCoaching,
-			userInfo,
+			fetchUserReplays
 		} = this.props
+
+		// THINGS TO HANDLE :
+		// ADD TO MY VIDEO
+		// ADD CREDITS TO COACH CURRENT GAINS AND LIFETIME GAINS
+		//
+		// IF NO SUBSCRIPTION LAUNCH PAYMENT OF NUMBER OF CREDITS + 1
+		// ELSE
+		// SUBSTRACT THE PRICE FROM USER CREDITS
+		// INITIATE THE TRANSFER FROM MP USER WALLET TO MP COACH WALLET
+		// OR JUST ADD CREDITS TO COACH CURRENT GAINS ?
+		//
+		// LOAD USER AND FETCH USER REPLAYS
+		// LAUNCH THE VIDEO PLAYER WITH THIS VIDEO
 
 		////////////////
 
-		if (coaching.muxReplayPlaybackId) {
+		this.setState({ isLoading: true })
+
+		// THIS IS MY COACHING AS A COACH
+		if (user._id == coaching.coachId) {
 			return this.setState({
 				muxReplayPlaybackId: coaching.muxReplayPlaybackId,
 			})
 		}
 
-		///////////////
-
-		const { products } = this.state
-
-		const replayProduct = products.find(
-			(product) => product.productId === 'replay_coaching',
-		)
-
-		const hasAttendedActivity = user.activitiesIHaveAttended.find(
-			(activity) => activity._id === coaching._id,
-		)
-
-		const isReplay = coaching.muxReplayPlaybackId
-
-		let userUpdatedInfo = {
-			id: user._id,
-		}
-
-		// THIS IS MY COACHING AS A COACH
-		if (user._id == coaching.coachId) {
-			// TIME OF COACHING IS IN LESS THAN 5MIN SO I CAN GO LIVE IF I WANT TO
-
-			// I'M WATCHING MY OWN REPLAY
-			if (coaching.muxReplayPlaybackId) {
-				return this.setState({
-					muxReplayPlaybackId: coaching.muxReplayPlaybackId,
-				})
-			}
-			// I'M CLOSING THE COACHING CARD
-			return onCancel()
-		}
-
-		if (
-			(hasAttendedActivity && coaching.freeAccess) ||
-			(hasAttendedActivity && hasAttendedActivity.boughtReplay)
-		) {
-			if (isReplay) {
-				return this.setState({
-					muxReplayPlaybackId: coaching.muxReplayPlaybackId,
-				})
-			}
-		} else {
-			if (isReplay) {
-				if (coaching.freeAccess) {
-					userUpdatedInfo.activitiesIHaveAttended = [
-						...user.activitiesIHaveAttended,
-						{
-							_id: coaching._id,
-							coaching,
-							freeAccess: true,
-						},
-					]
-					return updateUser(userUpdatedInfo).then(() => {
-						loadUser()
-						fetchUserReplays(user._id)
-						this.setState({
-							muxReplayPlaybackId: coaching.muxReplayPlaybackId,
-						})
+		if(coaching.price === 0) {
+			updateUser({
+				id: user._id,
+				myReplays: [
+					...user.replays,
+					coaching
+				]
+			}).then(res => {
+				if(res) {
+					// shoud test the response
+					console.log('coaching is actually free and added to my replays', res)
+					fetchUserReplays(user._id)
+					// loadUser() do we have to do this ?
+					return this.setState({
+						isLoading: false,
+						muxReplayPlaybackId: coaching.muxReplayPlaybackId
 					})
-				} else {
-					this.setState({ isBuyingCoaching: true })
-					setTimeout(
-						function () {
-							this.setState({
-								isLoading: true,
-							})
-						}.bind(this),
-						500,
-					)
-
-
-						// WEB PAYMENT ==> TODO /!\
-
-					// Iap.requestPurchase(replayProduct.productId)
-					// 	.then((res) => {
-					// 		this.setState({
-					// 			isLoading: true,
-					// 			isBuyingCoaching: false,
-					// 		})
-					// 		const transactionId = res.transactionId
-					// 		purchaseUpdatedListener = Iap.purchaseUpdatedListener(
-					// 			(purchase) => {
-					// 				const receipt = purchase.transactionReceipt
-					// 				verifyReceipt(receipt).then((verifyResponse) => {
-					// 					if (verifyResponse.status !== 21002) {
-					// 						Iap.finishTransactionIOS(transactionId)
-					// 						Iap.clearTransactionIOS()
-					// 						purchaseUpdatedListener.remove()
-					// 						purchaseUpdatedListener = null
-					// 						userUpdatedInfo.activitiesIHaveAttended = [
-					// 							...user.activitiesIHaveAttended,
-					// 							{
-					// 								_id: coaching._id,
-					// 								coaching,
-					// 								freeAccess: false,
-					// 								boughtReplay: true,
-					// 							},
-					// 						]
-					// 						this.setState({
-					// 							muxReplayPlaybackId: coaching.muxReplayPlaybackId,
-					// 							isLoading: false,
-					// 						})
-					// 						return updateUser(userUpdatedInfo).then(() => {
-					// 							createTransaction({
-					// 								platform: Platform.OS,
-					// 								coachingId: coaching._id,
-					// 								buyerId: user._id,
-					// 								coachId: coaching.coachId
-					// 							})
-					// 							updateCoaching({
-					// 								_id: coaching._id,
-					// 								replayPayers: coaching.replayPayers
-					// 									? coaching.replayPayers + 1
-					// 									: 1,
-					// 							})
-					// 							updateUser({
-					// 								id: userInfo._id,
-					// 								// currentGains: userInfo.currentGains ? userInfo.currentGains + (0.7 * replayProduct.price) : 0.7 * replayProduct.price,
-					// 								// lifeTimeGains: userInfo.lifeTimeGains ? userInfo.lifeTimeGains + (0.7 * replayProduct.price) : 0.7 * replayProduct.price
-					// 								currentGains: userInfo.currentGains
-					// 									? userInfo.currentGains + 1.6
-					// 									: 1.6,
-					// 								lifeTimeGains: userInfo.lifeTimeGains
-					// 									? userInfo.lifeTimeGains + 1.6
-					// 									: 1.6,
-					// 							})
-					// 							loadUser()
-					// 							fetchUserReplays(user._id)
-					// 						})
-					// 					}
-					// 				})
-					// 			},
-					// 		)
-					// 	})
-					// 	.catch((err) => {
-					// 		this.setState({
-					// 			isBuyingCoaching: false,
-					// 			isLoading: false,
-					// 		})
-					// 		return console.log('Error buying replay', err)
-					// 	})
 				}
+			})
+		} else {
+			if(user.credits >= coaching.price) {
+				// Update buyer profile
+				updateUser({
+					id: user._id,
+					credits: user.credits - coaching.price,
+					myReplays: [
+						...user.replays,
+						coaching
+					]
+				})
+				// Update coach profile
+				updateUser({
+					id: coaching.coachId,
+					currentGains: user.currentGains + (coaching.price * 0.7),
+					lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
+				})
+				// Update coaching
+				updateCoaching({
+					_id: coaching._id,
+					numberOfViewers: coaching.numberOfViewers + 1
+				})
+				//
+				//transfer from mangopay user userWallet to coach coachWallet
+				// with 30% fees for Citrus
+			} else {
+				// Should subscribe or buy credits
 			}
 		}
+
 	}
 
 	render() {

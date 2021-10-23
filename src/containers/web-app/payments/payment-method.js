@@ -33,7 +33,9 @@ import {
 	updateMpUserCardRegistration,
 	fetchMpUserInfo,
 	fetchMpWalletInfo,
-	fetchMpCardInfo
+	fetchMpCardInfo,
+	createRecurringPayinCIT,
+	updateRecurringPayinRegistration
 } from '../../../services/mangopay'
 
 import {
@@ -43,7 +45,7 @@ import {
 
 const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
 
-class CreditCardForm extends React.Component {
+class PaymentMethod extends React.Component {
 	constructor(props) {
 		super(props)
 		const { user } = this.props
@@ -192,9 +194,11 @@ class CreditCardForm extends React.Component {
 			cardRegistration.registerCard(
 				cardData,
 				function (res) {
+					console.log('no error : ', res)
 					updateMpUserCardRegistration(res.RegistrationData, res.Id)
 						.then(async(res) => {
 							const cardInfo = await fetchMpCardInfo(mpUserId)
+
 							if(cardInfo && mpUserId) {
 								updateUser({
 									id: user._id,
@@ -207,10 +211,46 @@ class CreditCardForm extends React.Component {
 									lastName: user.lastName.length > 0 ? user.LastName : mpUserLastName
 								})
 							}
-							endPaymentProcess()
+							console.log('card info', cardInfo)
+
+							if (user.MPRecurringPayinRegistrationId) {
+								updateRecurringPayinRegistration(
+									user.MPRecurringPayinRegistrationId,
+									cardInfo.Id,
+									null
+								)
+								.then(res => {
+									console.log('res update recurring payin registration : ', res)
+									createRecurringPayinCIT(
+										res.Id,
+										true,
+										returnCurrencyCode(moment.locale())
+									)
+									.then(res => {
+										console.log('update recurring CIT', res)
+
+										// TODO
+										//
+										//
+										// RECURRING PAYMENT CANNOT BE OF AMOUNT 0
+										// THERE CANNOT RE-AUTHENTICATE WITHOUT PAYING WHEN SWITCHING CARD
+										// WTF MANGOPAY FUCK FUCK FUCK
+										//
+										//
+										//////////////////////////////
+
+										if (res && res.SecureModeRedirectURL) {
+											window.location.href = res.SecureModeRedirectURL
+										}
+									})
+								})
+							} else {
+								endPaymentProcess()
+							}
 						})
 				},
 				function (res) {
+					console.log('error : ', res)
 					endPaymentProcessWithError(res)
 				}
 			)
@@ -226,47 +266,54 @@ class CreditCardForm extends React.Component {
 		this.setState({ isLoading: true })
 
 		if (user.MPUserId) {
-			createLoadingMessage(capitalize(t('creatingCardRegistration')))
-			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(user.MPUserId, CardType)
+			createLoadingMessage(capitalize(t('redirectedToYourBankNewCard')))
+			setTimeout(function () {
+				createLoadingMessage(capitalize(t('creatingCardRegistration')))
+				const CardType = null
+				createMpUserCardRegistration(
+					user.MPUserId,
+					CardType,
+					returnCurrencyCode(moment.locale())
+				)
+				.then(mpUserCardRegistration => {
+					const info = {
+						mpUserId: user.MPUserId,
+						mpUserFirstName: FirstName,
+						mpUserLastName: LastName
+					}
+					return registerNewCard(mpUserCardRegistration, info)
+				})
+			}.bind(this), 3000)
+		} else {
+			const birthday = parseInt(moment(Birthday).utc().format('X'))
+
+			createLoadingMessage(capitalize(t('creatingMangoUser')))
+			mpUser = await createMpUser(
+				FirstName,
+				LastName,
+				birthday,
+				Nationality,
+				CountryOfResidence,
+				user.email
+			)
+			if (mpUser) {
+				createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
+				mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
+			}
+			if (mpUserWallet) {
+				createLoadingMessage(capitalize(t('creatingCardRegistration')))
+				const CardType = null
+				mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
+			}
+
 			if (mpUserCardRegistration) {
 				const info = {
-					mpUserId: user.MPUserId,
+					mpUserId: mpUser.Id,
 					mpUserFirstName: FirstName,
 					mpUserLastName: LastName
 				}
-				return registerNewCard(mpUserCardRegistration, info)
+				registerNewCard(mpUserCardRegistration, info)
 			}
-		}
-
-		const birthday = parseInt(moment(Birthday).utc().format('X'))
-
-		createLoadingMessage(capitalize(t('creatingMangoUser')))
-		mpUser = await createMpUser(
-			FirstName,
-			LastName,
-			birthday,
-			Nationality,
-			CountryOfResidence,
-			user.email
-		)
-		if (mpUser) {
-			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
-			mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
-		}
-		if (mpUserWallet) {
-			createLoadingMessage(capitalize(t('creatingCardRegistration')))
-			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
-		}
-
-		if (mpUserCardRegistration) {
-			const info = {
-				mpUserId: mpUser.Id,
-				mpUserFirstName: FirstName,
-				mpUserLastName: LastName
-			}
-			registerNewCard(mpUserCardRegistration, info)
 		}
 	}
 
@@ -292,10 +339,17 @@ class CreditCardForm extends React.Component {
 
 		if (success) {
 			return (
-				<div className='flex-column card success'>
+				<div className='full-container flex-column flex-center my-plan-container'>
+					<div className='desktop-only-medium-separator'></div>
 					<div
-						className='top-container hover'
+						style={{
+							width: '100%',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center'
+						}}
 						onClick={onCancel}
+						className='hover'
 					>
 						<Close
 							width={25}
@@ -304,45 +358,34 @@ class CreditCardForm extends React.Component {
 							strokeWidth={2}
 						/>
 					</div>
-					<div className='small-title success-feedback'>
-						{capitalize(t('CardSubmitedSuccessfully'))}
+					<div
+						style={{
+							height: '500px',
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<span className='small-title citrusBlack'>
+							{capitalize(t('congratulations'))}
+						</span>
+						<div className='small-separator'></div>
+						<span className='small-text citrusBlack'>
+							{capitalize(t('CardSubmitedSuccessfully'))}
+						</span>
 					</div>
-					<style jsx='true'>
-						{`
-						.success {
-							width: 690px;
-							height: 431px;
-							justify-content: flex-start;
-							align-items: center;
-						}
-						.top-container {
-							width: 95%;
-							height: 40%;
-							padding: 2.5%;
-							display:flex;
-							align-items: flex-start;
-							justify-content: flex-end;
-						}
-						@media only screen and (max-width: 640px) {
-							.success {
-								width: 98%;
-								height: 85%;
-								margin: 0 1%;
-							}
-							.success-feedback {
-								margin-left: 5px;
-							}
-						}
-					`}
-					</style>
+					<div className='small-separator'></div>
 				</div>
 			)
 		}
 
 		if (isLoading) {
 			return (
-				<div className='flex-column flex-center'>
-					<div className='big-separator'></div>
+				<div
+					className='flex-center loading-container'
+					style={{ justifyContent: 'center' }}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
@@ -350,7 +393,10 @@ class CreditCardForm extends React.Component {
 						width={100}
 					/>
 					<div className='medium-separator'></div>
-					<span className='big-text'>
+					<span
+						className='small-text-bold citrusGrey small-responsive-title'
+						style={{ textAlign: 'center' }}
+					>
 						{loadingMessage}
 					</span>
 				</div>
@@ -362,14 +408,13 @@ class CreditCardForm extends React.Component {
 				<div className='desktop-only-medium-separator'></div>
 				<div
 					style={{
-						width: '95%',
-						height: '40px',
+						width: '100%',
 						display: 'flex',
 						justifyContent: 'flex-end',
 						alignItems: 'center'
 					}}
 					onClick={onCancel}
-					className='hover mobile-only'
+					className='hover'
 				>
 					<Close
 						width={25}
@@ -480,7 +525,7 @@ class CreditCardForm extends React.Component {
 											</>
 										}
 										{
-											// !user.MPUserId &&
+											!user.MPUserId &&
 											<>
 												<div className='flex-row'>
 													<TextField
@@ -622,4 +667,4 @@ const mapDispatchToProps = dispatch => ({
 	updateUser: userInfo => dispatch(updateUser(userInfo))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(CreditCardForm))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(PaymentMethod))

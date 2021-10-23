@@ -8,7 +8,10 @@ import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import moment from 'moment'
 import { cardRegistration } from 'mangopay-cardregistration-js-kit'
 
-import { capitalize } from '../../utils/various'
+import {
+	capitalize,
+	returnCurrencyCode
+} from '../../utils/various'
 import { checkDateValue} from '../../utils/validations'
 import '../../styling/spacings.css'
 import '../../styling/buttons.css'
@@ -160,7 +163,11 @@ class PaymentForm extends React.Component {
 		if(mpUserWallet) {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
+			mpUserCardRegistration = await createMpUserCardRegistration(
+				mpUser.Id,
+				CardType,
+				returnCurrencyCode(moment.locale())
+			)
 		}
 
 		if(mpUserCardRegistration) {

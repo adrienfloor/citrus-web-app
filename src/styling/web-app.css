@@ -204,7 +204,9 @@
 	align-items: center;
 	justify-content: flex-start;
 }
-.choose-plan-container,
+.my-plan-container,
+.cancel-subscription-container,
+.loading-container,
 .credit-card-container {
 	height: 100%;
 	min-width: 990px;
@@ -396,6 +398,24 @@
 .progress-row {
 	max-width: 82%;
 }
+.change-password-container {
+	width: 500px;
+	height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px;
+}
+.delete-account-container {
+	width: 500px;
+	height: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px;
+}
 
 .card-like {
 	/* Add shadows to create the "card" effect */
@@ -498,7 +518,7 @@ input[type=number] {
 		padding: 0;
 	}
 	.coach-profile-container,
-	.choose-plan-container,
+	.my-plan-container,
 	.credit-card-container {
 		width: 100%;
 		min-width: 100% !important;
@@ -508,6 +528,18 @@ input[type=number] {
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-start;
+	}
+	.cancel-subscription-container,
+	.loading-container {
+			width: 100%;
+			min-width: 100% !important;
+			min-height: 100% !important;
+			height: 550px;
+			margin-left: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center !important;
 	}
 	.full-width-and-height-dialog {
 		min-width: 100% !important;
@@ -684,10 +716,26 @@ input[type=number] {
 	.profile-coachings-block {
 		padding: 15px 0 15px 0 !important;
 	}
-
+	.change-password-container {
+		width: 97.5%;
+		height: 60%;
+		padding: 0 1.25%;
+		margin: 20% 0;
+		justify-content: space-around;
+	}
+	.delete-account-container {
+		width: 97.5%;
+		height: 60%;
+		padding: 0 1.25%;
+		margin: 20% 0;
+		justify-content: space-around;
+	}
 	.card-like {
 		width: 97.5%;
 		padding: 0 1.25%;
+	}
+	.logout {
+		justify-content: center;
 	}
 
 	/* MATERIAL UI OVERIDE */

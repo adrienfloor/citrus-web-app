@@ -324,8 +324,6 @@ class Schedule extends React.Component {
 			price
 		} = this.state
 
-		console.log(classes)
-
 		if (isLoading) {
 			return (
 				<div

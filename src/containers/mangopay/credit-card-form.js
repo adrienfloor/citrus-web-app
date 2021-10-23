@@ -11,7 +11,8 @@ import moment from 'moment'
 import { cardRegistration } from 'mangopay-cardregistration-js-kit'
 
 import {
-	capitalize
+	capitalize,
+	returnCurrencyCode
 } from '../../utils/various'
 import { checkDateValue } from '../../utils/validations'
 
@@ -193,7 +194,11 @@ class CreditCardForm extends React.Component {
 		if (user.MPUserId) {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(user.MPUserId, CardType)
+			mpUserCardRegistration = await createMpUserCardRegistration(
+				user.MPUserId,
+				CardType,
+				returnCurrencyCode(moment.locale())
+			)
 			if (mpUserCardRegistration) {
 				return registerNewCard(mpUserCardRegistration)
 			}
@@ -218,7 +223,11 @@ class CreditCardForm extends React.Component {
 		if (mpUserWallet) {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
+			mpUserCardRegistration = await createMpUserCardRegistration(
+				mpUser.Id,
+				CardType,
+				returnCurrencyCode(moment.locale())
+			)
 		}
 
 		if (mpUserCardRegistration) {

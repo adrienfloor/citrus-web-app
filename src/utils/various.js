@@ -144,19 +144,6 @@ export const returnUserStatusProgressBar = numberOfActivities => {
 	return result
 }
 
-export const renderCoachingButtonText = (coaching, user, isAttendingActivity) => {
-	if (user._id == coaching.coachId) {
-		if (coaching.muxReplayPlaybackId) {
-			return 'playVideo'
-		}
-		return 'close'
-	}
-
-	if (coaching.muxReplayPlaybackId) {
-		return 'playVideo'
-	}
-}
-
 export const countryCodeToLanguage = countryCode => {
 	if (typeof countryCode !== 'string') return ''
 	switch (countryCode) {

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import collectBrowserInfo from '../utils/browser'
 
 const { REACT_APP_API_URL } = process.env
 
@@ -107,7 +108,7 @@ export const createMpUserWallet = async (id, currency) => {
 
 // CREATE USER CARD REGISTRATION
 
-export const createMpUserCardRegistration = async (UserId, CardType) => {
+export const createMpUserCardRegistration = async (UserId, CardType, Currency) => {
 	// HEADERS
 	const config = {
 		headers: {
@@ -117,7 +118,7 @@ export const createMpUserCardRegistration = async (UserId, CardType) => {
 	// BODY
 	const body = JSON.stringify({
 		UserId,
-		Currency: 'EUR',
+		Currency,
 		CardType
 	})
 	try {
@@ -394,5 +395,121 @@ export const createMpPayout = async (UserId, BankAccountId, amountToWithdraw) =>
 	}
 }
 
+// CREATE A RECURRING PAYIN REGISTRATION
 
+export const createRecurringPayinRegistration = async (
+	UserId,
+	CardId,
+	planType,
+	currency
+) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
 
+	// BODY
+	const body = JSON.stringify({
+		UserId,
+		CardId,
+		planType,
+		currency
+	})
+	try {
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_recurring_payin_registration`, body, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
+// UPDATE A RECURRING PAYIN REGISTRATION
+
+export const updateRecurringPayinRegistration = async (
+	RecurringPayinRegistrationId,
+	CardId,
+	Status
+) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	// BODY
+	const body = JSON.stringify({
+		RecurringPayinRegistrationId,
+		CardId,
+		Status
+	})
+	try {
+		const response = await axios.put(`${REACT_APP_API_URL}/mp/mp_update_recurring_payin_registration`, body, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
+// CREATE A RECURRING PAYIN CIT
+
+export const createRecurringPayinCIT = async (
+	RecurringPayinRegistrationId,
+	isUpdatingCard,
+	Currency
+) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	try {
+
+		const BrowserInfo = collectBrowserInfo()
+		BrowserInfo.AcceptHeader = 'application/json, text/plain, */*'
+
+		const res = await axios.get('https://geolocation-db.com/json/')
+		const IpAddress = res.data.IPv4
+
+		// BODY
+		const body = JSON.stringify({
+			RecurringPayinRegistrationId,
+			BrowserInfo,
+			IpAddress,
+			isUpdatingCard,
+			Currency
+		})
+
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_recurring_payin_cit`, body, config)
+		return response.data
+
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
+// VIEW A PAYIN
+
+export const fetchPayIn = async (PayInId) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_view_payin?PayInId=${PayInId}`, {}, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}

@@ -75,7 +75,7 @@ class Home extends React.Component {
 	}
 
 	returnTopActivities() {
-		const activitiesAttendedNames = this.props.user.activitiesIHaveAttended.map(activity => activity.coaching.sport)
+		const activitiesAttendedNames = this.props.user.myReplays.map(activity => activity.sport)
 		const topActivities = returnTheHighestOccurrence(activitiesAttendedNames)
 		return capitalize(topActivities)
 	}
@@ -96,7 +96,7 @@ class Home extends React.Component {
 			totalLengthOfActivities,
 			numberOfDailyActivitiesInARow,
 			averageFeeling,
-			activitiesIHaveAttended,
+			myReplays,
 			currentGains,
 			lifeTimeGains
 		} = user
@@ -177,12 +177,12 @@ class Home extends React.Component {
 												{
 													userReplays.slice(0, userReplaysSkip).map((activity, i) => (
 														<Card
-															onClick={() => this.setState({ selectedCoaching: activity.coaching })}
+															onClick={() => this.setState({ selectedCoaching: activity })}
 															size='medium'
 															key={i}
-															title={capitalize(activity.coaching.title)}
-															subtitle={`${capitalize(t(activity.coaching.sport))} ${t('with')} ${capitalize(activity.coaching.coachUserName)}`}
-															imgUri={activity.coaching.pictureUri}
+															title={capitalize(activity.title)}
+															subtitle={`${capitalize(t(activity.sport))} ${t('with')} ${capitalize(activity.coachUserName)}`}
+															imgUri={activity.pictureUri}
 														/>
 													))
 												}
@@ -353,7 +353,7 @@ class Home extends React.Component {
 											<div className='stats-row'>
 												<div
 													style={{
-														backgroundColor: returnUserStatusProgressBarColor(activitiesIHaveAttended.length),
+														backgroundColor: returnUserStatusProgressBarColor(myReplays.length),
 														borderRadius: 50,
 														width: 19,
 														height: 19,
@@ -362,7 +362,7 @@ class Home extends React.Component {
 												>
 												</div>
 												<span className='smaller-text-bold'>
-													{capitalize(t(returnUserStatus(activitiesIHaveAttended.length).status))}
+													{capitalize(t(returnUserStatus(myReplays.length).status))}
 												</span>
 											</div>
 											<div
@@ -373,13 +373,13 @@ class Home extends React.Component {
 												}}
 											>
 												<span className='smaller-text-bold'>
-													{`${activitiesIHaveAttended.length} / ${returnUserStatusProgressBar(activitiesIHaveAttended.length)}`}
+													{`${myReplays.length} / ${returnUserStatusProgressBar(myReplays.length)}`}
 												</span>
 											</div>
 										</div>
 										<div className='small-separator'></div>
 										<ProgressBar
-											completed={(activitiesIHaveAttended.length / returnUserStatusProgressBar(activitiesIHaveAttended.length)) * 100}
+											completed={(myReplays.length / returnUserStatusProgressBar(myReplays.length)) * 100}
 											height='10px'
 											bgColor='#B4B4B4'
 											baseBgColor='#FFFFFF'
@@ -407,7 +407,7 @@ class Home extends React.Component {
 									<div className='stats-row'>
 										<div className='stats-column'>
 											<span className='big-number'>
-												{activitiesIHaveAttended.length}
+												{myReplays.length}
 											</span>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('totalTrainings'))}
