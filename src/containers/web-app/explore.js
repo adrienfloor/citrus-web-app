@@ -498,7 +498,7 @@ class Explore extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div style={{ maxWidth: '800px' }}>
+						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

@@ -150,7 +150,7 @@ class LegalUserCreation extends React.Component {
 				MPLegalUserId: mpLegalUser.Id,
 				firstName: user.firstName || this.state.LegalRepresentativeFirstName,
 				lastName: user.lastName || this.state.LegalRepresentativeLastName,
-			})
+			}, true)
 			.then(() => loadUser())
 		}
 	}
@@ -385,7 +385,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	loadUser: () => dispatch(loadUser())
 })
 

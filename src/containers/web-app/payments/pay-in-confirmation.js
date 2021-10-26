@@ -9,7 +9,15 @@ import { Link } from 'react-router-dom'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 
-import { updateUser } from '../../../actions/auth-actions'
+import {
+	updateUser,
+	fetchUserReplays,
+	fetchUserInfo
+} from '../../../actions/auth-actions'
+import {
+	fetchCoaching,
+	updateCoaching
+} from '../../../actions/coachings-actions'
 
 import '../../../styling/headings.css'
 import '../../../styling/colors.css'
@@ -27,14 +35,29 @@ class PayInConfirmation extends React.Component {
 		this.state = {
 			isLoading: true,
 			isFailure: null,
-			errorMessage: ''
+			errorMessage: '',
+			coachingId: null
 		}
 	}
 
 	componentDidMount() {
-		const { location, updateUser, user, t } = this.props
+		const {
+			location,
+			updateUser,
+			user,
+			t,
+			fetchUserReplays,
+			fetchUserInfo,
+			fetchCoaching,
+			updateCoaching
+		} = this.props
 		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
+		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+
+		if(coachingId) {
+			this.setState({ coachingId })
+		}
 
 		if(isALaCarte) {
 			return this.setState({
@@ -43,7 +66,6 @@ class PayInConfirmation extends React.Component {
 				isALaCarte: true
 			})
 		}
-		let credits = 10
 		let billingDate = new Date().getUTCDate()
 
 		if (billingDate > 27 && billingDate < 32) {
@@ -62,25 +84,74 @@ class PayInConfirmation extends React.Component {
 			fetchPayIn(transactionId)
 				.then(res => {
 					if (res && res.Status === 'SUCCEEDED') {
-						if (res.CreditedFunds.Amount == 2000) {
-							credits = 20
+
+						///////////////
+						///////////////
+
+						// TO TEST
+
+						if(coachingId) {
+							// Fetch coaching to get info
+							fetchCoaching(coachingId)
+							.then(res => {
+								console.log('fetch coaching res : ', res)
+								const { coaching } = res.payload
+								const { coachId, numberOfViewers, price } = coaching
+								// Fetch coach info
+								fetchUserInfo(coachId)
+								.then(res => {
+									console.log('fetch user inf res : ', res)
+									const gains = res.payload.lifeTimeGains
+									// Update coach profile
+									updateUser({
+										id: coachId,
+										lifeTimeGains: gains + (price * 0.7)
+									})
+									// Update coaching
+									updateCoaching({
+										_id: coachingId,
+										numberOfViewers: numberOfViewers + 1
+									})
+								})
+								// Update buyer profile
+								updateUser({
+									id: user._id,
+									myReplays: [
+										coaching,
+										...user.myReplays
+									]
+								}, true).then(() => {
+									// Fetch buyer new replay
+									fetchUserReplays(user._id)
+								})
+							})
 						}
-						if (res.CreditedFunds.Amount == 3000) {
-							credits = 30
-						}
-						updateUser({
-							id: user._id,
-							subscription: res.CreditedFunds.Amount / 100,
-							billingDate: user.billingDate ? user.billingDate : billingDate,
-							credits: user.credits + credits,
-							pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
-						})
+
+						if(isALaCarte) {
+							updateUser({
+								id: user._id,
+								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+							}, true)
 							.then(() => {
 								return this.setState({
 									isLoading: false,
 									isFailure: false
 								})
 							})
+						} else {
+							updateUser({
+								id: user._id,
+								subscription: res.CreditedFunds.Amount / 100,
+								billingDate: user.billingDate ? user.billingDate : billingDate,
+								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+							}, true)
+							.then(() => {
+								return this.setState({
+									isLoading: false,
+									isFailure: false
+								})
+							})
+						}
 					} else {
 						return this.setState({
 							isLoading: false,
@@ -101,7 +172,8 @@ class PayInConfirmation extends React.Component {
 			isLoading,
 			isFailure,
 			errorMessage,
-			isALaCarte
+			isALaCarte,
+			coachingId
 		} = this.state
 
 		if (isLoading) {
@@ -162,11 +234,19 @@ class PayInConfirmation extends React.Component {
 				</span>
 				<div className='small-separator'></div>
 				<div className='medium-separator'></div>
-				<Link to='/explore' className='filled-button'>
-					<span className='small-title citrusWhite'>
-						{capitalize(t('startTrainingNow'))}
-					</span>
-				</Link>
+				{
+					coachingId ?
+					<Link to={`/home?coaching=${coachingId}`} className='filled-button'>
+						<span className='small-title citrusWhite'>
+							{capitalize(t('startMyTrainingNow'))}
+						</span>
+					</Link> :
+					<Link to='/explore' className='filled-button'>
+						<span className='small-title citrusWhite'>
+							{capitalize(t('startTrainingNow'))}
+						</span>
+					</Link>
+				}
 			</div>
 		)
 	}
@@ -178,7 +258,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo))
+	fetchCoaching: id => dispatch(fetchCoaching(id)),
+	updateCoaching: coaching => dispatch(updateCoaching(coaching)),
+	fetchUserInfo: id => dispatch(fetchUserInfo(id)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
+	fetchUserReplays: id => dispatch(fetchUserReplays(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(PayInConfirmation))

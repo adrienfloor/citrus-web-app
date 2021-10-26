@@ -19,7 +19,7 @@ import {
 	capitalize
 } from '../../utils/various'
 
-import { loadUser, updateUser } from '../../actions/auth-actions'
+import { loadUser } from '../../actions/auth-actions'
 import { setIsDashboard } from '../../actions/navigation-actions'
 
 class Dashboard extends React.Component {
@@ -265,7 +265,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
-	updateUser: userInfo => dispatch(updateUser(userInfo)),
 	setIsDashboard: bool => dispatch(setIsDashboard(bool))
 })
 

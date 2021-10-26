@@ -13,9 +13,6 @@ import '../../styling/App.css'
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
 import {
-	updateUser
-} from '../../actions/auth-actions'
-import {
 	updateCashOut
 } from '../../services/cashout'
 
@@ -287,8 +284,6 @@ const mapStateToProps = state => ({
 	error: state.error
 })
 
-const mapDispatchToProps = dispatch => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo))
-})
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Cashout))

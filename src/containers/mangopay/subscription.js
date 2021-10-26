@@ -236,9 +236,6 @@ const mapStateToProps = state => ({
 	error: state.error
 })
 
-const mapDispatchToProps = dispatch => ({
-	// updateUser: userInfo => dispatch(updateUser(userInfo)),
-	// loadUser: () => dispatch(loadUser())
-})
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Subscription))

@@ -6,6 +6,7 @@ import io from 'socket.io-client'
 import Loader from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
 
+import CoachingCheckout from '../web-app/payments/coaching-checkout-flow'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
 
@@ -23,7 +24,8 @@ import {
 	uppercase,
 	capitalize,
 	titleCase,
-	returnCurrency
+	returnCurrency,
+	returnCurrencyCode
 } from '../../utils/various'
 
 import {
@@ -32,58 +34,147 @@ import {
 	loadUser,
 	fetchUserReplays
 } from '../../actions/auth-actions'
-
 import { updateCoaching } from '../../actions/coachings-actions'
+import {
+	fetchUserCredits,
+	createMpTransfer,
+	createMpCardDirectPayin
+} from '../../services/mangopay'
 
 class Coaching extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			isLoading: false,
-			isConfirmationOpen: false,
+			isPaymentConfirmationOpen: false,
 			accessDenied: false,
 			muxReplayPlaybackId: null,
 			isEditingCoaching: false,
 			coaching: this.props.coaching,
-			isMenuOpen: false,
-			isBuffering: false,
-			showPlayPauseButton: true,
-			isBuyingCoaching: false,
-			isVideoPaused: false,
+			credits: null,
+			coachInfo: null,
+			isChoosingPaymentMethod: false,
+			isCoachingCheckoutOpen: null,
+			errorMessage: null
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.handlePayCoaching = this.handlePayCoaching.bind(this)
 		this.renderButtonText = this.renderButtonText.bind(this)
+		this.handleTransfer = this.handleTransfer.bind(this)
 	}
 
 	componentDidMount() {
-		const { fetchUserInfo } = this.props
+		const { fetchUserInfo, user } = this.props
 		const { coaching, timeToStart } = this.state
-		const { coachId } = coaching
-		fetchUserInfo(coachId)
+		fetchUserInfo(coaching.coachId)
+		.then(res => this.setState({ coachInfo: res.payload }))
+		fetchUserCredits(user.MPUserId)
+		.then(credits => this.setState({ credits }))
 	}
 
 	renderButtonText() {
 		const { coaching, user, t } = this.props
+		const { price, coachId } = coaching
 
-		if(user._id === coaching.coachId) {
+		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
+
+		if(user._id === coachId || hasBoughtCoaching) {
 			return capitalize(t('playVideo'))
 		}
-
-		return capitalize(t('playVideo'))
-		return `${capitalize(t('buyFor'))} ${coaching.price}`
-		return capitalize(t('loading'))
+		if(price === 0) {
+			return capitalize(t('watchForFree'))
+		}
+		return `${capitalize(t('buyFor'))} ${price} ${price === 1 ? capitalize(t('credit')) : capitalize(t('credits'))}`
 	}
 
-	handleSubmit() {
-		const { coaching } = this.state
+	handleTransfer() {
+		const {
+			coaching,
+			credits,
+			coachInfo
+		} = this.state
 		const {
 			loadUser,
 			onCancel,
 			user,
 			updateUser,
-			fetchUserReplays
+			fetchUserReplays,
+			updateCoaching,
+			t
 		} = this.props
+
+		// Transfer amount from user wallet to coach wallet while handling Citrus fees
+		createMpTransfer(
+			coachInfo.MPLegalUserId,
+			{
+				"Amount": coaching.price,
+				"Currency": returnCurrencyCode(moment.locale())
+			},
+			user.MPUserId
+		)
+			.then(res => {
+				if(res && res.Status === 'SUCCEEDED') {
+					console.log('res from transfer : ', res)
+					// Update buyer profile
+					updateUser({
+						id: user._id,
+						myReplays: [
+							coaching,
+							...user.myReplays
+						]
+					}, true)
+					.then(res => {
+						// Fetch updated replays of user
+						fetchUserReplays(user._id)
+					})
+					// Update coach profile
+					updateUser({
+						id: coaching.coachId,
+						lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
+					})
+					// Update coaching
+					updateCoaching({
+						_id: coaching._id,
+						numberOfViewers: coaching.numberOfViewers + 1
+					})
+					// Launch video
+					this.setState({
+						isLoading: false,
+						isPaymentConfirmationOpen: false,
+						isCoachingCheckoutOpen: false,
+						muxReplayPlaybackId: coaching.muxReplayPlaybackId
+					})
+				} else {
+					this.setState({
+						isLoading: false,
+						isPaymentConfirmationOpen: false,
+						isCoachingCheckoutOpen: false,
+						errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+					})
+				}
+			})
+	}
+
+	handlePayCoaching() {
+		const {
+			coaching,
+			credits,
+			coachInfo
+		} = this.state
+		const {
+			loadUser,
+			onCancel,
+			user,
+			updateUser,
+			fetchUserReplays,
+			t
+		} = this.props
+
+		this.setState({
+			isPaymentConfirmationOpen: false,
+			isLoading: true
+		})
 
 		// THINGS TO HANDLE :
 		// ADD TO MY VIDEO
@@ -98,30 +189,74 @@ class Coaching extends React.Component {
 		// LOAD USER AND FETCH USER REPLAYS
 		// LAUNCH THE VIDEO PLAYER WITH THIS VIDEO
 
-		////////////////
+		if (credits >= coaching.price) {
+			this.handleTransfer()
+		} else {
+			// New user, no card registered, go to checkout
+			if(!user.MPUserId) {
+				this.setState({
+					isLoading: false,
+					isCoachingCheckoutOpen: 'aLaCarte'
+				})
+			} else {
+				// user paying à la carte
+				createMpCardDirectPayin(
+					user.MPUserId,
+					{
+						"Amount": (coaching.price + 1) * 100,
+						"Currency": returnCurrencyCode(moment.locale())
+					},
+					{
+						"Amount": 100,
+						"Currency": returnCurrencyCode(moment.locale())
+					}
+				).then(res => {
+					console.log('res form direct pay in : ', res)
+					if(res && res.Status === "SUCCEEDED") {
+						return this.handleTransfer()
+					}
+					this.setState({
+						isLoading: false,
+						isPaymentConfirmationOpen: false,
+						isCoachingCheckoutOpen: false,
+						errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+					})
+				})
+			}
+		}
+	}
+
+	handleSubmit() {
+		const { coaching } = this.state
+		const {
+			loadUser,
+			onCancel,
+			user,
+			updateUser,
+			fetchUserReplays
+		} = this.props
 
 		this.setState({ isLoading: true })
+		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
 
-		// THIS IS MY COACHING AS A COACH
-		if (user._id == coaching.coachId) {
+		// This is my coaching or my training
+		if (user._id == coaching.coachId || hasBoughtCoaching) {
 			return this.setState({
+				isLoading: false,
 				muxReplayPlaybackId: coaching.muxReplayPlaybackId,
 			})
 		}
-
+		// This coaching is free
 		if(coaching.price === 0) {
 			updateUser({
 				id: user._id,
 				myReplays: [
-					...user.replays,
-					coaching
+					coaching,
+					...user.myReplays
 				]
-			}).then(res => {
-				if(res) {
-					// shoud test the response
-					console.log('coaching is actually free and added to my replays', res)
+			}, true).then(res => {
+				if(res && res.payload && res.payload._id) {
 					fetchUserReplays(user._id)
-					// loadUser() do we have to do this ?
 					return this.setState({
 						isLoading: false,
 						muxReplayPlaybackId: coaching.muxReplayPlaybackId
@@ -129,35 +264,12 @@ class Coaching extends React.Component {
 				}
 			})
 		} else {
-			if(user.credits >= coaching.price) {
-				// Update buyer profile
-				updateUser({
-					id: user._id,
-					credits: user.credits - coaching.price,
-					myReplays: [
-						...user.replays,
-						coaching
-					]
-				})
-				// Update coach profile
-				updateUser({
-					id: coaching.coachId,
-					currentGains: user.currentGains + (coaching.price * 0.7),
-					lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
-				})
-				// Update coaching
-				updateCoaching({
-					_id: coaching._id,
-					numberOfViewers: coaching.numberOfViewers + 1
-				})
-				//
-				//transfer from mangopay user userWallet to coach coachWallet
-				// with 30% fees for Citrus
-			} else {
-				// Should subscribe or buy credits
-			}
+			// This coaching has be payed for
+			this.setState({
+				isPaymentConfirmationOpen: true,
+				isLoading: false
+			})
 		}
-
 	}
 
 	render() {
@@ -172,17 +284,14 @@ class Coaching extends React.Component {
 		} = this.props
 		const {
 			isLoading,
-			isConfirmationOpen,
+			isPaymentConfirmationOpen,
 			accessDenied,
 			muxReplayPlaybackId,
 			isEditingCoaching,
 			coaching,
-			isMenuOpen,
-			isBuffering,
-			products,
-			showPlayPauseButton,
-			isBuyingCoaching,
-			isVideoPaused,
+			credits,
+			isCoachingCheckoutOpen,
+			errorMessage
 		} = this.state
 		const {
 			coachUserName,
@@ -203,10 +312,7 @@ class Coaching extends React.Component {
 
 		if (isLoading) {
 			return (
-				<div
-					className='flex-column flex-center'
-					style={{ height: '100%' }}
-				>
+				<div className='flex-column flex-center coaching-loading white'>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
@@ -217,18 +323,142 @@ class Coaching extends React.Component {
 			)
 		}
 
-		if (accessDenied) {
-			return null
-			// return (
-			// 	<NotAvailableCard
-			// 		onClose={() => {
-			// 			this.setState({
-			// 				accessDenied: false,
-			// 				isConfirmationOpen: false,
-			// 			})
-			// 		}}
-			// 	/>
-			// )
+		if(errorMessage) {
+			return (
+				<div
+					className='flex-column flex-center coaching-loading white'
+					style={{ justifyContent: 'flex-start' }}
+				>
+					<div className='medium-separator'></div>
+					<div
+						style={{
+							width: '98.5%',
+							height: '40px',
+							display: 'flex',
+							alignItems: 'center'
+						}}
+						onClick={onCancel}
+						className='hover'
+					>
+						<CaretBack
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
+						/>
+						<span className='small-text-bold citrusGrey'>
+							{capitalize(t('back'))}
+						</span>
+					</div>
+					<span
+						className='small-title citrusBlack'
+						style={{ padding: '0 12px', textAlign: 'center' }}
+					>
+						{errorMessage}
+					</span>
+				</div>
+			)
+		}
+
+		if (isPaymentConfirmationOpen) {
+			return (
+				<div
+					className='full-container flex-column flex-center coaching-loading white'
+					style={{
+						justifyContent: 'center',
+						backgroundColor: '#FFFFFF'
+					}}
+				>
+					<span
+						className='small-text-bold citrusBlack'
+						style={{ padding: '0 12px', textAlign: 'center' }}
+					>
+						{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? capitalize(t('credit')) : t('credits')} ?`}
+					</span>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<div
+						className='flex-column flex-center'
+						style={{ width: '90%', margin: '0 5%'}}
+					>
+					{
+						credits && credits >= coaching.price ?
+						<>
+							<div
+								className='filled-button full-width hover'
+								onClick={this.handlePayCoaching}
+							>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('yes'))}
+								</span>
+							</div>
+							<div className='medium-separator'></div>
+						</> :
+						<>
+							<div
+								className='filled-button full-width hover'
+								onClick={this.handlePayCoaching}
+							>
+								<span className='small-title citrusWhite'>
+									{`${capitalize(t('yesALaCarte'))} (1${returnCurrency(moment.locale())} ${t('ofFees')})`}
+								</span>
+							</div>
+							<div className='medium-separator'></div>
+						</>
+					}
+					{
+						!user.subscription &&
+						<>
+							<div
+								className='light-button full-width hover'
+								onClick={() => this.setState({
+									isPaymentConfirmationOpen: false,
+									isCoachingCheckoutOpen: 'plan'
+								})}
+							>
+								<span className='small-title citrusBlue'>
+									{capitalize(t('chooseAPaymentPlan'))}
+								</span>
+							</div>
+							<div className='medium-separator'></div>
+						</>
+					}
+						<span
+							className='small-text-bold citrusGrey hover'
+							onClick={() => this.setState({ isPaymentConfirmationOpen: false })}
+						>
+							{capitalize(t('cancel'))}
+						</span>
+					</div>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+				</div>
+			)
+		}
+
+		if (isCoachingCheckoutOpen) {
+			return (
+				<div
+					className='white'
+					style={{
+						height: '100%',
+						overflowY: 'auto'
+					}}
+				>
+					<CoachingCheckout
+						type={isCoachingCheckoutOpen}
+						amount={coaching.price}
+						coachingId={coaching._id}
+						onCancel={() => {
+							this.setState({
+								isCoachingCheckoutOpen: null,
+								isPaymentConfirmationOpen: true
+							})
+						}}
+						onSuccess={this.handleTransfer}
+					/>
+				</div>
+			)
 		}
 
 		if (muxReplayPlaybackId) {
@@ -293,7 +523,7 @@ class Coaching extends React.Component {
 		}
 
 		return (
-			<div className='coaching-container'>
+			<div className='coaching-container white'>
 				<div className='scroll-div-vertical'>
 					<div
 						style={{
@@ -340,7 +570,7 @@ class Coaching extends React.Component {
 						</div>
 
 						{
-							duration.length > 0 &&
+							duration && t('duration') > 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('duration'))}
@@ -348,11 +578,11 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{capitalize(t(duration))}
 								</span>
-							</div>
+							</div> : null
 						}
 
 						{
-							freeAccess && price === 0 &&
+							price === 0 &&
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('freeAccess'))}
@@ -364,7 +594,7 @@ class Coaching extends React.Component {
 						}
 
 						{
-							price && price !== 0 &&
+							price !== 0 &&
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('price'))}
@@ -375,7 +605,7 @@ class Coaching extends React.Component {
 							</div>
 						}
 
-						{level.length > 0 &&
+						{level && level.length > 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('level'))}
@@ -383,7 +613,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{capitalize(t(level))}
 								</span>
-							</div>
+							</div> : null
 						}
 
 						<div className='thin-row'>
@@ -395,7 +625,7 @@ class Coaching extends React.Component {
 							</span>
 						</div>
 
-						{focus.length > 0 &&
+						{focus && focus.length > 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('focus'))}
@@ -407,10 +637,10 @@ class Coaching extends React.Component {
 									.join(', ')
 								}
 								</span>
-							</div>
+							</div> : null
 						}
 
-						{equipment.length > 0 &&
+						{equipment && equipment.length > 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('level'))}
@@ -422,25 +652,12 @@ class Coaching extends React.Component {
 											.join(', ')
 									}
 								</span>
-							</div>
+							</div> : null
 						}
 					</div>
-					{/* {isConfirmationOpen && (
-						<OverlayConfirmation
-							itemText={t('common.confirmAccess')}
-							itemAction={this.handleConfirmAccess}
-							cancelText={t('common.cancel')}
-							onCancel={() => this.setState({ isConfirmationOpen: false })}
-						/>
-					)} */}
 				</div>
 				<div className='small-separator'></div>
 				<div
-					disabled={
-						!products ||
-						(products && products.length < 0) ||
-						isBuyingCoaching
-					}
 					className='filled-button button-mobile'
 					onClick={this.handleSubmit}
 				>
@@ -460,10 +677,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	fetchUserInfo: (id) => dispatch(fetchUserInfo(id)),
 	loadUser: () => dispatch(loadUser()),
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
 	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
 	fetchUserReplays: (id) => dispatch(fetchUserReplays(id))
 })

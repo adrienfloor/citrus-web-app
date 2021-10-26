@@ -6,6 +6,7 @@ import moment from 'moment'
 import ProgressBar from '@ramonak/react-progress-bar'
 import Dialog from '@material-ui/core/Dialog'
 import { Link } from 'react-router-dom'
+import qs from 'query-string'
 
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
@@ -22,6 +23,8 @@ import '../../styling/web-app.css'
 
 import { ReactComponent as PlusButton } from '../../assets/svg/plus-button.svg'
 import { ReactComponent as WavyCheck } from '../../assets/svg/wavy-check.svg'
+
+import { fetchUserCredits } from '../../services/mangopay'
 
 import {
 	capitalize,
@@ -48,7 +51,8 @@ class Home extends React.Component {
 			isCashingOut: false,
 			userReplaysSkip: 3,
 			followingsSkip: 3,
-			myCoachingsSkip: 3
+			myCoachingsSkip: 3,
+			credits: null
 		}
 
 		tabs = [
@@ -60,12 +64,35 @@ class Home extends React.Component {
 		this.returnTopActivities = this.returnTopActivities.bind(this)
 	}
 
+	componentDidMount() {
+		const {
+			location,
+			user,
+			userReplays
+		} = this.props
+
+		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+
+		if(coachingId) {
+			this.setState({
+				selectedCoaching: user.myReplays.find(coaching => coaching._id === coachingId)
+			})
+		}
+
+		fetchUserCredits(user.MPUserId)
+		.then(credits => this.setState({ credits }))
+	}
+
 	handleTabSelection(tab, index) {
 		const { history, location } = this.props
-		if(index === 0 && location.search === '?tab=coaching') {
+
+		const tabQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).tab
+		const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+
+		if(index === 0 && (tabQuery === 'coaching' || coachingQuery )) {
 			history.push('/home')
 		}
-		if (index === 1 && location.search !== '?tab=coaching') {
+		if (index === 1 && tabQuery !== 'coaching') {
 			history.push('/home?tab=coaching')
 		}
 		this.setState({
@@ -97,19 +124,20 @@ class Home extends React.Component {
 			numberOfDailyActivitiesInARow,
 			averageFeeling,
 			myReplays,
-			currentGains,
 			lifeTimeGains
 		} = user
 		const {
 			isLoading,
 			selectedCoach,
 			activeTabIndex,
+			activeTabName,
 			selectedCoaching,
 			isMenuOpen,
 			isCashingOut,
 			userReplaysSkip,
 			followingsSkip,
-			myCoachingsSkip
+			myCoachingsSkip,
+			credits
 		} = this.state
 
 		if (isLoading || !user) {
@@ -582,7 +610,7 @@ class Home extends React.Component {
 									<div className='stats-row'>
 										<div className='stats-column'>
 											<span className='big-number'>
-												{`${currentGains || 0} ${returnCurrency(moment.locale())}`}
+												{`${credits || 0} ${returnCurrency(moment.locale())}`}
 											</span>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('currentSold'))}
@@ -618,12 +646,18 @@ class Home extends React.Component {
 					selectedCoaching &&
 					<Dialog
 						open={selectedCoaching ? true : false}
-						onClose={() => this.setState({ selectedCoaching: null })}
+						onClose={() => {
+							this.handleTabSelection(activeTabName, activeTabIndex)
+							this.setState({ selectedCoaching: null })
+						}}
 					>
 						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
-								onCancel={() => this.setState({ selectedCoaching: null })}
+								onCancel={() => {
+									this.handleTabSelection(activeTabName, activeTabIndex)
+									this.setState({ selectedCoaching: null })
+								}}
 								isMyCoaching={user._id === selectedCoaching.coachId}
 							/>
 						</div>

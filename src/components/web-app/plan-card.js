@@ -42,8 +42,8 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 		<div
 			className={
 				isCurrent ?
-				'full-container flex-column card-container' :
-				'full-container flex-column hover card-container'
+				'full-container flex-column plan-card-container' :
+				'full-container flex-column hover plan-card-container'
 			}
 			onClick={onClick}
 		>
@@ -83,7 +83,7 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 			}
 			<style jsx='true'>
 				{`
-					.card-container {
+					.plan-card-container {
 						height: 180px;
 						width: 280px;
 						border: 2px solid black;
@@ -91,7 +91,7 @@ const PlanCard = ({ onClick, planType, t, isCurrent }) => {
 						justify-content: space-between;
 					}
 					@media only screen and (max-width: 640px) {
-						.card-container {
+						.plan-card-container {
 							width: calc(97.5% - 20px);
 							margin: 0 1.25%;
 						}

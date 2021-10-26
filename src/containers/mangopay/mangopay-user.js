@@ -17,7 +17,6 @@ import { capitalize } from '../../utils/various'
 import { checkDateValue } from '../../utils/validations'
 import { createMpUser } from '../../services/mangopay'
 import CountrySelector from '../../components/country-selector'
-import { updateUser } from '../../actions/auth-actions'
 
 class CreateMangopayUser extends React.Component {
 	constructor(props) {
@@ -81,7 +80,6 @@ class CreateMangopayUser extends React.Component {
 		} = this.state
 		const {
 			t,
-			updateUser,
 			user,
 			isPrepaying
 		} = this.props
@@ -268,8 +266,6 @@ const mapStateToProps = state => ({
 	error: state.error
 })
 
-const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo))
-})
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(CreateMangopayUser))

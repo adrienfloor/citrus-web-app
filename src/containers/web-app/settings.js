@@ -87,25 +87,25 @@ class Settings extends React.Component {
 			return updateUser({
 				sports: updatedSports,
 				id: user._id
-			})
+			}, true)
 		}
 		if(type === 'units') {
 			return updateUser({
 				distanceMetricPreference: e.target.value,
 				weightMetricPreference: e.target.value,
 				id: user._id
-			})
+			}, true)
 		}
 		if(type === 'baseOnLocationPreference') {
 			return updateUser({
 				basedOnLocationPreference: e.target.value == 'yes' ? true : false,
 				id: user._id
-			})
+			}, true)
 		}
 		return updateUser({
 			coachingLanguagePreference: e.target.value,
 			id: user._id
-		})
+		}, true)
 	}
 
 	handleDeleteAccount() {
@@ -587,7 +587,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	setNotification: notification => dispatch(setNotification(notification)),
 	loadUser: () => dispatch(loadUser()),
 	deleteUser: userId => dispatch(deleteUser(userId)),

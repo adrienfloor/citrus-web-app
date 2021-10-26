@@ -86,7 +86,7 @@ class ManagePayments extends React.Component {
 			subscription,
 			myVideos: subscription ? (user.myVideos + 20) : user.myVideos,
 			billingDate
-		})
+		}, true)
 			.then(() => {
 				loadUser()
 				this.setState({
@@ -105,7 +105,7 @@ class ManagePayments extends React.Component {
 			loadUser
 		} = this.props
 
-		updateUser({ id: user._id, automaticTopUp: !user.automaticTopUp })
+		updateUser({ id: user._id, automaticTopUp: !user.automaticTopUp }, true)
 			.then(() => {
 				loadUser()
 				this.setState({ isUpdatingAutomaticTopUp: false })
@@ -531,7 +531,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	loadUser: () => dispatch(loadUser())
 })
 

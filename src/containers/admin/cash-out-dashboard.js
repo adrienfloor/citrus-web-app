@@ -16,7 +16,7 @@ import {
 } from '../../utils/various'
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 
-import { loadUser, updateUser } from '../../actions/auth-actions'
+import { loadUser } from '../../actions/auth-actions'
 import { setIsDashboard } from '../../actions/navigation-actions'
 import { fetchAllCashouts } from '../../services/cashout'
 
@@ -227,7 +227,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
-	updateUser: userInfo => dispatch(updateUser(userInfo)),
 	setIsDashboard: bool => dispatch(setIsDashboard(bool))
 })
 

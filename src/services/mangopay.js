@@ -157,14 +157,9 @@ export const updateMpUserCardRegistration = async (RegistrationData, cardRegistr
 
 export const createMpCardDirectPayin = async (
 	AuthorId,
-	CreditedUserId,
-	CreditedWalletId,
 	DebitedFunds,
 	Fees,
-	SecureModeReturnURL,
-	CardId,
-	email,
-	paymentPlan
+	query
 ) => {
 	// HEADERS
 	const config = {
@@ -175,14 +170,9 @@ export const createMpCardDirectPayin = async (
 	// BODY
 	const body = JSON.stringify({
 		AuthorId,
-		CreditedUserId,
-		CreditedWalletId,
 		DebitedFunds,
 		Fees,
-		SecureModeReturnURL,
-		CardId,
-		email,
-		paymentPlan
+		query
 	})
 	try {
 		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_card_direct_payin`, body, config)
@@ -350,11 +340,23 @@ export const fetchMpBankAccount = async (UserId) => {
 	}
 }
 
-// GET A MANGOPAY USER'S WALLET ID
+// GET A MANGOPAY USER'S WALLET INFO
 
 export const fetchMpWalletInfo = async (UserId) => {
 	try {
 		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_wallet_info?UserId=${UserId}`)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
+// GET A MANGOPAY USER'S WALLET CREDITS
+
+export const fetchUserCredits = async (UserId) => {
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_wallet_info?UserId=${UserId}&only_credits=true`)
 		return response.data
 	} catch (err) {
 		console.log(err)
@@ -460,7 +462,8 @@ export const updateRecurringPayinRegistration = async (
 export const createRecurringPayinCIT = async (
 	RecurringPayinRegistrationId,
 	isUpdatingCard,
-	Currency
+	Currency,
+	query
 ) => {
 	// HEADERS
 	const config = {
@@ -483,7 +486,8 @@ export const createRecurringPayinCIT = async (
 			BrowserInfo,
 			IpAddress,
 			isUpdatingCard,
-			Currency
+			Currency,
+			query
 		})
 
 		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_recurring_payin_cit`, body, config)
@@ -513,3 +517,32 @@ export const fetchPayIn = async (PayInId) => {
 		return err
 	}
 }
+
+	// TRANSFER FUNDS BETWEEN WALLETS
+
+	export const createMpTransfer = async (
+		MPLegalUserId,
+		DebitedFunds,
+		MPUserId
+	) => {
+		// HEADERS
+		const config = {
+			headers: {
+				"Content-type": "application/json"
+			}
+		}
+
+		// BODY
+		const body = JSON.stringify({
+			MPLegalUserId,
+			DebitedFunds,
+			MPUserId
+		})
+		try {
+			const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_transfer_funds_between_wallets`, body, config)
+			return response.data
+		} catch (err) {
+			console.log(err)
+			return err
+		}
+	}

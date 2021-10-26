@@ -209,7 +209,7 @@ class PaymentMethod extends React.Component {
 									MPUserId: mpUserId,
 									firstName: user.firstName.length>0 ? user.firstName : mpUserFirstName,
 									lastName: user.lastName.length > 0 ? user.LastName : mpUserLastName
-								})
+								}, true)
 							}
 							console.log('card info', cardInfo)
 
@@ -599,7 +599,11 @@ class PaymentMethod extends React.Component {
 										paddingBottom: '2px',
 										display: 'block'
 									}}
-									onClick={() => this.setState({ isUpdatingCard: false })}
+									onClick={() => {
+										isUpdatingCard ?
+										this.setState({ isUpdatingCard: false }) :
+										onCancel()
+									}}
 								>
 									{t('cancel')}
 								</span>
@@ -664,7 +668,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
-	updateUser: userInfo => dispatch(updateUser(userInfo))
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(PaymentMethod))

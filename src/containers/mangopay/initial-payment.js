@@ -70,7 +70,7 @@ class InitialPayment extends React.Component {
 			myVideos: updatedVideos,
 			automaticTopUp,
 			subscription: sub != 1 && sub != 2 ? null : (sub == 1 ? 15 : 20)
-		})
+		}, true)
 			.then(() => {
 				loadUser()
 				this.props.history.push('/dashboard')
@@ -165,7 +165,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	loadUser: () => dispatch(loadUser())
 })
 

@@ -12,10 +12,7 @@ import Kyc from '../../mangopay/kyc'
 import BankAccount from '../../mangopay/bank-account'
 import Payout from '../../mangopay/payout'
 
-import {
-	updateUser,
-	loadUser
-} from '../../../actions/auth-actions'
+import { loadUser } from '../../../actions/auth-actions'
 
 import {
 	capitalize
@@ -252,7 +249,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
 	loadUser: () => dispatch(loadUser())
 })
 

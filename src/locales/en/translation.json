@@ -475,7 +475,14 @@
 	"areYouSureYouWantToCancelThisPlan": "are you sure you want to go a la carte ?",
 	"youAreNowGoingALaCarte": "you are now using Citrus a la carte",
 	"proceedingToPayment": "proceeding to payment",
-	"redirectedToYourBankNewCard": "for security reasons, you're going to be redirected to your bank in order to authentify the new card with a free of charge transaction...",
-	"redirectedToYourBank": "for security reasons, you're going to be redirected to your bank to authentify in a few seconds...",
-	"cancelingYourPlan": "canceling your current plan to go a la carte..."
+	"redirectedToYourBankNewCard": "for security reasons, you might be redirected to your bank in order to authentify the new card ...",
+	"redirectedToYourBank": "for security reasons, you might be redirected to your bank to authentify in a few seconds...",
+	"cancelingYourPlan": "canceling your current plan to go a la carte...",
+	"watchForFree": "watch for free",
+	"confirmBuyingCoachingFor": "do you confirm coaching purchase for",
+	"chooseAPaymentPlan": "choose a payment plan",
+	"yesALaCarte": "yes, a la carte",
+	"ofFees": "of fees",
+	"buyingCoachingALaCarte": "purchasing coaching a la carte",
+	"startMyTrainingNow": "start my training now"
 }

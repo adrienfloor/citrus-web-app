@@ -477,7 +477,14 @@
 	"areYouSureYouWantToCancelThisPlan": "es-tu sûr de vouloir passer à la carte ?",
 	"youAreNowGoingALaCarte": "tu utilises désormais Citrus à la carte.",
 	"proceedingToPayment": "traitement du paiement",
-	"redirectedToYourBankNewCard": "par sécurité, tu vas être redirigé vers ta banque pour authentifier la nouvelle carte par une transaction gratuite...",
-	"redirectedToYourBank": "par sécurité, tu vas être redirigé vers ta banque pour t'authentifier dans quelques secondes...",
-	"cancelingYourPlan": "annulation du plan de paiement actuel pour passer à la carte..."
+	"redirectedToYourBankNewCard": "par sécurité, tu pourrais être redirigé vers ta banque pour authentifier la nouvelle carte ...",
+	"redirectedToYourBank": "par sécurité, tu pourrais être redirigé vers ta banque pour t'authentifier dans quelques secondes ...",
+	"cancelingYourPlan": "annulation du plan de paiement actuel pour passer à la carte...",
+	"watchForFree": "regarder gratuitement",
+	"confirmBuyingCoachingFor": "confirmes-tu l'achat du coaching pour",
+	"chooseAPaymentPlan": "choisir un plan de paiement",
+	"yesALaCarte": "oui, à la carte",
+	"ofFees": "de frais",
+	"buyingCoachingALaCarte": "achat du coaching à la carte",
+	"startMyTrainingNow": "commmencer mon entraînement maintenant"
 }

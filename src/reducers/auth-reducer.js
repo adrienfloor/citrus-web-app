@@ -15,7 +15,8 @@ import {
 	FETCH_USER_REPLAYS,
 	FETCH_USER_INFO,
 	CREATE_FOLLOWER,
-	DELETE_FOLLOWER
+	DELETE_FOLLOWER,
+	UPDATE_SPECIFIC_USER
 } from '../actions/types'
 
 const initialState = {
@@ -84,6 +85,7 @@ export default function (state = initialState, action) {
 		case CREATE_FOLLOWER:
 		case DELETE_FOLLOWER:
 		case UPDATE_USER_CREDENTIALS:
+		case UPDATE_SPECIFIC_USER:
 		default:
 			return state
 	}

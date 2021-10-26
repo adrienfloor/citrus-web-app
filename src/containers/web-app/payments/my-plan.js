@@ -112,7 +112,7 @@ class MyPlan extends React.Component {
 				id: user._id,
 				subscription: null,
 				MPRecurringPayinRegistrationId: null
-			})
+			}, true)
 			.then(() => {
 				this.setState({ isLoading: false })
 				history.push('/pay-in-confirmation?alacarte=true')
@@ -156,7 +156,7 @@ class MyPlan extends React.Component {
 						updateUser({
 							id: user._id,
 							MPRecurringPayinRegistrationId: res.Id
-						})
+						}, true)
 						const MPRecurringPayinRegistrationId = res.Id
 						createRecurringPayinCIT(MPRecurringPayinRegistrationId)
 							.then(res => {
@@ -359,7 +359,6 @@ class MyPlan extends React.Component {
 									})
 									fetchMpCardInfo(mpUserId)
 										.then(res => {
-											console.log(mpUserId, res)
 											if (res && res.Id) {
 												this.handleSubscribe(res.Id)
 											}
@@ -482,7 +481,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo))
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(MyPlan))

@@ -28,7 +28,6 @@ import { fetchTrainerCoachings } from '../../actions/coachings-actions'
 import { setNotification } from '../../actions/notifications-actions'
 import {
 	fetchUserInfo,
-	updateUser,
 	createFollower,
 	deleteFollower,
 	loadUser
@@ -169,7 +168,6 @@ class CoachProfile extends React.Component {
 
 	render() {
 		const {
-			updateUser,
 			user,
 			coach,
 			fetchSpecificTrainerFutureCoachings,
@@ -422,7 +420,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
 	fetchUserInfo: id => dispatch(fetchUserInfo(id)),
 	createFollower: properties => dispatch(createFollower(properties)),

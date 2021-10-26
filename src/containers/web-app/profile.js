@@ -89,7 +89,7 @@ class Profile extends React.Component {
 		}
 
 		this.setState({ isLoading: true })
-		updateUser(userInfo)
+		updateUser(userInfo, true)
 			.then(res => {
 				if (res.payload.status >= 400) {
 					this.setState({
@@ -480,7 +480,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	updateUser: (userInfo) => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	loadUser: () => dispatch(loadUser()),
 	setNotification: notification => dispatch(setNotification(notification))
 })

@@ -11,6 +11,7 @@ import {
 	REGISTER_FAIL,
 	UPDATE_USER,
 	DELETE_USER,
+	UPDATE_SPECIFIC_USER,
 	RESET_PASSWORD,
 	RESET_PASSWORD_FAIL,
 	FETCH_USER_REPLAYS,
@@ -95,7 +96,7 @@ export const tokenConfig = getState => {
 	return config
 }
 
-export const updateUser = userInfo => async dispatch => {
+export const updateUser = (userInfo, isMe) => async dispatch => {
 	try {
 		const config = {
 			headers: {
@@ -105,7 +106,10 @@ export const updateUser = userInfo => async dispatch => {
 
 		const body = JSON.stringify(userInfo)
 		const response = await axios.put(`${REACT_APP_API_URL}/users/update_user`, body, config)
-		return dispatch({ type: UPDATE_USER, payload: response.data })
+		if(isMe) {
+			return dispatch({ type: UPDATE_USER, payload: response.data })
+		}
+		return dispatch({ type: UPDATE_SPECIFIC_USER })
 	} catch (err) {
 		return dispatch(returnErrors(err, err.response.status))
 	}

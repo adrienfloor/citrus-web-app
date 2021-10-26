@@ -66,7 +66,7 @@ class TopUp extends React.Component {
 			id: _id,
 			myVideos: updatedVideos,
 			automaticTopUp
-		})
+		}, true)
 			.then(() => {
 				this.setState({
 					isLoading: false,
@@ -382,7 +382,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
 	loadUser: () => dispatch(loadUser())
 })
 

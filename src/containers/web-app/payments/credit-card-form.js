@@ -200,7 +200,7 @@ class CreditCardForm extends React.Component {
 									MPUserId: mpUserId,
 									firstName: user.firstName.length > 0 ? user.firstName : mpUserFirstName,
 									lastName: user.lastName.length > 0 ? user.LastName : mpUserLastName
-								})
+								}, true)
 							}
 							endPaymentProcess(mpUserId)
 						})
@@ -470,7 +470,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
-	updateUser: userInfo => dispatch(updateUser(userInfo))
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(CreditCardForm))

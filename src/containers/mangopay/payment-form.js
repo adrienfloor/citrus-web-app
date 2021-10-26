@@ -156,7 +156,7 @@ class PaymentForm extends React.Component {
 			this.props.customer.email
 		)
 		if(mpUser) {
-			await updateUser({ id: user._id, MPUserId: mpUser.Id })
+			await updateUser({ id: user._id, MPUserId: mpUser.Id }, true)
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id)
 		}
@@ -416,7 +416,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	updateUser: userInfo => dispatch(updateUser(userInfo))
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(PaymentForm))
