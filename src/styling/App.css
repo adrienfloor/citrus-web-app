@@ -93,6 +93,11 @@ a:visited {
 	flex-direction: row;
 }
 
+.flex-row-desktop-column-mobile {
+	display: flex;
+	flex-direction: row;
+}
+
 .flex-center {
 	display: flex;
 	justify-content: center;
@@ -273,6 +278,9 @@ input {
 	}
 	.drawer-title {
 		margin: 15px 0 0 0;
+	}
+	.flex-row-desktop-column-mobile {
+		flex-direction: column;
 	}
 }
 

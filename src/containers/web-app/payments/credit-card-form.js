@@ -350,13 +350,13 @@ class CreditCardForm extends React.Component {
 								}
 								<div className='flex-row'>
 									<TextField
-										label="Firstname"
+										label={capitalize(t('firstName'))}
 										onChange={e => this.handleInputChange(e, 'FirstName')}
 										style={{ width: '47.5%', margin: '2% 2.5% 2% 0' }}
 										variant='outlined'
 									/>
 									<TextField
-										label="Lastname"
+										label={capitalize(t('lastName'))}
 										onChange={e => this.handleInputChange(e, 'LastName')}
 										style={{ width: '47.5%', margin: '2% 0 2% 2.5%' }}
 										variant='outlined'
@@ -365,12 +365,12 @@ class CreditCardForm extends React.Component {
 								<div className='row flex-row'>
 									<CountrySelector
 										style={{ width: '47.5%', margin: '2% 2.5% 0 0' }}
-										name="Nationality"
+										name={capitalize(t('nationality'))}
 										onSelect={Nationality => this.setState({ Nationality })}
 									/>
 									<CountrySelector
 										style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
-										name="Residence"
+										name={capitalize(t('countryOfResidence'))}
 										onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
 									/>
 								</div>

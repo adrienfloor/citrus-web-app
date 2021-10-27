@@ -151,5 +151,10 @@ export default {
 	metricsAvailable: {
 		milesAndPounds: "miles and pounds",
 		kilometersAndKilos: "kilometers and kilos"
+	},
+	legalPersonTypesAvailable: {
+		"soletrader": "soletrader",
+		"business": "business",
+		"organization": "organization",
 	}
 }

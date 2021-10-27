@@ -151,5 +151,10 @@ export default {
 	metricsAvailable: {
 		milesAndPounds: "impérial (mi, lb)",
 		kilometersAndKilos: "métrique (m, kg)"
+	},
+	legalPersonTypesAvailable: {
+		"soletrader": "entreprise individuelle / indépendant",
+		"business": "société",
+		"organization": "association",
 	}
 }

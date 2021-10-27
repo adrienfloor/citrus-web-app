@@ -313,7 +313,7 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 0 1.25%;
+	/* padding: 0 1.25%; */
 	max-width: 1000px;
 }
 .home-container,
@@ -427,10 +427,11 @@
 	background-color: #FFFFFF;
 }
 .card-like {
-	/* Add shadows to create the "card" effect */
-	/* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-	transition: 0.3s; */
 	width: 350px;
+	padding: 20px;
+}
+.create-legal-user-form {
+	width: 600px;
 	padding: 20px;
 }
 
@@ -472,6 +473,15 @@
 .MuiPaper-rounded {
 	border-radius: 0 !important;
 }
+
+/* .MuiTextField-root>label {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+	overflow: hidden;
+	max-width: 150px;
+} */
+
 /* input type number spinbox hidden */
 
 input::-webkit-outer-spin-button,
@@ -532,7 +542,7 @@ input[type=number] {
 		width: 100%;
 		min-width: 100% !important;
 		min-height: 100% !important;
-		margin-left: 0;
+		margin: 0 !important;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -745,6 +755,7 @@ input[type=number] {
 		min-height: 100vh;
 		min-width: 100vw;
 	}
+	.create-legal-user-form,
 	.card-like {
 		width: 97.5%;
 		padding: 0 1.25%;
@@ -765,6 +776,7 @@ input[type=number] {
 	}
 	.MuiDialog-paper {
 		margin: 0 !important;
+		overflow-x: hidden;
 	}
 	.MuiButton-root {
 		min-width: unset !important;

@@ -11,7 +11,9 @@ import * as UpChunk from '@mux/upchunk'
 import axios from 'axios'
 import io from 'socket.io-client'
 import ProgressBar from '@ramonak/react-progress-bar'
+import Dialog from '@material-ui/core/Dialog'
 
+import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader'
 import VideoUploader from '../../components/web-app/video-uploader'
 
@@ -80,7 +82,8 @@ class Schedule extends React.Component {
 			videoFile: '',
 			isReadingFile: false,
 			progress: null,
-			isProcessingVideo: false
+			isProcessingVideo: false,
+			isCreatingLegalUser: false
 		}
 		this.handleDateSelection = this.handleDateSelection.bind(this)
 		this.returnPriceWording = this.returnPriceWording.bind(this)
@@ -168,14 +171,16 @@ class Schedule extends React.Component {
 			focus,
 			language,
 			freeAccess,
-			price
+			price,
+			isCreatingLegalUser
 		} = this.state
 		const {
 			createCoaching,
 			coaching,
 			updateCoaching,
 			onCoachingCreated,
-			t
+			t,
+			user
 		} = this.props
 		const {
 			firstName,
@@ -183,11 +188,13 @@ class Schedule extends React.Component {
 			userName,
 			_id,
 			coachRating,
-		} = this.props.user
+			MPLegalUserId
+		} = user
 
-		e.preventDefault()
+		if(e) { e.preventDefault() }
 
 		this.setState({
+			isCreatingLegalUser: false,
 			isButtonDisabled: true,
 			progress: 0
 		})
@@ -204,6 +211,14 @@ class Schedule extends React.Component {
 				})
 			}.bind(this), 3000)
 			return
+		}
+
+		if (MPLegalUserId.length <= 0) {
+			return this.setState({
+				isCreatingLegalUser: true,
+				isButtonDisabled: false,
+				progress: null
+			})
 		}
 
 		const newCoaching = {
@@ -321,7 +336,8 @@ class Schedule extends React.Component {
 			errorMessage,
 			progress,
 			isProcessingVideo,
-			price
+			price,
+			isCreatingLegalUser
 		} = this.state
 
 		if (isLoading) {
@@ -650,7 +666,7 @@ class Schedule extends React.Component {
 						}
 						{
 							progress !== null && progress >= 0 && !isProcessingVideo ?
-							<div style={{ height: '50px', width: '100%' }}>
+							<div style={{ height: '50px', width: '80%' }}>
 								<div className='flex-row' style={{ alignItems: 'center'}}>
 									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
 										{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
@@ -673,7 +689,7 @@ class Schedule extends React.Component {
 						}
 						{
 							isProcessingVideo &&
-							<div style={{ height: '50px', width: '100%' }}>
+							<div style={{ height: '50px', width: '80%' }}>
 								<div className='flex-row' style={{ alignItems: 'center' }}>
 									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
 										{capitalize(t('processingVideo'))}
@@ -704,6 +720,22 @@ class Schedule extends React.Component {
 						</span>
 					}
 				</form>
+				{
+					isCreatingLegalUser &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isCreatingLegalUser: null })}
+					>
+						<div className='full-width-and-height-dialog'>
+							<CreateLegalUser
+								onUserCreated={this.handleCreateCoaching}
+								onCancel={() => {
+									this.setState({ isCreatingLegalUser: false })
+								}}
+							/>
+						</div>
+					</Dialog>
+				}
 			</div>
 		)
 	}

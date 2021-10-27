@@ -84,12 +84,6 @@ class PayInConfirmation extends React.Component {
 			fetchPayIn(transactionId)
 				.then(res => {
 					if (res && res.Status === 'SUCCEEDED') {
-
-						///////////////
-						///////////////
-
-						// TO TEST
-
 						if(coachingId) {
 							// Fetch coaching to get info
 							fetchCoaching(coachingId)
