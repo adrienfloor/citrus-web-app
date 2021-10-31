@@ -93,7 +93,7 @@ class CreateMangopayUser extends React.Component {
 			return
 		}
 
-		const birthday = parseInt(moment(Birthday).utc().format("X"))
+		const birthday = (new Date(Birthday).getTime() / 1000)
 
 		const mpUser = await createMpUser(
 			FirstName,

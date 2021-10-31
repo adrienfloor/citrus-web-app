@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 	},
 })
 
-export default function CountrySelector({ onSelect, name, style}) {
+export default function CountrySelector({ onSelect, name, style, value}) {
 	const classes = useStyles()
 
 	return (
@@ -56,6 +56,7 @@ export default function CountrySelector({ onSelect, name, style}) {
 					}}
 				/>
 			)}
+			value={countries.find(country => country.code === value)}
 		/>
 	)
 }

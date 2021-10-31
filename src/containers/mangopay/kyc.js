@@ -29,7 +29,6 @@ import {
 import { setNotification } from '../../actions/notifications-actions'
 
 let mpUserKycs
-let mpUserInfo
 
 class Kyc extends React.Component {
 	constructor(props) {
@@ -46,14 +45,11 @@ class Kyc extends React.Component {
 			success: false
 		}
 
-		fetchMpUserInfo(this.props.user.MPLegalUserId)
+		fetchKycsOfAUser(this.props.user.MPLegalUserId)
 		.then(res => {
-			mpUserInfo = res
-			fetchKycsOfAUser(this.props.user.MPLegalUserId)
-			.then(res => {
-				mpUserKycs = res
-				this.setState({ isLoading: false })
-			})
+			mpUserKycs = res
+			console.log(res)
+			this.setState({ isLoading: false })
 		})
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -77,6 +73,7 @@ class Kyc extends React.Component {
 				return true
 			}
 		}
+
 		if(mpUserKycs) {
 			const kyc = mpUserKycs.find(
 				el => el.Type === type && checkKycStatus(el.Status)
@@ -138,7 +135,11 @@ class Kyc extends React.Component {
 			registrationProofFileName
 		} = this.state
 
-		const { t, onClose } = this.props
+		const {
+			t,
+			onClose,
+			mpLegalUserInfo
+		} = this.props
 
 		// if (success) {
 		// 	return (
@@ -174,15 +175,16 @@ class Kyc extends React.Component {
 
 		if(isLoading) {
 			return (
-				<div className='full-container flex-column flex-center'>
-					<div className='big-separator'></div>
+				<div
+					className='flex-column flex-center'
+					style={{ height: '70vh' }}
+				>
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
 						height={100}
 						width={100}
 					/>
-					<div className='big-separator'></div>
 				</div>
 			)
 		}
@@ -276,7 +278,7 @@ class Kyc extends React.Component {
 					{/*  ARTICLES OF ASSOCIATION PROOF */}
 					<div className='medium-separator'></div>
 					{
-						mpUserInfo && mpUserInfo.LegalPersonType !== 'SOLETRADER' &&
+						mpLegalUserInfo && mpLegalUserInfo.LegalPersonType !== 'SOLETRADER' &&
 						<div style={{ width: '100%'}}>
 							<span className='small-title'>{capitalize(t('articlesOfAssociation'))} : </span>
 							{
@@ -329,7 +331,7 @@ class Kyc extends React.Component {
 
 					{/*  REGISTRATION PROOF */}
 					<div className='medium-separator'></div>
-					<span className='small-title'>{capitalize(t('registrationProof'))} : </span>
+					<span className='small-title'>{capitalize(t('registrationProof'))}</span>
 					{
 						this.isKycValidationInProgress('REGISTRATION_PROOF') ?
 						<div>

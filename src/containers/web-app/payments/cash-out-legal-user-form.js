@@ -5,6 +5,8 @@ import moment from 'moment'
 import { TextField } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
+import Select from '@material-ui/core/Select'
+import { MenuItem, InputLabel, FormControl } from '@material-ui/core'
 
 import '../../../styling/headings.css'
 import '../../../styling/colors.css'
@@ -12,7 +14,6 @@ import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
 
-import GenericSelector from '../../../components/generic-selector'
 import CountrySelector from '../../../components/country-selector'
 
 import {
@@ -31,28 +32,36 @@ import {
 } from '../../../utils/validations'
 
 import {
-	createMpLegalUser,
+	updateMpLegalUser,
 	createMpUserWallet
 } from '../../../services/mangopay'
+
+import * as frCommonTranslations from '../../../fixtures/fr'
+import * as enCommonTranslations from '../../../fixtures/en'
+
+const translations = moment.locale() == 'fr' ? frCommonTranslations : enCommonTranslations
+const legalPersonTypeItems = Object.keys(translations.default.legalPersonTypesAvailable)
 
 class LegalUserCreation extends React.Component {
 	constructor(props) {
 		super(props)
+		const { user, mpLegalUserInfo } = this.props
+		const { HeadquartersAddress } = mpLegalUserInfo
 		this.state = {
-			LegalPersonType: '',
-			Name: '',
-			LegalRepresentativeFirstName: '',
-			LegalRepresentativeLastName: '',
-			LegalRepresentativeBirthday: '',
-			LegalRepresentativeNationality: '',
-			LegalRepresentativeCountryOfResidence: '',
-			LegalRepresentativeEmail: '',
-			AddressLine1: '',
-			City: '',
-			Region: '',
-			PostalCode: '',
-			Country: '',
-			CompanyNumber: '',
+			LegalPersonType: mpLegalUserInfo.LegalPersonType || '',
+			Name: mpLegalUserInfo.Name || '',
+			LegalRepresentativeFirstName: mpLegalUserInfo.LegalRepresentativeFirstName || '',
+			LegalRepresentativeLastName: mpLegalUserInfo.LegalRepresentativeLastName || '',
+			LegalRepresentativeBirthday: this.returnFormattedDate(mpLegalUserInfo.LegalRepresentativeBirthday) || '',
+			LegalRepresentativeNationality: mpLegalUserInfo.LegalRepresentativeNationality || '',
+			LegalRepresentativeCountryOfResidence: mpLegalUserInfo.LegalRepresentativeCountryOfResidence || '',
+			LegalRepresentativeEmail: mpLegalUserInfo.LegalRepresentativeEmail || '',
+			AddressLine1: (HeadquartersAddress || {}).AddressLine1 || '',
+			City: (HeadquartersAddress || {}).City || '',
+			Region: (HeadquartersAddress || {}).Region || '',
+			PostalCode: (HeadquartersAddress || {}).PostalCode || '',
+			Country: (HeadquartersAddress || {}).Country|| '',
+			CompanyNumber: mpLegalUserInfo.CompanyNumber || '',
 			isLoading: false,
 			isFailure: false,
 			warningMessage: ''
@@ -60,6 +69,7 @@ class LegalUserCreation extends React.Component {
 
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleDateInputChange = this.handleDateInputChange.bind(this)
+		this.returnFormattedDate = this.returnFormattedDate.bind(this)
 		this.handleMissingParam = this.handleMissingParam.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
@@ -78,6 +88,12 @@ class LegalUserCreation extends React.Component {
 		return this.setState({ LegalRepresentativeBirthday: output.join('').substr(0, 14) })
 	}
 
+	returnFormattedDate(input) {
+		if(!input) return ''
+		const birthday = moment(new Date(input * 1000)).format('MM/DD/YYYY')
+		return birthday
+	}
+
 	handleInputChange(e, name) {
 		const { value } = e.target
 		this.setState({ [name]: value })
@@ -85,107 +101,132 @@ class LegalUserCreation extends React.Component {
 
 
 	handleMissingParam() {
-		if(this.state.CompanyNumber.length !== 9 && this.state.CompanyNumber.length !== 14) {
+		const {
+			LegalPersonType,
+			Name,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
+			LegalRepresentativeBirthday,
+			LegalRepresentativeNationality,
+			LegalRepresentativeCountryOfResidence,
+			LegalRepresentativeEmail,
+			AddressLine1,
+			City,
+			PostalCode,
+			Country,
+			CompanyNumber
+		} = this.state
+		const { t } = this.props
+
+		if (CompanyNumber.length !== 9 && CompanyNumber.length !== 14) {
 			this.setState({
-				warningMessage: 'Wrong company number format'
+				warningMessage: capitalize(t('wrongCompanyNumberFormat')),
+				isLoading: false
 			})
+			setTimeout(function () {
+				this.setState({
+					warningMessage: ''
+				})
+			}.bind(this), 3000)
 			return true
 		}
 		if (
-			!this.state.LegalPersonType ||
-			!this.state.Name ||
-			!this.state.LegalRepresentativeFirstName ||
-			!this.state.LegalRepresentativeLastName ||
-			!this.state.LegalRepresentativeBirthday ||
-			!this.state.LegalRepresentativeNationality ||
-			!this.state.LegalRepresentativeCountryOfResidence ||
-			!this.state.LegalRepresentativeEmail ||
-			!this.state.AddressLine1 ||
-			!this.state.City ||
-			!this.state.PostalCode ||
-			!this.state.Country ||
-			!this.state.CompanyNumber
+			!LegalPersonType ||
+			!Name ||
+			!LegalRepresentativeFirstName ||
+			!LegalRepresentativeLastName ||
+			!LegalRepresentativeBirthday ||
+			!LegalRepresentativeNationality ||
+			!LegalRepresentativeCountryOfResidence ||
+			!LegalRepresentativeEmail ||
+			!AddressLine1 ||
+			!City ||
+			!PostalCode ||
+			!Country ||
+			!CompanyNumber
 		) {
 			this.setState({
-				warningMessage: 'Please enter all fields'
+				warningMessage: capitalize(t('pleaseEnterAllFields')),
+				isLoading: false
 			})
+			setTimeout(function () {
+				this.setState({
+					warningMessage: ''
+				})
+			}.bind(this), 3000)
 			return true
 		}
 	}
 
 	async handleSubmit(e) {
-
-		e.preventDefault()
 		const {
 			user,
 			updateUser,
 			loadUser,
-			t
+			t,
+			onUserCreated
 		} = this.props
+		const {
+			LegalPersonType,
+			Name,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
+			LegalRepresentativeBirthday,
+			LegalRepresentativeNationality,
+			LegalRepresentativeCountryOfResidence,
+			LegalRepresentativeEmail,
+			AddressLine1,
+			City,
+			PostalCode,
+			Country,
+			CompanyNumber,
+			Region
+		} = this.state
+		e.preventDefault()
+		this.setState({ isLoading: true })
 
-		if(this.handleMissingParam()) {
+		if (this.handleMissingParam()) {
 			return
 		}
 
-		const birthday = (new Date(this.state.LegalRepresentativeBirthday).getTime() / 1000)
+		const birthday = (new Date(LegalRepresentativeBirthday).getTime() / 1000)
 
-		const mpLegalUser = await createMpLegalUser(
-			this.state.LegalPersonType,
-			this.state.Name,
-			this.state.LegalRepresentativeFirstName,
-			this.state.LegalRepresentativeLastName,
+		const mpLegalUser = await updateMpLegalUser(
+			user.MPLegalUserId,
+			LegalPersonType,
+			Name,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
 			birthday,
-			this.state.LegalRepresentativeNationality,
-			this.state.LegalRepresentativeCountryOfResidence,
-			this.state.LegalRepresentativeEmail,
+			LegalRepresentativeNationality,
+			LegalRepresentativeCountryOfResidence,
+			LegalRepresentativeEmail,
 			user.email,
 			{
-				AddressLine1: this.state.AddressLine1,
-				City: this.state.City,
-				Region: this.state.Region,
-				PostalCode: this.state.PostalCode,
-				Country: this.state.Country
+				AddressLine1: AddressLine1,
+				City: City,
+				Region: Region,
+				PostalCode: PostalCode,
+				Country: Country
 			},
-			this.state.CompanyNumber
+			CompanyNumber
 		)
-		// if (mpLegalUser) {
-		// 	updateUser({
-		// 		id: user._id,
-		// 		MPLegalUserId: mpLegalUser.Id,
-		// 		firstName: user.firstName || this.state.LegalRepresentativeFirstName,
-		// 		lastName: user.lastName || this.state.LegalRepresentativeLastName,
-		// 	}, true)
-		// 	.then(() => loadUser())
-		// }
 
 		if (mpLegalUser && mpLegalUser.PersonType === 'LEGAL') {
-			createMpUserWallet(mpLegalUser.Id, returnCurrencyCode(moment.locale()))
+			updateUser({
+				id: user._id,
+				firstName: user.firstName || LegalRepresentativeFirstName,
+				lastName: user.lastName || LegalRepresentativeLastName,
+			}, true)
 			.then(res => {
-				if(res && res.Balance) {
-					updateUser({
-						id: user._id,
-						MPLegalUserId: mpLegalUser.Id,
-						firstName: user.firstName || this.state.LegalRepresentativeFirstName,
-						lastName: user.lastName || this.state.LegalRepresentativeLastName,
-					}, true)
-					.then(res => {
-						// onUserCreated()
-						this.setState({ isLoading: false })
-					})
-				} else {
-					this.setState({
-						isLoading: false,
-						isFailure: true,
-						warningMessage: capitalize(t('errorDuringInfoRegistration'))
-					})
-				}
+				onUserCreated()
+				this.setState({ isLoading: false })
 			})
-			.catch(e => {
-				this.setState({
-					isLoading: false,
-					isFailure: true,
-					warningMessage: capitalize(t('errorDuringInfoRegistration'))
-				})
+		} else {
+			this.setState({
+				isLoading: false,
+				isFailure: true,
+				warningMessage: capitalize(t('errorDuringInfoRegistration'))
 			})
 		}
 
@@ -194,8 +235,20 @@ class LegalUserCreation extends React.Component {
 	render() {
 
 		const {
+			LegalPersonType,
+			Name,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
 			LegalRepresentativeBirthday,
+			LegalRepresentativeNationality,
+			LegalRepresentativeCountryOfResidence,
 			LegalRepresentativeEmail,
+			AddressLine1,
+			City,
+			Region,
+			PostalCode,
+			Country,
+			CompanyNumber,
 			isLoading,
 			warningMessage,
 			isFailure
@@ -238,28 +291,27 @@ class LegalUserCreation extends React.Component {
 					</span>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<Link to='/schedule' className='filled-button'>
+					<div className='filled-button' onClick={() => this.props.setState({ isFailure: false })}>
 						<span className='small-title citrusWhite'>
 							{capitalize(t('tryAgain'))}
 						</span>
-					</Link>
+					</div>
 				</div>
 			)
 		}
 
 		return (
-			<div className='full-container flex-column flex-start legal-user-creation'>
-				<span className='maxi-title title'>
-					{capitalize(t('cashOut'))}
-				</span>
-				<span className='small-text-high'>
-					{capitalize(t('toCashOutYouFirstNeed'))}
-				</span>
+			<div className='flex-column flex-center legal-user-creation'>
 				<div className='medium-separator'></div>
+				<span
+					style={{ maxWidth: '454px'}}
+					className='small-text-bold citrusGrey'
+				>
+					{capitalize(t('legalUserCreationDisclaimerCashout'))}
+				</span>
 				<form
 					id='legal-user-form'
 					onSubmit={this.handleSubmit}
-					className='legal-user-creation-form'
 				>
 					<div className='flex-column flex-center'>
 						<div className='medium-separator'></div>
@@ -267,32 +319,42 @@ class LegalUserCreation extends React.Component {
 							{uppercase(t('generalInformation'))} :
 						</span>
 						<div className='row flex-row'>
-							<GenericSelector
-								items={[
-									'soletrader',
-									'business',
-									'organization'
-								]}
-								style={{ width: '100%' }}
-								name="Legal Person Type"
-								onSelect={LegalPersonType => this.setState({ LegalPersonType })}
-								t={t}
-							/>
+							<FormControl variant='outlined' style={{ width: '100%' }}>
+								<InputLabel id='select-outlined-label'>
+									{capitalize(t('legalPersonType'))}
+								</InputLabel>
+								<Select
+									label={capitalize(t('legalPersonType'))}
+									labelId='select-outlined-label'
+									value={LegalPersonType.toLowerCase()}
+									onChange={e => this.handleInputChange(e, 'LegalPersonType')}
+								>
+									{
+										legalPersonTypeItems.map((type, i) => (
+											<MenuItem value={type} key={i}>
+												{capitalize(t(type))}
+											</MenuItem>
+										))
+									}
+								</Select>
+							</FormControl>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Company Name"
+								label={capitalize(t('companyName'))}
 								onChange={e => this.handleInputChange(e, 'Name')}
 								style={{ width: '100%' }}
 								variant='outlined'
+								value={Name}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Company Number"
+								label={capitalize(t('companyNumber'))}
 								onChange={e => this.handleInputChange(e, 'CompanyNumber')}
 								style={{ width: '100%' }}
 								variant='outlined'
+								value={CompanyNumber}
 							/>
 						</div>
 						<div className='medium-separator'></div>
@@ -301,37 +363,41 @@ class LegalUserCreation extends React.Component {
 						</span>
 						<div className='row flex-row'>
 							<TextField
-								label="Company Adress Line"
+								label={capitalize(t('addressLine'))}
 								onChange={e => this.handleInputChange(e, 'AddressLine1')}
 								style={{ width: '100%' }}
 								variant='outlined'
+								value={AddressLine1}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Postal Code"
+								label={capitalize(t('zipCode'))}
 								onChange={e => this.handleInputChange(e, 'PostalCode')}
 								style={{ width: '47.5%', margin: '0 2.5% 0 0' }}
 								variant='outlined'
 							/>
 							<TextField
-								label="City"
+								label={capitalize(t('city'))}
 								onChange={e => this.handleInputChange(e, 'City')}
 								style={{ width: '47.5%', margin: '0 0 0 2.5%' }}
 								variant='outlined'
+								value={City}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Region"
+								label={capitalize(t('region'))}
 								onChange={e => this.handleInputChange(e, 'Region')}
 								style={{ width: '47.5%', margin: '0 2.5% 0 0' }}
 								variant='outlined'
+								value={Region}
 							/>
 							<CountrySelector
 								style={{ width: '47.5%', margin: '0 0 0 2.5%' }}
-								name="Country"
+								name={capitalize(t('country'))}
 								onSelect={Country => this.setState({ Country })}
+								value={Country}
 							/>
 						</div>
 						<div className='medium-separator'></div>
@@ -340,56 +406,62 @@ class LegalUserCreation extends React.Component {
 						</span>
 						<div className='row flex-row'>
 							<TextField
-								label="Legal Representative Firstname"
+								label={capitalize(t('legalRepresentativeFirstName'))}
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeFirstName')}
 								style={{ width: '100%' }}
 								variant='outlined'
+								value={LegalRepresentativeFirstName}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Legal Representative Lastname"
+								label={capitalize(t('legalRepresentativeLastName'))}
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeLastName')}
 								style={{ width: '100%' }}
 								variant='outlined'
+								value={LegalRepresentativeLastName}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<CountrySelector
 								style={{ width: '100%' }}
-								name="Legal Representative Nationality"
+								name={capitalize(t('legalRepresentativeNationality'))}
 								onSelect={LegalRepresentativeNationality => this.setState({ LegalRepresentativeNationality })}
+								value={LegalRepresentativeNationality}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<CountrySelector
 								style={{ width: '100%' }}
-								name="Legal Representative Residence"
+								name={capitalize(t('legalRepresentativeCountryOfResidence'))}
 								onSelect={LegalRepresentativeCountryOfResidence => this.setState({ LegalRepresentativeCountryOfResidence })}
+								value={LegalRepresentativeCountryOfResidence}
 							/>
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label="Legal Representative Email"
+								label={capitalize(t('legalRepresentativeEmail'))}
 								onChange={e => this.handleInputChange(e, 'LegalRepresentativeEmail')}
 								style={{ width: '100%' }}
 								variant='outlined'
-								error={LegalRepresentativeEmail.length && !isValidEmailInput(LegalRepresentativeEmail)}
+								error={LegalRepresentativeEmail.length>0 && !isValidEmailInput(LegalRepresentativeEmail)}
 								helperText={
 									LegalRepresentativeEmail.length && !isValidEmailInput(LegalRepresentativeEmail) ?
-									'wrong format' : ''
+										'wrong format' : ''
 								}
+								value={LegalRepresentativeEmail}
 							/>
 						</div>
 						<div
 							className='row flex-row medium-text row flex-center'
-							style={{ justifyContent: 'flex-start' }}
+							style={{ justifyContent: 'space-between' }}
 						>
-							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Legal Representative Birthday : </span>
+							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+								{capitalize(t('legalRepresentativeBirthday'))} :
+							</span>
 							<TextField
 								placeholder={t('datePlaceHolder')}
 								onChange={e => this.handleDateInputChange(e)}
-								style={{ width: '45%', margin: '2% 2.5%' }}
 								variant='standard'
 								helperText={LegalRepresentativeBirthday.length > 0 && capitalize(t('dateFormatMustBe'))}
 								value={LegalRepresentativeBirthday}
@@ -420,7 +492,7 @@ class LegalUserCreation extends React.Component {
 				<style jsx='true'>
 					{`
 						.row {
-							width: 454px;
+							width: 100%;
 							margin-bottom: 10px;
 							margin-top: 10px;
 						}

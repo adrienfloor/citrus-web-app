@@ -103,9 +103,6 @@ class CoachingCheckout extends React.Component {
 			planType
 		} = this.state
 
-		console.log('Inside handle subscribe function')
-		console.log('planType : ', planType)
-
 		this.setState({
 			cardId,
 			isLoading: true,
@@ -227,33 +224,38 @@ class CoachingCheckout extends React.Component {
 					className='flex-column flex-center coaching-loading white'
 					style={{ justifyContent: 'flex-start' }}
 				>
-					<div className='medium-separator'></div>
 					<div
 						style={{
 							width: '98.5%',
 							height: '40px',
 							display: 'flex',
-							alignItems: 'center'
+							alignItems: 'center',
+							justifyContent: 'flex-end'
 						}}
 						onClick={onCancel}
 						className='hover'
 					>
-						<CaretBack
+						<Close
 							width={25}
 							height={25}
 							stroke={'#C2C2C2'}
 							strokeWidth={2}
 						/>
-						<span className='small-text-bold citrusGrey'>
-							{capitalize(t('back'))}
+					</div>
+					<div
+						style={{
+							padding: '0 12px',
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							height: '600px',
+							alignItems: 'center'
+						}}
+					>
+						<span className='small-title citrusBlack'>
+							{errorMessage}
 						</span>
 					</div>
-					<span
-						className='small-title citrusBlack'
-						style={{ padding: '0 12px', textAlign: 'center' }}
-					>
-						{errorMessage}
-					</span>
 				</div>
 			)
 		}

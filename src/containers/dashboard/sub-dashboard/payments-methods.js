@@ -7,6 +7,7 @@ import '../../../styling/colors.css'
 import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
+import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 
 import Kyc from '../../mangopay/kyc'
 import BankAccount from '../../mangopay/bank-account'
@@ -30,7 +31,7 @@ class PaymentsMethods extends React.Component {
 		this.state = {
 			isUpdatingKyc: false,
 			isUpdatingBankAccount: false,
-			isProceedingToPayout: true,
+			isProceedingToPayout: false,
 			verified: false,
 			bankAccount: null,
 			funds: 0,
@@ -46,19 +47,20 @@ class PaymentsMethods extends React.Component {
 	}
 
 	async fetchMangoPayInfo() {
-		const { MPUserId } = this.props.user
+		const { MPLegalUserId } = this.props.user
 
-		const mangoPayUser = await fetchMpUserInfo(MPUserId)
+		const mangoPayUser = await fetchMpUserInfo(MPLegalUserId)
 		this.setState({ verified: mangoPayUser.KYCLevel === 'REGULAR' ? true : false })
 
-		const bankAccount = await fetchMpBankAccount(MPUserId)
+		const bankAccount = await fetchMpBankAccount(MPLegalUserId)
 		if(bankAccount) {
 			this.setState({ bankAccount: bankAccount.IBAN })
 		}
 
 
-		const walletInfo = await fetchMpWalletInfo(MPUserId)
+		const walletInfo = await fetchMpWalletInfo(MPLegalUserId)
 		if(walletInfo) {
+			console.log(walletInfo)
 			this.setState({ funds: walletInfo.Balance.Amount / 100 })
 		}
 	}
@@ -104,6 +106,7 @@ class PaymentsMethods extends React.Component {
 		const {
 			t,
 			user,
+			onCancel
 		} = this.props
 		const {
 			firstName,
@@ -145,19 +148,27 @@ class PaymentsMethods extends React.Component {
 
 		return (
 			<div className='full-container flex-column flex-start payments-methods'>
+				<div
+					style={{
+						width: '98.5%',
+						height: '50px',
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center'
+					}}
+					onClick={onCancel}
+					className='hover desktop-only'
+				>
+					<Close
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
+					/>
+				</div>
 				<span className='maxi-title title'>
 					{capitalize(t('cashout'))}
 				</span>
-				<div className='flex-row row-dashboard'>
-					<span className='small-text row-item citrusGrey'>{capitalize(t('firstName'))}</span>
-					<span className='small-text row-item'>{firstName}</span>
-					<span className='small-text row-item'></span>
-				</div>
-				<div className='flex-row row-dashboard'>
-					<span className='small-text row-item citrusGrey'>{capitalize(t('lastName'))}</span>
-					<span className='small-text row-item'>{lastName}</span>
-					<span className='small-text row-item'></span>
-				</div>
 				<div className='flex-row row-dashboard'>
 					<span className='small-text row-item citrusGrey'>{capitalize(t('accountVerified'))}</span>
 					<span className='small-text row-item'>{verified ? capitalize(t('verified')) : capitalize(t('unverified'))}</span>

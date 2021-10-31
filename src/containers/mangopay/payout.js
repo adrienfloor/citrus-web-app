@@ -17,7 +17,8 @@ import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
-	capitalize
+	capitalize,
+	returnCurrency
 } from '../../utils/various'
 import {
 	fetchMpBankAccountId,
@@ -43,9 +44,9 @@ class Payout extends React.Component {
 
 	async componentDidMount() {
 		const { user, t } = this.props
-		const { MPUserId } = user
-		bankAccountId = await fetchMpBankAccountId(MPUserId)
-		walletInfo = await fetchMpWalletInfo(MPUserId)
+		const { MPLegalUserId } = user
+		bankAccountId = await fetchMpBankAccountId(MPLegalUserId)
+		walletInfo = await fetchMpWalletInfo(MPLegalUserId)
 		this.setState({ funds: walletInfo.Balance.Amount / 100 })
 
 		if(!bankAccountId) {
@@ -57,7 +58,7 @@ class Payout extends React.Component {
 
 	async handleSubmit(e) {
 		const { user, t } = this.props
-		const { MPUserId} = user
+		const { MPLegalUserId} = user
 		const { funds, amountToWithdraw } = this.state
 
 		e.preventDefault()
@@ -77,9 +78,16 @@ class Payout extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const payout = await createMpPayout(MPUserId, bankAccountId, amountToWithdraw)
+		const payout = await createMpPayout(
+			MPLegalUserId,
+			bankAccountId,
+			returnCurrency(moment.locale())
+		)
 
 		if (payout.Status === 'CREATED' && payout.Type === 'PAYOUT') {
+			//
+			// Add payout id to user in DB
+			//
 			this.setState({
 				isLoading: false,
 				success: true

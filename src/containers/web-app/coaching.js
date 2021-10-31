@@ -7,6 +7,7 @@ import Loader from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
 
 import CoachingCheckout from '../web-app/payments/coaching-checkout-flow'
+import CoachingEdition from './coaching-edition'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
 
@@ -34,9 +35,13 @@ import {
 	loadUser,
 	fetchUserReplays
 } from '../../actions/auth-actions'
-import { updateCoaching } from '../../actions/coachings-actions'
 import {
-	fetchUserCredits,
+	updateCoaching,
+	fetchTrainerCoachings
+} from '../../actions/coachings-actions'
+import { setNotification } from '../../actions/notifications-actions'
+import {
+	fetchMpUserCredits,
 	createMpTransfer,
 	createMpCardDirectPayin
 } from '../../services/mangopay'
@@ -69,7 +74,7 @@ class Coaching extends React.Component {
 		const { coaching, timeToStart } = this.state
 		fetchUserInfo(coaching.coachId)
 		.then(res => this.setState({ coachInfo: res.payload }))
-		fetchUserCredits(user.MPUserId)
+		fetchMpUserCredits(user.MPUserId)
 		.then(credits => this.setState({ credits }))
 	}
 
@@ -114,8 +119,8 @@ class Coaching extends React.Component {
 			user.MPUserId
 		)
 			.then(res => {
+				console.log('res from transfer : ', res)
 				if(res && res.Status === 'SUCCEEDED') {
-					console.log('res from transfer : ', res)
 					// Update buyer profile
 					updateUser({
 						id: user._id,
@@ -280,7 +285,9 @@ class Coaching extends React.Component {
 			selectScreen,
 			currentScreen,
 			onCoachingDeleted,
-			t
+			t,
+			setNotification,
+			fetchTrainerCoachings
 		} = this.props
 		const {
 			isLoading,
@@ -329,33 +336,38 @@ class Coaching extends React.Component {
 					className='flex-column flex-center coaching-loading white'
 					style={{ justifyContent: 'flex-start' }}
 				>
-					<div className='medium-separator'></div>
 					<div
 						style={{
 							width: '98.5%',
 							height: '40px',
 							display: 'flex',
-							alignItems: 'center'
+							alignItems: 'center',
+							justifyContent: 'flex-end'
 						}}
 						onClick={onCancel}
 						className='hover'
 					>
-						<CaretBack
+						<Close
 							width={25}
 							height={25}
 							stroke={'#C2C2C2'}
 							strokeWidth={2}
 						/>
-						<span className='small-text-bold citrusGrey'>
-							{capitalize(t('back'))}
+					</div>
+					<div
+						style={{
+							padding: '0 12px',
+							textAlign: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+							height: '600px',
+							alignItems: 'center'
+						}}
+					>
+						<span className='small-title citrusBlack'>
+							{errorMessage}
 						</span>
 					</div>
-					<span
-						className='small-title citrusBlack'
-						style={{ padding: '0 12px', textAlign: 'center' }}
-					>
-						{errorMessage}
-					</span>
 				</div>
 			)
 		}
@@ -497,29 +509,28 @@ class Coaching extends React.Component {
 		}
 
 		if (isEditingCoaching) {
-			return null
-			// return (
-			// 	<Schedule
-			// 		coaching={coaching}
-			// 		onCancel={() => this.setState({ isEditingCoaching: false })}
-			// 		onCoachingCreated={(coaching) => {
-			// 			this.setState({
-			// 				isEditingCoaching: false,
-			// 				coaching,
-			// 			})
-			// 			this.alertWithType(
-			// 				capitalize(t('coach.schedule.coachingUpdated')),
-			// 				`${capitalize(
-			// 					t('coach.schedule.coaching'),
-			// 				)} ${title} ${t('coach.schedule.updated')}`,
-			// 			)
-			// 		}}
-			// 		onCoachingDeleted={() => {
-			// 			this.setState({ isEditingCoaching: false })
-			// 			onCoachingDeleted()
-			// 		}}
-			// 	/>
-			// )
+			return (
+				<div className='coaching-container white'>
+					<CoachingEdition
+						coaching={coaching}
+						onCancel={() => this.setState({ isEditingCoaching: false })}
+						onCoachingUpdated={coaching => {
+							this.setState({
+								coaching,
+								isEditingCoaching: false
+							})
+						}}
+						onCoachingDeleted={() => {
+							this.setState({isLoading: true })
+							fetchTrainerCoachings(user._id, true)
+							.then(() => {
+								setNotification({ message: capitalize(t('coachingSuccessfullyDeleted')) })
+								onCancel()
+							})
+						}}
+					/>
+				</div>
+			)
 		}
 
 		return (
@@ -559,7 +570,16 @@ class Coaching extends React.Component {
 						<span className='small-title citrusBlack'>
 							{capitalize(title)}
 						</span>
-						<div className='small-separator'></div>
+						{
+							coaching.coachId === user._id ?
+								<span
+									className='small-text-bold citrusGrey hover'
+									onClick={() => this.setState({ isEditingCoaching: true })}
+								>
+									{t('edit')}
+								</span> :
+								<div className='small-separator'></div>
+						}
 						<div className='thin-row'>
 							<span className='small-text-bold citrusGrey'>
 								{capitalize(t('activity'))}
@@ -681,7 +701,9 @@ const mapDispatchToProps = (dispatch) => ({
 	fetchUserInfo: (id) => dispatch(fetchUserInfo(id)),
 	loadUser: () => dispatch(loadUser()),
 	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
-	fetchUserReplays: (id) => dispatch(fetchUserReplays(id))
+	fetchUserReplays: (id) => dispatch(fetchUserReplays(id)),
+	setNotification: notif => dispatch(setNotification(notif)),
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Coaching))

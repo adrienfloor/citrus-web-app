@@ -10,6 +10,8 @@ import qs from 'query-string'
 
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
+import Cashout from '../web-app/payments/cash-out'
+import LegalUserCreation from '../web-app/payments/cash-out-legal-user-form'
 import Card from '../../components/web-app/card'
 import Tag from '../../components/web-app/tag'
 
@@ -24,7 +26,10 @@ import '../../styling/web-app.css'
 import { ReactComponent as PlusButton } from '../../assets/svg/plus-button.svg'
 import { ReactComponent as WavyCheck } from '../../assets/svg/wavy-check.svg'
 
-import { fetchUserCredits } from '../../services/mangopay'
+import {
+	fetchMpUserCredits,
+	fetchMpUserInfo
+} from '../../services/mangopay'
 
 import {
 	capitalize,
@@ -52,7 +57,9 @@ class Home extends React.Component {
 			userReplaysSkip: 3,
 			followingsSkip: 3,
 			myCoachingsSkip: 3,
-			credits: null
+			credits: null,
+			mpLegalUserInfo: null,
+			isLegalUserFullyCreated: false
 		}
 
 		tabs = [
@@ -62,6 +69,7 @@ class Home extends React.Component {
 
 		this.handleTabSelection = this.handleTabSelection.bind(this)
 		this.returnTopActivities = this.returnTopActivities.bind(this)
+		this.legalUserFullyCreated = this.legalUserFullyCreated.bind(this)
 	}
 
 	componentDidMount() {
@@ -79,8 +87,15 @@ class Home extends React.Component {
 			})
 		}
 
-		fetchUserCredits(user.MPUserId)
-		.then(credits => this.setState({ credits }))
+		if(user.MPLegalUserId) {
+			fetchMpUserCredits(user.MPLegalUserId)
+			.then(credits => this.setState({ credits }))
+			fetchMpUserInfo(user.MPLegalUserId)
+			.then(mpLegalUserInfo => {
+				this.legalUserFullyCreated(mpLegalUserInfo)
+				this.setState({ mpLegalUserInfo })
+			})
+		}
 	}
 
 	handleTabSelection(tab, index) {
@@ -107,6 +122,49 @@ class Home extends React.Component {
 		return capitalize(topActivities)
 	}
 
+	legalUserFullyCreated(mpLegalUserInfo) {
+		const {
+			Name,
+			CompanyNumber,
+			Email,
+			PersonType,
+			LegalRepresentativeBirthday,
+			LegalRepresentativeCountryOfResidence,
+			LegalRepresentativeEmail,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
+			LegalRepresentativeNationality,
+			HeadquartersAddress,
+			LegalRepresentativeAddress
+		} = mpLegalUserInfo
+
+		if(
+			!Name ||
+			!CompanyNumber ||
+			!Email ||
+			!PersonType ||
+			!LegalRepresentativeBirthday ||
+			!LegalRepresentativeCountryOfResidence ||
+			!LegalRepresentativeEmail ||
+			!LegalRepresentativeFirstName ||
+			!LegalRepresentativeLastName ||
+			!LegalRepresentativeNationality ||
+			!HeadquartersAddress ||
+			!HeadquartersAddress.AddressLine1 ||
+			!HeadquartersAddress.City ||
+			!HeadquartersAddress.Country ||
+			!HeadquartersAddress.PostalCode ||
+			!LegalRepresentativeAddress ||
+			!LegalRepresentativeAddress.AddressLine1 ||
+			!LegalRepresentativeAddress.City ||
+			!LegalRepresentativeAddress.Country ||
+			!LegalRepresentativeAddress.PostalCode
+		) {
+			return this.setState({ isLegalUserFullyCreated: false})
+		}
+		this.setState({ isLegalUserFullyCreated: true })
+	}
+
 	render() {
 		const {
 			user,
@@ -124,7 +182,8 @@ class Home extends React.Component {
 			numberOfDailyActivitiesInARow,
 			averageFeeling,
 			myReplays,
-			lifeTimeGains
+			lifeTimeGains,
+			MPLegalUserId
 		} = user
 		const {
 			isLoading,
@@ -137,7 +196,9 @@ class Home extends React.Component {
 			userReplaysSkip,
 			followingsSkip,
 			myCoachingsSkip,
-			credits
+			credits,
+			mpLegalUserInfo,
+			isLegalUserFullyCreated
 		} = this.state
 
 		if (isLoading || !user) {
@@ -154,15 +215,6 @@ class Home extends React.Component {
 					/>
 				</div>
 			)
-		}
-
-		if (isCashingOut) {
-			return null
-			// return (
-			// 	<CashOut
-			// 		onCancel={() => this.setState({ isCashingOut: false })}
-			// 	/>
-			// )
 		}
 
 		return (
@@ -676,6 +728,37 @@ class Home extends React.Component {
 									this.setState({ selectedCoach: null })
 								}}
 							/>
+						</div>
+					</Dialog>
+				}
+				{
+					isCashingOut &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isCashingOut: false })}
+					>
+						<div className='full-width-and-height-dialog'>
+							{
+								MPLegalUserId && isLegalUserFullyCreated ?
+								<Cashout
+									mpLegalUserInfo={mpLegalUserInfo || {}}
+									onCancel={() => this.setState({ isCashingOut: false })}
+								/> :
+								<LegalUserCreation
+									onUserCreated={() => {
+										fetchMpUserInfo(user.MPLegalUserId)
+										.then(mpLegalUserInfo => {
+											this.setState({
+												isLegalUserFullyCreated: true,
+												isCashingOut: true,
+												mpLegalUserInfo
+											})
+										})
+									}}
+									mpLegalUserInfo={mpLegalUserInfo || {}}
+									onCancel={() => this.setState({ isCashingOut: false })}
+								/>
+							}
 						</div>
 					</Dialog>
 				}

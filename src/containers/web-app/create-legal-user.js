@@ -134,7 +134,7 @@ class CreateLegalUser extends React.Component {
 			return
 		}
 
-		const birthday = parseInt(moment(LegalRepresentativeBirthday).utc().format('X'))
+		const birthday = (new Date(LegalRepresentativeBirthday).getTime() / 1000)
 		const name = Name ? Name : `${LegalRepresentativeFirstName} ${LegalRepresentativeLastName}`
 
 		const mpLegalUser = await createMpLegalUser(
@@ -156,7 +156,7 @@ class CreateLegalUser extends React.Component {
 						id: user._id,
 						MPLegalUserId: mpLegalUser.Id,
 						firstName: user.firstName || LegalRepresentativeFirstName,
-						lastName: user.lastName || LegalRepresentativeLastName,
+						lastName: user.lastName || LegalRepresentativeLastName
 					}, true)
 					.then(res => {
 						onUserCreated()
@@ -166,7 +166,7 @@ class CreateLegalUser extends React.Component {
 					this.setState({
 						isLoading: false,
 						isFailure: true,
-						errorMessage: capitalize(t('errorDuringInfoRegistration'))
+						warningMessage: capitalize(t('errorDuringInfoRegistration'))
 					})
 				}
 			})
@@ -174,7 +174,7 @@ class CreateLegalUser extends React.Component {
 				this.setState({
 					isLoading: false,
 					isFailure: true,
-					errorMessage: capitalize(t('errorDuringInfoRegistration'))
+					warningMessage: capitalize(t('errorDuringInfoRegistration'))
 				})
 			})
 		}

@@ -285,7 +285,7 @@ class PaymentMethod extends React.Component {
 				})
 			}.bind(this), 3000)
 		} else {
-			const birthday = parseInt(moment(Birthday).utc().format('X'))
+			const birthday = (new Date(Birthday).getTime() / 1000)
 
 			createLoadingMessage(capitalize(t('creatingMangoUser')))
 			mpUser = await createMpUser(

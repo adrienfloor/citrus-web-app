@@ -82,6 +82,53 @@ export const createMpLegalUser = async (
 	}
 }
 
+// UPDATE MANGOPAY LEGAL USER
+
+export const updateMpLegalUser = async (
+	UserId,
+	LegalPersonType,
+	Name,
+	LegalRepresentativeFirstName,
+	LegalRepresentativeLastName,
+	LegalRepresentativeBirthday,
+	LegalRepresentativeNationality,
+	LegalRepresentativeCountryOfResidence,
+	LegalRepresentativeEmail,
+	Email,
+	HeadquartersAddress,
+	CompanyNumber
+) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	// BODY
+	const body = JSON.stringify({
+		UserId,
+		LegalPersonType,
+		Name,
+		LegalRepresentativeFirstName,
+		LegalRepresentativeLastName,
+		LegalRepresentativeBirthday,
+		LegalRepresentativeNationality,
+		LegalRepresentativeCountryOfResidence,
+		LegalRepresentativeEmail,
+		Email,
+		HeadquartersAddress,
+		CompanyNumber
+	})
+	try {
+		const response = await axios.put(`${REACT_APP_API_URL}/mp/mp_update_legal_user`, body, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
 // CREATE USER WALLET
 
 export const createMpUserWallet = async (id, currency) => {
@@ -354,7 +401,7 @@ export const fetchMpWalletInfo = async (UserId) => {
 
 // GET A MANGOPAY USER'S WALLET CREDITS
 
-export const fetchUserCredits = async (UserId) => {
+export const fetchMpUserCredits = async (UserId) => {
 	try {
 		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_fetch_user_wallet_info?UserId=${UserId}&only_credits=true`)
 		return response.data
@@ -378,7 +425,7 @@ export const fetchMpCardInfo = async (UserId) => {
 
 // CREATE A PAYOUT
 
-export const createMpPayout = async (UserId, BankAccountId, amountToWithdraw) => {
+export const createMpPayout = async (UserId, BankAccountId, Currency) => {
 	// HEADERS
 	const config = {
 		headers: {
@@ -387,7 +434,7 @@ export const createMpPayout = async (UserId, BankAccountId, amountToWithdraw) =>
 	}
 
 	// BODY
-	const body = JSON.stringify({ UserId, BankAccountId, amountToWithdraw })
+	const body = JSON.stringify({ UserId, BankAccountId, Currency })
 	try {
 		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_payout`, body, config)
 		return response.data
@@ -396,6 +443,26 @@ export const createMpPayout = async (UserId, BankAccountId, amountToWithdraw) =>
 		return err
 	}
 }
+
+// VIEW A PAYOUT
+
+export const fetchPayOut = async (PayOutId) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	try {
+		const response = await axios.get(`${REACT_APP_API_URL}/mp/mp_view_payout?PayOutId=${PayOutId}`, {}, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
 
 // CREATE A RECURRING PAYIN REGISTRATION
 

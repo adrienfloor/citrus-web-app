@@ -158,7 +158,12 @@ class MyPlan extends React.Component {
 							MPRecurringPayinRegistrationId: res.Id
 						}, true)
 						const MPRecurringPayinRegistrationId = res.Id
-						createRecurringPayinCIT(MPRecurringPayinRegistrationId)
+						createRecurringPayinCIT(
+							MPRecurringPayinRegistrationId,
+							false,
+							returnCurrencyCode(moment.locale()),
+							null
+						)
 							.then(res => {
 								if (res && res.SecureModeRedirectURL) {
 									window.location.href = res.SecureModeRedirectURL
