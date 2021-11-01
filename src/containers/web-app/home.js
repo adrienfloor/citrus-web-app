@@ -342,7 +342,7 @@ class Home extends React.Component {
 
 							{/* YOUR FAVOURITE COACHES */}
 							{
-								following && following.length &&
+								following && following.length > 0 ?
 								<div className='category-block'>
 									<span className='small-title citrusBlack paddingHorizontal'>
 										{capitalize(t('myCoaches'))}
@@ -412,7 +412,8 @@ class Home extends React.Component {
 											</div>
 										</div>
 									}
-								</div>
+								</div> :
+								<div className='small-separator'></div>
 							}
 
 							{/* ACHIEVEMENTS */}

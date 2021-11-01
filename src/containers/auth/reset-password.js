@@ -62,7 +62,7 @@ class ResetPassword extends React.Component {
 			!isValidPassword(password).includes('number')
 		) {
 			this.setState({
-				errorMessage: capitalize(t('passordFormat'))
+				errorMessage: capitalize(t('passwordFormat'))
 			})
 			setTimeout(function () {
 				this.setState({

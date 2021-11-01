@@ -53,7 +53,7 @@ export const signup = (userName, email, password, language) => async dispatch =>
 		return dispatch({ type: REGISTER_SUCCESS, payload: response.data })
 	} catch (err) {
 		dispatch(returnErrors(err, err, 'REGISTER_FAIL'))
-		return dispatch({ type: REGISTER_FAIL })
+		return dispatch({ type: REGISTER_FAIL, payload: err })
 	}
 }
 

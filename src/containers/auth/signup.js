@@ -85,7 +85,7 @@ class Signup extends React.Component {
 			!isValidPassword(this.state.password).includes('number')
 		) {
 			this.setState({
-				errorMessage: capitalize(t('passordFormat'))
+				errorMessage: capitalize(t('passwordFormat'))
 			})
 			setTimeout(function () {
 				this.setState({
@@ -116,7 +116,10 @@ class Signup extends React.Component {
 		const {
 			t,
 			i18n,
-			signup
+			signup,
+			executeExploreSearch,
+			fetchTrainerCoachings,
+			fetchUserReplays
 		} = this.props
 		const lng = i18n.language || 'en'
 
@@ -138,9 +141,9 @@ class Signup extends React.Component {
 			password,
 			lng
 		).then(async (res) => {
-			if (res.type === 'REGISTER_SUCCESS') {
+			if (res && res.type === 'REGISTER_SUCCESS') {
 				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 0, 5)
+				const search = await executeExploreSearch('all', userId, 5, 5)
 				const replays = await fetchUserReplays(userId)
 				const trainings = await fetchTrainerCoachings(userId, true)
 				if (search && replays && trainings) {
@@ -150,11 +153,9 @@ class Signup extends React.Component {
 					})
 					return this.props.history.push('/explore')
 				}
-				// this.props.loadUser()
-				// this.props.history.push('/explore')
-			} else {
+			} else if (res && res.type === 'REGISTER_FAIL') {
 				this.setState({
-					errorMessage: capitalize(t('somethingWentWrong')),
+					errorMessage: capitalize(res.payload.response.data.msg),
 					signupDisabled: false,
 					isLoading: false
 				})
@@ -163,7 +164,18 @@ class Signup extends React.Component {
 						errorMessage: ''
 					})
 				}.bind(this), 3000)
-		}
+			} else {
+				this.setState({
+					errorMessage: capitalize(t('somethingWentWrong')),
+					signupDisabled: false,
+					isLoading: false
+				})
+				setTimeout(function () {
+					this.setState({
+						errorMessage: ''
+					})
+				}.bind(this), 3000)
+			}
 		})
 	}
 
@@ -231,6 +243,7 @@ class Signup extends React.Component {
 							className='text-input small-text citrusGrey input password-input'
 							type={showPassword ? 'text' : 'password'}
 							onChange={e => this.onTextInputChange(e, 'password')}
+							style={showPassword ? { height: '50px'} : { height: '52px' } }
 						/>
 						<div
 							className='password-eye hover'
@@ -368,8 +381,8 @@ const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-	executeExploreSearch: (sport, userId, skipValue) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue))
+	executeExploreSearch: (sport, userId, skipValue, limit) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signup))

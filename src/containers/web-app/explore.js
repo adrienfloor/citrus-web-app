@@ -62,12 +62,6 @@ class Explore extends React.Component {
 			showLoadMore: true
 		}
 
-		const {
-			executeExploreSearch,
-			exploreSearch,
-			user
-		} = this.props
-
 		if (this.props.user.sports.length > 0) {
 			sportsItems = this.props.user.sports.map((sport) => sport.type)
 		}
@@ -187,7 +181,7 @@ class Explore extends React.Component {
 						<div className={searchInputText.length ? 'explore-search-bar-long' : 'explore-search-bar'}>
 							<input
 								className='text-input small-text-bold citrusGrey input search-input'
-								style={{ width: '100%' }}
+								style={{ width: '100%', height: '35px' }}
 								placeholder={capitalize(t('search'))}
 								value={searchInputText}
 								onChange={e => this.handleSearch(e.target.value)}

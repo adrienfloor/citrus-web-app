@@ -121,7 +121,7 @@ class Signin extends React.Component {
 		).then(async (res) => {
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 0, 5)
+				const search = await executeExploreSearch('all', userId, 5, 5)
 				const replays = await fetchUserReplays(userId)
 				// fetchNotifications(userId)
 				const trainings = await fetchTrainerCoachings(userId, true)
@@ -228,6 +228,7 @@ class Signin extends React.Component {
 							className='text-input small-text citrusGrey input password-input'
 							type={showPassword ? 'text' : 'password'}
 							onChange={e => this.onTextInputChange(e, 'password')}
+							style={showPassword ? { height: '50px'} : { height: '52px' } }
 						/>
 						<div
 							className='password-eye hover'
