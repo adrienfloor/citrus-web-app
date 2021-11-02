@@ -269,7 +269,7 @@ class Coaching extends React.Component {
 				}
 			})
 		} else {
-			// This coaching has be payed for
+			// This coaching has to be payed for
 			this.setState({
 				isPaymentConfirmationOpen: true,
 				isLoading: false

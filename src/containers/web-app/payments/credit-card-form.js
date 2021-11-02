@@ -241,12 +241,13 @@ class CreditCardForm extends React.Component {
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
 		}
+		console.log(mpUserWallet)
 		if (mpUserWallet) {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
 			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
 		}
-
+		console.log(mpUserCardRegistration)
 		if (mpUserCardRegistration) {
 			const info = {
 				mpUserId: mpUser.Id,
