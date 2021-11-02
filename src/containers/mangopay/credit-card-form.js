@@ -204,6 +204,7 @@ class CreditCardForm extends React.Component {
 			}
 		}
 
+		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
 		const birthday = (new Date(Birthday).getTime() / 1000)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))

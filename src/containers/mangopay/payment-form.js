@@ -144,7 +144,8 @@ class PaymentForm extends React.Component {
 		this.props.isProcessingPayment(true)
 		this.setState({ isProcessing: true })
 
-		const birthday = (new Date(Birthday).getTime() / 1000)
+		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
+		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))
 		mpUser = await createMpUser(

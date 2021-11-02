@@ -189,7 +189,8 @@ class LegalUserCreation extends React.Component {
 			return
 		}
 
-		const birthday = (new Date(LegalRepresentativeBirthday).getTime() / 1000)
+		const noWhiteSpacesDate = LegalRepresentativeBirthday.replace(/\s/g, "")
+		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
 
 		const mpLegalUser = await updateMpLegalUser(
 			user.MPLegalUserId,

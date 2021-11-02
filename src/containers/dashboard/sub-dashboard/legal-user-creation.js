@@ -126,8 +126,8 @@ class LegalUserCreation extends React.Component {
 		if(this.handleMissingParam()) {
 			return
 		}
-
-		const birthday = (new Date(this.state.LegalRepresentativeBirthday).getTime() / 1000)
+		const noWhiteSpacesDate = this.state.LegalRepresentativeBirthday.replace(/\s/g, "")
+		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
 
 		const mpLegalUser = await createMpLegalUser(
 			this.state.LegalPersonType,

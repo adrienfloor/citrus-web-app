@@ -155,6 +155,8 @@ class CreditCardForm extends React.Component {
 
 		const registerNewCard = (mpUserCardRegistration, mpUserInfo) => {
 
+			console.log(mpUserCardRegistration, mpUserInfo)
+
 			const {
 				mpUserId,
 				mpUserLastName,
@@ -220,7 +222,10 @@ class CreditCardForm extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const birthday = (new Date(Birthday).getTime() / 1000)
+		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
+		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
+
+		console.log(birthday)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))
 		mpUser = await createMpUser(
@@ -231,6 +236,7 @@ class CreditCardForm extends React.Component {
 			CountryOfResidence,
 			user.email
 		)
+		console.log(mpUser)
 		if (mpUser) {
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))

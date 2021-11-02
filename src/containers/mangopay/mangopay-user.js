@@ -93,7 +93,8 @@ class CreateMangopayUser extends React.Component {
 			return
 		}
 
-		const birthday = (new Date(Birthday).getTime() / 1000)
+		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
+		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
 
 		const mpUser = await createMpUser(
 			FirstName,
