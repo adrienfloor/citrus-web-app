@@ -20,7 +20,8 @@ import {
 	CREATE_MUX_STREAM,
 	UPDATE_COACHING_ASSET_PLAYBACK_ID,
 	CREATE_MUX_UPLOAD_URL,
-	FETCH_MY_COACHINGS
+	FETCH_MY_COACHINGS,
+	LOGOUT_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -94,6 +95,8 @@ export default function (state = initialState, action) {
 				...state,
 				myCoachings: action.payload
 			}
+		case LOGOUT_SUCCESS:
+			return initialState
 		case UPDATE_COACHING:
 		case DELETE_COACHING:
 		case ADD_COACHING_TO_MY_SCHEDULE:

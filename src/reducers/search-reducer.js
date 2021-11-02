@@ -7,7 +7,8 @@ import {
 	EXPLORE_SEARCH,
 	EXPLORE_SPECIFIC_SPORT_SEARCH,
 	RESET_SPECIFIC_SPORT_SEARCH,
-	RESET_EXPLORE_SEARCH
+	RESET_EXPLORE_SEARCH,
+	LOGOUT_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -69,6 +70,8 @@ export default function (state = initialState, action) {
 				...state,
 				exploreSpecificSportSearch: []
 			}
+		case LOGOUT_SUCCESS:
+			return initialState
 		default:
 			return state
 	}
