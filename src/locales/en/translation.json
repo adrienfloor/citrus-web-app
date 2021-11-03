@@ -145,7 +145,7 @@
 	"currentGains": "current gains",
 	"featureSoonAvailable": "this feature will soon be available",
 	"dateFormatMustBe": "Format : Month/Day/Year",
-	"datePlaceHolder": "mm/dd/yyyy",
+	"datePlaceHolder": "mm / dd / yyyy",
 	"adminCashoutPanel": "admin cashout panel",
 	"processed": "processed",
 	"pending": "pending",
@@ -515,5 +515,9 @@
 	"coachingEdition": "coaching edition",
 	"deleteCoaching": "delete coaching",
 	"areYouSureYouWantToDeleteCoaching": "are you sure you want to delete this coaching ? Users who already own it won't see it gone, but everyone else including you will.",
-	"iban": "IBAN"
+	"iban": "IBAN",
+	"invalidExpiryDate": "invalid expiry date",
+	"addAThumbnail": "add a thumbnail",
+	"addAVideo": "add a video",
+	"selectFile": "select file"
 }

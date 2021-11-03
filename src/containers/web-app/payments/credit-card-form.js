@@ -2,6 +2,11 @@ import React from 'react'
 import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import { TextField } from '@material-ui/core'
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import frLocale from 'date-fns/locale/fr'
+import enLocale from 'date-fns/locale/en-US'
 import CloseIcon from '@material-ui/icons/Close'
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
 import Loader from 'react-loader-spinner'
@@ -42,6 +47,7 @@ import {
 } from '../../../actions/auth-actions'
 
 const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
+const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class CreditCardForm extends React.Component {
 	constructor(props) {
@@ -55,7 +61,7 @@ class CreditCardForm extends React.Component {
 			number: '',
 			FirstName: '',
 			LastName: '',
-			Birthday: '',
+			Birthday: new Date('1990-08-18'),
 			Nationality: '',
 			CountryOfResidence: '',
 			isLoading: false,
@@ -217,14 +223,50 @@ class CreditCardForm extends React.Component {
 			this.setState({
 				warningMessage: capitalize(this.props.t('pleaseEnterAllFields'))
 			})
+			setTimeout(function () {
+				this.setState({
+					warningMessage: ''
+				})
+			}.bind(this), 3000)
 			return
 		}
 
+		if(expiry) {
+			const expiryTrimmed = expiry.replace(/\s/g, "")
+			const month = new Date().getMonth()
+			const year = new Date().getFullYear()
+			const expiryMonth = expiryTrimmed.split('/')[0]
+			const expiryYear = `20${expiryTrimmed.split('/')[1]}`
+
+			if(expiryYear < year) {
+				this.setState({
+					warningMessage: capitalize(this.props.t('invalidExpiryDate'))
+				})
+				setTimeout(function () {
+					this.setState({
+						warningMessage: ''
+					})
+				}.bind(this), 3000)
+				return
+			}
+			if(expiryYear == year && expiryMonth < month) {
+				this.setState({
+					warningMessage: capitalize(this.props.t('invalidExpiryDate'))
+				})
+				setTimeout(function () {
+					this.setState({
+						warningMessage: ''
+					})
+				}.bind(this), 3000)
+				return
+			}
+		}
+
 		this.setState({ isLoading: true })
-
-		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
-		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
-
+		const formattedDate = moment(Birthday).format('L')
+		const splitDate = formattedDate.split('/')
+		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+		const birthday =  updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
 		console.log(birthday)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))
@@ -381,19 +423,39 @@ class CreditCardForm extends React.Component {
 										onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
 									/>
 								</div>
-								<div
+								{/* <div
 									className='row flex-row medium-text flex-center'
 									style={{ marginTop: '15px' }}
 								>
 									<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
 									<TextField
 										placeholder={t('datePlaceHolder')}
-										onChange={e => this.handleDateInputChange(e)}
+										// onChange={e => this.handleDateInputChange(e)}
 										style={{ width: '45%', margin: '2% 2.5%' }}
 										variant='standard'
 										helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
 										value={Birthday}
+										onChange={e => this.setState({ Birthday: e.target.value })}
+										type='date'
 									/>
+								</div> */}
+								<div
+									className='row flex-row medium-text flex-center'
+									style={{ marginTop: '15px' }}
+								>
+									<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+										{capitalize(t('birthday'))} :
+									</span>
+									<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+										<DatePicker
+											format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+											variant='dialog'
+											openTo='year'
+											views={['year', 'month', 'date']}
+											value={Birthday}
+											onChange={date => this.setState({ Birthday: date })}
+										/>
+									</MuiPickersUtilsProvider>
 								</div>
 							</div>
 						)}

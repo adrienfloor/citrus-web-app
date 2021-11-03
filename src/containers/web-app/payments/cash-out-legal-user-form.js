@@ -3,6 +3,11 @@ import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import moment from 'moment'
 import { TextField } from '@material-ui/core'
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import frLocale from 'date-fns/locale/fr'
+import enLocale from 'date-fns/locale/en-US'
 import { Link } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import Select from '@material-ui/core/Select'
@@ -41,6 +46,8 @@ import * as enCommonTranslations from '../../../fixtures/en'
 
 const translations = moment.locale() == 'fr' ? frCommonTranslations : enCommonTranslations
 const legalPersonTypeItems = Object.keys(translations.default.legalPersonTypesAvailable)
+
+const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class LegalUserCreation extends React.Component {
 	constructor(props) {
@@ -189,8 +196,11 @@ class LegalUserCreation extends React.Component {
 			return
 		}
 
-		const noWhiteSpacesDate = LegalRepresentativeBirthday.replace(/\s/g, "")
-		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
+		const formattedDate = moment(LegalRepresentativeBirthday).format('L')
+		const splitDate = formattedDate.split('/')
+		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+		const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
+		console.log(birthday)
 
 		const mpLegalUser = await updateMpLegalUser(
 			user.MPLegalUserId,
@@ -454,19 +464,22 @@ class LegalUserCreation extends React.Component {
 							/>
 						</div>
 						<div
-							className='row flex-row medium-text row flex-center'
-							style={{ justifyContent: 'space-between' }}
+							className='row flex-row medium-text flex-center'
+							style={{ marginTop: '15px' }}
 						>
 							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
-								{capitalize(t('legalRepresentativeBirthday'))} :
+								{capitalize(t('birthday'))} :
 							</span>
-							<TextField
-								placeholder={t('datePlaceHolder')}
-								onChange={e => this.handleDateInputChange(e)}
-								variant='standard'
-								helperText={LegalRepresentativeBirthday.length > 0 && capitalize(t('dateFormatMustBe'))}
-								value={LegalRepresentativeBirthday}
-							/>
+							<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+								<DatePicker
+									format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+									variant='dialog'
+									openTo='year'
+									views={['year', 'month', 'date']}
+									value={Birthday}
+									onChange={date => this.setState({ Birthday: date })}
+								/>
+							</MuiPickersUtilsProvider>
 						</div>
 					</div>
 					<div className='medium-separator'></div>

@@ -49,6 +49,16 @@ class CoachingCheckout extends React.Component {
 		this.handleSubscribe = this.handleSubscribe.bind(this)
 	}
 
+	async componentDidMount() {
+		const { user, t } = this.props
+		const { MPUserId } = user
+
+		const cardInfo = await fetchMpCardInfo(MPUserId)
+		if (cardInfo) {
+			this.setState({ cardId: cardInfo.Id })
+		}
+	}
+
 	handleALaCartePayment(cardId) {
 		const {
 			amount,
@@ -325,38 +335,58 @@ class CoachingCheckout extends React.Component {
 							}
 						</div>
 						<div className='small-separator'></div>
-						<CreditCardForm
-							onCancel={() => console.log('cancel')}
-							title={
-								type === 'plan' ?
-									`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}` :
-									`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
-							}
-							onSuccess={mpUserId => {
-								this.setState({
-									isLoading: true,
-									loadingMessage: capitalize(t('proceedingToPayment')),
-								})
-								fetchMpCardInfo(mpUserId)
-									.then(res => {
-										console.log('fetchMpCardInfo res : ', res)
-										if (res && res.Id) {
-											if (type === 'plan') {
-												console.log('handleSubscribe condition OK : ')
-												return this.handleSubscribe(res.Id)
+						{
+							!cardId ?
+							<CreditCardForm
+								onCancel={() => console.log('cancel')}
+								title={
+									type === 'plan' ?
+										`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}` :
+										`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
+								}
+								onSuccess={mpUserId => {
+									this.setState({
+										isLoading: true,
+										loadingMessage: capitalize(t('proceedingToPayment')),
+									})
+									fetchMpCardInfo(mpUserId)
+										.then(res => {
+											console.log('fetchMpCardInfo res : ', res)
+											if (res && res.Id) {
+												if (type === 'plan') {
+													console.log('handleSubscribe condition OK : ')
+													return this.handleSubscribe(res.Id)
+												}
+												this.handleALaCartePayment(res.Id)
 											}
-											this.handleALaCartePayment(res.Id)
-										}
-									})
-									.catch(err => {
-										console.log(err)
-										this.setState({
-											isLoading: false,
-											errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
 										})
-									})
-							}}
-						/>
+										.catch(err => {
+											console.log(err)
+											this.setState({
+												isLoading: false,
+												errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+											})
+										})
+								}}
+							/> :
+							<div
+								className='filled-button'
+								style={{ marginTop: '30px', width: '300px' }}
+								onClick={
+									type === 'plan' ?
+									() => this.handleSubscribe(cardId) :
+									() => this.handleALaCartePayment(cardId)
+								}
+							>
+								<span className='small-title citrusWhite'>
+										{
+											type === 'plan' ?
+												`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}` :
+												`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
+										}
+								</span>
+							</div>
+						}
 					</div>
 				</div>
 			)

@@ -3,6 +3,11 @@ import { withTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import CreditCardInput from 'react-credit-card-input'
 import { TextField } from '@material-ui/core'
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import frLocale from 'date-fns/locale/fr'
+import enLocale from 'date-fns/locale/en-US'
 import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import moment from 'moment'
@@ -34,6 +39,8 @@ import {
 const {
 	REACT_APP_MANGOPAY_CLIENT_ID
 } = process.env
+
+const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class PaymentForm extends React.Component {
 	constructor(props){
@@ -144,8 +151,11 @@ class PaymentForm extends React.Component {
 		this.props.isProcessingPayment(true)
 		this.setState({ isProcessing: true })
 
-		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
-		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
+		const formattedDate = moment(Birthday).format('L')
+		const splitDate = formattedDate.split('/')
+		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+		const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
+		console.log(birthday)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))
 		mpUser = await createMpUser(
@@ -268,17 +278,6 @@ class PaymentForm extends React.Component {
 		}
 		return (
 			<div id="PaymentForm" className='payment-form'>
-				{/* <button onClick={() => this.setState({
-					cvc: '123',
-					expiry: '09 / 23',
-					// number: '4972485830400049',
-					number: '4972485830400056',
-					FirstName: 'Jean',
-					LastName: 'Michel',
-					Birthday: '2000-05-24',
-					Nationality: 'FR',
-					CountryOfResidence: 'FR'
-				})}>CLICK</button> */}
 				<form
 					onSubmit={this.handleSubmit}
 					style={isPrepaying ? null : { opacity: 0.4 }}
@@ -327,18 +326,22 @@ class PaymentForm extends React.Component {
 							/>
 						</div>
 						<div
-							className='row flex-row small-text flex-center'
+							className='row flex-row medium-text flex-center'
 							style={{ marginTop: '15px' }}
 						>
-							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
-							<TextField
-								placeholder={t('datePlaceHolder')}
-								onChange={e => this.handleDateInputChange(e)}
-								style={{ width: '45%', margin: '2% 2.5%' }}
-								variant='standard'
-								helperText={Birthday.length>0 && capitalize(t('dateFormatMustBe'))}
-								value={Birthday}
-							/>
+							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+								{capitalize(t('birthday'))} :
+							</span>
+							<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+								<DatePicker
+									format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+									variant='dialog'
+									openTo='year'
+									views={['year', 'month', 'date']}
+									value={Birthday}
+									onChange={date => this.setState({ Birthday: date })}
+								/>
+							</MuiPickersUtilsProvider>
 						</div>
 					</div>
 					<div className='medium-separator'></div>

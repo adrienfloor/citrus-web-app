@@ -482,8 +482,8 @@ class Coaching extends React.Component {
 							zIndex: 1000,
 							backgroundColor: 'transparent',
 							position: 'absolute',
-							top: 0,
-							right: 0
+							top: 10,
+							right: 10
 						}}
 					>
 						<Close

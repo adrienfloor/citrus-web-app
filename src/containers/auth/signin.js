@@ -263,9 +263,9 @@ class Signin extends React.Component {
 								{capitalize(t('logIn'))}
 							</span>
 						</button>
-						<button className='light-button button'>
+						<div className='light-button button'>
 							<Link className='small-title citrusBlue' to="/signup">{capitalize(t('createAnAccount'))}</Link>
-						</button>
+						</div>
 					</div>
 					{
 						errorMessage.length > 0 &&

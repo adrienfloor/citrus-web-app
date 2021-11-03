@@ -46,7 +46,6 @@ class Signup extends React.Component {
 			isLoading: false
 		}
 		this.onTextInputChange = this.onTextInputChange.bind(this)
-		this.onToggleCheck = this.onToggleCheck.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
 		this.checkErrors = this.checkErrors.bind(this)
 	}
@@ -100,10 +99,6 @@ class Signup extends React.Component {
 
 	onTextInputChange(e, name) {
 		this.setState({ [name]: e.target.value })
-	}
-
-	onToggleCheck() {
-		this.setState({ agreedTermsAndConditions: !this.state.agreedTermsAndConditions })
 	}
 
 	onSubmit(e) {
@@ -282,9 +277,9 @@ class Signup extends React.Component {
 								{capitalize(t('createAnAccount'))}
 							</span>
 						</button>
-						<button className='light-button button'>
+						<div className='light-button button'>
 							<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
-						</button>
+						</div>
 					</div>
 					{
 						errorMessage.length > 0 &&

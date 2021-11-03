@@ -201,11 +201,11 @@ class ImageUploader extends React.Component {
 							<Loader
 								type='Oval'
 								color='#C2C2C2'
-								height={50}
-								width={50}
+								height={25}
+								width={25}
 							/>
 							<div className='small-separator'></div>
-							<span className='small-text citrusGrey'>
+							<span className='smaller-text-bold citrusGrey'>
 								{capitalize(t('uploadingImage'))} ...
 							</span>
 						</>
@@ -237,9 +237,9 @@ class ImageUploader extends React.Component {
 										type='file'
 										accept='image/png, image/jpeg'
 									/>
-									<div className='light-button' style={{ width: '100%', height: '30px' }}>
+									<div style={{ width: '100%', height: '30px' }}>
 										<span className='smaller-text-bold citrusBlue'>
-											{capitalize(t('addAPhoto'))}
+											{capitalize(t('selectFile'))}
 										</span>
 									</div>
 								</label>

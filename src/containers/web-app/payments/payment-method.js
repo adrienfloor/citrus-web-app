@@ -11,6 +11,11 @@ import { cardRegistration } from 'mangopay-cardregistration-js-kit'
 import Cards from 'react-credit-cards'
 import 'react-credit-cards/es/styles-compiled.css'
 import { PaymentInputsContainer } from 'react-payment-inputs'
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import frLocale from 'date-fns/locale/fr'
+import enLocale from 'date-fns/locale/en-US'
 
 import {
 	capitalize,
@@ -44,6 +49,7 @@ import {
 } from '../../../actions/auth-actions'
 
 const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
+const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class PaymentMethod extends React.Component {
 	constructor(props) {
@@ -285,8 +291,11 @@ class PaymentMethod extends React.Component {
 				})
 			}.bind(this), 3000)
 		} else {
-			const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
-			const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
+			const formattedDate = moment(Birthday).format('L')
+			const splitDate = formattedDate.split('/')
+			const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+			const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
+			console.log(birthday)
 
 			createLoadingMessage(capitalize(t('creatingMangoUser')))
 			mpUser = await createMpUser(
@@ -558,15 +567,19 @@ class PaymentMethod extends React.Component {
 													className='row flex-row medium-text flex-center'
 													style={{ marginTop: '15px' }}
 												>
-													<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
-													<TextField
-														placeholder={t('datePlaceHolder')}
-														onChange={e => this.handleDateInputChange(e)}
-														style={{ width: '45%', margin: '2% 2.5%' }}
-														variant='standard'
-														helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
-														value={Birthday}
-													/>
+													<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+														{capitalize(t('birthday'))} :
+													</span>
+													<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+														<DatePicker
+															format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+															variant='dialog'
+															openTo='year'
+															views={['year', 'month', 'date']}
+															value={Birthday}
+															onChange={date => this.setState({ Birthday: date })}
+														/>
+													</MuiPickersUtilsProvider>
 												</div>
 											</>
 										}

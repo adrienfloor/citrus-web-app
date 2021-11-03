@@ -5,6 +5,11 @@ import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import { Link } from 'react-router-dom'
 import { TextField } from '@material-ui/core'
+import 'date-fns'
+import DateFnsUtils from '@date-io/date-fns'
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
+import frLocale from 'date-fns/locale/fr'
+import enLocale from 'date-fns/locale/en-US'
 import moment from 'moment'
 
 import '../../styling/headings.css'
@@ -17,6 +22,8 @@ import { capitalize } from '../../utils/various'
 import { checkDateValue } from '../../utils/validations'
 import { createMpUser } from '../../services/mangopay'
 import CountrySelector from '../../components/country-selector'
+
+const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class CreateMangopayUser extends React.Component {
 	constructor(props) {
@@ -93,8 +100,11 @@ class CreateMangopayUser extends React.Component {
 			return
 		}
 
-		const noWhiteSpacesDate = Birthday.replace(/\s/g, "")
-		const birthday = (new Date(noWhiteSpacesDate).getTime() / 1000)
+		const formattedDate = moment(Birthday).format('L')
+		const splitDate = formattedDate.split('/')
+		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
+		const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
+		console.log(birthday)
 
 		const mpUser = await createMpUser(
 			FirstName,
@@ -227,15 +237,19 @@ class CreateMangopayUser extends React.Component {
 							className='row flex-row medium-text flex-center'
 							style={{ marginTop: '15px' }}
 						>
-							<span style={{ marginRight: '5px' }}>Birthday : </span>
-							<TextField
-								placeholder={t('datePlaceHolder')}
-								onChange={e => this.handleDateInputChange(e)}
-								style={{ width: '45%', margin: '2% 2.5%' }}
-								variant='standard'
-								helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
-								value={Birthday}
-							/>
+							<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+								{capitalize(t('birthday'))} :
+							</span>
+							<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+								<DatePicker
+									format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+									variant='dialog'
+									openTo='year'
+									views={['year', 'month', 'date']}
+									value={Birthday}
+									onChange={date => this.setState({ Birthday: date })}
+								/>
+							</MuiPickersUtilsProvider>
 						</div>
 					</div>
 					<div className='medium-separator'></div>

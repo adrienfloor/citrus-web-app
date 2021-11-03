@@ -55,11 +55,11 @@ class VideoUploader extends React.Component {
 						<Loader
 							type='Oval'
 							color='#C2C2C2'
-							height={50}
-							width={50}
+							height={25}
+							width={25}
 						/>
 						<div className='small-separator'></div>
-						<span className='small-text citrusBlue'>
+						<span className='smaller-text-bold citrusBlue'>
 							{capitalize(t('creatingThumbnail'))} ...
 						</span>
 					</>
@@ -81,7 +81,7 @@ class VideoUploader extends React.Component {
 									type='file'
 									accept='video/mp4,video/x-m4v,video/*'
 								/>
-								<div className='light-button' style={{ width: '100%', height: '30px' }}>
+								<div style={{ width: '100%', height: '30px' }}>
 									<span className='smaller-text-bold citrusBlue'>
 										{capitalize(t('chooseVideo'))}
 									</span>
@@ -96,7 +96,7 @@ class VideoUploader extends React.Component {
 						<video
 							key={videoSrc}
 							controls
-							style={{ width: '300px', height: '200px' }}
+							style={{ width: '150px', height: '100px' }}
 							className='video-preview'
 						>
 							<source

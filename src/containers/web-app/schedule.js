@@ -134,7 +134,7 @@ class Schedule extends React.Component {
 
 			upload.on('progress', progress => {
 				console.log(`So far we've uploaded ${progress.detail}% of this file.`)
-				this.setState({ progress: Math.round(progress.detail * 100) / 100 })
+				this.setState({ progress: Math.round(progress.detail) })
 			})
 
 			upload.on('success', () => {
@@ -348,13 +348,14 @@ class Schedule extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack form-title'>
+				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('post'))}
 				</span>
 				<form
 					id='upload-form'
 					onSubmit={this.handleCreateCoaching}
-					className='scroll-div-vertical card upload-form'
+					className='scroll-div-vertical card upload-form schedule'
+					style={{ alignItems: 'flex-start' }}
 				>
 					<div className='medium-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
@@ -623,6 +624,10 @@ class Schedule extends React.Component {
 						</>
 					}
 					<div className='medium-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{capitalize(t('addAThumbnail'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
 					<div className='media-row'>
 						<ImageUploader
 							disabled={progress || progress === 0 ? true : false}
@@ -632,6 +637,13 @@ class Schedule extends React.Component {
 							}}
 							pictureUri={pictureUri ? pictureUri : null}
 						/>
+					</div>
+					<div className='medium-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{capitalize(t('addAVideo'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
+					<div className='media-row'>
 						<VideoUploader
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
@@ -640,11 +652,15 @@ class Schedule extends React.Component {
 					</div>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<div className='flex-row' style={{ width: '100%', justifyContent: 'center' }}>
-						{
-							!progress && progress != 0 && !isProcessingVideo &&
+					{
+						!progress && progress != 0 && !isProcessingVideo &&
+						<div className='flex-row schedule-button-container'>
 							<button
-								className={!isButtonDisabled ? 'filled-button button' : 'filled-button disabled-button button'}
+								className={
+									!isButtonDisabled ?
+									'filled-button button schedule-submit-button' :
+									'filled-button disabled-button button schedule-submit-button'
+								}
 								type='submit'
 								form='upload-form'
 								disabled={isButtonDisabled}
@@ -653,50 +669,53 @@ class Schedule extends React.Component {
 									{capitalize(t('createCoaching'))}
 								</span>
 							</button>
-						}
-						{
-							progress !== null && progress >= 0 && !isProcessingVideo ?
-							<div style={{ height: '50px', width: '80%' }}>
-								<div className='flex-row' style={{ alignItems: 'center'}}>
-									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
-										{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
-									</span>
-									<Loader
-										type="Oval"
-										color="#C2C2C2"
-										height={20}
-										width={20}
-									/>
-								</div>
-								<ProgressBar
-									completed={progress}
-									height='10px'
-									baseBgColor='#DFDFDF'
-									bgColor='#C2C2C2'
-									isLabelVisible={false}
-								/>
-							</div> : null
-						}
-						{
-							isProcessingVideo &&
-							<div style={{ height: '50px', width: '80%' }}>
-								<div className='flex-row' style={{ alignItems: 'center' }}>
-									<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
-										{capitalize(t('processingVideo'))}
-									</span>
-									<Loader
-										type="Oval"
-										color="#C2C2C2"
-										height={20}
-										width={20}
-									/>
-								</div>
-							</div>
-						}
-					</div>
+						</div>
+					}
 					{
 						progress !== null && progress >= 0 && !isProcessingVideo ?
-							<span className='small-text-bold citrusBlack' style={{ width: '80%' }}>
+						<div className='flex-row' style={{ height: '50px', width: '80%' }}>
+							<div className='flex-row' style={{ alignItems: 'center'}}>
+								<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
+									{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
+								</span>
+								<Loader
+									type="Oval"
+									color="#C2C2C2"
+									height={20}
+									width={20}
+								/>
+							</div>
+							<ProgressBar
+								completed={progress}
+								height='10px'
+								baseBgColor='#DFDFDF'
+								bgColor='#C2C2C2'
+								isLabelVisible={false}
+							/>
+						</div> : null
+					}
+					{
+						isProcessingVideo &&
+						<div className='flex-row' style={{ height: '50px', width: '80%' }}>
+							<div className='flex-row' style={{ alignItems: 'center' }}>
+								<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+									{capitalize(t('processingVideo'))}
+								</span>
+								<Loader
+									type="Oval"
+									color="#C2C2C2"
+									height={20}
+									width={20}
+								/>
+							</div>
+						</div>
+					}
+					{
+						progress !== null && progress >= 0 && !isProcessingVideo ?
+							<span
+								className='small-text-bold citrusBlack'
+								style={{ width: '80%', marginBottom: '10px' }}
+							>
 								{capitalize(t('dontClose'))}
 							</span> : null
 					}

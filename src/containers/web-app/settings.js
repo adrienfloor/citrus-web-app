@@ -199,12 +199,14 @@ class Settings extends React.Component {
 
 	 	return (
 			<div className='settings-container'>
-					<span className='big-title citrusBlack form-title'>
+					{/* <span className='big-title citrusBlack form-title'> */}
+				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('settings'))}
 				</span>
 				<div
 					id='upload-form'
-					className='scroll-div-vertical card upload-form'
+					className='scroll-div-vertical card upload-form settings'
+					style={{ alignItems: 'flex-start' }}
 				>
 					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title'>
