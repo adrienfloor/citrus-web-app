@@ -476,8 +476,8 @@ class LegalUserCreation extends React.Component {
 									variant='dialog'
 									openTo='year'
 									views={['year', 'month', 'date']}
-									value={Birthday}
-									onChange={date => this.setState({ Birthday: date })}
+									value={LegalRepresentativeBirthday}
+									onChange={date => this.setState({ LegalRepresentativeBirthday: date })}
 								/>
 							</MuiPickersUtilsProvider>
 						</div>
