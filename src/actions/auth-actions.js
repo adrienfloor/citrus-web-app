@@ -111,7 +111,8 @@ export const updateUser = (userInfo, isMe) => async dispatch => {
 		}
 		return dispatch({ type: UPDATE_SPECIFIC_USER })
 	} catch (err) {
-		return dispatch(returnErrors(err, err.response.status))
+		console.log(err)
+		return dispatch(returnErrors(err, err))
 	}
 }
 

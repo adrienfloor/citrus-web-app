@@ -66,12 +66,11 @@ class PayInConfirmation extends React.Component {
 				isALaCarte: true
 			})
 		}
-		let billingDate = new Date().getUTCDate()
 
+		let billingDate = new Date().getUTCDate()
 		if (billingDate > 27 && billingDate < 32) {
 			billingDate = 28
 		}
-
 		if (user.pastTransactionsIds.includes(transactionId)) {
 			return this.setState({
 				isLoading: false,
@@ -107,6 +106,7 @@ class PayInConfirmation extends React.Component {
 										numberOfViewers: numberOfViewers + 1
 									})
 								})
+								.catch(e => console.log('catchhhh : ', e))
 								// Update buyer profile
 								updateUser({
 									id: user._id,
@@ -118,7 +118,9 @@ class PayInConfirmation extends React.Component {
 									// Fetch buyer new replay
 									fetchUserReplays(user._id)
 								})
+								.catch(e => console.log('catchhhh : ', e))
 							})
+							.catch(e => console.log('catchhhh : ', e))
 						}
 
 						if(isALaCarte) {
