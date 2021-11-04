@@ -209,8 +209,8 @@ class CreditCardForm extends React.Component {
 									firstName: user.firstName.length > 0 ? user.firstName : mpUserFirstName,
 									lastName: user.lastName.length > 0 ? user.LastName : mpUserLastName
 								}, true)
+								.then(res => endPaymentProcess(mpUserId))
 							}
-							endPaymentProcess(mpUserId)
 						})
 				},
 				function (res) {
