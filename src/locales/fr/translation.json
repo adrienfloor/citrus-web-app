@@ -521,5 +521,6 @@
 	"invalidExpiryDate": "date d'expiration incorrecte",
 	"addAThumbnail": "ajouter un thumbnail",
 	"addAVideo": "ajouter une vidéo",
-	"selectFile": "selectionne le fichier"
+	"selectFile": "selectionne le fichier",
+	"unreadableVideoFile": "le fichier vidéo est illisible"
 }

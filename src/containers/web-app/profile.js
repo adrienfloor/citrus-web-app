@@ -27,6 +27,7 @@ import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
 import '../../styling/web-app.css'
+import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
 	capitalize
@@ -60,6 +61,34 @@ class Profile extends React.Component {
 		}
 		this.handleSportChange = this.handleSportChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
+	}
+
+	returnMultipleSelectItem(item, type) {
+		const { t, user } = this.props
+		const { sports } = this.state
+		const isSelected = sports.map(spr => spr.type).includes(item)
+
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				{
+					isSelected &&
+					<Check
+						width={20}
+						height={20}
+						strokeWidth={2}
+					/>
+				}
+			</div>
+		)
 	}
 
 	handleSubmit(e) {
@@ -85,7 +114,8 @@ class Profile extends React.Component {
 			id: user._id,
 			avatarUrl,
 			bio,
-			userName
+			userName,
+			sports
 		}
 
 		this.setState({ isLoading: true })
@@ -292,7 +322,7 @@ class Profile extends React.Component {
 									{
 										sportsItems.map((sport, i) => (
 											<MenuItem key={i} value={sport}>
-												{capitalize(t(sport))}
+												{this.returnMultipleSelectItem(sport)}
 											</MenuItem>
 										))
 									}

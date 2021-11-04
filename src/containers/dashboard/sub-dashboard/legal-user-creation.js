@@ -50,7 +50,7 @@ class LegalUserCreation extends React.Component {
 			Name: '',
 			LegalRepresentativeFirstName: '',
 			LegalRepresentativeLastName: '',
-			LegalRepresentativeBirthday: '',
+			LegalRepresentativeBirthday: new Date('1990-08-18'),
 			LegalRepresentativeNationality: '',
 			LegalRepresentativeCountryOfResidence: '',
 			LegalRepresentativeEmail: '',

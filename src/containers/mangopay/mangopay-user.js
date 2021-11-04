@@ -31,7 +31,7 @@ class CreateMangopayUser extends React.Component {
 		this.state = {
 			FirstName: '',
 			LastName: '',
-			Birthday: '',
+			Birthday: new Date('1990-08-18'),
 			Nationality: '',
 			CountryOfResidence: '',
 			isLoading: false,

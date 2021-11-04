@@ -18,6 +18,7 @@ import '../../../styling/colors.css'
 import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
+import { ReactComponent as Check } from '../../../assets/svg/check.svg'
 
 import CountrySelector from '../../../components/country-selector'
 
@@ -79,6 +80,29 @@ class LegalUserCreation extends React.Component {
 		this.returnFormattedDate = this.returnFormattedDate.bind(this)
 		this.handleMissingParam = this.handleMissingParam.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
+	}
+
+
+	returnSimpleSelectItem(item) {
+		const { t, user } = this.props
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				<Check
+					width={20}
+					height={20}
+					strokeWidth={2}
+				/>
+			</div>
+		)
 	}
 
 	handleDateInputChange(e) {
@@ -343,7 +367,11 @@ class LegalUserCreation extends React.Component {
 									{
 										legalPersonTypeItems.map((type, i) => (
 											<MenuItem value={type} key={i}>
-												{capitalize(t(type))}
+												{
+													type === LegalPersonType ?
+														this.returnSimpleSelectItem(type) :
+														capitalize(t(type))
+												}
 											</MenuItem>
 										))
 									}

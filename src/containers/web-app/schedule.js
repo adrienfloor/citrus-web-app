@@ -25,6 +25,7 @@ import '../../styling/App.css'
 import '../../styling/web-app.css'
 import { ReactComponent as CaretDown } from '../../assets/svg/caret-down.svg'
 import { ReactComponent as CaretUp } from '../../assets/svg/caret-up.svg'
+import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
 	capitalize,
@@ -87,6 +88,8 @@ class Schedule extends React.Component {
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
 		this.upload = this.upload.bind(this)
+		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
+		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
 	}
 
 	componentDidMount() {
@@ -97,6 +100,7 @@ class Schedule extends React.Component {
 		const { videoFile } = this.state
 		const {
 			updateCoaching,
+			deleteCoaching,
 			fetchTrainerCoachings,
 			user,
 			setNotification,
@@ -108,6 +112,21 @@ class Schedule extends React.Component {
 				headers: {
 					'Content-Type': 'application/json'
 				}
+			}
+
+			if(!videoFile) {
+				this.setState({
+					progress: null,
+					isProcessingVideo: false,
+					errorMessage: capitalize(t('unreadableVideoFile'))
+				})
+				deleteCoaching(coachingId)
+				setTimeout(function () {
+					this.setState({
+						errorMessage: ''
+					})
+				}.bind(this), 5000)
+				return
 			}
 			const muxResponse = await axios.get(`${REACT_APP_API_URL}/stream/create_mux_upload_url`, {}, config)
 			const muxUploadUrl = muxResponse.data.data.url
@@ -130,6 +149,13 @@ class Schedule extends React.Component {
 			// subscribe to events
 			upload.on('error', err => {
 				console.error('💥 🙀', err.detail)
+				this.setState({
+					progress: null,
+					isProcessingVideo: false,
+					errorMessage: capitalize(err.detail)
+				})
+				deleteCoaching(coachingId)
+				return
 			})
 
 			upload.on('progress', progress => {
@@ -239,15 +265,6 @@ class Schedule extends React.Component {
 			coachRating,
 		}
 
-		if (coaching && coaching._id) {
-			newCoaching._id = coaching._id;
-			return updateCoaching(newCoaching)
-				.then(res => {
-					const coachingId = res.payload._id
-					this.upload(coachingId)
-				})
-		}
-
 		return createCoaching(newCoaching)
 			.then(res => {
 				const coachingId = res.payload._id
@@ -295,6 +312,56 @@ class Schedule extends React.Component {
 			return `${t(price)} ${t('credits')}`
 		}
 		return `${t(price)} ${t('credit')}`
+	}
+
+	returnMultipleSelectItem(item, type) {
+		const { t, user } = this.props
+		const { equipment, focus } = this.state
+		let isSelected = focus.includes(item)
+		if (type === 'gear') {
+			isSelected = equipment.includes(item)
+		}
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				{
+					isSelected &&
+					<Check
+						width={20}
+						height={20}
+						strokeWidth={2}
+					/>
+				}
+			</div>
+		)
+	}
+
+	returnSimpleSelectItem(item) {
+		const { t } = this.props
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				<Check
+					width={20}
+					height={20}
+					strokeWidth={2}
+				/>
+			</div>
+		)
 	}
 
 
@@ -392,7 +459,13 @@ class Schedule extends React.Component {
 						</MenuItem>
 						{
 							sportsItems.map((sport, i) => (
-								<MenuItem key={i} value={sport}>{capitalize(t(sport))}</MenuItem>
+								<MenuItem key={i} value={sport}>
+								{
+									sport === this.state.sport ?
+									this.returnSimpleSelectItem(sport) :
+									capitalize(t(sport))
+								}
+							</MenuItem>
 							))
 						}
 					</Select>
@@ -425,7 +498,11 @@ class Schedule extends React.Component {
 						{
 							pricesItems.map((price, i) => (
 								<MenuItem value={price} key={i}>
-									{this.returnPriceWording(price)}
+									{
+										price === this.state.price ?
+											this.returnSimpleSelectItem(this.returnPriceWording(price)) :
+											this.returnPriceWording(price)
+									}
 								</MenuItem>
 							))
 						}
@@ -439,7 +516,7 @@ class Schedule extends React.Component {
 								{
 									!isShowingAllParams ?
 									t('moreInfo') :
-									t('showLess')
+									''
 								}
 							</span>
 							<div
@@ -491,7 +568,13 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									durationsItems.map((duration, i) => (
-										<MenuItem key={i} value={duration}>{capitalize(t(duration))}</MenuItem>
+										<MenuItem key={i} value={duration}>
+											{
+												duration === this.state.duration ?
+													this.returnSimpleSelectItem(duration) :
+													capitalize(t(duration))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
@@ -522,7 +605,13 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									levelsItems.map((level, i) => (
-										<MenuItem key={i} value={level}>{capitalize(t(level))}</MenuItem>
+										<MenuItem key={i} value={level}>
+											{
+												level === this.state.level ?
+													this.returnSimpleSelectItem(level) :
+													capitalize(t(level))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
@@ -554,7 +643,9 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									equipmentsItems.map((equipment, i) => (
-										<MenuItem key={i} value={equipment}>{capitalize(t(equipment))}</MenuItem>
+										<MenuItem key={i} value={equipment}>
+											{this.returnMultipleSelectItem(equipment, 'gear')}
+										</MenuItem>
 									))
 								}
 							</Select>
@@ -586,7 +677,9 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									focusItems.map((fc, i) => (
-										<MenuItem key={i} value={fc}>{capitalize(t(fc))}</MenuItem>
+										<MenuItem key={i} value={fc}>
+											{this.returnMultipleSelectItem(fc, 'focus')}
+										</MenuItem>
 									))
 								}
 							</Select>
@@ -617,7 +710,13 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									languagesItems.map((language, i) => (
-										<MenuItem key={i} value={language}>{capitalize(t(language))}</MenuItem>
+										<MenuItem key={i} value={language}>
+											{
+												language === this.state.language ?
+													this.returnSimpleSelectItem(language) :
+													capitalize(t(language))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
@@ -639,6 +738,7 @@ class Schedule extends React.Component {
 						/>
 					</div>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('addAVideo'))}
 					</span>
@@ -650,6 +750,15 @@ class Schedule extends React.Component {
 							onVideoSelected={videoFile => this.setState({ videoFile })}
 						/>
 					</div>
+					{
+						errorMessage.length > 0 &&
+						<>
+							<div className='medium-separator'></div>
+							<span className='small-text-bold citrusRed'>
+								{errorMessage}
+							</span>
+						</>
+					}
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					{
@@ -719,15 +828,6 @@ class Schedule extends React.Component {
 								{capitalize(t('dontClose'))}
 							</span> : null
 					}
-					{
-						errorMessage.length > 0 &&
-						<span
-							className='small-text-bold citrusRed'
-							style={{ marginTop: 10 }}
-						>
-							{errorMessage}
-						</span>
-					}
 				</form>
 				{
 					isCreatingLegalUser &&
@@ -758,7 +858,8 @@ const mapDispatchToProps = (dispatch) => ({
 	createCoaching: coachingInfo => dispatch(createCoaching(coachingInfo)),
 	updateCoaching: coachingInfo => dispatch(updateCoaching(coachingInfo)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-	setNotification: notification => dispatch(setNotification(notification))
+	setNotification: notification => dispatch(setNotification(notification)),
+	deleteCoaching: coachingId => dispatch(deleteCoaching(coachingId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Schedule))

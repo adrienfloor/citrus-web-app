@@ -19,6 +19,7 @@ import { PaymentInputsContainer } from 'react-payment-inputs'
 import Select from '@material-ui/core/Select'
 import { MenuItem, InputLabel, FormControl } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
 	capitalize,
@@ -58,7 +59,7 @@ class CreateLegalUser extends React.Component {
 			Name: '',
 			LegalRepresentativeFirstName: '',
 			LegalRepresentativeLastName: '',
-			LegalRepresentativeBirthday: '',
+			LegalRepresentativeBirthday: new Date('1990-08-18'),
 			LegalRepresentativeNationality: '',
 			LegalRepresentativeCountryOfResidence: '',
 			isLoading: false,
@@ -69,6 +70,28 @@ class CreateLegalUser extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleMissingParam = this.handleMissingParam.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
+	}
+
+	returnSimpleSelectItem(item) {
+		const { t, user } = this.props
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				<Check
+					width={20}
+					height={20}
+					strokeWidth={2}
+				/>
+			</div>
+		)
 	}
 
 	handleDateInputChange(e) {
@@ -304,7 +327,11 @@ class CreateLegalUser extends React.Component {
 									{
 										legalPersonTypeItems.map((type, i) => (
 											<MenuItem value={type} key={i}>
-												{capitalize(t(type))}
+												{
+													type === LegalPersonType ?
+														this.returnSimpleSelectItem(type) :
+														capitalize(t(type))
+												}
 											</MenuItem>
 										))
 									}
@@ -402,9 +429,6 @@ class CreateLegalUser extends React.Component {
 						.button-container {
 							padding-top: 10px;
 							padding-bottom: 20px;
-						}
-						.MuiInputBase-input {
-							color: #C2C2C2;
 						}
 						.form-left-row {
 							 width: 49%;

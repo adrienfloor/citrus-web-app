@@ -28,6 +28,7 @@ import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
 import '../../styling/web-app.css'
+import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
 	capitalize
@@ -68,13 +69,74 @@ class Settings extends React.Component {
 		this.handleDeleteAccount = this.handleDeleteAccount.bind(this)
 		this.handleWarning = this.handleWarning.bind(this)
 		this.handleChangePassword = this.handleChangePassword.bind(this)
+		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
+		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
+	}
+
+	returnMultipleSelectItem(item, type) {
+		const { t, user } = this.props
+		let isSelected = user.coachingLanguagePreference.includes(item)
+		if(type === 'sport') {
+			isSelected = user.sports.map(spr => spr.type).includes(item)
+		}
+
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				{
+					isSelected &&
+					<Check
+						width={20}
+						height={20}
+						strokeWidth={2}
+					/>
+				}
+			</div>
+		)
+	}
+
+	returnSimpleSelectItem(item, type) {
+		const { t, user } = this.props
+		if(type && type === 'location') {
+			if(
+				user.basedOnLocationPreference === false && item.toLowerCase() == t('yes') ||
+				user.basedOnLocationPreference === true && item.toLowerCase() == t('no')
+			) {
+				return capitalize(t(item))
+			}
+		}
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				<Check
+					width={20}
+					height={20}
+					strokeWidth={2}
+				/>
+			</div>
+		)
 	}
 
 	handleSelectChange(e, type) {
 		const {
 			updateUser,
 			loadUser,
-			user
+			user,
+			t
 		} = this.props
 
 		if (type === 'sports') {
@@ -96,9 +158,10 @@ class Settings extends React.Component {
 				id: user._id
 			}, true)
 		}
-		if(type === 'baseOnLocationPreference') {
+		if(type === 'basedOnLocationPreference') {
+			const str = (e.target.value).toLowerCase()
 			return updateUser({
-				basedOnLocationPreference: e.target.value == 'yes' ? true : false,
+				basedOnLocationPreference: str == t('yes') ? true : false,
 				id: user._id
 			}, true)
 		}
@@ -199,7 +262,6 @@ class Settings extends React.Component {
 
 	 	return (
 			<div className='settings-container'>
-					{/* <span className='big-title citrusBlack form-title'> */}
 				<span className='big-title citrusBlack responsive-title'>
 					{capitalize(t('settings'))}
 				</span>
@@ -223,10 +285,13 @@ class Settings extends React.Component {
 						multiple
 						value={coachingLanguagePreference}
 						onChange={e => this.handleSelectChange(e, 'coachingLanguagePreference')}
+						renderValue={selected => selected.map(el => t(el)).join(', ')}
 					>
 						{
 							languagesItems.map((lng, i) => (
-								<MenuItem key={i} value={lng}>{capitalize(t(lng))}</MenuItem>
+								<MenuItem key={i} value={lng}>
+									{this.returnMultipleSelectItem(lng, 'lng')}
+								</MenuItem>
 							))
 						}
 					</Select>
@@ -241,12 +306,14 @@ class Settings extends React.Component {
 						multiple
 						value={sports.map(sport => sport.type)}
 						onChange={e => this.handleSelectChange(e, 'sports')}
+						renderValue={selected => selected.map(el => t(el)).join(', ')}
 					>
 						{
 							sportsItems.map((sport, i) => (
 								<MenuItem value={sport} key={i}>
-									{capitalize(t(sport))}
+									{this.returnMultipleSelectItem(sport, 'sport')}
 								</MenuItem>
+
 							))
 						}
 					</Select>
@@ -260,11 +327,16 @@ class Settings extends React.Component {
 						className='form-input'
 						value={weightMetricPreference}
 						onChange={e => this.handleSelectChange(e, 'units')}
+						renderValue={(selected) => t(selected)}
 					>
 						{
 							metricsItems.map((metric, i) => (
 								<MenuItem value={metric} key={i}>
-									{capitalize(t(metric))}
+									{
+										metric === distanceMetricPreference ?
+											this.returnSimpleSelectItem(metric) :
+											capitalize(t(metric))
+									}
 								</MenuItem>
 							))
 						}
@@ -279,11 +351,12 @@ class Settings extends React.Component {
 						className='form-input'
 						value={basedOnLocationPreference === false ? capitalize(t('no')) : capitalize(t('yes'))}
 						onChange={e => this.handleSelectChange(e, 'basedOnLocationPreference')}
+						renderValue={(selected) => t(selected)}
 					>
 						{
 							yesNoItems.map((item, i) => (
 								<MenuItem value={item} key={i}>
-									{capitalize(t(item))}
+									{this.returnSimpleSelectItem(item, 'location')}
 								</MenuItem>
 							))
 						}

@@ -63,7 +63,7 @@ class PaymentMethod extends React.Component {
 			number: user?.creditCard.alias.replace('XXXXXX', '******') || '',
 			FirstName: '',
 			LastName: '',
-			Birthday: '',
+			Birthday: new Date('1990-08-18'),
 			Nationality: '',
 			CountryOfResidence: '',
 			isLoading: false,
@@ -637,9 +637,6 @@ class PaymentMethod extends React.Component {
 						.button-container {
 							padding-top: 10px;
 							padding-bottom: 20px;
-						}
-						.MuiInputBase-input {
-							color: #C2C2C2;
 						}
 						input#card-number.credit-card-input::placeholder,
 						input#cvc.credit-card-input::placeholder,

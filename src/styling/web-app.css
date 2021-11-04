@@ -334,6 +334,19 @@
 	text-overflow: ellipsis;
 	display: block;
 }
+.form-input-coaching-edition {
+	width: 92.5% !important;
+	margin: 0 5% 0 2.5% !important;
+	min-height: 56px !important;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	display: flex !important;
+}
+.title-coaching-edition {
+	margin: 0 0 0 2.5%;
+	width: 97.5%;
+	min-height: 30px !important;
+}
 .titles-form-input {
 	width: 100%;
 	min-height: 30px !important;
@@ -348,9 +361,9 @@
 	padding-bottom: 10px;
 }
 .media-row {
-	display: flex;
+	/* display: flex;
 	flex-direction: row;
-	justify-content: flex-start;
+	justify-content: flex-start; */
 	width: 100%;
 }
 .mobile-only,
@@ -812,7 +825,12 @@ input[type=number] {
 	.schedule-submit-button {
 		width: 97.5%;
 		margin-right: 2.5%;
-		margin-bottom: 30px;
+	}
+	.only-on-hover {
+		display: none !important;
+	}
+	.only-on-hover:hover {
+		display: flex !important;
 	}
 
 	/* MATERIAL UI OVERIDE */

@@ -495,9 +495,6 @@ class CreditCardForm extends React.Component {
 							padding-top: 10px;
 							padding-bottom: 20px;
 						}
-						.MuiInputBase-input {
-							color: #C2C2C2;
-						}
 						input#card-number.credit-card-input::placeholder,
 						input#cvc.credit-card-input::placeholder,
 						input#card-expiry.credit-card-input::placeholder {

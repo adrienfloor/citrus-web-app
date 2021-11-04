@@ -568,7 +568,7 @@ class Coaching extends React.Component {
 					<div className='small-separator'></div>
 					<div className='coaching-column'>
 						<span className='small-title citrusBlack'>
-							{capitalize(title)}
+							{`${capitalize(title)} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 						</span>
 						{
 							coaching.coachId === user._id ?

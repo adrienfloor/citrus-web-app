@@ -19,6 +19,7 @@ import '../../styling/web-app.css'
 import { ReactComponent as CaretDown } from '../../assets/svg/caret-down.svg'
 import { ReactComponent as CaretUp } from '../../assets/svg/caret-up.svg'
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
+import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
 	capitalize,
@@ -75,6 +76,8 @@ class Schedule extends React.Component {
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleUpdateCoaching = this.handleUpdateCoaching.bind(this)
 		this.handleDeleteCoaching = this.handleDeleteCoaching.bind(this)
+		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
+		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
 	}
 
 	returnPriceWording(price) {
@@ -209,6 +212,56 @@ class Schedule extends React.Component {
 		return false
 	}
 
+	returnMultipleSelectItem(item, type) {
+		const { t, user } = this.props
+		const { equipment, focus } = this.state
+		let isSelected = focus.includes(item)
+		if (type === 'gear') {
+			isSelected = equipment.includes(item)
+		}
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				{
+					isSelected &&
+					<Check
+						width={20}
+						height={20}
+						strokeWidth={2}
+					/>
+				}
+			</div>
+		)
+	}
+
+	returnSimpleSelectItem(item) {
+		const { t } = this.props
+		return (
+			<div
+				className='flex-row'
+				style={{
+					alignItems: 'center',
+					justifyContent: 'space-between',
+					width: '100%'
+				}}
+			>
+				<div>{capitalize(t(item))}</div>
+				<Check
+					width={20}
+					height={20}
+					strokeWidth={2}
+				/>
+			</div>
+		)
+	}
+
 
 	render() {
 		const {
@@ -321,26 +374,27 @@ class Schedule extends React.Component {
 					id='upload-form'
 					onSubmit={this.handleUpdateCoaching}
 					className='scroll-div-vertical card upload-form'
-					style={{ maxHeight: '700px' }}
+					style={{ maxHeight: '700px', alignItems: 'flex-start' }}
 				>
-					<span className='small-text-bold citrusGrey titles-form-input'>
+					<span className='small-text-bold citrusGrey title-coaching-edition'>
 						{capitalize(t('title'))}
 					</span>
 					<TextField
 						placeholder={capitalize(t('addTitle'))}
 						variant='outlined'
-						className='small-text-bold citrusGrey form-input'
+						className='small-text-bold citrusGrey form-input-coaching-edition'
 						onChange={(e) => this.setState({ title: e.target.value })}
 						value={title}
+						style={{ margin: '0 5% 0 2.5% !important'}}
 					/>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
+					<span className='small-text-bold citrusGrey title-coaching-edition'>
 						{capitalize(t('sport'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
-						className='form-input'
+						className='form-input-coaching-edition'
 						value={sport}
 						onChange={e => this.setState({ sport: e.target.value })}
 						displayEmpty
@@ -356,18 +410,24 @@ class Schedule extends React.Component {
 						</MenuItem>
 						{
 							sportsItems.map((sport, i) => (
-								<MenuItem key={i} value={sport}>{capitalize(t(sport))}</MenuItem>
+								<MenuItem key={i} value={sport}>
+									{
+										sport === this.state.sport ?
+											this.returnSimpleSelectItem(sport) :
+											capitalize(t(sport))
+									}
+								</MenuItem>
 							))
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
+					<span className='small-text-bold citrusGrey title-coaching-edition'>
 						{capitalize(t('price'))}
 					</span>
 					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
-						className='form-input'
+						className='form-input-coaching-edition'
 						value={price}
 						onChange={e => this.setState({ price: e.target.value })}
 						displayEmpty
@@ -388,13 +448,20 @@ class Schedule extends React.Component {
 						{
 							pricesItems.map((price, i) => (
 								<MenuItem value={price} key={i}>
-									{this.returnPriceWording(price)}
+									{
+										price === this.state.price ?
+											this.returnSimpleSelectItem(this.returnPriceWording(price)) :
+											this.returnPriceWording(price)
+									}
 								</MenuItem>
 							))
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<div className='more-details-row'>
+					<div
+						className='more-details-row'
+						style={{ margin: '0 0 0 2.5%' }}
+					>
 						<span className='small-text-bold citrusGrey'>
 							{
 								!isShowingAllParams ?
@@ -424,13 +491,13 @@ class Schedule extends React.Component {
 					{
 						isShowingAllParams &&
 						<>
-							<span className='small-text-bold citrusGrey titles-form-input'>
+							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('duration'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
-								className='form-input'
+								className='form-input-coaching-edition'
 								value={duration}
 								onChange={e => this.setState({ duration: e.target.value })}
 								displayEmpty
@@ -450,18 +517,24 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									durationsItems.map((duration, i) => (
-										<MenuItem key={i} value={duration}>{capitalize(t(duration))}</MenuItem>
+										<MenuItem key={i} value={duration}>
+											{
+												duration === this.state.duration ?
+													this.returnSimpleSelectItem(duration) :
+													capitalize(t(duration))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
+							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('level'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
-								className='form-input'
+								className='form-input-coaching-edition'
 								value={level}
 								onChange={e => this.setState({ level: e.target.value })}
 								displayEmpty
@@ -481,19 +554,25 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									levelsItems.map((level, i) => (
-										<MenuItem key={i} value={level}>{capitalize(t(level))}</MenuItem>
+										<MenuItem key={i} value={level}>
+											{
+												level === this.state.level ?
+													this.returnSimpleSelectItem(level) :
+													capitalize(t(level))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
+							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('equipment'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
 								variant='outlined'
-								className='form-input'
+								className='form-input-coaching-edition'
 								value={equipment}
 								onChange={e => this.setState({ equipment: e.target.value })}
 								displayEmpty
@@ -513,19 +592,21 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									equipmentsItems.map((equipment, i) => (
-										<MenuItem key={i} value={equipment}>{capitalize(t(equipment))}</MenuItem>
+										<MenuItem key={i} value={equipment}>
+											{this.returnMultipleSelectItem(equipment, 'gear')}
+										</MenuItem>
 									))
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
+							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('focus'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
 								variant='outlined'
-								className='form-input'
+								className='form-input-coaching-edition'
 								value={focus}
 								onChange={e => this.setState({ focus: e.target.value })}
 								displayEmpty
@@ -545,18 +626,20 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									focusItems.map((fc, i) => (
-										<MenuItem key={i} value={fc}>{capitalize(t(fc))}</MenuItem>
+										<MenuItem key={i} value={fc}>
+											{this.returnMultipleSelectItem(fc, 'focus')}
+										</MenuItem>
 									))
 								}
 							</Select>
 							<div className='medium-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
+							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('language'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
-								className='form-input'
+								className='form-input-coaching-edition'
 								value={language}
 								onChange={e => this.setState({ language: e.target.value })}
 								displayEmpty
@@ -576,14 +659,20 @@ class Schedule extends React.Component {
 								</MenuItem>
 								{
 									languagesItems.map((language, i) => (
-										<MenuItem key={i} value={language}>{capitalize(t(language))}</MenuItem>
+										<MenuItem key={i} value={language}>
+											{
+												language === this.state.language ?
+													this.returnSimpleSelectItem(language) :
+													capitalize(t(language))
+											}
+										</MenuItem>
 									))
 								}
 							</Select>
 						</>
 					}
 					<div className='medium-separator'></div>
-					<div>
+					<div style={{ margin: '0 0 0 2.5%' }}>
 						<ImageUploader
 							t={t}
 							onSetPictureUri={pictureUri => {
@@ -597,6 +686,7 @@ class Schedule extends React.Component {
 					<span
 						className='small-text-bold citrusGrey hover'
 						onClick={() => this.setState({ isDeletingCoaching: true })}
+						style={{ width: '100%', textAlign: 'center' }}
 					>
 						{t('deleteCoaching')}
 					</span>

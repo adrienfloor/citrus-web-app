@@ -51,7 +51,7 @@ class PaymentForm extends React.Component {
 			number: '',
 			FirstName: '',
 			LastName: '',
-			Birthday: '',
+			Birthday: new Date('1990-08-18'),
 			Nationality: '',
 			CountryOfResidence: '',
 			isProcessing: false,
