@@ -268,10 +268,9 @@ class Settings extends React.Component {
 				<div
 					id='upload-form'
 					className='scroll-div-vertical card upload-form settings'
-					style={{ alignItems: 'flex-start' }}
 				>
 					<div className='medium-separator'></div>
-					<span className='small-title citrusBlack small-responsive-title'>
+					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('trainings'))}
 					</span>
 					<div className='medium-separator'></div>
@@ -363,7 +362,7 @@ class Settings extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					<span className='small-title citrusBlack small-responsive-title'>
+					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('membership'))}
 					</span>
 					<div className='medium-separator'></div>
@@ -386,7 +385,7 @@ class Settings extends React.Component {
 						{capitalize(t('billing'))}
 					</span> */}
 					<div className='medium-separator'></div>
-					<span className='small-title citrusBlack small-responsive-title'>
+					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('personal'))}
 					</span>
 					<div className='medium-separator'></div>
@@ -404,7 +403,7 @@ class Settings extends React.Component {
 					</span>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					<span className='citrusBlack mobile-only small-title small-responsive-title'>
+					<span className='citrusBlack mobile-only small-title small-responsive-title-settings'>
 						{capitalize(t('help'))}
 					</span>
 					<div className='medium-separator mobile-only'></div>

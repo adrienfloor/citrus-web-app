@@ -159,3 +159,65 @@ export const countryCodeToLanguage = countryCode => {
 			return 'english'
 	}
 }
+
+export const returnNextBillingDate = (userBillingDate, locale) => {
+	const currentDay = new Date().getDay()
+	const currentMonth = new Date().getMonth()
+	const currentYear = new Date().getFullYear()
+	let month = null
+	let date = null
+
+	if(userBillingDate>currentDay) {
+		month = currentMonth + 1
+	} else {
+		month = currentMonth + 2
+	}
+
+	if(locale == 'fr') {
+		date = `${userBillingDate}/${month}/${currentYear}`
+	} else {
+		date = `${month}/${userBillingDate}/${currentYear}`
+	}
+	return date
+}
+
+export const returnTotalLengthOfActivities = userReplays => {
+	let duration = 0
+	if(!userReplays || userReplays.length === 0) {
+		return duration
+	}
+	for(let i = 0; i < userReplays.length ; i++) {
+		if(userReplays[i].duration) {
+			duration = duration + returnTextDurationToNumber(userReplays[i].duration)
+		} else {
+			duration = duration + 30
+		}
+	}
+	return duration
+}
+
+const returnTextDurationToNumber = string => {
+	switch (string) {
+		case 'tenMin':
+			return 10
+			break;
+		case 'twentyMin':
+			return 20
+			break;
+		case 'thirtyMin':
+			return 30
+			break;
+		case 'fourtyMin':
+			return 40
+			break;
+		case 'fiftyMin':
+			return 50
+			break;
+		case 'sixtyMin':
+			return 60
+			break;
+		default:
+			return 0;
+			break;
+	}
+}

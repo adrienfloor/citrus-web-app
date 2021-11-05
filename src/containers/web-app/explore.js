@@ -7,6 +7,7 @@ import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import { Link } from 'react-router-dom'
+import qs from 'query-string'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -69,6 +70,28 @@ class Explore extends React.Component {
 		this.handleSearch = this.handleSearch.bind(this)
 		this.handleResetSearch = this.handleResetSearch.bind(this)
 		this.handleSportSelection = this.handleSportSelection.bind(this)
+	}
+
+	componentDidMount() {
+		const {
+			location,
+			user,
+			userReplays,
+			executeExploreSearch,
+			resetExploreSearch
+		} = this.props
+
+		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+
+		if (coachingId) {
+			setTimeout(() => {
+				if(this.props.exploreSearch && this.props.exploreSearch.length > 0) {
+					this.setState({
+						selectedCoaching: this.props.exploreSearch.find(coaching => coaching._id == coachingId)
+					})
+				}
+			}, 1000)
+		}
 	}
 
 	handleSearch(query) {
@@ -144,7 +167,9 @@ class Explore extends React.Component {
 			sessionsSearch,
 			accountsSearch,
 			executeSearch,
-			t
+			t,
+			history,
+			location
 		} = this.props
 		const { sports } = user
 
@@ -490,12 +515,24 @@ class Explore extends React.Component {
 					selectedCoaching &&
 					<Dialog
 						open={selectedCoaching ? true : false}
-						onClose={() => this.setState({ selectedCoaching: null })}
+						onClose={() => {
+							const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+							if (coachingQuery) {
+								history.push('/explore')
+							}
+							this.setState({ selectedCoaching: null })
+						}}
 					>
 						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
-								onCancel={() => this.setState({ selectedCoaching: null })}
+								onCancel={() => {
+									const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+									if (coachingQuery) {
+										history.push('/explore')
+									}
+									this.setState({ selectedCoaching: null })
+								}}
 								isMyCoaching={false}
 							/>
 						</div>

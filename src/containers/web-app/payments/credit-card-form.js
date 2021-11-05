@@ -322,7 +322,7 @@ class CreditCardForm extends React.Component {
 		if (isLoading) {
 			return (
 				<div
-					className='flex-center my-plan-container'
+					className='flex-center cancel-subscription-container'
 					style={{ justifyContent: 'center' }}
 				>
 					<Loader

@@ -89,7 +89,7 @@ class CoachingCheckout extends React.Component {
 				},
 				query
 			).then(res => {
-				console.log('res form direct pay in : ', res)
+				console.log('res from direct pay in : ', res)
 				if(res) {
 					if (res.SecureModeRedirectURL) {
 						window.location.href = res.SecureModeRedirectURL
@@ -219,7 +219,7 @@ class CoachingCheckout extends React.Component {
 					/>
 					<div className='medium-separator'></div>
 					<span
-						className='small-text-bold citrusGrey small-responsive-title'
+						className='small-text-bold citrusGrey small-responsive-title-plan'
 						style={{ textAlign: 'center' }}
 					>
 						{loadingMessage}
@@ -272,7 +272,7 @@ class CoachingCheckout extends React.Component {
 
 		if (isCheckingOut) {
 			return (
-				<div className='full-container flex-column flex-center my-plan-container scroll-div-vertical'>
+				<div className='full-container flex-column flex-center plan-container scroll-div-vertical'>
 					<div className='medium-separator'></div>
 					<div
 						style={{
@@ -394,13 +394,14 @@ class CoachingCheckout extends React.Component {
 
 		return (
 			<div
-				className='full-container flex-column my-plan-container'
+				className='full-container flex-column plan-container'
 				style={{ justifyContent: 'flex-start'}}
 			>
 				<div className='medium-separator'></div>
 				<div
 					style={{
-						width: '98.5%',
+						width: '95%',
+						marginLeft: '5%',
 						height: '40px',
 						display: 'flex',
 						alignItems: 'center'
@@ -418,40 +419,43 @@ class CoachingCheckout extends React.Component {
 						{capitalize(t('back'))}
 					</span>
 				</div>
-				<div className='small-separator'></div>
-				<span className='small-text citrusBlack small-responsive-title'>
-					{capitalize(t('youCanChangeYouPlanAnytimeOr'))}
-				</span>
 				<div className='medium-separator'></div>
-				<div className='medium-separator'></div>
-				<span className='small-title citrusBlack small-responsive-title'>
-					{capitalize(t('availablePlans'))}
-				</span>
-				<div className='medium-separator'></div>
-				<div className='flex-row available-plans'>
-					{
-						plansTypes
-							.map(
-								plan => (
-									<div key={plan} className='plan-card-desktop-margin'>
-										<PlanCard
-											t={t}
-											planType={plan}
-											onClick={() => {
-												this.setState({
-													isCheckingOut: true,
-													planType: plan
-												})
-											}}
-											isCurrent={false}
-										/>
-										<div className='mobile-only-medium-separator'></div>
-									</div>
+				<div className='my-plan-container'>
+					<span className='small-text citrusBlack small-responsive-title-plan'>
+						{capitalize(t('youCanChangeYouPlanAnytimeOr'))}
+					</span>
+					<div className='medium-separator'></div>
+					<div className='medium-separator'></div>
+					<span className='small-title citrusBlack small-responsive-title-plan'>
+						{capitalize(t('availablePlans'))}
+					</span>
+					<div className='medium-separator'></div>
+					<div className='flex-row available-plans'>
+						{
+							plansTypes
+								.map(
+									plan => (
+										<div key={plan} className='plan-card-desktop-margin'>
+											<PlanCard
+												t={t}
+												planType={plan}
+												onClick={() => {
+													this.setState({
+														isCheckingOut: true,
+														planType: plan
+													})
+												}}
+												isCurrent={false}
+												isAvailablePlan={true}
+											/>
+											<div className='mobile-only-medium-separator'></div>
+										</div>
+									)
 								)
-							)
-					}
+						}
+					</div>
+					<div className='medium-separator'></div>
 				</div>
-				<div className='medium-separator'></div>
 				<style jsx='true'>
 					{`
 					.plan-card-desktop-margin {
@@ -461,12 +465,18 @@ class CoachingCheckout extends React.Component {
 						width: 97.5%;
 						justify-content: flex-start;
 					}
+					.small-responsive-title-plan {
+						width: 97.5%;
+					}
 					@media only screen and (max-width: 640px) {
 						.plan-card-desktop-margin {
 							margin-right: 0;
 						}
 						.available-plans {
 							flex-direction: column;
+						}
+						.small-responsive-title-plan {
+							width: 95%;
 						}
 					}
 				`}

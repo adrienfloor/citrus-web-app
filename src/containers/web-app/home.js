@@ -37,7 +37,8 @@ import {
 	returnCurrency,
 	returnUserStatus,
 	returnUserStatusProgressBarColor,
-	returnUserStatusProgressBar
+	returnUserStatusProgressBar,
+	returnTotalLengthOfActivities
 } from '../../utils/various'
 
 let tabs = []
@@ -57,9 +58,11 @@ class Home extends React.Component {
 			userReplaysSkip: 3,
 			followingsSkip: 3,
 			myCoachingsSkip: 3,
+			currentGains: null,
 			credits: null,
 			mpLegalUserInfo: null,
-			isLegalUserFullyCreated: false
+			isLegalUserFullyCreated: false,
+			isVideoPlaying: true
 		}
 
 		tabs = [
@@ -80,6 +83,7 @@ class Home extends React.Component {
 		} = this.props
 
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+		const play = qs.parse(location.search, { ignoreQueryPrefix: true }).play
 
 		if(coachingId) {
 			this.setState({
@@ -87,9 +91,18 @@ class Home extends React.Component {
 			})
 		}
 
+		if(play) {
+			this.setState({ isVideoPlaying: true })
+		}
+
+		if(user.MPUserId) {
+			fetchMpUserCredits(user.MPUserId)
+			.then(credits => this.setState({ credits }))
+		}
+
 		if(user.MPLegalUserId) {
 			fetchMpUserCredits(user.MPLegalUserId)
-			.then(credits => this.setState({ credits }))
+			.then(currentGains => this.setState({ currentGains }))
 			fetchMpUserInfo(user.MPLegalUserId)
 			.then(mpLegalUserInfo => {
 				this.legalUserFullyCreated(mpLegalUserInfo)
@@ -117,9 +130,10 @@ class Home extends React.Component {
 	}
 
 	returnTopActivities() {
-		const activitiesAttendedNames = this.props.user.myReplays.map(activity => activity.sport)
+		const { user, t } = this.props
+		const activitiesAttendedNames = user.myReplays.map(activity => activity.sport)
 		const topActivities = returnTheHighestOccurrence(activitiesAttendedNames)
-		return capitalize(topActivities)
+		return capitalize(t(topActivities))
 	}
 
 	legalUserFullyCreated(mpLegalUserInfo) {
@@ -178,12 +192,13 @@ class Home extends React.Component {
 		const {
 			following,
 			coachRating,
-			totalLengthOfActivities,
-			numberOfDailyActivitiesInARow,
-			averageFeeling,
+			// totalLengthOfActivities,
+			// numberOfDailyActivitiesInARow,
+			// averageFeeling,
 			myReplays,
 			lifeTimeGains,
-			MPLegalUserId
+			MPLegalUserId,
+			subscription
 		} = user
 		const {
 			isLoading,
@@ -197,8 +212,10 @@ class Home extends React.Component {
 			followingsSkip,
 			myCoachingsSkip,
 			credits,
+			currentGains,
 			mpLegalUserInfo,
-			isLegalUserFullyCreated
+			isLegalUserFullyCreated,
+			isVideoPlaying
 		} = this.state
 
 		if (isLoading || !user) {
@@ -419,6 +436,48 @@ class Home extends React.Component {
 							{/* ACHIEVEMENTS */}
 							<div className='category-block stats-container'>
 								<div className='stats'>
+									{
+										subscription &&
+										<>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('plan'))}
+											</span>
+											<div className='small-separator'></div>
+											<div className='stats-row'>
+												<div className='stats-column'>
+													<span className='big-number'>
+														{`${credits}/${subscription}`}
+													</span>
+													<span className='small-title citrusGrey'>
+														{capitalize(t('remainingCredits'))}
+													</span>
+												</div>
+											</div>
+											<div className='medium-separator'></div>
+											<div className='medium-separator'></div>
+										</>
+									}
+									{
+										!subscription && credits &&
+										<>
+											<span className='small-title citrusBlack'>
+												{capitalize(t('plan'))}
+											</span>
+											<div className='small-separator'></div>
+											<div className='stats-row'>
+												<div className='stats-column'>
+													<span className='big-number'>
+														{credits}
+													</span>
+													<span className='small-title citrusGrey'>
+														{capitalize(t('remainingCredits'))}
+													</span>
+												</div>
+											</div>
+											<div className='medium-separator'></div>
+											<div className='medium-separator'></div>
+										</>
+									}
 									<span className='small-title citrusBlack'>
 										{capitalize(t('achievements'))}
 									</span>
@@ -496,20 +555,22 @@ class Home extends React.Component {
 										</div>
 										<div className='stats-column'>
 											<span className='big-number'>
-												{totalLengthOfActivities}
+												{/* {totalLengthOfActivities} */}
+												{returnTotalLengthOfActivities(user.myReplays)}
 											</span>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('totalMinutes'))}
 											</span>
 										</div>
-										<div className='stats-column'>
+										<div className='stats-column'></div>
+										{/* <div className='stats-column'>
 											<span className='big-number'>
 												{averageFeeling}
 											</span>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('feelingAverage'))}
 											</span>
-										</div>
+										</div> */}
 									</div>
 									<div className='small-separator'></div>
 									<div className='medium-separator'></div>
@@ -663,7 +724,7 @@ class Home extends React.Component {
 									<div className='stats-row'>
 										<div className='stats-column'>
 											<span className='big-number'>
-												{`${credits || 0} ${returnCurrency(moment.locale())}`}
+												{`${currentGains || 0} ${returnCurrency(moment.locale())}`}
 											</span>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('currentSold'))}
@@ -706,6 +767,7 @@ class Home extends React.Component {
 					>
 						<div className='dialog-modal'>
 							<Coaching
+								isVideoPlaying={isVideoPlaying}
 								coaching={selectedCoaching}
 								onCancel={() => {
 									this.handleTabSelection(activeTabName, activeTabIndex)

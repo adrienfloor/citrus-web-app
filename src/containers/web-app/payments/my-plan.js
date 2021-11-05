@@ -29,10 +29,11 @@ import {
 	createRecurringPayinRegistration,
 	createRecurringPayinCIT,
 	fetchPayIn,
-	updateRecurringPayinRegistration
+	updateRecurringPayinRegistration,
+	fetchMpUserCredits
 } from '../../../services/mangopay'
 
-const plansTypes = [null, 10, 20, 30]
+const plansTypes = [10, 20, 30]
 
 class MyPlan extends React.Component {
 	constructor(props) {
@@ -42,13 +43,33 @@ class MyPlan extends React.Component {
 			isSubscribing: false,
 			planType: null,
 			loadingMessage: '',
-			cardId: '',
-			isCancelingSubscription: false
+			cardId: null,
+			isCancelingSubscription: false,
+			isConfirmingCancelation: false,
+			credits: null
 		}
 		this.returnPlanTypeTitle = this.returnPlanTypeTitle.bind(this)
 		this.handlePlanSelection = this.handlePlanSelection.bind(this)
 		this.handleSubscribe = this.handleSubscribe.bind(this)
 		this.handleALaCarteSelection = this.handleALaCarteSelection.bind(this)
+	}
+
+	componentDidMount() {
+		this.fetchMangoPayInfo()
+	}
+
+	async fetchMangoPayInfo() {
+		const { MPUserId } = this.props.user
+		if(MPUserId) {
+			const mangoPayUserCard = await fetchMpCardInfo(MPUserId)
+			if (mangoPayUserCard) {
+				this.setState({ cardId: mangoPayUserCard.Id })
+			}
+			const credits = await fetchMpUserCredits(MPUserId)
+			if (credits) {
+				this.setState({ credits })
+			}
+		}
 	}
 
 	handlePlanSelection(planType) {
@@ -58,12 +79,12 @@ class MyPlan extends React.Component {
 			planType
 		})
 
-		if(planType === null) {
-			return this.setState({
-				isLoading: false,
-				isCancelingSubscription: true
-			})
-		}
+		// if(planType === null) {
+		// 	return this.setState({
+		// 		isLoading: false,
+		// 		isCancelingSubscription: true
+		// 	})
+		// }
 
 		if(!user.creditCard?.alias) {
 			return this.setState({
@@ -72,17 +93,9 @@ class MyPlan extends React.Component {
 			})
 		}
 
-		fetchMpCardInfo(user.MPUserId)
-		.then(res => {
-			if(res && res.Id) {
-				this.setState({
-					cardId: res.Id
-				})
-			}
-			this.setState({
-				isSubscribing: true,
-				isLoading: false
-			})
+		this.setState({
+			isSubscribing: true,
+			isLoading: false
 		})
 	}
 
@@ -217,7 +230,9 @@ class MyPlan extends React.Component {
 			planType,
 			loadingMessage,
 			cardId,
-			isCancelingSubscription
+			isCancelingSubscription,
+			isConfirmingCancelation,
+			credits
 		} = this.state
 
 		if(isLoading) {
@@ -234,7 +249,7 @@ class MyPlan extends React.Component {
 					/>
 					<div className='medium-separator'></div>
 					<span
-						className='small-text-bold citrusGrey small-responsive-title'
+						className='small-text-bold citrusGrey small-responsive-title-plan'
 						style={{ textAlign: 'center' }}
 					>
 						{loadingMessage}
@@ -245,12 +260,50 @@ class MyPlan extends React.Component {
 
 
 		if(isCancelingSubscription) {
+			if(isConfirmingCancelation) {
+				return (
+					<div
+						className='full-container flex-column flex-center cancel-subscription-container'
+						style={{ justifyContent: 'center' }}
+					>
+						<span className='small-title citrusBlack cancel-plan-container'>
+							{capitalize(t('areYouSureYouWantToGoALaCarte'))}
+						</span>
+						<div className='small-separator'></div>
+						<div className='medium-separator'></div>
+						<div
+							className='flex-row'
+							style={{
+								width: '200px',
+								justifyContent: 'space-between'
+							}}
+						>
+							<div
+								className='filled-button hover small-no-color-button'
+								onClick={() => this.setState({ isCancelingSubscription: false })}
+							>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('no'))}
+								</span>
+							</div>
+							<div
+								className='light-button hover small-no-color-light-button'
+								onClick={this.handleALaCarteSelection}
+							>
+								<span className='small-title citrusBlue'>
+									{capitalize(t('yes'))}
+								</span>
+							</div>
+						</div>
+					</div>
+				)
+			}
 			return (
 				<div
 					className='full-container flex-column flex-center cancel-subscription-container'
 					style={{ justifyContent: 'center' }}
 				>
-					<span className='small-title citrusBlack'>
+					<span className='small-title citrusBlack cancel-plan-container'>
 						{capitalize(t('areYouSureYouWantToCancelThisPlan'))}
 					</span>
 					<div className='small-separator'></div>
@@ -272,7 +325,7 @@ class MyPlan extends React.Component {
 						</div>
 						<div
 							className='light-button hover small-no-color-light-button'
-							onClick={this.handleALaCarteSelection}
+							onClick={() => this.setState({ isConfirmingCancelation: true })}
 						>
 							<span className='small-title citrusBlue'>
 								{capitalize(t('yes'))}
@@ -285,19 +338,18 @@ class MyPlan extends React.Component {
 
 		if(isSubscribing) {
 			return (
-				<div className='full-container flex-column flex-center my-plan-container'>
-					<div className='desktop-only-medium-separator'></div>
+				<div className='full-container flex-column flex-center subscription-container'>
+					<div className='medium-separator'></div>
 					<div
 						style={{
-							width: '98.5%',
-							height: '40px',
+							width: '99%',
+							height: '30px',
 							display: 'flex',
 							alignItems: 'center'
 						}}
 						onClick={() => this.setState({
 							isSubscribing: false,
-							planType: null,
-							cardId: ''
+							planType: null
 						})}
 						className='hover'
 					>
@@ -311,6 +363,9 @@ class MyPlan extends React.Component {
 							{capitalize(t('back'))}
 						</span>
 					</div>
+					<div className='mobile-only-medium-separator'></div>
+					<div className='mobile-only-medium-separator'></div>
+					<div className='mobile-only-medium-separator'></div>
 					<div>
 						<div
 							style={
@@ -392,11 +447,11 @@ class MyPlan extends React.Component {
 		}
 
 		return (
-			<div className='full-container flex-column my-plan-container'>
-				<div className='desktop-only-medium-separator'></div>
+			<div className='full-container flex-column plan-container'>
+				<div className='small-separator'></div>
 				<div
 					style={{
-						width: '100%',
+						width: '99%',
 						display: 'flex',
 						justifyContent: 'flex-end',
 						alignItems: 'center'
@@ -411,56 +466,85 @@ class MyPlan extends React.Component {
 						strokeWidth={2}
 					/>
 				</div>
-				<span className='small-title citrusBlack small-responsive-title'>
-					{capitalize(t('yourPlan'))}
-				</span>
-				<div className='small-separator'></div>
-				<span className='small-text citrusBlack small-responsive-title'>
-					{capitalize(t('youCanChangeYouPlanAnytimeOr'))}
-				</span>
 				<div className='medium-separator'></div>
-				<div className='flex-row available-plans'>
-					<PlanCard
-						t={t}
-						planType={user.subscription}
-						onClick={
-							user.subscription == null ?
-							() => {} :
-							() => this.setState({ isCancelingSubscription: true })
-						}
-						isCurrent={true}
-					/>
-				</div>
-				<div className='medium-separator'></div>
-				<div className='medium-separator'></div>
-				<span className='small-title citrusBlack small-responsive-title'>
-					{capitalize(t('availablePlans'))}
-				</span>
-				<div className='small-separator'></div>
-				<span className='small-text citrusBlack small-responsive-title'>
-					{capitalize(t('exploreMorePlans'))}
-				</span>
-				<div className='medium-separator'></div>
-				<div className='flex-row available-plans'>
-					{
-						plansTypes
-						.filter(type => type !== user.subscription)
-						.map(
-							plan => (
-								<div key={plan}>
-									<PlanCard
-										t={t}
-										planType={plan}
-										onClick={() => this.handlePlanSelection(plan)}
-										isCurrent={false}
-									/>
-									<div className='mobile-only-medium-separator'></div>
-								</div>
+				<div className='my-plan-container'>
+					<span className='big-title citrusBlack small-responsive-title-plan'>
+						{capitalize(t('yourPlan'))}
+					</span>
+					{/* <span className='small-text citrusBlack small-responsive-title-plan'>
+						{capitalize(t('youCanChangeYouPlanAnytimeOr'))}
+					</span> */}
+					<div className='medium-separator'></div>
+					<div className='flex-row available-plans'>
+						<div className='flex-column'>
+							<PlanCard
+								t={t}
+								planType={user.subscription}
+								onClick={
+									user.subscription == null ?
+									() => {} :
+									() => this.setState({ isCancelingSubscription: true })
+								}
+								isAvailablePlan={false}
+								isCurrent={true}
+								credits={credits}
+								billingDate={user.billingDate}
+							/>
+							{
+								user.subscription &&
+								<>
+									<div className='small-separator'></div>
+									<span
+										onClick={() => this.setState({ isCancelingSubscription: true })}
+										className='extra-small-text-bold hover citrusGrey'
+										style={{
+											width: 'max-content',
+											marginLeft: '20px',
+											textDecoration: 'underline'
+										}}
+									>
+										{capitalize(t('cancelMySubscription'))}
+									</span>
+								</>
+							}
+						</div>
+					</div>
+					<div className='medium-separator'></div>
+					<div className='medium-separator'></div>
+					<span className='big-title citrusBlack small-responsive-title-plan'>
+						{capitalize(t('availablePlans'))}
+					</span>
+					{/* <span className='small-text citrusBlack small-responsive-title-plan'>
+						{capitalize(t('exploreMorePlans'))}
+					</span> */}
+					<div className='medium-separator'></div>
+					<div className='flex-row available-plans'>
+						{
+							plansTypes
+							.map(
+								plan => (
+									<div key={plan}>
+										<PlanCard
+											t={t}
+											planType={plan}
+											onClick={
+												plan == user.subscription ?
+												() => {} :
+												() => this.handlePlanSelection(plan)
+											}
+											isAvailablePlan={true}
+											isCurrent={plan == user.subscription}
+											credits={credits}
+											billingDate={user.billingDate}
+										/>
+										<div className='mobile-only-medium-separator'></div>
+									</div>
+								)
 							)
-						)
-					}
+						}
+					</div>
+					<div className='medium-separator'></div>
 				</div>
-				<div className='medium-separator'></div>
 				<style jsx='true'>
 					{`
 						.available-plans {
@@ -468,9 +552,15 @@ class MyPlan extends React.Component {
 							justify-content: space-between;
 							flex-wrap: wrap;
 						}
+						.small-responsive-title-plan {
+							width: 97.5%;
+						}
 						@media only screen and (max-width: 640px) {
 							.available-plans {
 								flex-direction: column;
+							}
+							.small-responsive-title-plan {
+								width: 95%;
 							}
 						}
 					`}

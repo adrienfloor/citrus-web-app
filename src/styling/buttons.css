@@ -127,6 +127,17 @@
 	color: #FFFFFF;
 }
 
+.black-filled-button {
+	width: 454px;
+	height: 50px;
+	background-color: #000000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #FFFFFF;
+	border: none !important;
+}
+
 .light-button {
 	width: 450px;
 	height: 46px;

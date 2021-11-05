@@ -49,11 +49,12 @@ import {
 class Coaching extends React.Component {
 	constructor(props) {
 		super(props)
+		const { coaching, isVideoPlaying } = this.props
 		this.state = {
 			isLoading: false,
 			isPaymentConfirmationOpen: false,
 			accessDenied: false,
-			muxReplayPlaybackId: null,
+			muxReplayPlaybackId: isVideoPlaying ? coaching.muxReplayPlaybackId : null,
 			isEditingCoaching: false,
 			coaching: this.props.coaching,
 			credits: null,
@@ -132,23 +133,23 @@ class Coaching extends React.Component {
 					.then(res => {
 						// Fetch updated replays of user
 						fetchUserReplays(user._id)
-					})
-					// Update coach profile
-					updateUser({
-						id: coaching.coachId,
-						lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
-					})
-					// Update coaching
-					updateCoaching({
-						_id: coaching._id,
-						numberOfViewers: coaching.numberOfViewers + 1
-					})
-					// Launch video
-					this.setState({
-						isLoading: false,
-						isPaymentConfirmationOpen: false,
-						isCoachingCheckoutOpen: false,
-						muxReplayPlaybackId: coaching.muxReplayPlaybackId
+						// Update coach profile
+						updateUser({
+							id: coaching.coachId,
+							lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
+						})
+						// Update coaching
+						updateCoaching({
+							_id: coaching._id,
+							numberOfViewers: coaching.numberOfViewers + 1
+						})
+						// Launch video
+						this.setState({
+							isLoading: false,
+							isPaymentConfirmationOpen: false,
+							isCoachingCheckoutOpen: false,
+							muxReplayPlaybackId: coaching.muxReplayPlaybackId
+						})
 					})
 				} else {
 					this.setState({
@@ -451,7 +452,7 @@ class Coaching extends React.Component {
 		if (isCoachingCheckoutOpen) {
 			return (
 				<div
-					className='white'
+					className='full-width-and-height-dialog white'
 					style={{
 						height: '100%',
 						overflowY: 'auto'

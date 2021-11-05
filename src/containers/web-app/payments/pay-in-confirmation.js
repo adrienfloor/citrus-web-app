@@ -25,9 +25,15 @@ import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
 
-import { capitalize } from '../../../utils/various'
+import {
+	capitalize,
+	returnCurrencyCode
+} from '../../../utils/various'
 
-import { fetchPayIn } from '../../../services/mangopay'
+import {
+	fetchPayIn,
+	createMpTransfer
+} from '../../../services/mangopay'
 
 class PayInConfirmation extends React.Component {
 	constructor(props) {
@@ -36,8 +42,12 @@ class PayInConfirmation extends React.Component {
 			isLoading: true,
 			isFailure: null,
 			errorMessage: '',
-			coachingId: null
+			coachingId: null,
+			coaching: null,
+			coachInfo: null,
+			subscription: null
 		}
+		this.handleBuyCoaching = this.handleBuyCoaching.bind(this)
 	}
 
 	componentDidMount() {
@@ -51,6 +61,7 @@ class PayInConfirmation extends React.Component {
 			fetchCoaching,
 			updateCoaching
 		} = this.props
+
 		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
@@ -58,19 +69,17 @@ class PayInConfirmation extends React.Component {
 		if(coachingId) {
 			this.setState({ coachingId })
 		}
-
 		if(isALaCarte) {
+			this.setState({ isALaCarte: true })
+		}
+
+		if(isALaCarte && !coachingId) {
 			return this.setState({
 				isLoading: false,
 				isFailure: false,
-				isALaCarte: true
 			})
 		}
 
-		let billingDate = new Date().getUTCDate()
-		if (billingDate > 27 && billingDate < 32) {
-			billingDate = 28
-		}
 		if (user.pastTransactionsIds.includes(transactionId)) {
 			return this.setState({
 				isLoading: false,
@@ -82,71 +91,34 @@ class PayInConfirmation extends React.Component {
 		if (transactionId) {
 			fetchPayIn(transactionId)
 				.then(res => {
-					if (res && res.Status === 'SUCCEEDED') {
+					if (res && res.Status === 'SUCCEEDED' && res.CreditedFunds) {
+						console.log('pay-in-confirmation ::: fetch paying response : ', res)
+						this.setState({
+							subscription: res.CreditedFunds.Amount / 100
+						})
 						if(coachingId) {
 							// Fetch coaching to get info
 							fetchCoaching(coachingId)
 							.then(res => {
-								console.log('fetch coaching res : ', res)
+								console.log('pay-in-confirmation ::: fetch coaching response : ', res)
 								const { coaching } = res.payload
 								const { coachId, numberOfViewers, price } = coaching
+								this.setState({ coaching })
 								// Fetch coach info
 								fetchUserInfo(coachId)
 								.then(res => {
-									console.log('fetch user inf res : ', res)
-									const gains = res.payload.lifeTimeGains
-									// Update coach profile
-									updateUser({
-										id: coachId,
-										lifeTimeGains: gains + (price * 0.7)
-									})
-									// Update coaching
-									updateCoaching({
-										_id: coachingId,
-										numberOfViewers: numberOfViewers + 1
-									})
-								})
-								.catch(e => console.log('catchhhh : ', e))
-								// Update buyer profile
-								updateUser({
-									id: user._id,
-									myReplays: [
-										coaching,
-										...user.myReplays
-									]
-								}, true).then(() => {
-									// Fetch buyer new replay
-									fetchUserReplays(user._id)
+									console.log('pay-in-confirmation ::: fetch coach info response : ', res)
+									const coachInfo = res.payload
+									this.setState({ coachInfo })
+									if(isALaCarte) {
+										this.handleBuyCoaching()
+									} else {
+										this.setState({ isLoading: false })
+									}
 								})
 								.catch(e => console.log('catchhhh : ', e))
 							})
 							.catch(e => console.log('catchhhh : ', e))
-						}
-
-						if(isALaCarte) {
-							updateUser({
-								id: user._id,
-								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
-							}, true)
-							.then(() => {
-								return this.setState({
-									isLoading: false,
-									isFailure: false
-								})
-							})
-						} else {
-							updateUser({
-								id: user._id,
-								subscription: res.CreditedFunds.Amount / 100,
-								billingDate: user.billingDate ? user.billingDate : billingDate,
-								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
-							}, true)
-							.then(() => {
-								return this.setState({
-									isLoading: false,
-									isFailure: false
-								})
-							})
 						}
 					} else {
 						return this.setState({
@@ -156,7 +128,95 @@ class PayInConfirmation extends React.Component {
 						})
 					}
 				})
+		} else {
+			return this.setState({
+				isLoading: false,
+				isFailure: true,
+				errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+			})
 		}
+	}
+
+
+	handleBuyCoaching() {
+		const {
+			coaching,
+			coachInfo,
+			subscription,
+			isALaCarte
+		} = this.state
+		const {
+			location,
+			updateUser,
+			user,
+			t,
+			fetchUserReplays,
+			fetchUserInfo,
+			fetchCoaching,
+			updateCoaching,
+			history
+		} = this.props
+
+		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
+		let billingDate = new Date().getUTCDate()
+		if (billingDate > 27 && billingDate < 32) {
+			billingDate = 28
+		}
+
+		this.setState({ isLoading: true })
+
+		// Transfer amount from user wallet to coach wallet while handling Citrus fees
+		createMpTransfer(
+			coachInfo.MPLegalUserId,
+			{
+				"Amount": coaching.price,
+				"Currency": returnCurrencyCode(moment.locale())
+			},
+			user.MPUserId
+		)
+			.then(res => {
+				console.log('res from transfer : ', res)
+				if (res && res.Status === 'SUCCEEDED') {
+					// Update buyer profile
+					updateUser({
+						id: user._id,
+						myReplays: [
+							coaching,
+							...user.myReplays
+						],
+						subscription: isALaCarte ? null : subscription,
+						billingDate: isALaCarte ? null : user.billingDate ? user.billingDate : billingDate,
+						pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+					}, true)
+						.then(res => {
+							// Fetch updated replays of user
+							fetchUserReplays(user._id)
+							.then(() => {
+								// Launch video
+								this.setState({
+									isLoading: false
+								})
+								history.push(`/home?coaching=${coaching._id}&play=true`)
+							})
+							// Update coaching
+							updateCoaching({
+								_id: coaching._id,
+								numberOfViewers: coaching.numberOfViewers + 1
+							})
+							// Update coach profile
+							updateUser({
+								id: coaching.coachId,
+								lifeTimeGains: coachInfo.lifeTimeGains + (coaching.price * 0.7)
+							})
+						})
+				} else {
+					this.setState({
+						isLoading: false,
+						isFailure: true,
+						errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+					})
+				}
+			})
 	}
 
 	render() {
@@ -169,7 +229,8 @@ class PayInConfirmation extends React.Component {
 			isFailure,
 			errorMessage,
 			isALaCarte,
-			coachingId
+			coachingId,
+			coaching
 		} = this.state
 
 		if (isLoading) {
@@ -223,20 +284,49 @@ class PayInConfirmation extends React.Component {
 				<div className='small-separator'></div>
 				<span className='small-text citrusBlack'>
 					{
-						isALaCarte ?
-						capitalize(t('youAreNowGoingALaCarte')) :
+						isALaCarte && !coachingId &&
+						capitalize(t('youAreNowGoingALaCarte'))
+					}
+					{
+						coachingId &&
 						capitalize(t('thisTransactionHasBeenProcessedSuccessfully'))
 					}
 				</span>
 				<div className='small-separator'></div>
 				<div className='medium-separator'></div>
 				{
-					coachingId ?
+					coachingId && isALaCarte &&
 					<Link to={`/home?coaching=${coachingId}`} className='filled-button'>
 						<span className='small-title citrusWhite'>
 							{capitalize(t('startMyTrainingNow'))}
 						</span>
-					</Link> :
+					</Link>
+				}
+				{
+					coachingId && !isALaCarte &&
+					<>
+						<div
+							className='filled-button'
+							onClick={this.handleBuyCoaching}
+						>
+							<span className='small-title citrusWhite'>
+								{`${capitalize(t('confirmBuyingCoachingFor'))} ${coaching.price} ${coaching.price === 1 ? capitalize(t('credit')) : t('credits')} ?`}
+							</span>
+						</div>
+						<div className='small-separator'></div>
+						<Link
+							to='/home'
+							className='extra-small-text-bold hover citrusGrey'
+							style={{
+								width: 'max-content',
+								textDecoration: 'underline'
+							}}
+						>
+							{capitalize(t('noTakeMeHome'))}
+						</Link>
+					</>
+				}
+				{ !coachingId &&
 					<Link to='/explore' className='filled-button'>
 						<span className='small-title citrusWhite'>
 							{capitalize(t('startTrainingNow'))}

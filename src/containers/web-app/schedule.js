@@ -76,7 +76,7 @@ class Schedule extends React.Component {
 			price: (coaching || {}).price || '',
 			isLoading: false,
 			isSelecting: '',
-			isShowingAllParams: false,
+			// isShowingAllParams: false,
 			isButtonDisabled: false,
 			errorMessage: '',
 			videoFile: '',
@@ -388,7 +388,7 @@ class Schedule extends React.Component {
 			freeAccess,
 			isLoading,
 			isSelecting,
-			isShowingAllParams,
+			// isShowingAllParams,
 			isButtonDisabled,
 			errorMessage,
 			progress,
@@ -422,7 +422,6 @@ class Schedule extends React.Component {
 					id='upload-form'
 					onSubmit={this.handleCreateCoaching}
 					className='scroll-div-vertical card upload-form schedule'
-					style={{ alignItems: 'flex-start' }}
 				>
 					<div className='medium-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
@@ -508,7 +507,7 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					{
+					{/* {
 						progress || progress === 0 ?
 						null :
 						<div className='more-details-row'>
@@ -538,12 +537,41 @@ class Schedule extends React.Component {
 								}
 							</div>
 						</div>
-					}
+					} */}
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{capitalize(t('addAThumbnail'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
+					<div className='media-row'>
+						<ImageUploader
+							disabled={progress || progress === 0 ? true : false}
+							t={t}
+							onSetPictureUri={pictureUri => {
+								this.setState({ pictureUri })
+							}}
+							pictureUri={pictureUri ? pictureUri : null}
+						/>
+					</div>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{capitalize(t('addAVideo'))}
+					</span>
+					<div className='desktop-only-small-separator'></div>
+					<div className='media-row'>
+						<VideoUploader
+							disabled={progress || progress === 0 ? true : false}
+							t={t}
+							onVideoSelected={videoFile => this.setState({ videoFile })}
+						/>
+					</div>
+					<div className='medium-separator'></div>
 					{
-						isShowingAllParams && !progress &&
+						// isShowingAllParams && !progress &&
+						!progress &&
 						<>
 							<span className='small-text-bold citrusGrey titles-form-input'>
-								{capitalize(t('duration'))}
+								{`${capitalize(t('duration'))} ( ${t('optional')} )`}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
@@ -580,7 +608,7 @@ class Schedule extends React.Component {
 							</Select>
 							<div className='medium-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
-								{capitalize(t('level'))}
+								{`${capitalize(t('level'))} ( ${t('optional')} )`}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
@@ -617,7 +645,7 @@ class Schedule extends React.Component {
 							</Select>
 							<div className='medium-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
-								{capitalize(t('equipment'))}
+								{`${capitalize(t('equipment'))} ( ${t('optional')} )`}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
@@ -651,7 +679,7 @@ class Schedule extends React.Component {
 							</Select>
 							<div className='medium-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
-								{capitalize(t('focus'))}
+								{`${capitalize(t('focus'))} ( ${t('optional')} )`}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
@@ -685,7 +713,7 @@ class Schedule extends React.Component {
 							</Select>
 							<div className='medium-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
-								{capitalize(t('language'))}
+								{`${capitalize(t('language'))} ( ${t('optional')} )`}
 							</span>
 							<div className='desktop-only-small-separator'></div>
 							<Select
@@ -723,33 +751,6 @@ class Schedule extends React.Component {
 						</>
 					}
 					<div className='medium-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
-						{capitalize(t('addAThumbnail'))}
-					</span>
-					<div className='desktop-only-small-separator'></div>
-					<div className='media-row'>
-						<ImageUploader
-							disabled={progress || progress === 0 ? true : false}
-							t={t}
-							onSetPictureUri={pictureUri => {
-								this.setState({ pictureUri })
-							}}
-							pictureUri={pictureUri ? pictureUri : null}
-						/>
-					</div>
-					<div className='medium-separator'></div>
-					<div className='small-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
-						{capitalize(t('addAVideo'))}
-					</span>
-					<div className='desktop-only-small-separator'></div>
-					<div className='media-row'>
-						<VideoUploader
-							disabled={progress || progress === 0 ? true : false}
-							t={t}
-							onVideoSelected={videoFile => this.setState({ videoFile })}
-						/>
-					</div>
 					{
 						errorMessage.length > 0 &&
 						<>
@@ -759,7 +760,6 @@ class Schedule extends React.Component {
 							</span>
 						</>
 					}
-					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					{
 						!progress && progress != 0 && !isProcessingVideo &&
