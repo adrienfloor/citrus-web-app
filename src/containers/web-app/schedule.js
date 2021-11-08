@@ -394,7 +394,8 @@ class Schedule extends React.Component {
 			progress,
 			isProcessingVideo,
 			price,
-			isCreatingLegalUser
+			isCreatingLegalUser,
+			videoErrorMessage
 		} = this.state
 
 		if (isLoading) {
@@ -564,10 +565,20 @@ class Schedule extends React.Component {
 							t={t}
 							onVideoSelected={videoFile => this.setState({ videoFile })}
 							onError={() =>this.setState({
-								errorMessage: capitalize(t('unreadableVideoFile')),
+								videoErrorMessage: capitalize(t('unreadableVideoFile')),
 								videoFile: ''
 							})}
 						/>
+						{
+							videoErrorMessage &&
+							<>
+								<div className='small-separator'></div>
+									<span className='small-text-bold citrusRed'>
+										{errorMessage}
+									</span>
+								<div className='small-separator'></div>
+							</>
+						}
 					</div>
 					<div className='medium-separator'></div>
 					{
