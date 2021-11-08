@@ -215,7 +215,7 @@ class Schedule extends React.Component {
 			MPLegalUserId
 		} = user
 
-		if(e) { e.preventDefault() }
+		e.preventDefault()
 
 		this.setState({
 			isCreatingLegalUser: false,
@@ -420,7 +420,7 @@ class Schedule extends React.Component {
 				</span>
 				<form
 					id='upload-form'
-					onSubmit={this.handleCreateCoaching}
+					onSubmit={e => this.handleCreateCoaching(e)}
 					className='scroll-div-vertical card upload-form schedule'
 				>
 					<div className='medium-separator'></div>
@@ -837,7 +837,7 @@ class Schedule extends React.Component {
 					>
 						<div className='full-width-and-height-dialog'>
 							<CreateLegalUser
-								onUserCreated={this.handleCreateCoaching}
+								onUserCreated={e => this.handleCreateCoaching(e)}
 								onCancel={() => {
 									this.setState({ isCreatingLegalUser: false })
 								}}
