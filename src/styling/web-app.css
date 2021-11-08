@@ -332,12 +332,15 @@
 }
 .home-container,
 .explore-container,
-.profile-container,
-.settings,
-.schedule
+.profile-container
  {
 	width: 97.5% !important;
 	padding: 0 0 0 2.5% !important;
+}
+.settings,
+.schedule {
+	width: 100% !important;
+	padding: 0 !important;
 }
 .form-input {
 	width: 30%;
@@ -725,11 +728,12 @@ input[type=number] {
 	}
 	.form-input {
 		width: 95% !important;
-		margin: 0 0 0 2.5% !important;
+		/* margin: 0 0 0 2.5% !important; */
+		margin: 0% !important;
 	}
 	.titles-form-input {
 		width: 95% !important;
-		margin: 0 0 0 2.5% !important;
+		margin: 0 !important;
 		min-height: 30px !important;
 	}
 	.more-details-row {
@@ -779,7 +783,9 @@ input[type=number] {
 		width: 200px !important;
 		height: 135px !important;
 	}
-	.responsive-title,
+	.responsive-title {
+		margin-left: 0;
+	}
 	.small-responsive-title,
 	.small-responsive-title-settings,
 	.form-title {
@@ -788,7 +794,7 @@ input[type=number] {
 	}
 	.tabs-bar {
 		width: 95% !important;
-		margin-left: 1.25%;
+		margin-left: 0;
 	}
 	.scroll-div-horizontal-mobile {
 		overflow-x: auto;
@@ -854,8 +860,8 @@ input[type=number] {
 		justify-content: center;
 	}
 	.schedule-submit-button {
-		width: 97.5%;
-		margin-right: 2.5%;
+		width: 100%;
+		margin-right: 0;
 	}
 	.only-on-hover {
 		display: none !important;
