@@ -30,8 +30,12 @@ class VideoUploader extends React.Component {
 	}
 
 	handleVideoPicking(e) {
-		const { onVideoSelected } = this.props
+		const { onVideoSelected, onError } = this.props
 		const { videoSrc } = this.state
+		console.log(e)
+		if(!e || e.target || e.target.files || e.tartget.files[0]) {
+			return onError()
+		}
 		this.setState({ videoSrc: URL.createObjectURL(e.target.files[0]) })
 		onVideoSelected(e.target.files[0])
 	}

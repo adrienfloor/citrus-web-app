@@ -62,7 +62,7 @@ class Home extends React.Component {
 			credits: null,
 			mpLegalUserInfo: null,
 			isLegalUserFullyCreated: false,
-			isVideoPlaying: true
+			isVideoPlaying: false
 		}
 
 		tabs = [

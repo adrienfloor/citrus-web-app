@@ -563,6 +563,10 @@ class Schedule extends React.Component {
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
 							onVideoSelected={videoFile => this.setState({ videoFile })}
+							onError={() =>this.setState({
+								errorMessage: capitalize(t('unreadableVideoFile')),
+								videoFile: ''
+							})}
 						/>
 					</div>
 					<div className='medium-separator'></div>
