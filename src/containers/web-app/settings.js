@@ -536,7 +536,7 @@ class Settings extends React.Component {
 							<div className='medium-separator'></div>
 								<TextField
 									variant='outlined'
-									className='text-input small-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input'
 									placeholder={capitalize(t('currentPassword'))}
 									onChange={(e) => this.setState({ password: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
@@ -544,7 +544,7 @@ class Settings extends React.Component {
 								<div className='medium-separator'></div>
 								<TextField
 									variant='outlined'
-									className='text-input small-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input'
 									placeholder={capitalize(t('newPassword'))}
 									onChange={(e) => this.setState({ newPassword: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}
@@ -552,7 +552,7 @@ class Settings extends React.Component {
 								<div className='medium-separator'></div>
 								<TextField
 									variant='outlined'
-									className='text-input small-text-bold citrusGrey input form-input'
+									className='text-input small-text-bold citrusGrey input'
 									placeholder={capitalize(t('confirmNewPassword'))}
 									onChange={(e) => this.setState({ newMatchingPassword: e.target.value })}
 									style={{ color: '#000000', border: 'none', height: 'unset' }}

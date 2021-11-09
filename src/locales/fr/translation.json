@@ -112,7 +112,7 @@
 	"iChooseFullAccess": "i choose full access",
 	"moneySpentGoesDirectlyToTheTrainer": "les bénéfices vont directement au coach",
 	"tryForFree": "essayer gratuitement",
-	"plan": "plan",
+	"plan": "forfait en cours",
 	"welcome": "félicitations et bienvenue parmi nous",
 	"youCanNowDownloadTheApp": "tu peux maintenant télécharger l'application",
 	"onceTheAppDownloaded": "une fois l'app téléchargée revenez ici et cliquez sur suivant",
@@ -450,8 +450,8 @@
 	"noRollOverOnCredits": "pas de report crédits",
 	"rollOverUpTo5Credits": "report jusqu'à 5 crédits",
 	"rollOverUpTo10Credits": "report jusqu'à 10 crédits",
-	"yourPlan": "ton plan actuel",
-	"availablePlans": "les plans disponibles",
+	"yourPlan": "forfait en cours",
+	"availablePlans": "forfaits disponibles",
 	"youCanChangeYouPlanAnytimeOr": "tu peux changer ton plan à tout moment ou passer à la carte",
 	"exploreMorePlans": "explore plus de plans qui pourraient te convenir",
 	"terminatePlan": "annuler le plan",
@@ -531,6 +531,6 @@
 	"creditLeft": "crédit restant",
 	"renewOn": "renouvelé le",
 	"cancelMySubscription": "annuler mon abonnement",
-	"remainingCredits": "crédits (en cours)",
+	"remainingCredits": "crédits (restants)",
 	"noTakeMeHome": "non, revenir au dashboard"
 }

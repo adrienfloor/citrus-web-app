@@ -29,17 +29,17 @@ const PlanCard = ({
 	let subtext = ''
 
 	if(planType === 20) {
-		title = `20${returnCurrency(moment.locale())} / ${t('month')}`
+		title = `20${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet20CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('rollOverUpTo5Credits'))
 	} else if(planType === 30) {
-		title = `30${returnCurrency(moment.locale())} / ${t('month')}`
+		title = `30${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet30CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('rollOverUpTo10Credits'))
 	} else if (planType === 10) {
-		title = `10${returnCurrency(moment.locale())} / ${t('month')}`
+		title = `10${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet10CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('noRollOverOnCredits'))
@@ -58,7 +58,7 @@ const PlanCard = ({
 				'full-container flex-column plan-card-container'
 			}
 		>
-			<span className='small-text-bold citrusBlack'>
+			<span className='medium-title-card citrusBlack'>
 				{title}
 			</span>
 			<div className='flex-column'>

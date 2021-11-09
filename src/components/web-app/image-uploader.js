@@ -71,6 +71,7 @@ class ImageUploader extends React.Component {
 	}
 
 	handleOnCropComplete(crop, pixelCrop) {
+		console.log(crop, pixelCrop)
 		this.makeClientCrop(crop)
 	}
 

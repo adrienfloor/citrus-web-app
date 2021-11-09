@@ -25,6 +25,13 @@
 	line-height: 47px;
 }
 
+.medium-title-card {
+	font-family: Raleway-Bold;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 22px;
+}
+
 .small-title {
 	font-family: Raleway-Bold;
 	font-style: normal;
