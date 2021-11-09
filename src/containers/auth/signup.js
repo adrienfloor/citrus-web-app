@@ -150,7 +150,7 @@ class Signup extends React.Component {
 				}
 			} else if (res && res.type === 'REGISTER_FAIL') {
 				this.setState({
-					errorMessage: capitalize(res.payload.response.data.msg),
+					errorMessage: capitalize(res?.payload?.response?.data?.msg),
 					signupDisabled: false,
 					isLoading: false
 				})
