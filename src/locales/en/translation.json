@@ -47,7 +47,7 @@
 	"wrongEmailFormat": "wrong email format",
 	"wrongEmailOrPassword": "wrong email or password",
 	"passwordFormat": "password must be at least 8 characters long, with one uppercase and one number",
-	"somethingWentWrong": "quelque chose s'est mal passé ...",
+	"somethingWentWrong": "something went wrong ...",
 	"creatingMangoUser": "Creating Mangopay user ...",
 	"creatingMangoUserWallet": "Creating Mangopay user wallet...",
 	"creatingCardRegistration": "Creating Mangopay card registration...",

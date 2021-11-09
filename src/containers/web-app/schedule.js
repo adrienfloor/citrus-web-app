@@ -215,7 +215,7 @@ class Schedule extends React.Component {
 			MPLegalUserId
 		} = user
 
-		e.preventDefault()
+		if(e) { e.preventDefault()}
 
 		this.setState({
 			isCreatingLegalUser: false,

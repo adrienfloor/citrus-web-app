@@ -39,7 +39,8 @@ import {
 
 import {
 	updateMpLegalUser,
-	createMpUserWallet
+	createMpUserWallet,
+	createMpLegalUser
 } from '../../../services/mangopay'
 
 import * as frCommonTranslations from '../../../fixtures/fr'
@@ -60,7 +61,7 @@ class LegalUserCreation extends React.Component {
 			Name: mpLegalUserInfo.Name || '',
 			LegalRepresentativeFirstName: mpLegalUserInfo.LegalRepresentativeFirstName || '',
 			LegalRepresentativeLastName: mpLegalUserInfo.LegalRepresentativeLastName || '',
-			LegalRepresentativeBirthday: this.returnFormattedDate(mpLegalUserInfo.LegalRepresentativeBirthday) || '',
+			LegalRepresentativeBirthday: mpLegalUserInfo.LegalRepresentativeBirthday ? this.returnFormattedDate(mpLegalUserInfo.LegalRepresentativeBirthday) : new Date('1990-08-18'),
 			LegalRepresentativeNationality: mpLegalUserInfo.LegalRepresentativeNationality || '',
 			LegalRepresentativeCountryOfResidence: mpLegalUserInfo.LegalRepresentativeCountryOfResidence || '',
 			LegalRepresentativeEmail: mpLegalUserInfo.LegalRepresentativeEmail || '',
@@ -226,8 +227,26 @@ class LegalUserCreation extends React.Component {
 		const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
 		console.log(birthday)
 
-		const mpLegalUser = await updateMpLegalUser(
+		const mpLegalUser = user.MPLegalUserId ? await updateMpLegalUser(
 			user.MPLegalUserId,
+			LegalPersonType,
+			Name,
+			LegalRepresentativeFirstName,
+			LegalRepresentativeLastName,
+			birthday,
+			LegalRepresentativeNationality,
+			LegalRepresentativeCountryOfResidence,
+			LegalRepresentativeEmail,
+			user.email,
+			{
+				AddressLine1: AddressLine1,
+				City: City,
+				Region: Region,
+				PostalCode: PostalCode,
+				Country: Country
+			},
+			CompanyNumber
+		) : await createMpLegalUser(
 			LegalPersonType,
 			Name,
 			LegalRepresentativeFirstName,
@@ -247,14 +266,17 @@ class LegalUserCreation extends React.Component {
 			CompanyNumber
 		)
 
+		console.log(mpLegalUser)
+
 		if (mpLegalUser && mpLegalUser.PersonType === 'LEGAL') {
 			updateUser({
 				id: user._id,
 				firstName: user.firstName || LegalRepresentativeFirstName,
 				lastName: user.lastName || LegalRepresentativeLastName,
+				MPLegalUserId: user.MPLegalUserId ? user.MPLegalUserId : mpLegalUser.Id
 			}, true)
 			.then(res => {
-				onUserCreated()
+				onUserCreated(mpLegalUser.Id)
 				this.setState({ isLoading: false })
 			})
 		} else {
@@ -326,7 +348,7 @@ class LegalUserCreation extends React.Component {
 					</span>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<div className='filled-button' onClick={() => this.props.setState({ isFailure: false })}>
+					<div className='filled-button' onClick={() => this.setState({ isFailure: false })}>
 						<span className='small-title citrusWhite'>
 							{capitalize(t('tryAgain'))}
 						</span>

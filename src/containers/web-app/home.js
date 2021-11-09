@@ -808,8 +808,8 @@ class Home extends React.Component {
 									onCancel={() => this.setState({ isCashingOut: false })}
 								/> :
 								<LegalUserCreation
-									onUserCreated={() => {
-										fetchMpUserInfo(user.MPLegalUserId)
+									onUserCreated={mpLegalUserId => {
+										fetchMpUserInfo(mpLegalUserId)
 										.then(mpLegalUserInfo => {
 											this.setState({
 												isLegalUserFullyCreated: true,
