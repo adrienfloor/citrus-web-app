@@ -87,13 +87,13 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 0 10px 0 0;
+	margin: 0 15px 0 0;
 }
 .tab {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 0 10px 5px 0;
+	margin: 0 15px 5px 0;
 }
 .small-active-tab {
 	border-bottom: 2px solid #000000;
@@ -138,8 +138,8 @@
 	background-color: #F8F8F8;
 	align-items: center;
 	justify-content: flex-start;
-	width: 97.5%;
-	padding-left: 0.5%;
+	width: 92%;
+	padding-left: 20px;
 }
 .stats {
 	width: 100%;
@@ -153,8 +153,8 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	width: 50%;
-	height: 70px;
+	width: 33%;
+	height: 60px;
 }
 .plus-container {
 	display: flex;
@@ -224,9 +224,11 @@
 	justify-content: flex-start;
 }
 .my-plan-container {
-	height: 100%;
-	margin: 0 5%;
-	width: 90%;
+	/* margin: 0 5%;
+	width: 90%; */
+	height: 92%;
+	margin: 1.5% 4% 4% 4%;
+	width: 92%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -304,6 +306,7 @@
 }
 .empty-coaching-card {
 	width: 300px;
+	height: 200px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -343,7 +346,7 @@
 	padding: 0 !important;
 }
 .form-input {
-	width: 30%;
+	width: 50%;
 	/* margin: 0 1.25%; */
 	min-height: 56px !important;
 	white-space: nowrap;
@@ -364,7 +367,7 @@
 	min-height: 30px !important;
 }
 .titles-form-input {
-	width: 30%;
+	width: 50%;
 	min-height: 30px !important;
 }
 .more-details-row {
@@ -373,14 +376,14 @@
 	align-items: center;
 	/* width: calc(97.5% - 14px);
 	margin: 0 calc(1.25% + 14px); */
-	width: 30%;
+	width: 50%;
 	padding-bottom: 10px;
 }
 .media-row {
 	/* display: flex;
 	flex-direction: row;
 	justify-content: flex-start; */
-	width: 30%;
+	width: 50%;
 }
 .mobile-only,
 .mobile-only-flex {
@@ -428,7 +431,7 @@
 	width: 100%;
 }
 .small-responsive-title-settings {
-	width: 30% !important;
+	width: 50% !important;
 	margin: 0;
 }
 .progress-row {
@@ -476,7 +479,7 @@
 	padding: 20px;
 }
 /* On mouse-over, add a deeper shadow */
-.card-like:hover,
+/* .card-like:hover, */
 .bank-account-registration:hover {
 	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
@@ -484,6 +487,7 @@
 	width: 600px;
 	height: 454px;
 	overflow-y: auto;
+	/* box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); */
 }
 .delete-coaching-container {
 	height: 434px;
@@ -491,7 +495,7 @@
 	padding: 20px;
 }
 .schedule-button-container {
-	width: 30%;
+	width: 50%;
 	justify-content: center;
 	display: block;
 	margin-bottom: 30px !important;
@@ -839,7 +843,8 @@ input[type=number] {
 	}
 	.create-legal-user-form,
 	.card-like,
-	.bank-account-registration {
+	.bank-account-registration,
+	.legal-user-form-cash-out {
 		width: 97.5%;
 		padding: 0 1.25%;
 	}

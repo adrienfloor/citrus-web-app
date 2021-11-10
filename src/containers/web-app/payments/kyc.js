@@ -152,9 +152,6 @@ class Kyc extends React.Component {
 
 		return (
 			<div className='flex-column'>
-				<span className='smaller-text citrusGrey'>{capitalize(t('youllFindMoreInfo'))}
-					<a className='simple-link smaller-text' target='_blank' href='https://docs.mangopay.com/guide/kyc-further-information'> {t('here')} .</a>
-				</span>
 				<div className='flex-column'>
 					{/*  IDENTITY PROOF */}
 					<div className='small-separator'></div>

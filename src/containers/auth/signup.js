@@ -189,11 +189,6 @@ class Signup extends React.Component {
 			isAuthenticated
 		} = this.props
 
-		if (isAuthenticated) {
-			history.push('/home')
-			return null
-		}
-
 		if (isLoading) {
 			return (
 				<div className='full-container flex-column flex-center main'>

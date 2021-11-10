@@ -24,27 +24,32 @@ const PlanCard = ({
 	billingDate
 }) => {
 
+	let mainTitle = ''
 	let title = ''
 	let text = ''
 	let subtext = ''
 
 	if(planType === 20) {
+		mainTitle = `${20} ${t('credits')}`
 		title = `20${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet20CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('rollOverUpTo5Credits'))
 	} else if(planType === 30) {
+		mainTitle = `${30} ${t('credits')}`
 		title = `30${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet30CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('rollOverUpTo10Credits'))
 	} else if (planType === 10) {
+		mainTitle = `${10} ${t('credits')}`
 		title = `10${returnCurrency(moment.locale())}/${t('month')}`
 		// text = capitalize(t('youGet10CreditsAmonth'))
 		text = capitalize(t('noAdditionnalFeePerTraining'))
 		subtext = capitalize(t('noRollOverOnCredits'))
 	} else {
-		title = capitalize(t('aLaCarte'))
+		mainTitle = capitalize(t('aLaCarte'))
+		title=''
 		text = `${capitalize(t('youPayTheClassCost'))}${returnCurrency(moment.locale())})`
 		subtext = `${capitalize(t('+1'))}${returnCurrency(moment.locale())} ${t('feePerClass')}`
 	}
@@ -59,15 +64,20 @@ const PlanCard = ({
 			}
 		>
 			<span className='medium-title-card citrusBlack'>
+				{mainTitle}
+			</span>
+			<div className='small-separator'></div>
+			<span className='small-text-bold citrusBlack'>
 				{title}
 			</span>
+			<div className='small-separator'></div>
 			<div className='flex-column'>
 				<div
 					style={{
 						display: 'flex',
 						justifyContent: 'flex-start',
 						alignItems: 'center',
-						marginBottom: '5px'
+						// marginBottom: '5px'
 					}}
 				>
 					<span style={{ marginRight: '5px' }}>&#8226;</span>
@@ -90,7 +100,10 @@ const PlanCard = ({
 			</div>
 			{
 				!isCurrent && isAvailablePlan &&
-				<div className='flex-center'>
+				<div
+					className='flex-center'
+					style={{ marginTop: '20px' }}
+				>
 					<div
 						onClick={onClick}
 						className='button filled-button '
@@ -104,7 +117,10 @@ const PlanCard = ({
 			}
 			{
 				isCurrent && isAvailablePlan &&
-				<div className='flex-center'>
+				<div
+					className='flex-center'
+					style={{ marginTop: '20px' }}
+				>
 					<div
 						className='black-filled-button'
 						style={{ width: '60%', height: '40px' }}
@@ -133,8 +149,8 @@ const PlanCard = ({
 			<style jsx='true'>
 				{`
 					.plan-card-container {
-						height: 140px;
-						width: 230px;
+						height: 160px;
+						width: 250px;
 						border: 1px solid #C2C2C2;
 						padding: 20px;
 						justify-content: space-between;

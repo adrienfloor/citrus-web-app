@@ -66,6 +66,11 @@ class PayInConfirmation extends React.Component {
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
 
+		let billingDate = new Date().getUTCDate()
+		if (billingDate > 27 && billingDate < 32) {
+			billingDate = 28
+		}
+
 		if(coachingId) {
 			this.setState({ coachingId })
 		}
@@ -119,6 +124,19 @@ class PayInConfirmation extends React.Component {
 								.catch(e => console.log('catchhhh : ', e))
 							})
 							.catch(e => console.log('catchhhh : ', e))
+						} else {
+							updateUser({
+								id: user._id,
+								subscription: res.CreditedFunds.Amount / 100,
+								billingDate,
+								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+							}, true)
+								.then(res => {
+									return this.setState({
+										isLoading: false,
+										isFailure: false
+									})
+								})
 						}
 					} else {
 						return this.setState({

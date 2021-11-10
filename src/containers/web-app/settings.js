@@ -270,6 +270,7 @@ class Settings extends React.Component {
 					className='scroll-div-vertical card upload-form settings'
 				>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('trainings'))}
 					</span>
@@ -277,7 +278,6 @@ class Settings extends React.Component {
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('coachingLanguages'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -295,10 +295,10 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('myFavoriteSports'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -317,10 +317,10 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('metricUnits'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -341,10 +341,10 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('basedOnLocation'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -361,7 +361,7 @@ class Settings extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
-					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('membership'))}
 					</span>
@@ -384,6 +384,7 @@ class Settings extends React.Component {
 					>
 						{capitalize(t('billing'))}
 					</span> */}
+					<div className='medium-separator'></div>
 					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('personal'))}

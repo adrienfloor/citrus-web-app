@@ -179,7 +179,7 @@ class BankAccount extends React.Component {
 						strokeWidth={2}
 					/>
 					<span className='small-text citrusGrey'>
-						{capitalize(t('cashout'))}
+						{capitalize(t('back'))}
 					</span>
 				</div>
 				<span className='small-title'>

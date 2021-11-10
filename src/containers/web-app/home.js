@@ -336,13 +336,13 @@ class Home extends React.Component {
 											}
 										</> :
 										<Link to='/explore' className='empty-coaching-card hover'>
+											<div className='small-separator'></div>
 											<PlusButton
-												width={180}
-												height={180}
+												width={90}
+												height={90}
 												stroke={'#FFFFFF'}
 												strokeWidth={2}
 											/>
-											<div className='small-separator'></div>
 											<span className='small-title citrusBlack'>
 												{capitalize(t('noTrainingsYet'))}
 											</span>
@@ -352,7 +352,7 @@ class Home extends React.Component {
 													{capitalize(t('checkoutTrainings'))}
 												</span>
 											</div>
-											<div className='small-separator'></div>
+											<div className='medium-separator'></div>
 										</Link>
 								}
 							</div>
@@ -654,13 +654,13 @@ class Home extends React.Component {
 											}
 										</> :
 										<Link to='/schedule' className='empty-coaching-card hover'>
+											<div className='small-separator'></div>
 											<PlusButton
-												width={180}
-												height={180}
+												width={90}
+												height={90}
 												stroke={'#FFFFFF'}
 												strokeWidth={2}
 											/>
-											<div className='small-separator'></div>
 											<span className='small-title citrusBlack'>
 												{capitalize(t('noCoachingsYet'))}
 											</span>
@@ -670,7 +670,7 @@ class Home extends React.Component {
 													{capitalize(t('startNow'))}
 												</span>
 											</div>
-											<div className='small-separator'></div>
+											<div className='medium-separator'></div>
 										</Link>
 								}
 							</div>
@@ -691,7 +691,7 @@ class Home extends React.Component {
 												{capitalize(t('totalCoachings'))}
 											</span>
 										</div>
-										<div className='stats-column'>
+										{/* <div className='stats-column'>
 											<div
 												style={{
 													display: 'flex',
@@ -712,6 +712,14 @@ class Home extends React.Component {
 											</div>
 											<span className='small-title citrusGrey'>
 												{capitalize(t('notation'))}
+											</span>
+										</div> */}
+										<div className='stats-column'>
+											<span className='big-number'>
+												{returnTotalLengthOfActivities(myCoachings)}
+											</span>
+											<span className='small-title citrusGrey'>
+												{capitalize(t('totalMinutes'))}
 											</span>
 										</div>
 									</div>

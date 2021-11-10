@@ -425,6 +425,11 @@ class Schedule extends React.Component {
 					className='scroll-div-vertical card upload-form schedule'
 				>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-title citrusBlack small-responsive-title-settings'>
+						{capitalize(t('newTraining'))}
+					</span>
+					<div className='medium-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('title'))}
 					</span>
@@ -436,10 +441,10 @@ class Schedule extends React.Component {
 						disabled={progress || progress === 0 ? true : false}
 					/>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('sport'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -470,10 +475,10 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('price'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<Select
 						variant='outlined'
 						className='form-input'
@@ -508,6 +513,7 @@ class Schedule extends React.Component {
 						}
 					</Select>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					{/* {
 						progress || progress === 0 ?
 						null :
@@ -542,7 +548,6 @@ class Schedule extends React.Component {
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('addAThumbnail'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<div className='media-row'>
 						<ImageUploader
 							disabled={progress || progress === 0 ? true : false}
@@ -558,7 +563,6 @@ class Schedule extends React.Component {
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('addAVideo'))}
 					</span>
-					<div className='desktop-only-small-separator'></div>
 					<div className='media-row'>
 						<VideoUploader
 							disabled={progress || progress === 0 ? true : false}
@@ -581,6 +585,7 @@ class Schedule extends React.Component {
 						}
 					</div>
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					{
 						// isShowingAllParams && !progress &&
 						!progress &&
@@ -588,7 +593,6 @@ class Schedule extends React.Component {
 							<span className='small-text-bold citrusGrey titles-form-input'>
 								{`${capitalize(t('duration'))} ( ${t('optional')} )`}
 							</span>
-							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
 								className='form-input'
@@ -622,10 +626,10 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
 								{`${capitalize(t('level'))} ( ${t('optional')} )`}
 							</span>
-							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
 								className='form-input'
@@ -659,10 +663,10 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
 								{`${capitalize(t('equipment'))} ( ${t('optional')} )`}
 							</span>
-							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
 								variant='outlined'
@@ -693,10 +697,10 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
 								{`${capitalize(t('focus'))} ( ${t('optional')} )`}
 							</span>
-							<div className='desktop-only-small-separator'></div>
 							<Select
 								multiple
 								variant='outlined'
@@ -727,10 +731,10 @@ class Schedule extends React.Component {
 								}
 							</Select>
 							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
 							<span className='small-text-bold citrusGrey titles-form-input'>
 								{`${capitalize(t('language'))} ( ${t('optional')} )`}
 							</span>
-							<div className='desktop-only-small-separator'></div>
 							<Select
 								variant='outlined'
 								className='form-input'
@@ -776,6 +780,7 @@ class Schedule extends React.Component {
 						</>
 					}
 					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
 					{
 						!progress && progress != 0 && !isProcessingVideo &&
 						<div className='flex-row schedule-button-container'>

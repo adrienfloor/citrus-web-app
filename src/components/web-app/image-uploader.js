@@ -180,6 +180,7 @@ class ImageUploader extends React.Component {
 		} = this.props
 
 		const isImagePresent = imgSrc && imgSrc.length > 0
+		const isDefaultProfilePic = imgSrc === 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1623317757/VonageApp/avatar/noun_avatar_2309777_jhlofy.png'
 
 			return (
 				<div
@@ -191,7 +192,8 @@ class ImageUploader extends React.Component {
 							backgroundPosition: 'center',
 							backgroundRepeat: 'no-repeat',
 							backgroundImage: !isImageLoading ? `url(${imgSrc})` : '',
-							backgroundSize: 'cover'
+							backgroundSize: isDefaultProfilePic ? 'contain' : 'cover',
+							border: '0.5px solid #edebeb'
 						}
 					}
 					className={ isProfile ? 'uploader-container-profile' : 'uploader-container'}

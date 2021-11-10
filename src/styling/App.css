@@ -153,6 +153,10 @@ input:focus {
 	color: #C2C2C2 !important;
 }
 
+input.MuiInputBase-input.MuiOutlinedInput-input {
+	color: #606060 !important;
+}
+
 ::placeholder {
 	/* Chrome, Firefox, Opera, Safari 10.1+ */
 	color: #C2C2C2;
@@ -216,10 +220,19 @@ input:focus {
 	cursor: pointer;
 }
 
-textarea {
+textarea,
+input,
+em {
 	outline: none;
 	resize: none;
 	overflow: auto;
+	font-family: Raleway-Medium !important;
+	font-style: normal !important;
+	font-weight: 700 !important;
+	/* font-size: 18px !important; */
+	font-size: 14px !important;
+	line-height: 19px !important;
+	color: #C2C2C2 !important;
 }
 
 input[type="password"] {

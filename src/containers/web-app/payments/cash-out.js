@@ -296,10 +296,10 @@ class Cashout extends React.Component {
 		}
 
 		return (
-			<div className='flex-column flex-start cash-out-container'>
+			<div className='flex-column flex-start'>
 				<div
 					style={{
-						width: '98.5%',
+						width: '99.5%',
 						height: '50px',
 						display: 'flex',
 						justifyContent: 'flex-end',
@@ -315,66 +315,83 @@ class Cashout extends React.Component {
 						strokeWidth={2}
 					/>
 				</div>
-				<span
-					className='small-text-bold citrusGrey'
-					style={{ maxWidth: '600px' }}
-				>
-					{capitalize(t('cashOutDisclaimer'))}
-				</span>
-				<div className='medium-separator'></div>
-				<div
-					className='flex-column card-like cash-out-card'
-					style={{ justifyContent: 'space-between'}}
-				>
-					<div>
-						<span className='small-title citrusBlack'>{capitalize(t('verifyYourKyc'))}</span>
-						<div className='small-separator'></div>
-						<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
-						<div className='small-separator'></div>
-						<span className='small-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
-						<div className='small-separator'></div>
-						<div className='flex-row' style={{ justifyContent: 'space-between' }}>
-							<span className='smaller-text row-item citrusGrey'>{capitalize(t('bankAccount'))}</span>
-							<span className='smaller-text row-item'>
-								{bankAccount ? bankAccount.IBAN : capitalize(t('no'))}
-							</span>
+				<div className='cash-out-container'>
+					<div
+						className='flex-column card-like cash-out-card'
+						style={{ justifyContent: 'space-between'}}
+					>
+						<div>
+							<div className='flex-row' style={{ alignItems: 'baseline' }}>
+								<span className='medium-title citrusBlack' style={{ marginRight: '5px' }}>{capitalize(t('verifyYourKyc'))} </span>
+									<a
+										className='smaller-text' target='_blank' href='https://docs.mangopay.com/guide/kyc-further-information'
+										style={{ textDecoration: 'underline', color: '#C2C2C2' }}> {t('moreInfo')}</a>
+							</div>
 							<span
-								className={
-									bankAccountRequiredMessage ?
-										'small-text-bold citrusRed row-item' :
-										'small-text-bold row-item simple-link'
-								}
-								onClick={() => this.setState({ isUpdatingBankAccount: true })}
+								className='smaller-text citrusGrey'
+								style={{ maxWidth: '600px' }}
 							>
+								{capitalize(t('cashOutDisclaimerIntro'))}
+							</span>
+							<div className='small-separator'></div>
+							<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
+							<div className='medium-separator'></div>
+							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
+							<div className='flex-row' style={{ justifyContent: 'flex-start' }}>
 								{
-									bankAccountRequiredMessage ?
-										capitalize(t('bankAccountRequired')) :
-										bankAccount ?
-											t('change') :
-											t('add')
+									bankAccount &&
+									<span className='smaller-text row-item citrusGrey'>{capitalize(t('bankAccount'))}</span>
 								}
-							</span>
-						</div>
-					</div>
-					<span className='smaller-text-bold citrusGrey'>
-						{capitalize(t('cashOutWelcomeMessage'))}
-					</span>
-					<div className='flex-column flex-center'>
-						{
-							warningMessage &&
-							<>
-								<span className='smaller-text-bold citrusRed' style={{ textAlign: 'center' }}>
-									{warningMessage}
+								{
+									bankAccount && bankAccount.IBAN &&
+									<span className='smaller-text row-item' style={{ width: '40%' }}>
+										{bankAccount.IBAN}
+									</span>
+								}
+								<span
+									className={
+										bankAccountRequiredMessage ?
+											'small-text-bold citrusRed row-item' :
+											'small-text-bold row-item simple-link'
+									}
+									onClick={() => this.setState({ isUpdatingBankAccount: true })}
+								>
+									{
+										bankAccountRequiredMessage ?
+											capitalize(t('bankAccountRequired')) :
+											bankAccount ?
+												t('change') :
+												t('add')
+									}
 								</span>
-								<div className='small-separator'></div>
-							</>
-						}
-						<div className='filled-button full-width' onClick={this.handleWithdrawMissingProperties}>
-							<span className='small-title citrusWhite'>
-								{capitalize(t('withdrawNow'))}
+							</div>
+							<div className='medium-separator'></div>
+						</div>
+						<div className='flex-column flex-center'>
+							{
+								warningMessage &&
+								<>
+									<span className='smaller-text-bold citrusRed' style={{ textAlign: 'center' }}>
+										{warningMessage}
+									</span>
+									<div className='small-separator'></div>
+								</>
+							}
+							<div className='filled-button full-width' onClick={this.handleWithdrawMissingProperties}>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('withdrawNow'))}
+								</span>
+							</div>
+							<div className='small-separator'></div>
+							<span
+								className='smaller-text citrusGrey'
+								style={{ margin: '0 10px' }}
+							>
+								{capitalize(t('cashOutWelcomeMessage'))}
 							</span>
 						</div>
 					</div>
+					<div className='medium-separator'></div>
 				</div>
 				<style jsx='true'>
 					{`

@@ -6,6 +6,7 @@ import Loader from 'react-loader-spinner'
 import Dialog from '@material-ui/core/Dialog'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
+import TextField from '@material-ui/core/TextField'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
@@ -211,7 +212,8 @@ class Profile extends React.Component {
 									backgroundPosition: 'center',
 									backgroundRepeat: 'no-repeat',
 									backgroundImage: `url(${avatarUrl})`,
-									backgroundSize: 'cover',
+									backgroundSize: isDefaultProfilePic ? 'contain' : 'cover',
+									border: '0.5px solid #EDEBEB'
 								}}>
 							</div>
 						}
@@ -221,67 +223,88 @@ class Profile extends React.Component {
 								width: '100%',
 								maxWidth: '600px',
 								height: '200px',
-								justifyContent: 'space-between'
+								justifyContent: isEditing ? 'space-between' : 'flex-start'
 							}}
 							className='profile-column'
 						>
-							<div className='profile-title-row'>
+							<div className='profile-title-row' style={{ alignItems: 'baseline'}}>
 								{
 									isEditing ?
-										<input
-											className='text-input smaller-text-bold citrusGrey edit-profile-input-mobile'
-											placeholder={capitalize(t('userName'))}
-											onChange={(e) => this.setState({ userName: e.target.value })}
-											style={{ color: '#000000', width: '100%', backgroundColor: 'inherit' }}
-											value={userName}
-										/> :
-									<>
-										<span className='small-title citrusBlack'>
-											{capitalize(userName)}
-										</span>
-										<span
-											className='smaller-text-bold citrusGrey hover'
-											style={{ marginLeft: '10px' }}
-											onClick={() => this.setState({ isEditing: true })}
+										<div
+											className='flex-column'
+											style={{ width: '100%'}}
 										>
-											{t('edit')}
-										</span>
-									</>
+											<span className='small-text-bold citrusGrey titles-form-input'>
+												{capitalize(t('userName'))}
+											</span>
+											<div className='small-separator'></div>
+											<TextField
+												value={userName}
+												placeholder={capitalize(t('addUserName'))}
+												variant='outlined'
+												className='small-text-bold citrusGrey'
+												onChange={(e) => this.setState({ userName: e.target.value })}
+											/>
+											<div className='medium-separator'></div>
+										</div> :
+										<>
+											<span className='small-title citrusBlack'>
+												{capitalize(userName)}
+											</span>
+											<span
+												className='smaller-text-bold citrusGrey hover'
+												style={{ marginLeft: '5px' }}
+												onClick={() => this.setState({ isEditing: true })}
+											>
+												{t('edit')}
+											</span>
+										</>
 								}
 							</div>
 							<div className='mobile-only-small-separator'></div>
-							{bio && bio.length > 0 && !isEditing &&
+							{
+								isEditing ?
+								<div className='medium-separator'></div> :
+								<div className='small-separator'></div>
+							}
+							{
+								isEditing &&
+								<span className='small-text-bold citrusGrey titles-form-input'>
+									{capitalize(t('bio'))}
+								</span>
+							}
+							{
+								bio && bio.length > 0 && !isEditing &&
 								<span className='small-text citrusBlack'>
 									{capitalize(bio)}
 								</span>
 							}
 							{
-								(!bio || bio.length === 0 )&& !isEditing &&
+								(!bio || bio.length === 0 ) && !isEditing &&
 								<span className='small-text citrusBlack'>
 									{capitalize(t('tellUsMoreAboutYou'))}
 								</span>
 							}
 							{ isEditing &&
 								<>
-									<div className='medium-separator'></div>
-									<textarea
-										className='smaller-text-bold citrusGrey'
-										rows='3'
+									<div className='small-separator'></div>
+									<TextField
+										variant='outlined'
+										className='small-text-bold citrusGrey'
+										multiline
+										rows={4}
 										placeholder={capitalize(t('tellUsMoreAboutYou'))}
 										onChange={(e) => this.setState({ bio: e.target.value })}
 										style={{
 											color: '#000000',
 											width: '100%',
-											backgroundColor: 'inherit',
-											border: 'none',
-											borderBottom: '1px solid #BEBEBE',
-											paddingBottom: '10px'
+											backgroundColor: 'inherit'
 										}}
 										value={bio}
 									/>
 								</>
 							}
-							<div className='small-separator'></div>
+							<div className='medium-separator'></div>
 							<div className='mobile-only-small-separator'></div>
 							{
 								sports && sports.length > 0 && !isEditing &&
@@ -299,10 +322,14 @@ class Profile extends React.Component {
 							}
 							{
 								isEditing &&
-								<div style={{ display: 'flex', width: '100%' }}>
+								<div className='flex-column' style={{ display: 'flex', width: '100%' }}>
 									<div className='medium-separator'></div>
-									<div className='small-separator'></div>
+									<span className='small-text-bold citrusGrey titles-form-input'>
+										{capitalize(t('sports'))}
+									</span>
+									<div className='desktop-only-small-separator'></div>
 									<Select
+										variant='outlined'
 										style={{ width: '100%' }}
 										multiple
 										value={sports.map(sport => sport.type)}
@@ -311,12 +338,12 @@ class Profile extends React.Component {
 										renderValue={(selected) => {
 											if (selected.length === 0) {
 												return (
-													<em className='smaller-text-bold citrusGrey'>
-														{t('sportsPlaceholder')}
+													<em className='small-text-bold citrusGrey'>
+														{capitalize(t('sportsPlaceholder'))}
 													</em>
 												)
 											}
-											return selected.map(el => t(el)).join(', ')
+											return selected.map(el => capitalize(t(el))).join(', ')
 										}}
 									>
 									{
@@ -329,58 +356,44 @@ class Profile extends React.Component {
 									</Select>
 								</div>
 							}
-						</div>
-					</div>
-					{
-						isEditing &&
-						<>
-						<div className='medium-separator'></div>
-							<div
-								className='flex-row edit-submit-row-mobile'
-								style={{
-									width: '100%',
-									justifyContent: 'flex-end',
-									alignItems: 'center',
-									maxWidth: '930px'
-								}}
-							>
-								{
-									userName.length === 0 &&
-									<span
-										style={{ marginRight: '50px' }}
-										className='smaller-text citrusRed edit-profile-input-mobile'
+							{
+								isEditing &&
+								<div className='flex-column flex-center' style={{ display: 'flex', width: '100%' }}>
+									<div className='medium-separator'></div>
+									<div className='medium-separator'></div>
+									{
+										userName.length === 0 &&
+										<span className='smaller-text citrusRed edit-profile-input-mobile'>
+											{t('userNameRequired')}
+										</span>
+									}
+									{
+										warning.length === 0 &&
+										<span className='smaller-text citrusRed edit-profile-input-mobile'>
+											{warning}
+										</span>
+									}
+									<div className='small-separator'></div>
+									<div
+										className='filled-button hover'
+										style={{ width: '100%' }}
+										onClick={this.handleSubmit}
 									>
-										{t('userNameRequired')}
-									</span>
-								}
-								{
-									warning.length === 0 &&
+										<span className='small-title citrusWhite'>
+											{capitalize(t('submit'))}
+										</span>
+									</div>
+									<div className='small-separator'></div>
 									<span
-										style={{ marginRight: '50px' }}
-										className='smaller-text citrusRed edit-profile-input-mobile'
+										className='small-text-bold citrusGrey hover'
+										onClick={() => this.setState({ isEditing: false })}
 									>
-										{warning}
-									</span>
-								}
-								<span
-									className='smaller-text-bold citrusGrey hover'
-									style={{ marginRight: '10px' }}
-									onClick={() => this.setState({ isEditing: false })}
-								>
-									{t('cancel')}
-								</span>
-								<div
-									className='filled-button hover'
-									style={{ width: '90px', height: '25px' }}
-									onClick={this.handleSubmit}
-								>
-									<span className='smaller-text-bold citrusWhite'>
-										{capitalize(t('submit'))}
+										{t('cancel')}
 									</span>
 								</div>
-							</div>
-						</>
-					}
+							}
+						</div>
+					</div>
 					{
 						!isEditing &&
 						<div className='category-block'>

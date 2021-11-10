@@ -19,6 +19,7 @@ import '../../../styling/buttons.css'
 import '../../../styling/spacings.css'
 import '../../../styling/App.css'
 import { ReactComponent as Check } from '../../../assets/svg/check.svg'
+import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 
 import CountrySelector from '../../../components/country-selector'
 
@@ -29,7 +30,6 @@ import {
 
 import {
 	capitalize,
-	uppercase,
 	returnCurrencyCode
 } from '../../../utils/various'
 import {
@@ -359,21 +359,43 @@ class LegalUserCreation extends React.Component {
 
 		return (
 			<div className='flex-column flex-center legal-user-creation'>
-				<div className='medium-separator'></div>
+				<div
+					style={{
+						width: '98%',
+						height: '50px',
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center'
+					}}
+					onClick={onCancel}
+					className='hover'
+				>
+					<Close
+						width={25}
+						height={25}
+						stroke={'#C2C2C2'}
+						strokeWidth={2}
+					/>
+				</div>
+				<span
+					className='medium-title citrusBlack row'
+					style={{ maxWidth: '454px' }}
+				>{capitalize(t('cashOut'))}</span>
 				<span
 					style={{ maxWidth: '454px'}}
-					className='small-text-bold citrusGrey'
+					className='smaller-text citrusGrey legal-user-form-cash-out'
 				>
 					{capitalize(t('legalUserCreationDisclaimerCashout'))}
 				</span>
 				<form
+					className='legal-user-form-cash-out'
 					id='legal-user-form'
 					onSubmit={this.handleSubmit}
 				>
 					<div className='flex-column flex-center'>
 						<div className='medium-separator'></div>
-						<span className='small-text citrusGrey row'>
-							{uppercase(t('generalInformation'))} :
+						<span className='small-title citrusBlack row'>
+							{capitalize(t('generalInformation'))} :
 						</span>
 						<div className='row flex-row'>
 							<FormControl variant='outlined' style={{ width: '100%' }}>
@@ -419,8 +441,8 @@ class LegalUserCreation extends React.Component {
 							/>
 						</div>
 						<div className='medium-separator'></div>
-						<span className='small-text citrusGrey row'>
-							{uppercase(t('companyAddress'))} :
+						<span className='small-title citrusBlack row'>
+							{capitalize(t('companyAddress'))} :
 						</span>
 						<div className='row flex-row'>
 							<TextField
@@ -462,8 +484,8 @@ class LegalUserCreation extends React.Component {
 							/>
 						</div>
 						<div className='medium-separator'></div>
-						<span className='small-text citrusGrey row'>
-							{uppercase(t('legalRepresentative'))} :
+						<span className='small-title citrusBlack row'>
+							{capitalize(t('legalRepresentative'))} :
 						</span>
 						<div className='row flex-row'>
 							<TextField
@@ -552,6 +574,8 @@ class LegalUserCreation extends React.Component {
 							</span>
 						</button>
 					</div>
+					<div style={{ height: '50px' }}></div>
+					<div className='small-separator'></div>
 				</form>
 				<style jsx='true'>
 					{`
