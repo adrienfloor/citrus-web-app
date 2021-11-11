@@ -71,12 +71,12 @@ class ImageUploader extends React.Component {
 	}
 
 	handleOnCropComplete(crop, pixelCrop) {
-		console.log(crop, pixelCrop)
 		this.makeClientCrop(crop)
 	}
 
-	handleOnCropChange(crop) {
-		this.setState({ crop })
+	handleOnCropChange(crop, percentCrop) {
+		console.log('on crop change', crop, percentCrop)
+		this.setState({ crop: percentCrop })
 	}
 
 	async makeClientCrop(crop) {
@@ -231,7 +231,6 @@ class ImageUploader extends React.Component {
 											fReader.readAsDataURL(e.target.files[0])
 											fReader.onloadend = e => {
 												this.setState({
-													// imgSrc: e.target.result,
 													imgToCropSrc: e.target.result,
 													isCropping: true
 												})
@@ -262,7 +261,6 @@ class ImageUploader extends React.Component {
 											fReader.onloadend = e => {
 												this.setState({
 													croppedImage: null,
-													// imgSrc: e.target.result,
 													imgToCropSrc: e.target.result,
 													isCropping: true
 												})
