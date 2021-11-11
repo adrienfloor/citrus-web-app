@@ -32,7 +32,7 @@ import {
 	createMpCardDirectPayin
 } from '../../../services/mangopay'
 
-const plansTypes = [10, 20, 30]
+let plansTypes = [10, 20, 30]
 
 class CoachingCheckout extends React.Component {
 	constructor(props) {
@@ -45,6 +45,14 @@ class CoachingCheckout extends React.Component {
 			isCheckingOut: this.props.type === 'aLaCarte',
 			errorMessage: null
 		}
+
+		if (this.props.currentPlan === 10) {
+			plansTypes = [20, 30]
+		}
+		if (this.props.currentPlan === 20) {
+			plansTypes = [30]
+		}
+
 		this.returnPlanTypeTitle = this.returnPlanTypeTitle.bind(this)
 		this.handleSubscribe = this.handleSubscribe.bind(this)
 	}
@@ -107,7 +115,10 @@ class CoachingCheckout extends React.Component {
 			user,
 			updateUser,
 			t,
-			coachingId
+			coachingId,
+			history,
+			credits,
+			amount
 		} = this.props
 		const {
 			planType
@@ -120,11 +131,22 @@ class CoachingCheckout extends React.Component {
 		})
 
 		if (user.subscription !== null) {
-			updateRecurringPayinRegistration(
-				user.MPRecurringPayinRegistrationId,
-				null,
-				'ENDED'
-			)
+			if(credits < amount) {
+				updateRecurringPayinRegistration(
+					user.MPRecurringPayinRegistrationId,
+					null,
+					'ENDED'
+				)
+			} else {
+				return updateUser({
+					id: user._id,
+					subscription: planType
+				}, true)
+					.then(() => {
+						this.setState({ isLoading: false })
+						history.push('/pay-in-confirmation?updateplan=true')
+					})
+			}
 		}
 
 		setTimeout(function () {
@@ -193,7 +215,8 @@ class CoachingCheckout extends React.Component {
 			user,
 			onCancel,
 			type,
-			amount
+			amount,
+			currentPlan
 		} = this.props
 		const {
 			isLoading,

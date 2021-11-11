@@ -20,6 +20,7 @@ import {
 } from '../../actions/auth-actions'
 import { fetchTrainerCoachings } from '../../actions/coachings-actions'
 import { executeExploreSearch } from '../../actions/search-actions'
+import { setIsRedirectingHome } from '../../actions/navigation-actions'
 
 import {
 	isValidEmailInput,
@@ -114,7 +115,8 @@ class Signup extends React.Component {
 			signup,
 			executeExploreSearch,
 			fetchTrainerCoachings,
-			fetchUserReplays
+			fetchUserReplays,
+			setIsRedirectingHome
 		} = this.props
 		const lng = i18n.language || 'en'
 
@@ -136,6 +138,7 @@ class Signup extends React.Component {
 			password,
 			lng
 		).then(async (res) => {
+			setIsRedirectingHome(false)
 			if (res && res.type === 'REGISTER_SUCCESS') {
 				const userId = res.payload.user._id
 				const search = await executeExploreSearch('all', userId, 5, 5)
@@ -372,7 +375,8 @@ const mapDispatchToProps = dispatch => ({
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
 	executeExploreSearch: (sport, userId, skipValue, limit) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue, limit))
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
+	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signup))

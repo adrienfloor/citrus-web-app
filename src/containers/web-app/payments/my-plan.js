@@ -137,7 +137,8 @@ class MyPlan extends React.Component {
 		const {
 			user,
 			updateUser,
-			t
+			t,
+			history
 		} = this.props
 		const {
 			planType
@@ -149,12 +150,15 @@ class MyPlan extends React.Component {
 			loadingMessage: capitalize(t('redirectedToYourBank'))
 		})
 
-		if(user.subscription !== null) {
-			updateRecurringPayinRegistration(
-				user.MPRecurringPayinRegistrationId,
-				null,
-				'ENDED'
-			)
+		if (user.subscription !== null) {
+			return updateUser({
+				id: user._id,
+				subscription: planType
+			}, true)
+				.then(() => {
+					this.setState({ isLoading: false })
+					history.push('/pay-in-confirmation?updateplan=true')
+				})
 		}
 
 		setTimeout(function () {

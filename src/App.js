@@ -8,6 +8,7 @@ import {
 import { withTranslation } from 'react-i18next'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Loader from 'react-loader-spinner'
 
 import './styling/App.css'
 import PrivateRoute from './containers/privateRoute'
@@ -67,12 +68,31 @@ class App extends React.Component {
     const {
       isAuthenticated,
       notification,
-      user
+      user,
+      isRedirectingHome
     } = this.props
     let isAdmin = false
+
     if(user) {
       isAdmin = user.email === 'adrien@thecitrusapp.com' || user.email === 'quentin@thecitrusapp.com'
     }
+
+    if (isRedirectingHome) {
+      return (
+        <div
+          className='flex-column flex-center'
+          style={{ height: '100%' }}
+        >
+          <Loader
+            type='Oval'
+            color='#C2C2C2'
+            height={100}
+            width={100}
+          />
+        </div>
+      )
+    }
+
     if (isAuthenticated === null) {
       return null
     } else {
@@ -126,7 +146,8 @@ class App extends React.Component {
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
-  notification: state.notifications.notification
+  notification: state.notifications.notification,
+  isRedirectingHome: state.navigation.isRedirectingHome
 })
 
 const mapDispatchToProps = dispatch => ({

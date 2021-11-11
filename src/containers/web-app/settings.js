@@ -21,6 +21,7 @@ import {
 	updateUserCredentials
 } from '../../actions/auth-actions'
 import { setNotification } from '../../actions/notifications-actions'
+import { setIsRedirectingHome } from '../../actions/navigation-actions'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -30,9 +31,7 @@ import '../../styling/App.css'
 import '../../styling/web-app.css'
 import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
-import {
-	capitalize
-} from '../../utils/various'
+import { capitalize } from '../../utils/various'
 import {
 	isValidPassword,
 	isSameString
@@ -175,12 +174,15 @@ class Settings extends React.Component {
 		const {
 			user,
 			deleteUser,
-			logout
+			logout,
+			history,
+			setIsRedirectingHome
 		} = this.props
 
 		deleteUser(user._id)
 		.then(() => {
 			logout()
+			setIsRedirectingHome(true)
 		})
 	}
 
@@ -284,7 +286,7 @@ class Settings extends React.Component {
 						multiple
 						value={coachingLanguagePreference}
 						onChange={e => this.handleSelectChange(e, 'coachingLanguagePreference')}
-						renderValue={selected => selected.map(el => t(el)).join(', ')}
+						renderValue={selected => selected.map(el => capitalize(t(el))).join(', ')}
 					>
 						{
 							languagesItems.map((lng, i) => (
@@ -305,7 +307,7 @@ class Settings extends React.Component {
 						multiple
 						value={sports.map(sport => sport.type)}
 						onChange={e => this.handleSelectChange(e, 'sports')}
-						renderValue={selected => selected.map(el => t(el)).join(', ')}
+						renderValue={selected => selected.map(el => capitalize(t(el))).join(', ')}
 					>
 						{
 							sportsItems.map((sport, i) => (
@@ -326,7 +328,7 @@ class Settings extends React.Component {
 						className='form-input'
 						value={weightMetricPreference}
 						onChange={e => this.handleSelectChange(e, 'units')}
-						renderValue={(selected) => t(selected)}
+						renderValue={(selected) => capitalize(t(selected))}
 					>
 						{
 							metricsItems.map((metric, i) => (
@@ -350,7 +352,7 @@ class Settings extends React.Component {
 						className='form-input'
 						value={basedOnLocationPreference === false ? capitalize(t('no')) : capitalize(t('yes'))}
 						onChange={e => this.handleSelectChange(e, 'basedOnLocationPreference')}
-						renderValue={(selected) => t(selected)}
+						renderValue={(selected) => capitalize(t(selected))}
 					>
 						{
 							yesNoItems.map((item, i) => (
@@ -489,9 +491,11 @@ class Settings extends React.Component {
 									style={{ width: '40%', margin: '0 10% 0 2.5%' }}
 									onClick={this.handleDeleteAccount}
 								>
-									<span className='small-title citrusBlue'>
-										{capitalize(t('deleteMyAccount'))}
-									</span>
+									<a href='https://thecitrusapp.com'>
+										<span className='small-title citrusBlue'>
+											{capitalize(t('deleteMyAccount'))}
+										</span>
+									</a>
 								</button>
 							</div>
 								<div
@@ -507,9 +511,11 @@ class Settings extends React.Component {
 										style={{ width: '90%', margin: '0 10%' }}
 										onClick={this.handleDeleteAccount}
 									>
-										<span className='small-title citrusBlue'>
-											{capitalize(t('deleteMyAccount'))}
-										</span>
+										<a href='https://thecitrusapp.com'>
+											<span className='small-title citrusBlue'>
+												{capitalize(t('deleteMyAccount'))}
+											</span>
+										</a>
 									</button>
 									<div className='small-separator'></div>
 									<span
@@ -667,7 +673,8 @@ const mapDispatchToProps = (dispatch) => ({
 	loadUser: () => dispatch(loadUser()),
 	deleteUser: userId => dispatch(deleteUser(userId)),
 	logout: () => dispatch(logout()),
-	updateUserCredentials: credentials => dispatch(updateUserCredentials(credentials))
+	updateUserCredentials: credentials => dispatch(updateUserCredentials(credentials)),
+	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Settings))

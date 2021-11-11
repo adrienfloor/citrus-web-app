@@ -5,7 +5,10 @@ import { Link, withRouter } from 'react-router-dom'
 
 import MobileDrawer from '../components/mobile-drawer'
 import { logout } from '../actions/auth-actions'
-import { setDashboardFocus } from '../actions/navigation-actions'
+import {
+	setDashboardFocus,
+	setIsRedirectingHome
+} from '../actions/navigation-actions'
 import { capitalize } from '../utils/various'
 
 import '../styling/headings.css'
@@ -22,7 +25,8 @@ const Layout = ({
 	isDashboard,
 	t,
 	location,
-	history
+	history,
+	setIsRedirectingHome
 }) => {
 
 	const isActiveTab = tab => {
@@ -44,7 +48,10 @@ const Layout = ({
 						isAuthenticated &&
 						<div className='mobile-drawer'>
 							<MobileDrawer
-								logout={logout}
+								logout={() => {
+									logout()
+									setIsRedirectingHome(true)
+								}}
 								currentFocus={focus => setDashboardFocus(focus)}
 							/>
 						</div>
@@ -96,20 +103,25 @@ const Layout = ({
 							</div>
 						</div>
 						<div
-							onClick={logout}
+							onClick={() => {
+								logout()
+								setIsRedirectingHome(true)
+							}}
 							className='medium-text hover logout desktop-only'
 						>
-							<div
-								className='small-button'
-								style={{
-								minWidth: '100px',
-								height: '35px'
-								}}
-							>
-								<span className='small-text-bold citrusWhite'>
-									{capitalize(t('logOut'))}
-								</span>
-							</div>
+						<a href='https://thecitrusapp.com'>
+								<div
+									className='small-button'
+									style={{
+									minWidth: '100px',
+									height: '35px'
+									}}
+								>
+									<span className='small-text-bold citrusWhite'>
+										{capitalize(t('logOut'))}
+									</span>
+								</div>
+							</a>
 						</div>
 					</>
 				}
@@ -237,7 +249,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	logout: () => dispatch(logout()),
-	setDashboardFocus: focus => dispatch(setDashboardFocus(focus))
+	setDashboardFocus: focus => dispatch(setDashboardFocus(focus)),
+	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter((withTranslation()(Layout))))

@@ -489,7 +489,7 @@
 	"buyingCoachingALaCarte": "achat du coaching à la carte",
 	"startMyTrainingNow": "commencer mon entraînement maintenant",
 	"legalInformation": "informations légales",
-	"legalUserCreationDisclaimer": "dans le but de te reverser les gains générés par tes vidéos, nous avons l'obligation légale de recueillir quelques informations supplémentaires sur ton statut. Merci de remplir les champs suivants ( tu n'auras pas à le faire lors de ta prochaine publication, uniquement cette fois ) :",
+	"legalUserCreationDisclaimer": "avant d'uploader ta vidéo nous avons besoin d'informations supplémentaires. Pas d'inquiétude, ce n'est que pour cette fois.",
 	"legalRepresentativeFirstName": "prénom du représentant légal",
 	"legalRepresentativeLastName": "nom du représentant légal",
 	"legalPersonType": "type de statut",
@@ -535,5 +535,7 @@
 	"cancelMySubscription": "annuler mon abonnement",
 	"remainingCredits": "crédits restants",
 	"noTakeMeHome": "non, revenir au dashboard",
-	"newTraining": "nouvel entraînement"
+	"newTraining": "nouvel entraînement",
+	"videoUploadCanceled": "tu as annulé l'upload de ton coaching",
+	"currentBalance": "solde en cours"
 }

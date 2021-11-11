@@ -26,6 +26,7 @@ import '../../styling/web-app.css'
 import { ReactComponent as CaretDown } from '../../assets/svg/caret-down.svg'
 import { ReactComponent as CaretUp } from '../../assets/svg/caret-up.svg'
 import { ReactComponent as Check } from '../../assets/svg/check.svg'
+import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
 import {
 	capitalize,
@@ -76,7 +77,6 @@ class Schedule extends React.Component {
 			price: (coaching || {}).price || '',
 			isLoading: false,
 			isSelecting: '',
-			// isShowingAllParams: false,
 			isButtonDisabled: false,
 			errorMessage: '',
 			videoFile: '',
@@ -84,13 +84,15 @@ class Schedule extends React.Component {
 			progress: null,
 			isProcessingVideo: false,
 			isCreatingLegalUser: false,
-			videoErrorMessage: ''
+			videoErrorMessage: '',
+			coachingId: null
 		}
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
 		this.upload = this.upload.bind(this)
 		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
 		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
+		this.handleCancelUpload = this.handleCancelUpload.bind(this)
 	}
 
 	componentDidMount() {
@@ -269,6 +271,7 @@ class Schedule extends React.Component {
 		return createCoaching(newCoaching)
 			.then(res => {
 				const coachingId = res.payload._id
+				this.setState({ coachingId })
 				this.upload(coachingId)
 			})
 	}
@@ -365,6 +368,28 @@ class Schedule extends React.Component {
 		)
 	}
 
+	handleCancelUpload() {
+		const { coachingId } = this.state
+		const {
+			deleteCoaching,
+			user,
+			t,
+			history
+		} = this.props
+
+		this.setState({
+			progress: null,
+			isProcessingVideo: false,
+			errorMessage: capitalize(t('videoUploadCanceled'))
+		})
+		deleteCoaching(coachingId)
+		setTimeout(function () {
+			this.setState({
+				errorMessage: ''
+			})
+		}.bind(this), 5000)
+	}
+
 
 	render() {
 		const {
@@ -389,7 +414,6 @@ class Schedule extends React.Component {
 			freeAccess,
 			isLoading,
 			isSelecting,
-			// isShowingAllParams,
 			isButtonDisabled,
 			errorMessage,
 			progress,
@@ -455,9 +479,9 @@ class Schedule extends React.Component {
 						displayEmpty
 						renderValue={(selected) => {
 							if (selected.length === 0) {
-								return <em className='small-text-bold citrusGrey'>{t('sportPlaceholder')}</em>
+								return <em className='small-text-bold citrusGrey'>{capitalize(t('sportPlaceholder'))}</em>
 							}
-							return t(selected)
+							return capitalize(t(selected))
 						}}
 					>
 						<MenuItem disabled value="">
@@ -491,7 +515,7 @@ class Schedule extends React.Component {
 							if (selected.length === 0) {
 								return (
 									<em className='small-text-bold citrusGrey'>
-										{`${t('pricePlaceholder')} ${returnCurrency(moment.locale())})`}
+										{`${capitalize(t('pricePlaceholder'))} ${returnCurrency(moment.locale())})`}
 									</em>
 								)
 							}
@@ -515,37 +539,6 @@ class Schedule extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					{/* {
-						progress || progress === 0 ?
-						null :
-						<div className='more-details-row'>
-							<span className='small-text-bold citrusGrey'>
-								{
-									!isShowingAllParams ?
-									t('moreInfo') :
-									''
-								}
-							</span>
-							<div
-								onClick={() => this.setState({ isShowingAllParams: !isShowingAllParams })}
-								className='hover'
-							>
-								{
-									isShowingAllParams ?
-										<CaretUp
-											width={25}
-											height={25}
-											strokeWidth={2}
-										/> :
-										<CaretDown
-											width={25}
-											height={25}
-											strokeWidth={2}
-										/>
-								}
-							</div>
-						</div>
-					} */}
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{capitalize(t('addAThumbnail'))}
 					</span>
@@ -591,7 +584,6 @@ class Schedule extends React.Component {
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
 					{
-						// isShowingAllParams && !progress &&
 						!progress &&
 						<>
 							<span className='small-text-bold citrusGrey titles-form-input'>
@@ -607,11 +599,11 @@ class Schedule extends React.Component {
 									if (selected.length === 0) {
 										return (
 											<em className='small-text-bold citrusGrey'>
-												{t('durationPlaceholder')}
+												{capitalize(t('durationPlaceholder'))}
 											</em>
 										)
 									}
-									return t(selected)
+									return capitalize(t(selected))
 								}}
 							>
 								<MenuItem disabled value="">
@@ -644,11 +636,11 @@ class Schedule extends React.Component {
 									if (selected.length === 0) {
 										return (
 											<em className='small-text-bold citrusGrey'>
-												{t('levelPlaceholder')}
+												{capitalize(t('levelPlaceholder'))}
 											</em>
 										)
 									}
-									return t(selected)
+									return capitalize(t(selected))
 								}}
 							>
 								<MenuItem disabled value="">
@@ -682,11 +674,11 @@ class Schedule extends React.Component {
 									if (selected.length === 0) {
 										return (
 											<em className='small-text-bold citrusGrey'>
-												{t('equipmentPlaceholder')}
+												{capitalize(t('equipmentPlaceholder'))}
 											</em>
 										)
 									}
-									return selected.map(el => t(el)).join(', ')
+									return selected.map(el => capitalize(t(el))).join(', ')
 								}}
 							>
 								<MenuItem disabled value="">
@@ -716,11 +708,11 @@ class Schedule extends React.Component {
 									if (selected.length === 0) {
 										return (
 											<em className='small-text-bold citrusGrey'>
-												{t('focusPlaceholder')}
+												{capitalize(t('focusPlaceholder'))}
 											</em>
 										)
 									}
-									return selected.map(el => t(el)).join(', ')
+									return selected.map(el => capitalize(t(el))).join(', ')
 								}}
 							>
 								<MenuItem disabled value="">
@@ -749,11 +741,11 @@ class Schedule extends React.Component {
 									if (selected.length === 0) {
 										return (
 											<em className='small-text-bold citrusGrey'>
-												{t('languagePlaceholder')}
+												{capitalize(t('languagePlaceholder'))}
 											</em>
 										)
 									}
-									return t(selected)
+									return capitalize(t(selected))
 								}}
 							>
 								<MenuItem disabled value="">
@@ -804,55 +796,107 @@ class Schedule extends React.Component {
 							</button>
 						</div>
 					}
-					{
-						progress !== null && progress >= 0 && !isProcessingVideo ?
-						<div className='flex-row' style={{ height: '50px', width: '80%' }}>
-							<div className='flex-row' style={{ alignItems: 'center'}}>
-								<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px'}}>
-									{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
-								</span>
-								<Loader
-									type="Oval"
-									color="#C2C2C2"
-									height={20}
-									width={20}
-								/>
-							</div>
-							<ProgressBar
-								completed={progress}
-								height='10px'
-								baseBgColor='#DFDFDF'
-								bgColor='#C2C2C2'
-								isLabelVisible={false}
-							/>
-						</div> : null
-					}
-					{
-						isProcessingVideo &&
-						<div className='flex-row' style={{ height: '50px', width: '80%' }}>
-							<div className='flex-row' style={{ alignItems: 'center' }}>
-								<span className='small-text-bold citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
-									{capitalize(t('processingVideo'))}
-								</span>
-								<Loader
-									type="Oval"
-									color="#C2C2C2"
-									height={20}
-									width={20}
-								/>
-							</div>
-						</div>
-					}
-					{
-						progress !== null && progress >= 0 && !isProcessingVideo ?
-							<span
-								className='small-text-bold citrusBlack'
-								style={{ width: '80%', marginBottom: '10px' }}
-							>
-								{capitalize(t('dontClose'))}
-							</span> : null
-					}
 				</form>
+				{
+					progress &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({
+							progress: 0,
+							isProcessingVideo: false
+						})}
+					>
+						<div
+							style={{
+								width: '99%',
+								height: '50px',
+								display: 'flex',
+								justifyContent: 'flex-end',
+								alignItems: 'center'
+							}}
+							onClick={this.handleCancelUpload}
+							className='hover'
+						>
+							<Close
+								width={25}
+								height={25}
+								stroke={'#C2C2C2'}
+								strokeWidth={2}
+							/>
+						</div>
+						<div
+							className='flex-center flex-column full-width-and-height-dialog upload-dialog'
+							style={{ minHeight: '700px' }}
+						>
+							{
+								progress !== null && progress >= 0 && !isProcessingVideo ?
+									<div className='flex-column'>
+										<div
+											className='flex-row'
+											style={{ alignItems: 'center', justifyContent: 'center' }}
+										>
+											<span className='big-title-upload-video citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+												{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
+											</span>
+										</div>
+										<div className='medium-separator'></div>
+										<div className='medium-separator'></div>
+										<div className='flex-center' style={{ width: '100%'}}>
+											<ProgressBar
+												completed={progress}
+												height='10px'
+												width='350px'
+												baseBgColor='#DFDFDF'
+												bgColor='#0075FF'
+												isLabelVisible={false}
+											/>
+										</div>
+									</div> : null
+							}
+							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
+							{
+								isProcessingVideo &&
+								<div className='flex-row' style={{ height: '50px', maxWidth: '350px' }}>
+									<div className='flex-row' style={{ alignItems: 'center' }}>
+										<span className='small-title citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+											{capitalize(t('processingVideo'))}
+										</span>
+										<Loader
+											type="Oval"
+											color="#C2C2C2"
+											height={20}
+											width={20}
+										/>
+									</div>
+								</div>
+							}
+							{
+								progress !== null && progress >= 0 && !isProcessingVideo ?
+									<span
+										className='small-title citrusBlack'
+										style={{
+											width: '100%',
+											marginBottom: '10px',
+											textAlign: 'center',
+											maxWidth: '350px'
+										}}
+									>
+										{capitalize(t('dontClose'))}
+									</span> : null
+							}
+							{
+								errorMessage.length > 0 &&
+								<>
+									<div className='medium-separator'></div>
+									<span className='small-text-bold citrusRed'>
+										{errorMessage}
+									</span>
+								</>
+							}
+						</div>
+					</Dialog>
+				}
 				{
 					isCreatingLegalUser &&
 					<Dialog

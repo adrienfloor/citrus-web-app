@@ -45,7 +45,8 @@ class PayInConfirmation extends React.Component {
 			coachingId: null,
 			coaching: null,
 			coachInfo: null,
-			subscription: null
+			subscription: null,
+			hasUpdatedPlan: false
 		}
 		this.handleBuyCoaching = this.handleBuyCoaching.bind(this)
 	}
@@ -65,12 +66,16 @@ class PayInConfirmation extends React.Component {
 		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+		const hasUpdatedPlan = qs.parse(location.search, { ignoreQueryPrefix: true }).updateplan
 
 		let billingDate = new Date().getUTCDate()
 		if (billingDate > 27 && billingDate < 32) {
 			billingDate = 28
 		}
 
+		if (hasUpdatedPlan) {
+			this.setState({ hasUpdatedPlan })
+		}
 		if(coachingId) {
 			this.setState({ coachingId })
 		}
@@ -138,20 +143,21 @@ class PayInConfirmation extends React.Component {
 									})
 								})
 						}
-					} else {
-						return this.setState({
-							isLoading: false,
-							isFailure: true,
-							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
-						})
 					}
 				})
 		} else {
-			return this.setState({
-				isLoading: false,
-				isFailure: true,
-				errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
-			})
+			if (hasUpdatedPlan) {
+				return this.setState({
+					isLoading: false,
+					isFailure: false
+				})
+			} else {
+				return this.setState({
+					isLoading: false,
+					isFailure: true,
+					errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+				})
+			}
 		}
 	}
 

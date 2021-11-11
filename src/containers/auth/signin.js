@@ -22,6 +22,7 @@ import {
 } from '../../actions/auth-actions'
 import { 	fetchTrainerCoachings } from '../../actions/coachings-actions'
 import { executeExploreSearch } from '../../actions/search-actions'
+import { setIsRedirectingHome } from '../../actions/navigation-actions'
 
 import {
 	isValidEmailInput,
@@ -100,7 +101,8 @@ class Signin extends React.Component {
 			signin,
 			executeExploreSearch,
 			fetchTrainerCoachings,
-			fetchUserReplays
+			fetchUserReplays,
+			setIsRedirectingHome
 		} = this.props
 
 		this.setState({
@@ -119,6 +121,7 @@ class Signin extends React.Component {
 			email.toLowerCase(),
 			password
 		).then(async (res) => {
+			setIsRedirectingHome(false)
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const userId = res.payload.user._id
 				const search = await executeExploreSearch('all', userId, 5, 5)
@@ -376,7 +379,8 @@ const mapDispatchToProps = dispatch => ({
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
 	executeExploreSearch: (sport, userId, skipValue, limit) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue, limit))
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
+	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Signin))

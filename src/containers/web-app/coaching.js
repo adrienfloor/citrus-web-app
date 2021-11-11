@@ -425,7 +425,7 @@ class Coaching extends React.Component {
 						</>
 					}
 					{
-						!user.subscription &&
+						user.subscription !== 30 &&
 						<>
 							<div
 								className='light-button full-width hover'
@@ -464,6 +464,8 @@ class Coaching extends React.Component {
 					}}
 				>
 					<CoachingCheckout
+						currentPlan={user.subscription}
+						credits={credits}
 						type={isCoachingCheckoutOpen}
 						amount={coaching.price}
 						coachingId={coaching._id}

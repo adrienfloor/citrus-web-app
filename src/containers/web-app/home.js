@@ -440,13 +440,13 @@ class Home extends React.Component {
 										subscription &&
 										<>
 											<span className='small-title citrusBlack'>
-												{capitalize(t('plan'))}
+												{capitalize(t('currentBalance'))}
 											</span>
 											<div className='small-separator'></div>
 											<div className='stats-row'>
 												<div className='stats-column'>
 													<span className='big-number'>
-														{`${credits}/${subscription}`}
+														{credits || 0}
 													</span>
 													<span className='small-title citrusGrey'>
 														{capitalize(t('remainingCredits'))}

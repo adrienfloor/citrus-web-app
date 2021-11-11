@@ -301,7 +301,7 @@ class CreateLegalUser extends React.Component {
 					onSubmit={this.handleSubmit}
 				>
 					<div className='small-separator'></div>
-					<span className='small-title citrusBlack'>
+					<span className='medium-title citrusBlack'>
 						{capitalize(t('legalInformation'))}
 					</span>
 					<div className='small-separator'></div>

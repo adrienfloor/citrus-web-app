@@ -246,6 +246,9 @@
 .full-width-and-height-dialog {
 	min-width: 1020px;
 }
+.upload-dialog {
+	min-height: 700px;
+}
 .coaching-column {
 	display: flex;
 	flex-direction: column;
@@ -502,6 +505,14 @@
 }
 .schedule-submit-button {
 	width: 100%;
+}
+
+.big-title-upload-video {
+	font-family: Raleway-Bold;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 47px;
 }
 
 /* SCROLLBAR */
@@ -873,6 +884,12 @@ input[type=number] {
 	}
 	.only-on-hover:hover {
 		display: flex !important;
+	}
+	.big-title-upload-video {
+		font-size: 22px;
+	}
+	.upload-dialog {
+		min-height: 500px !important;
 	}
 
 	/* MATERIAL UI OVERIDE */
