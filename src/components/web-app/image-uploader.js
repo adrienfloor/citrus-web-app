@@ -29,7 +29,7 @@ class ImageUploader extends React.Component {
 			isImageLoading: false,
 			imgSrc: this.props.pictureUri,
 			crop: {
-				unit: 'px',
+				unit: '%',
 				width: 50,
 				aspect: this.props.aspect || 3/2
 			},

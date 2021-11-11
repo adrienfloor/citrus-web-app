@@ -59,6 +59,8 @@ const {
 	REACT_APP_SERVER_URL
 } = process.env
 
+let upload = null
+
 class Schedule extends React.Component {
 	constructor(props) {
 		super(props)
@@ -85,7 +87,10 @@ class Schedule extends React.Component {
 			isProcessingVideo: false,
 			isCreatingLegalUser: false,
 			videoErrorMessage: '',
-			coachingId: null
+			coachingId: null,
+			isConfirmingCancelUpload: false,
+			isUploading: false,
+			videoSrc: ''
 		}
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
@@ -143,7 +148,7 @@ class Schedule extends React.Component {
 			updateCoaching(updatedCoaching)
 			.then(res => console.log('updated coaching : ', res))
 
-			const upload = UpChunk.createUpload({
+			upload = UpChunk.createUpload({
 				endpoint: muxUploadUrl,
 				file: videoFile,
 				chunkSize: 5120
@@ -162,6 +167,12 @@ class Schedule extends React.Component {
 			})
 
 			upload.on('progress', progress => {
+				if(progress && progress.detail && progress.detail > 0) {
+					this.setState({
+						isLoading: false,
+						isUploading: true
+					})
+				}
 				console.log(`So far we've uploaded ${progress.detail}% of this file.`)
 				this.setState({ progress: Math.round(progress.detail) })
 			})
@@ -223,7 +234,7 @@ class Schedule extends React.Component {
 		this.setState({
 			isCreatingLegalUser: false,
 			isButtonDisabled: true,
-			progress: 0
+			progress: null
 		})
 
 		if (this.hasMissingParams()) {
@@ -247,6 +258,8 @@ class Schedule extends React.Component {
 				progress: null
 			})
 		}
+
+		this.setState({ isLoading: true })
 
 		const newCoaching = {
 			title: title.toLowerCase(),
@@ -380,14 +393,23 @@ class Schedule extends React.Component {
 		this.setState({
 			progress: null,
 			isProcessingVideo: false,
-			errorMessage: capitalize(t('videoUploadCanceled'))
+			errorMessage: capitalize(t('videoUploadCanceled')),
+			isUploading: false,
+			isButtonDisabled: false,
+			isProcessingVideo: false,
+			isCreatingLegalUser: false,
+			coachingId: null,
+			isConfirmingCancelUpload: false
 		})
+
+		upload.abort()
+
 		deleteCoaching(coachingId)
 		setTimeout(function () {
 			this.setState({
 				errorMessage: ''
 			})
-		}.bind(this), 5000)
+		}.bind(this), 3000)
 	}
 
 
@@ -420,7 +442,10 @@ class Schedule extends React.Component {
 			isProcessingVideo,
 			price,
 			isCreatingLegalUser,
-			videoErrorMessage
+			videoErrorMessage,
+			isConfirmingCancelUpload,
+			isUploading,
+			videoSrc
 		} = this.state
 
 		if (isLoading) {
@@ -464,6 +489,7 @@ class Schedule extends React.Component {
 						className='small-text-bold citrusGrey form-input'
 						onChange={(e) => this.setState({ title: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
+						value={title}
 					/>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
@@ -561,14 +587,15 @@ class Schedule extends React.Component {
 						<VideoUploader
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
-							onVideoSelected={videoFile => {
+							onVideoSelected={(videoFile, videoSrc) => {
 								console.log('video file', videoFile)
-								this.setState({ videoFile })
+								this.setState({ videoFile, videoSrc })
 							}}
 							onError={() =>this.setState({
 								videoErrorMessage: capitalize(t('unreadableVideoFile')),
 								videoFile: ''
 							})}
+							videoSrc={videoSrc}
 						/>
 						{
 							videoErrorMessage &&
@@ -583,188 +610,183 @@ class Schedule extends React.Component {
 					</div>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
-					{
-						!progress &&
-						<>
-							<span className='small-text-bold citrusGrey titles-form-input'>
-								{`${capitalize(t('duration'))} ( ${t('optional')} )`}
-							</span>
-							<Select
-								variant='outlined'
-								className='form-input'
-								value={duration}
-								onChange={e => this.setState({ duration: e.target.value })}
-								displayEmpty
-								renderValue={(selected) => {
-									if (selected.length === 0) {
-										return (
-											<em className='small-text-bold citrusGrey'>
-												{capitalize(t('durationPlaceholder'))}
-											</em>
-										)
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{`${capitalize(t('duration'))} ( ${t('optional')} )`}
+					</span>
+					<Select
+						variant='outlined'
+						className='form-input'
+						value={duration}
+						onChange={e => this.setState({ duration: e.target.value })}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='small-text-bold citrusGrey'>
+										{capitalize(t('durationPlaceholder'))}
+									</em>
+								)
+							}
+							return capitalize(t(selected))
+						}}
+					>
+						<MenuItem disabled value="">
+							<em className='small-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
+						</MenuItem>
+						{
+							durationsItems.map((duration, i) => (
+								<MenuItem key={i} value={duration}>
+									{
+										duration === this.state.duration ?
+											this.returnSimpleSelectItem(duration) :
+											capitalize(t(duration))
 									}
-									return capitalize(t(selected))
-								}}
-							>
-								<MenuItem disabled value="">
-									<em className='small-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
 								</MenuItem>
-								{
-									durationsItems.map((duration, i) => (
-										<MenuItem key={i} value={duration}>
-											{
-												duration === this.state.duration ?
-													this.returnSimpleSelectItem(duration) :
-													capitalize(t(duration))
-											}
-										</MenuItem>
-									))
-								}
-							</Select>
-							<div className='medium-separator'></div>
-							<div className='small-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
-								{`${capitalize(t('level'))} ( ${t('optional')} )`}
-							</span>
-							<Select
-								variant='outlined'
-								className='form-input'
-								value={level}
-								onChange={e => this.setState({ level: e.target.value })}
-								displayEmpty
-								renderValue={(selected) => {
-									if (selected.length === 0) {
-										return (
-											<em className='small-text-bold citrusGrey'>
-												{capitalize(t('levelPlaceholder'))}
-											</em>
-										)
+							))
+						}
+					</Select>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{`${capitalize(t('level'))} ( ${t('optional')} )`}
+					</span>
+					<Select
+						variant='outlined'
+						className='form-input'
+						value={level}
+						onChange={e => this.setState({ level: e.target.value })}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='small-text-bold citrusGrey'>
+										{capitalize(t('levelPlaceholder'))}
+									</em>
+								)
+							}
+							return capitalize(t(selected))
+						}}
+					>
+						<MenuItem disabled value="">
+							<em className='small-text-bold citrusGrey'>{t('levelPlaceholder')}</em>
+						</MenuItem>
+						{
+							levelsItems.map((level, i) => (
+								<MenuItem key={i} value={level}>
+									{
+										level === this.state.level ?
+											this.returnSimpleSelectItem(level) :
+											capitalize(t(level))
 									}
-									return capitalize(t(selected))
-								}}
-							>
-								<MenuItem disabled value="">
-									<em className='small-text-bold citrusGrey'>{t('levelPlaceholder')}</em>
 								</MenuItem>
-								{
-									levelsItems.map((level, i) => (
-										<MenuItem key={i} value={level}>
-											{
-												level === this.state.level ?
-													this.returnSimpleSelectItem(level) :
-													capitalize(t(level))
-											}
-										</MenuItem>
-									))
-								}
-							</Select>
-							<div className='medium-separator'></div>
-							<div className='small-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
-								{`${capitalize(t('equipment'))} ( ${t('optional')} )`}
-							</span>
-							<Select
-								multiple
-								variant='outlined'
-								className='form-input'
-								value={equipment}
-								onChange={e => this.setState({ equipment: e.target.value })}
-								displayEmpty
-								renderValue={(selected) => {
-									if (selected.length === 0) {
-										return (
-											<em className='small-text-bold citrusGrey'>
-												{capitalize(t('equipmentPlaceholder'))}
-											</em>
-										)
+							))
+						}
+					</Select>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{`${capitalize(t('equipment'))} ( ${t('optional')} )`}
+					</span>
+					<Select
+						multiple
+						variant='outlined'
+						className='form-input'
+						value={equipment}
+						onChange={e => this.setState({ equipment: e.target.value })}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='small-text-bold citrusGrey'>
+										{capitalize(t('equipmentPlaceholder'))}
+									</em>
+								)
+							}
+							return selected.map(el => capitalize(t(el))).join(', ')
+						}}
+					>
+						<MenuItem disabled value="">
+							<em className='small-text-bold citrusGrey'>{t('equipmentPlaceholder')}</em>
+						</MenuItem>
+						{
+							equipmentsItems.map((equipment, i) => (
+								<MenuItem key={i} value={equipment}>
+									{this.returnMultipleSelectItem(equipment, 'gear')}
+								</MenuItem>
+							))
+						}
+					</Select>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{`${capitalize(t('focus'))} ( ${t('optional')} )`}
+					</span>
+					<Select
+						multiple
+						variant='outlined'
+						className='form-input'
+						value={focus}
+						onChange={e => this.setState({ focus: e.target.value })}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='small-text-bold citrusGrey'>
+										{capitalize(t('focusPlaceholder'))}
+									</em>
+								)
+							}
+							return selected.map(el => capitalize(t(el))).join(', ')
+						}}
+					>
+						<MenuItem disabled value="">
+							<em className='small-text-bold citrusGrey'>{t('focusPlaceholder')}</em>
+						</MenuItem>
+						{
+							focusItems.map((fc, i) => (
+								<MenuItem key={i} value={fc}>
+									{this.returnMultipleSelectItem(fc, 'focus')}
+								</MenuItem>
+							))
+						}
+					</Select>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{`${capitalize(t('language'))} ( ${t('optional')} )`}
+					</span>
+					<Select
+						variant='outlined'
+						className='form-input'
+						value={language}
+						onChange={e => this.setState({ language: e.target.value })}
+						displayEmpty
+						renderValue={(selected) => {
+							if (selected.length === 0) {
+								return (
+									<em className='small-text-bold citrusGrey'>
+										{capitalize(t('languagePlaceholder'))}
+									</em>
+								)
+							}
+							return capitalize(t(selected))
+						}}
+					>
+						<MenuItem disabled value="">
+							<em className='small-text-bold citrusGrey'>{t('languagePlaceholder')}</em>
+						</MenuItem>
+						{
+							languagesItems.map((language, i) => (
+								<MenuItem key={i} value={language}>
+									{
+										language === this.state.language ?
+											this.returnSimpleSelectItem(language) :
+											capitalize(t(language))
 									}
-									return selected.map(el => capitalize(t(el))).join(', ')
-								}}
-							>
-								<MenuItem disabled value="">
-									<em className='small-text-bold citrusGrey'>{t('equipmentPlaceholder')}</em>
 								</MenuItem>
-								{
-									equipmentsItems.map((equipment, i) => (
-										<MenuItem key={i} value={equipment}>
-											{this.returnMultipleSelectItem(equipment, 'gear')}
-										</MenuItem>
-									))
-								}
-							</Select>
-							<div className='medium-separator'></div>
-							<div className='small-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
-								{`${capitalize(t('focus'))} ( ${t('optional')} )`}
-							</span>
-							<Select
-								multiple
-								variant='outlined'
-								className='form-input'
-								value={focus}
-								onChange={e => this.setState({ focus: e.target.value })}
-								displayEmpty
-								renderValue={(selected) => {
-									if (selected.length === 0) {
-										return (
-											<em className='small-text-bold citrusGrey'>
-												{capitalize(t('focusPlaceholder'))}
-											</em>
-										)
-									}
-									return selected.map(el => capitalize(t(el))).join(', ')
-								}}
-							>
-								<MenuItem disabled value="">
-									<em className='small-text-bold citrusGrey'>{t('focusPlaceholder')}</em>
-								</MenuItem>
-								{
-									focusItems.map((fc, i) => (
-										<MenuItem key={i} value={fc}>
-											{this.returnMultipleSelectItem(fc, 'focus')}
-										</MenuItem>
-									))
-								}
-							</Select>
-							<div className='medium-separator'></div>
-							<div className='small-separator'></div>
-							<span className='small-text-bold citrusGrey titles-form-input'>
-								{`${capitalize(t('language'))} ( ${t('optional')} )`}
-							</span>
-							<Select
-								variant='outlined'
-								className='form-input'
-								value={language}
-								onChange={e => this.setState({ language: e.target.value })}
-								displayEmpty
-								renderValue={(selected) => {
-									if (selected.length === 0) {
-										return (
-											<em className='small-text-bold citrusGrey'>
-												{capitalize(t('languagePlaceholder'))}
-											</em>
-										)
-									}
-									return capitalize(t(selected))
-								}}
-							>
-								<MenuItem disabled value="">
-									<em className='small-text-bold citrusGrey'>{t('languagePlaceholder')}</em>
-								</MenuItem>
-								{
-									languagesItems.map((language, i) => (
-										<MenuItem key={i} value={language}>
-											{
-												language === this.state.language ?
-													this.returnSimpleSelectItem(language) :
-													capitalize(t(language))
-											}
-										</MenuItem>
-									))
-								}
-							</Select>
-						</>
-					}
+							))
+						}
+					</Select>
 					<div className='medium-separator'></div>
 					{
 						errorMessage.length > 0 &&
@@ -798,7 +820,7 @@ class Schedule extends React.Component {
 					}
 				</form>
 				{
-					progress &&
+					isUploading ?
 					<Dialog
 						open={true}
 						onClose={() => this.setState({
@@ -806,30 +828,65 @@ class Schedule extends React.Component {
 							isProcessingVideo: false
 						})}
 					>
-						<div
-							style={{
-								width: '99%',
-								height: '50px',
-								display: 'flex',
-								justifyContent: 'flex-end',
-								alignItems: 'center'
-							}}
-							onClick={this.handleCancelUpload}
-							className='hover'
-						>
-							<Close
-								width={25}
-								height={25}
-								stroke={'#C2C2C2'}
-								strokeWidth={2}
-							/>
-						</div>
+						{
+							!isConfirmingCancelUpload &&
+							<div
+								style={{
+									width: '99%',
+									height: '50px',
+									display: 'flex',
+									justifyContent: 'flex-end',
+									alignItems: 'center'
+								}}
+								onClick={() => this.setState({ isConfirmingCancelUpload: true })}
+								className='hover'
+							>
+								<Close
+									width={25}
+									height={25}
+									stroke={'#C2C2C2'}
+									strokeWidth={2}
+								/>
+							</div>
+						}
 						<div
 							className='flex-center flex-column full-width-and-height-dialog upload-dialog'
 							style={{ minHeight: '700px' }}
 						>
 							{
-								progress !== null && progress >= 0 && !isProcessingVideo ?
+								isConfirmingCancelUpload &&
+								<>
+									<div className='small-separator'></div>
+									<span className='small-title'>
+										{capitalize(t('areYouSureYouWantToCancelTheUpload'))}
+									</span>
+									<div className='small-separator'></div>
+									<div className='medium-separator'></div>
+									<div className='flex-column flex-center'>
+										<button
+											className='filled-button'
+											onClick={this.handleCancelUpload}
+										>
+											<span className='small-title citrusWhite'>
+												{capitalize(t('yes'))}
+											</span>
+										</button>
+										<div className='small-separator'></div>
+										<button
+											className='light-button'
+											onClick={() => this.setState({
+												isConfirmingCancelUpload: false
+											})}
+										>
+											<span className='small-title citrusBlue'>
+												{capitalize(t('no'))}
+											</span>
+										</button>
+									</div>
+								</>
+							}
+							{
+								progress !== null && progress >= 0 && !isProcessingVideo && !isConfirmingCancelUpload ?
 									<div className='flex-column'>
 										<div
 											className='flex-row'
@@ -856,7 +913,7 @@ class Schedule extends React.Component {
 							<div className='medium-separator'></div>
 							<div className='small-separator'></div>
 							{
-								isProcessingVideo &&
+								isProcessingVideo && !isConfirmingCancelUpload &&
 								<div className='flex-row' style={{ height: '50px', maxWidth: '350px' }}>
 									<div className='flex-row' style={{ alignItems: 'center' }}>
 										<span className='small-title citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
@@ -872,7 +929,7 @@ class Schedule extends React.Component {
 								</div>
 							}
 							{
-								progress !== null && progress >= 0 && !isProcessingVideo ?
+								progress !== null && progress >= 0 && !isProcessingVideo && !isConfirmingCancelUpload ?
 									<span
 										className='small-title citrusBlack'
 										style={{
@@ -886,7 +943,7 @@ class Schedule extends React.Component {
 									</span> : null
 							}
 							{
-								errorMessage.length > 0 &&
+								errorMessage.length > 0 && !isConfirmingCancelUpload &&
 								<>
 									<div className='medium-separator'></div>
 									<span className='small-text-bold citrusRed'>
@@ -895,7 +952,7 @@ class Schedule extends React.Component {
 								</>
 							}
 						</div>
-					</Dialog>
+					</Dialog> : null
 				}
 				{
 					isCreatingLegalUser &&

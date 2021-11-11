@@ -537,5 +537,6 @@
 	"noTakeMeHome": "non, revenir au dashboard",
 	"newTraining": "nouvel entraînement",
 	"videoUploadCanceled": "tu as annulé l'upload de ton coaching",
-	"currentBalance": "solde en cours"
+	"currentBalance": "solde en cours",
+	"areYouSureYouWantToCancelTheUpload": "es-tu sûr de vouloir annuler ce coaching ?"
 }

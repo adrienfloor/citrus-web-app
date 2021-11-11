@@ -535,5 +535,6 @@
 	"noTakeMeHome": "no, take me home",
 	"newTraining": "new training",
 	"videoUploadCanceled": "you canceled the upload of your coaching",
-	"currentBalance": "solde en cours"
+	"currentBalance": "solde en cours",
+	"areYouSureYouWantToCancelTheUpload": "are you sure you want to cancel this coaching ?"
 }

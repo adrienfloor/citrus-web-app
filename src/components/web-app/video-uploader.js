@@ -23,7 +23,7 @@ class VideoUploader extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			videoSrc: '',
+			videoSrc: this.props.videoSrc || '',
 			isLoading: false
 		}
 		this.handleVideoPicking = this.handleVideoPicking.bind(this)
@@ -34,7 +34,10 @@ class VideoUploader extends React.Component {
 		const { videoSrc } = this.state
 		if(e && e.target && e.target.files || e.tartget.files[0]) {
 			this.setState({ videoSrc: URL.createObjectURL(e.target.files[0]) })
-			onVideoSelected(e.target.files[0])
+			onVideoSelected(
+				e.target.files[0],
+				URL.createObjectURL(e.target.files[0])
+			)
 			return
 		} else {
 			return onError()
