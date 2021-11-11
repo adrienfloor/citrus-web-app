@@ -29,7 +29,7 @@ class ImageUploader extends React.Component {
 			isImageLoading: false,
 			imgSrc: this.props.pictureUri,
 			crop: {
-				unit: '%',
+				unit: 'px',
 				width: 50,
 				aspect: this.props.aspect || 3/2
 			},
@@ -76,7 +76,7 @@ class ImageUploader extends React.Component {
 
 	handleOnCropChange(crop, percentCrop) {
 		console.log('on crop change', crop, percentCrop)
-		this.setState({ crop: percentCrop })
+		this.setState({ crop })
 	}
 
 	async makeClientCrop(crop) {
