@@ -222,7 +222,6 @@ class Profile extends React.Component {
 								paddingLeft: '30px',
 								width: '100%',
 								maxWidth: '600px',
-								height: '200px',
 								justifyContent: isEditing ? 'space-between' : 'flex-start'
 							}}
 							className='profile-column'

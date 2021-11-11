@@ -451,12 +451,11 @@ class Explore extends React.Component {
 									activeTabIndex !== 'all' && searchInputText === '' && (
 										<Link to='/schedule' className='empty-coaching-card hover'>
 											<PlusButton
-												width={180}
-												height={180}
+												width={90}
+												height={90}
 												stroke={'#FFFFFF'}
 												strokeWidth={2}
 											/>
-											<div className='small-separator'></div>
 											<span className='small-title citrusBlack'>
 												{capitalize(t('noSessionsInThatCategory'))}
 											</span>
@@ -466,7 +465,7 @@ class Explore extends React.Component {
 													{capitalize(t('createOne'))}
 												</span>
 											</div>
-											<div className='small-separator'></div>
+											<div className='medium-separator'></div>
 										</Link>
 									)}
 							</div>
