@@ -11,7 +11,7 @@ export default {
 		canoeing: "canoeing",
 		circuitTraining: "circuit training",
 		climbing: "climbing",
-		conditionning: "conditionning:",
+		conditionning: "conditionning",
 		crossCountrySkiing: "cross country skiing",
 		crossfit: "crossfit",
 		cycling: "cycling",

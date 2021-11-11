@@ -5,9 +5,11 @@ import { withTranslation } from 'react-i18next'
 import io from 'socket.io-client'
 import Loader from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
+import Dialog from '@material-ui/core/Dialog'
 
 import CoachingCheckout from '../web-app/payments/coaching-checkout-flow'
 import CoachingEdition from './coaching-edition'
+import CoachProfile from './coach-profile'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
 
@@ -61,7 +63,8 @@ class Coaching extends React.Component {
 			coachInfo: null,
 			isChoosingPaymentMethod: false,
 			isCoachingCheckoutOpen: null,
-			errorMessage: null
+			errorMessage: null,
+			selectedCoach: null
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -299,7 +302,9 @@ class Coaching extends React.Component {
 			coaching,
 			credits,
 			isCoachingCheckoutOpen,
-			errorMessage
+			errorMessage,
+			coachInfo,
+			selectedCoach
 		} = this.state
 		const {
 			coachUserName,
@@ -568,9 +573,18 @@ class Coaching extends React.Component {
 					</div>
 					<div className='small-separator'></div>
 					<div className='coaching-column'>
-						<span className='small-title citrusBlack'>
-							{`${capitalize(title)} ${t('with')} ${capitalize(coaching.coachUserName)}`}
-						</span>
+						<div className='flex-row'>
+							<span className='small-title citrusBlack'>
+								{`${capitalize(title)} ${t('with')}`}
+							</span>
+							<span
+								onClick={() => this.setState({ selectedCoach: coachInfo })}
+								style={{ marginLeft: '3px' }}
+								className='small-title citrusBlack username-hover'
+							>
+								{capitalize(coaching.coachUserName)}
+							</span>
+						</div>
 						{
 							coaching.coachId === user._id ?
 								<span
@@ -686,6 +700,22 @@ class Coaching extends React.Component {
 						{this.renderButtonText()}
 					</span>
 				</div>
+				{
+					selectedCoach &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ selectedCoach: null })}
+					>
+						<div className='full-width-and-height-dialog'>
+							<CoachProfile
+								coach={selectedCoach}
+								onCancel={() => {
+									this.setState({ selectedCoach: null })
+								}}
+							/>
+						</div>
+					</Dialog>
+				}
 			</div>
 		)
 	}

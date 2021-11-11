@@ -83,7 +83,8 @@ class Schedule extends React.Component {
 			isReadingFile: false,
 			progress: null,
 			isProcessingVideo: false,
-			isCreatingLegalUser: false
+			isCreatingLegalUser: false,
+			videoErrorMessage: ''
 		}
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
@@ -567,7 +568,10 @@ class Schedule extends React.Component {
 						<VideoUploader
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
-							onVideoSelected={videoFile => this.setState({ videoFile })}
+							onVideoSelected={videoFile => {
+								console.log('video file', videoFile)
+								this.setState({ videoFile })
+							}}
 							onError={() =>this.setState({
 								videoErrorMessage: capitalize(t('unreadableVideoFile')),
 								videoFile: ''
@@ -577,10 +581,10 @@ class Schedule extends React.Component {
 							videoErrorMessage &&
 							<>
 								<div className='small-separator'></div>
-									<span className='small-text-bold citrusRed'>
-										{errorMessage}
-									</span>
 								<div className='small-separator'></div>
+									<span className='small-text-bold citrusRed'>
+										{videoErrorMessage}
+									</span>
 							</>
 						}
 					</div>

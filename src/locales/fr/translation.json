@@ -504,7 +504,7 @@
 	"tryAgain": "essayer à nouveau",
 	"errorDuringInfoRegistration": "une erreur s'est produite à la sauvegarde des informations",
 	"wrongCompanyNumberFormat": "mauvais format de SIREN ou SIRET",
-	"legalUserCreationDisclaimerCashout": "dans le but de reverser les gains générés par tes vidéos, nous avons besoin des informations légales suivantes :",
+	"legalUserCreationDisclaimerCashout": "dans le but de reverser les gains générés par tes vidéos, nous avons besoin des informations légales suivantes",
 	"cashOutDisclaimer": "dans le but de reverser les gains générés par tes vidéos, et si ce n'est pas déjà fait, nous avons besoin que tu vérifies ton identité en téléchargeant les documents demandés ci-dessous. Tes coordonnées bancaires sont aussi nécessaires pour que nous puissions effectuer un virement vers ton compte. Merci de noter que les vérifications de documents ainsi que le transfert d'argent peuvent prendre quelques jours",
 	"cashOutDisclaimerIntro": "notre prestataire de services requiert certains documents pour valider ton compte",
 	"cantCashOutBecauseYouAleadyDidItThisMonth": "tu ne peux pas retirer tes gains maintenant car tu l'as déjà fait ce mois-ci",

@@ -249,6 +249,11 @@ input {
 	border-radius: 0;
 }
 
+.username-hover:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
 @media only screen and (max-width: 640px) {
 
 	.billing-card {

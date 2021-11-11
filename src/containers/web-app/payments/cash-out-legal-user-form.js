@@ -395,7 +395,7 @@ class LegalUserCreation extends React.Component {
 					<div className='flex-column flex-center'>
 						<div className='medium-separator'></div>
 						<span className='small-title citrusBlack row'>
-							{capitalize(t('generalInformation'))} :
+							{capitalize(t('generalInformation'))}
 						</span>
 						<div className='row flex-row'>
 							<FormControl variant='outlined' style={{ width: '100%' }}>
@@ -442,7 +442,7 @@ class LegalUserCreation extends React.Component {
 						</div>
 						<div className='medium-separator'></div>
 						<span className='small-title citrusBlack row'>
-							{capitalize(t('companyAddress'))} :
+							{capitalize(t('companyAddress'))}
 						</span>
 						<div className='row flex-row'>
 							<TextField
@@ -485,7 +485,7 @@ class LegalUserCreation extends React.Component {
 						</div>
 						<div className='medium-separator'></div>
 						<span className='small-title citrusBlack row'>
-							{capitalize(t('legalRepresentative'))} :
+							{capitalize(t('legalRepresentative'))}
 						</span>
 						<div className='row flex-row'>
 							<TextField
