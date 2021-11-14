@@ -4,7 +4,6 @@ import Dialog from '@material-ui/core/Dialog'
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import Loader from 'react-loader-spinner'
-import Reduce from 'image-blob-reduce'
 
 import ImageCropper from './index'
 
@@ -24,9 +23,8 @@ import {
 import { ReactComponent as ImageSquare } from '../../../assets/svg/image-square.svg'
 
 const { REACT_APP_CLOUDINARY_UPLOAD_URL } = process.env
-const reduce = Reduce()
 
-class IImageUploader extends React.Component {
+class ImageUploader extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -69,17 +67,14 @@ class IImageUploader extends React.Component {
 			isImageLoading: true
 		})
 
-	reduce.toBlob(file, { max: 1000 })
-		.then(blob => {
-			this.cloudinaryUpload(file)
-				.then(imgUri => {
-					this.setState({
-						croppedImage: null,
-						imgSrc: imgUri,
-						isImageLoading: false
-					})
-					onSetPictureUri(imgUri)
-				})
+		this.cloudinaryUpload(file)
+		.then(imgUri => {
+			this.setState({
+				croppedImage: null,
+				imgSrc: imgUri,
+				isImageLoading: false
+			})
+			onSetPictureUri(imgUri)
 		})
 	}
 
@@ -287,4 +282,4 @@ class IImageUploader extends React.Component {
 		)
 	}
 }
-export default IImageUploader
+export default ImageUploader
