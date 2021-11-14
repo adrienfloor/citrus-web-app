@@ -36,6 +36,8 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
 		safeArea *= canvasLimitation.height / safeArea
 	}
 
+	console.log(safeArea)
+
 	// set each dimensions to double largest dimension to allow for a safe area for the
 	// image to rotate in without being clipped by canvas context
 	canvas.width = safeArea
