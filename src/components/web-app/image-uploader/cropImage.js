@@ -1,4 +1,5 @@
-import canvasSize from 'canvas-size'
+// import canvasSize from 'canvas-size'
+import reduce from 'image-blob-reduce'
 
 const createImage = url =>
 	new Promise((resolve, reject) => {
@@ -25,21 +26,21 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
 	const ctx = canvas.getContext('2d')
 
 	const maxSize = Math.max(image.width, image.height)
-	let safeArea = 2 * ((maxSize / 2) * Math.sqrt(2))
+	const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2))
 
-	const canvasLimitation = await canvasSize.maxArea({
-		usePromise: true,
-		useWorker: true,
-	})
+	// const canvasLimitation = await canvasSize.maxArea({
+	// 	usePromise: true,
+	// 	useWorker: true,
+	// })
 
 	console.log('krikou', safeArea)
 
-	if (canvasLimitation) {
-		if (safeArea > canvasLimitation.height) {
-			safeArea = safeArea / 1.5
-		}
+	// if (canvasLimitation) {
+		// if (safeArea > canvasLimitation.height) {
+		// 	safeArea = safeArea / 2
+		// }
 
-		console.log(safeArea, canvasLimitation)
+		// console.log(safeArea, canvasLimitation)
 
 		// set each dimensions to double largest dimension to allow for a safe area for the
 		// image to rotate in without being clipped by canvas context
@@ -80,5 +81,5 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
 				resolve(file)
 			}, 'image/jpeg')
 		})
-	}
+	// }
 }

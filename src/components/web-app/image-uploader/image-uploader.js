@@ -4,6 +4,7 @@ import Dialog from '@material-ui/core/Dialog'
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import Loader from 'react-loader-spinner'
+import reduce from 'image-blob-reduce'
 
 import ImageCropper from './index'
 
@@ -61,21 +62,24 @@ class IImageUploader extends React.Component {
 	}
 
 	async handleUploadClick(file) {
+		const { onSetPictureUri } = this.props
 		this.setState({
 			isCropping: false,
 			isImageLoading: true
 		})
-		const { onSetPictureUri } = this.props
-		this.cloudinaryUpload(file)
-			.then(imgUri => {
-				this.setState({
-					croppedImage: null,
-					imgSrc: imgUri,
-					isImageLoading: false
-				})
-				onSetPictureUri(imgUri)
-			})
 
+	reduce().toBlob(file, { max: 1000 })
+		.then(blob => {
+			this.cloudinaryUpload(file)
+				.then(imgUri => {
+					this.setState({
+						croppedImage: null,
+						imgSrc: imgUri,
+						isImageLoading: false
+					})
+					onSetPictureUri(imgUri)
+				})
+		})
 	}
 
 
