@@ -14,7 +14,7 @@ import ProgressBar from '@ramonak/react-progress-bar'
 import Dialog from '@material-ui/core/Dialog'
 
 import CreateLegalUser from './create-legal-user'
-import ImageUploader from '../../components/web-app/image-uploader'
+import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 import VideoUploader from '../../components/web-app/video-uploader'
 
 import '../../styling/headings.css'
