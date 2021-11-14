@@ -36,7 +36,7 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
 
 	if (canvasLimitation) {
 		if (safeArea > canvasLimitation.height) {
-			safeArea = safeArea / 2
+			safeArea = safeArea / 1.5
 		}
 
 		console.log(safeArea, canvasLimitation)
