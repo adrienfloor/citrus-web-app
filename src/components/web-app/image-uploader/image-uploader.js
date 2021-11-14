@@ -69,7 +69,7 @@ class IImageUploader extends React.Component {
 			isImageLoading: true
 		})
 
-	reduce().toBlob(file, { max: 1000 })
+	reduce.toBlob(file, { max: 1000 })
 		.then(blob => {
 			this.cloudinaryUpload(file)
 				.then(imgUri => {
