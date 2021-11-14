@@ -4,7 +4,7 @@ import Dialog from '@material-ui/core/Dialog'
 import ReactCrop from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import Loader from 'react-loader-spinner'
-import reduce from 'image-blob-reduce'
+import Reduce from 'image-blob-reduce'
 
 import ImageCropper from './index'
 
@@ -24,6 +24,7 @@ import {
 import { ReactComponent as ImageSquare } from '../../../assets/svg/image-square.svg'
 
 const { REACT_APP_CLOUDINARY_UPLOAD_URL } = process.env
+const reduce = Reduce()
 
 class IImageUploader extends React.Component {
 	constructor(props) {
