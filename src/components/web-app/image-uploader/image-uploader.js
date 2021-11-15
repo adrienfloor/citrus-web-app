@@ -144,6 +144,7 @@ class ImageUploader extends React.Component {
 							!disabled &&
 							<label className="custom-file-upload">
 								<input
+									ref={'input1'}
 									onChange={e => {
 										const fReader = new FileReader()
 										fReader.readAsDataURL(e.target.files[0])
@@ -173,6 +174,7 @@ class ImageUploader extends React.Component {
 							!disabled &&
 							<label className='custom-file-upload' style={{ position: 'relative' }}>
 								<input
+									ref={'input2'}
 									onChange={e => {
 										const fReader = new FileReader()
 										fReader.readAsDataURL(e.target.files[0])
@@ -212,6 +214,18 @@ class ImageUploader extends React.Component {
 								imgToCrop={imgToCropSrc}
 								t={t}
 								onComplete={file => this.handleUploadClick(file)}
+								onCancel={() => {
+									this.setState({
+										isCropping: false,
+										imgToCropSrc: null
+									})
+									if(this.refs && this.refs.input1) {
+										this.refs.input1.value = ''
+									}
+									if (this.refs && this.refs.input2) {
+										this.refs.input2.value = ''
+									}
+								}}
 							/>
 						</div>
 					</Dialog>

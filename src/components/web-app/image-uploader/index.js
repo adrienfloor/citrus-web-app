@@ -14,12 +14,13 @@ import { capitalize } from '../../../utils/various'
 // const imgToCrop =
 // 	'https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000'
 
-const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
+const ImageCropper = ({ classes, imgToCrop, onComplete, onCancel, t }) => {
 	const [crop, setCrop] = useState({ x: 0, y: 0 })
-	const [rotation, setRotation] = useState(0)
+	// const [rotation, setRotation] = useState(0)
 	const [zoom, setZoom] = useState(1)
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 	const [croppedImage, setCroppedImage] = useState(null)
+	const [initialImg, setInitialImg] = useState(imgToCrop)
 
 	const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
 		setCroppedAreaPixels(croppedAreaPixels)
@@ -30,15 +31,17 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
 			const croppedImage = await getCroppedImg(
 				imgToCrop,
 				croppedAreaPixels,
-				rotation
+				// rotation
 			)
-			console.log('donee', { croppedImage })
 			onComplete(croppedImage)
 			// setCroppedImage(croppedImage)
 		} catch (e) {
 			console.error(e)
 		}
-	}, [croppedAreaPixels, rotation])
+	}, [
+		croppedAreaPixels
+		// rotation
+	])
 
 	const onClose = useCallback(() => {
 		setCroppedImage(null)
@@ -48,13 +51,13 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
 		<div>
 			<div className={classes.cropContainer}>
 				<Cropper
-					image={imgToCrop}
+					image={initialImg}
 					crop={crop}
-					rotation={rotation}
+					// rotation={rotation}
 					zoom={zoom}
 					aspect={3 / 2}
 					onCropChange={setCrop}
-					onRotationChange={setRotation}
+					// onRotationChange={setRotation}
 					onCropComplete={onCropComplete}
 					onZoomChange={setZoom}
 				/>
@@ -77,7 +80,7 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
 						onChange={(e, zoom) => setZoom(zoom)}
 					/>
 				</div>
-				<div className={classes.sliderContainer}>
+				{/* <div className={classes.sliderContainer}>
 					<Typography
 						variant="overline"
 						classes={{ root: classes.sliderLabel }}
@@ -93,6 +96,20 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
 						classes={{ root: classes.slider }}
 						onChange={(e, rotation) => setRotation(rotation)}
 					/>
+				</div> */}
+				<div
+					onClick={() => {
+						setCroppedImage(null)
+						setCrop({ x: 0, y: 0 })
+						setZoom(1)
+						setCroppedAreaPixels(null)
+						setInitialImg(null)
+						onCancel()
+					}}
+				>
+					<span className='small-text-bold citrusGrey hover'>
+						{capitalize(t('cancel'))}
+					</span>
 				</div>
 				<Button
 					onClick={submitCroppedImage}
@@ -103,7 +120,6 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, t }) => {
 					{capitalize(t('submit'))}
 				</Button>
 			</div>
-			<ImgDialog img={croppedImage} onClose={onClose} />
 		</div>
 	)
 }
