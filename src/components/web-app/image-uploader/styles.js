@@ -11,6 +11,9 @@ export const styles = (theme) => ({
 	cropButton: {
 		flexShrink: 0,
 		marginLeft: 16,
+		[theme.breakpoints.down('sm')]: {
+			marginLeft: 0
+		}
 	},
 	controls: {
 		padding: 16,
@@ -41,4 +44,16 @@ export const styles = (theme) => ({
 			margin: '0 16px',
 		},
 	},
+	buttonsContainer: {
+		width: '30%',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		[theme.breakpoints.down('sm')]: {
+			flexDirection: 'column-reverse',
+			width: '100%',
+			height: '80px',
+			justifyContent: 'space-around'
+		}
+	}
 })

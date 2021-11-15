@@ -97,28 +97,31 @@ const ImageCropper = ({ classes, imgToCrop, onComplete, onCancel, t }) => {
 						onChange={(e, rotation) => setRotation(rotation)}
 					/>
 				</div> */}
-				<div
-					onClick={() => {
-						setCroppedImage(null)
-						setCrop({ x: 0, y: 0 })
-						setZoom(1)
-						setCroppedAreaPixels(null)
-						setInitialImg(null)
-						onCancel()
-					}}
-				>
-					<span className='small-text-bold citrusGrey hover'>
-						{capitalize(t('cancel'))}
-					</span>
+				<div className={classes.buttonsContainer}>
+					<div
+						className
+						onClick={() => {
+							setCroppedImage(null)
+							setCrop({ x: 0, y: 0 })
+							setZoom(1)
+							setCroppedAreaPixels(null)
+							setInitialImg(null)
+							onCancel()
+						}}
+					>
+						<span className='small-text-bold citrusGrey hover'>
+							{capitalize(t('cancel'))}
+						</span>
+					</div>
+					<Button
+						onClick={submitCroppedImage}
+						variant="contained"
+						color="primary"
+						classes={{ root: classes.cropButton }}
+					>
+						{capitalize(t('submit'))}
+					</Button>
 				</div>
-				<Button
-					onClick={submitCroppedImage}
-					variant="contained"
-					color="primary"
-					classes={{ root: classes.cropButton }}
-				>
-					{capitalize(t('submit'))}
-				</Button>
 			</div>
 		</div>
 	)
