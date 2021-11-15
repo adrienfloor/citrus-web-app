@@ -123,11 +123,11 @@ class Signin extends React.Component {
 		).then(async (res) => {
 			setIsRedirectingHome(false)
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
-				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 5, 5)
-				const replays = await fetchUserReplays(userId)
+				const { user } = res.payload
+				const search = await executeExploreSearch('all', user._id, 0, 5, user.sports)
+				const replays = await fetchUserReplays(user._id)
 				// fetchNotifications(userId)
-				const trainings = await fetchTrainerCoachings(userId, true)
+				const trainings = await fetchTrainerCoachings(user._id, true)
 				if(search && replays && trainings) {
 					this.setState({ isLoading: false })
 					return this.props.history.push('/home')
@@ -378,8 +378,8 @@ const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-	executeExploreSearch: (sport, userId, skipValue, limit) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
+	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
 	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 

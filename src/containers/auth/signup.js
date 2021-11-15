@@ -140,10 +140,10 @@ class Signup extends React.Component {
 		).then(async (res) => {
 			setIsRedirectingHome(false)
 			if (res && res.type === 'REGISTER_SUCCESS') {
-				const userId = res.payload.user._id
-				const search = await executeExploreSearch('all', userId, 5, 5)
-				const replays = await fetchUserReplays(userId)
-				const trainings = await fetchTrainerCoachings(userId, true)
+				const { user } = res.payload
+				const search = await executeExploreSearch('all', user._id, 5, 5, user.sports)
+				const replays = await fetchUserReplays(user._id)
+				const trainings = await fetchTrainerCoachings(user._id, true)
 				if (search && replays && trainings) {
 					this.setState({
 						isLoading: false,
@@ -374,8 +374,8 @@ const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
-	executeExploreSearch: (sport, userId, skipValue, limit) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
+	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
 	setIsRedirectingHome: bool => dispatch(setIsRedirectingHome(bool))
 })
 

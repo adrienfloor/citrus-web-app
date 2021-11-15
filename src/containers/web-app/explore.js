@@ -103,11 +103,12 @@ class Explore extends React.Component {
 			searchInputText: query
 		})
 
-		const asyncFunction = query => executeSearch(query, type, user._id)
-		const asyncFunctionDebounced = AwesomeDebouncePromise(asyncFunction, 1000)
+		// const asyncFunction = query => executeSearch(query, type, user._id)
+		// const asyncFunctionDebounced = AwesomeDebouncePromise(asyncFunction, 1000)
 
-		if (query.length && query.length >= 3) {
-			asyncFunctionDebounced()
+		if (query && query.length && query.length >= 3) {
+			// asyncFunctionDebounced()
+			executeSearch(query, type, user._id)
 		}
 	}
 
@@ -133,7 +134,7 @@ class Explore extends React.Component {
 		})
 
 		resetSpecificSportSearch()
-		executeExploreSearch(sport, user._id, 0, 5)
+		executeExploreSearch(sport, user._id, 0, 5, user.sports)
 			.then(res => {
 				if (res && res.payload && res.payload.length < 5) {
 					this.setState({ showLoadMore: false })
@@ -310,7 +311,15 @@ class Explore extends React.Component {
 							<div className='small-separator'></div>
 							<div className='medium-separator desktop-only'></div>
 							<div className='scroll-div-horizontal sports-scroll'>
-								<div onClick={() => this.handleSportSelection('all', 'all')}>
+								<div
+									onClick={() =>
+										this.setState({
+											activeTabIndex: 'all',
+											activeSportType: 'all',
+											showLoadMore: true
+										})
+									}
+								>
 									<div
 										className={activeTabIndex === 'all' ? 'small-active-tab hover' : 'small-tab hover'}
 										style={{ paddingLeft: 0 }}
@@ -409,7 +418,8 @@ class Explore extends React.Component {
 															activeSportType,
 															user._id,
 															skip + 6,
-															6
+															6,
+															user.sports
 														).then((res) => {
 															if (res && res.payload && res.payload.length < 5) {
 																this.setState({ showLoadMore: false })
@@ -553,8 +563,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	loadUser: () => dispatch(loadUser()),
 	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
-	executeExploreSearch: (sport, userId, skipValue, limit) =>
-		dispatch(executeExploreSearch(sport, userId, skipValue, limit)),
+	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
 	executeSearch: (query, type, userId) =>
 		dispatch(executeSearch(query, type, userId)),
 	resetSearch: () => dispatch(resetSearch()),

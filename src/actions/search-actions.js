@@ -44,9 +44,11 @@ export const executeRightNowSearch = (sport, userId, type) => async dispatch => 
 	}
 }
 
-export const executeExploreSearch = (sport, userId, skipValue, limit) => async dispatch => {
+export const executeExploreSearch = (sport, userId, skipValue, limit, userFavoriteSports) => async dispatch => {
+
+	const userFavoriteSportsStr = JSON.stringify(userFavoriteSports)
 	try {
-		const response = await axios.get(`${REACT_APP_API_URL}/searches/explore_search?sport=${sport}&user_id=${userId}&skip=${skipValue}&limit=${limit}`)
+		const response = await axios.get(`${REACT_APP_API_URL}/searches/explore_search?sport=${sport}&user_id=${userId}&skip=${skipValue}&limit=${limit}&fav_sports=${userFavoriteSportsStr}`)
 		if (sport !== 'all') {
 			return dispatch({ type: EXPLORE_SPECIFIC_SPORT_SEARCH, payload: response.data })
 		} else {

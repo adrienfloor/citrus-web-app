@@ -288,9 +288,10 @@
 	align-items: flex-start;
 	flex-wrap: wrap;
 	max-width: 1000px;
+	height: 800px;
 }
 .sports-scroll {
-	padding-bottom: 20px;
+	padding-bottom: 30px;
 }
 
 .explore-cards-container {
@@ -688,6 +689,7 @@ input[type=number] {
 		width: 90% !important;
 		justify-content: space-around;
 		margin-top: 5px;
+		margin-bottom: 100px;
 	}
 	.sports-scroll {
 		padding-bottom: 40px;
