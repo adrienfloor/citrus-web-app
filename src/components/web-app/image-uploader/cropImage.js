@@ -29,17 +29,22 @@ export default async function getCroppedImg(
 	const ctx = canvas.getContext('2d')
 
 	const maxSize = Math.max(image.width, image.height)
-	const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2))
+	let safeArea = 2 * ((maxSize / 2) * Math.sqrt(2))
 
 	const canvasLimitation = await canvasSize.maxArea({
 		usePromise: true,
 		useWorker: true,
 	})
 
+	console.log('safeArea', safeArea)
+
 	if(canvasLimitation) {
+		console.log('canvasLimitation', canvasLimitation)
 		if (safeArea > canvasLimitation.height) {
 			safeArea *= canvasLimitation.height / safeArea
 		}
+
+		console.log('safeArea', safeArea)
 		// set each dimensions to double largest dimension to allow for a safe area for the
 		// image to rotate in without being clipped by canvas context
 		canvas.width = safeArea
@@ -71,6 +76,9 @@ export default async function getCroppedImg(
 
 		// As Base64 string
 		// return canvas.toDataURL('image/jpeg');
+
+
+		console.log('canvas', canvas)
 
 		// As a blob
 		return new Promise(resolve => {
