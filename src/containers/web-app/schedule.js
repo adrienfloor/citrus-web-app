@@ -12,6 +12,7 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import ProgressBar from '@ramonak/react-progress-bar'
 import Dialog from '@material-ui/core/Dialog'
+import MobileDetect from 'mobile-detect'
 
 import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
@@ -59,7 +60,44 @@ const {
 	REACT_APP_SERVER_URL
 } = process.env
 
+const md = new MobileDetect(window.navigator.userAgent)
+const isMobile = md.mobile()
+
 let upload = null
+
+const getState = () => {
+	if (document.visibilityState === 'hidden') {
+		return 'hidden'
+	}
+	if (document.hasFocus()) {
+		return 'active'
+	}
+	return 'passive'
+}
+
+let displayState = getState()
+
+const onDisplayStateChange = () => {
+	const nextState = getState()
+	const prevState = displayState
+
+	if (nextState !== prevState) {
+		console.log(`State changed: ${prevState} ==> ${nextState}`)
+		displayState = nextState
+		console.log('ongoing upload : ', upload)
+
+		if(upload) {
+			if ((nextState === 'passive' || nextState === 'hidden') && isMobile) {
+				//The app/browser tab has just been made inactive and is not visible to the user
+				upload.pause()
+			}
+			if (nextState === 'active' && isMobile) {
+				//The app/browser tab has just been made active and is visible to the user
+				upload.resume()
+			}
+		}
+	}
+}
 
 class Schedule extends React.Component {
 	constructor(props) {
@@ -102,6 +140,18 @@ class Schedule extends React.Component {
 
 	componentDidMount() {
 		this.socket = io(REACT_APP_SERVER_URL)
+
+		//subscribe to all of the events related to visibility
+		const events = ['pageshow', 'focus', 'blur', 'visibilitychange', 'resume']
+		events.forEach(type => {
+			window.addEventListener(type, onDisplayStateChange, { capture: true })
+		})
+	}
+
+	componentWillUnmount() {
+		if(upload) {
+			upload.abort()
+		}
 	}
 
 	async upload(coachingId) {

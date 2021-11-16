@@ -25,6 +25,7 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "iban": "0.0.14",
     "mangopay-cardregistration-js-kit": "^1.2.2",
+    "mobile-detect": "^1.4.5",
     "moment": "^2.29.1",
     "query-string": "^6.13.7",
     "react": "^17.0.1",
