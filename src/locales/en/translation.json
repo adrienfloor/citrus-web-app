@@ -538,5 +538,6 @@
 	"currentBalance": "current balance",
 	"areYouSureYouWantToCancelTheUpload": "are you sure you want to cancel this upload ?",
 	"sirenOrSiretFormat": "9 or 14 numbers only",
-	"submitKycDocuments": "submit KYC documents"
+	"submitKycDocuments": "submit KYC documents",
+	"pleaseSelectAllDocuments": "please select all documents"
 }

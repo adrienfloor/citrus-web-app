@@ -540,5 +540,6 @@
 	"currentBalance": "solde en cours",
 	"areYouSureYouWantToCancelTheUpload": "es-tu sûr de vouloir annuler cet upload ?",
 	"sirenOrSiretFormat": "9 ou 14 chiffres uniquement",
-	"submitKycDocuments": "soumettre les documents KYC"
+	"submitKycDocuments": "soumettre les documents KYC",
+	"pleaseSelectAllDocuments": "merci de sélectionner tous les documents"
 }

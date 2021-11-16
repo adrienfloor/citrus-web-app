@@ -54,6 +54,7 @@ class Kyc extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.getFiles = this.getFiles.bind(this)
 		this.isKycValidationInProgress = this.isKycValidationInProgress.bind(this)
+		this.handleSubmitAllDocuments = this.handleSubmitAllDocuments.bind(this)
 	}
 
 	getFiles(file, fileName) {
@@ -84,6 +85,50 @@ class Kyc extends React.Component {
 		}
 	}
 
+	async handleSubmitAllDocuments(e, isSoletrader) {
+
+		const {
+			identityProof,
+			articlesOfAssociation,
+			registrationProof
+		} = this.state
+		const { t, setNotification } = this.props
+
+		this.setState({ isLoading: true })
+
+		if(isSoletrader) {
+			if (
+				!identityProof ||
+				!registrationProof
+			) {
+				return this.setState({
+					isLoading: false,
+					warningMessage: capitalize(t('pleaseSelectAllDocuments'))
+				})
+			}
+		} else {
+			if (
+				!identityProof ||
+				!articlesOfAssociation ||
+				!registrationProof
+			) {
+				return this.setState({
+					isLoading: false,
+					warningMessage: capitalize(t('pleaseSelectAllDocuments'))
+				})
+			}
+		}
+
+		const identityDoc = await this.handleSubmit('IDENTITY_PROOF', identityProof)
+		const associationDoc = isSoletrader ? true : await this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation)
+		const registrationDoc = await this.handleSubmit('REGISTRATION_PROOF', registrationProof)
+
+		if(identityDoc && associationDoc && registrationDoc) {
+			this.setState({ isLoading: false })
+			setNotification({ message: capitalize(t('updatedSuccessfully')) })
+		}
+	}
+
 	async handleSubmit(typeOfDocument, file) {
 		const { user, t, setNotification } = this.props
 		const { MPLegalUserId } = user
@@ -95,7 +140,7 @@ class Kyc extends React.Component {
 			return
 		}
 
-		this.setState({ isLoading: true })
+		// this.setState({ isLoading: true })
 
 		const { KYCDocumentId } = await createMpKycDocument(MPLegalUserId, typeOfDocument)
 		const kycPage = await createMpKycPage(MPLegalUserId, KYCDocumentId, file)
@@ -106,8 +151,8 @@ class Kyc extends React.Component {
 						fetchKycsOfAUser(MPLegalUserId)
 							.then(res => {
 								mpUserKycs = res
-								this.setState({ isLoading: false })
-								setNotification({ message: capitalize(t('updatedSuccessfully')) })
+								// this.setState({ isLoading: false })
+								// setNotification({ message: capitalize(t('updatedSuccessfully')) })
 							})
 					}
 				})
@@ -175,8 +220,13 @@ class Kyc extends React.Component {
 								}
 								{
 									identityProofFileName &&
-									<>
-										<span className='small-text file-name'>{identityProofFileName}</span>
+									<div style={{ maxWidth: '454px' }}>
+										<span
+											className='small-text file-name'
+											style={{ marginRight: '10px' }}
+										>
+											{identityProofFileName}
+										</span>
 										<label className="custom-file-upload">
 											<FileBase64
 												multiple={false}
@@ -184,9 +234,9 @@ class Kyc extends React.Component {
 											/>
 											<span className='small-text-bold citrusBlue'>{t('change')}</span>
 										</label>
-									</>
+									</div>
 								}
-								{
+								{/* {
 									identityProof &&
 									<button
 										className='filled-button'
@@ -197,7 +247,7 @@ class Kyc extends React.Component {
 											{capitalize(t('submit'))}
 										</span>
 									</button>
-								}
+								} */}
 							</div>
 					}
 
@@ -214,7 +264,7 @@ class Kyc extends React.Component {
 										<div>{this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION')}</div>
 										<span className='smaller-text citrusGrey'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
 									</div> :
-									<div className='row flex-row upload-row'>
+									<div className='row flex-row upload-row' >
 										{
 											!articlesOfAssociation &&
 											<label className="custom-empty-file-upload">
@@ -227,8 +277,13 @@ class Kyc extends React.Component {
 										}
 										{
 											articlesOfAssociationFileName &&
-											<>
-												<span className='small-text file-name'>{articlesOfAssociationFileName}</span>
+											<div style={{ maxWidth: '454px' }}>
+												<span
+													className='small-text file-name'
+													style={{ marginRight: '10px' }}
+												>
+													{articlesOfAssociationFileName}
+												</span>
 												<label className="custom-file-upload">
 													<FileBase64
 														multiple={false}
@@ -236,9 +291,9 @@ class Kyc extends React.Component {
 													/>
 													<span className='small-text-bold citrusBlue'>{t('change')}</span>
 												</label>
-											</>
+											</div>
 										}
-										{
+										{/* {
 											articlesOfAssociation &&
 											<button
 												className='filled-button'
@@ -249,7 +304,7 @@ class Kyc extends React.Component {
 													{capitalize(t('submit'))}
 												</span>
 											</button>
-										}
+										} */}
 									</div>
 							}
 						</div>
@@ -277,8 +332,13 @@ class Kyc extends React.Component {
 								}
 								{
 									registrationProofFileName &&
-									<>
-										<span className='small-text file-name'>{registrationProofFileName}</span>
+									<div style={{ maxWidth: '454px' }}>
+										<span
+											className='small-text file-name'
+											style={{ marginRight: '10px' }}
+										>
+											{registrationProofFileName}
+										</span>
 										<label className="custom-file-upload">
 											<FileBase64
 												multiple={false}
@@ -286,9 +346,9 @@ class Kyc extends React.Component {
 											/>
 											<span className='small-text-bold citrusBlue'>{t('change')}</span>
 										</label>
-									</>
+									</div>
 								}
-								{
+								{/* {
 									registrationProof &&
 									<button
 										className='filled-button'
@@ -299,11 +359,11 @@ class Kyc extends React.Component {
 											{capitalize(t('submit'))}
 										</span>
 									</button>
-								}
+								} */}
 							</div>
 					}
 					{
-						(!identityProof || !articlesOfAssociation || !registrationProof) &&
+						identityProofFileName && articlesOfAssociationFileName && registrationProofFileName &&
 						<>
 							<div className='small-separator'></div>
 							<div className='medium-separator'></div>
@@ -313,7 +373,7 @@ class Kyc extends React.Component {
 							>
 								<div
 									className='filled-button'
-									onClick={this.handleWithdrawMissingProperties}
+									onClick={e => this.handleSubmitAllDocuments(e, mpLegalUserInfo.LegalPersonType == 'SOLETRADER')}
 								>
 									<span className='small-title citrusWhite'>
 										{capitalize(t('submitKycDocuments'))}
