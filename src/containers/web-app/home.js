@@ -458,7 +458,7 @@ class Home extends React.Component {
 										</>
 									}
 									{
-										!subscription && credits && credits.length > 0 &&
+										!subscription && credits > 0 &&
 										<>
 											<span className='small-title citrusBlack'>
 												{capitalize(t('plan'))}

@@ -336,6 +336,8 @@ class Cashout extends React.Component {
 							<div className='small-separator'></div>
 							<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
 							<div className='medium-separator'></div>
+							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+							<div className='medium-separator'></div>
 							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
 							<div className='flex-row' style={{ justifyContent: 'flex-start' }}>
 								{
@@ -367,7 +369,10 @@ class Cashout extends React.Component {
 							</div>
 							<div className='medium-separator'></div>
 						</div>
-						<div className='flex-column flex-center'>
+						<div className='flex-column'>
+							<div className='medium-separator'></div>
+							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+							<div className='medium-separator'></div>
 							{
 								warningMessage &&
 								<>
@@ -377,18 +382,23 @@ class Cashout extends React.Component {
 									<div className='small-separator'></div>
 								</>
 							}
-							<div className='filled-button full-width' onClick={this.handleWithdrawMissingProperties}>
-								<span className='small-title citrusWhite'>
-									{capitalize(t('withdrawNow'))}
-								</span>
-							</div>
-							<div className='small-separator'></div>
 							<span
 								className='smaller-text citrusGrey'
-								style={{ margin: '0 10px' }}
+								style={{ maxWidth: '454px' }}
 							>
 								{capitalize(t('cashOutWelcomeMessage'))}
 							</span>
+							<div className='small-separator'></div>
+							<div
+								// className='flex-center'
+								style={{ width: '100%' }}
+							>
+								<div className='filled-button' onClick={this.handleWithdrawMissingProperties}>
+									<span className='small-title citrusWhite'>
+										{capitalize(t('withdrawNow'))}
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div className='medium-separator'></div>

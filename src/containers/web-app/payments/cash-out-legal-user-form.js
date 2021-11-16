@@ -438,6 +438,7 @@ class LegalUserCreation extends React.Component {
 								style={{ width: '100%' }}
 								variant='outlined'
 								value={CompanyNumber}
+								helperText={CompanyNumber.length > 0 && t('sirenOrSiretFormat')}
 							/>
 						</div>
 						<div className='medium-separator'></div>

@@ -302,7 +302,26 @@ class Kyc extends React.Component {
 								}
 							</div>
 					}
-
+					{
+						(!identityProof || !articlesOfAssociation || !registrationProof) &&
+						<>
+							<div className='small-separator'></div>
+							<div className='medium-separator'></div>
+							<div
+								// className='flex-center'
+								style={{ width: '100%' }}
+							>
+								<div
+									className='filled-button'
+									onClick={this.handleWithdrawMissingProperties}
+								>
+									<span className='small-title citrusWhite'>
+										{capitalize(t('submitKycDocuments'))}
+									</span>
+								</div>
+							</div>
+						</>
+					}
 					<div className='small-separator'></div>
 					<span className='small-text citrusRed'>{warningMessage}</span>
 				</div>
