@@ -31,6 +31,7 @@ import Explore from './containers/web-app/explore'
 import Schedule from './containers/web-app/schedule'
 import Profile from './containers/web-app/profile'
 import Settings from './containers/web-app/settings'
+import HttpsRedirect from 'react-https-redirect'
 
 import Layout from './containers/layout'
 
@@ -97,47 +98,48 @@ class App extends React.Component {
       return null
     } else {
       return (
-        <BrowserRouter>
-          <Layout>
-            <MuiThemeProvider theme={theme}>
-              <Switch>
-                <Route exact path='/' component={Signin} />
-                <Route exact path='/signin' component={Signin} />
-                <Route exact path='/signup' component={Signup} />
-                <Route exact path='/reset_password' component={ResetPassword} />
-                <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
-                <PrivateRoute auth={isAuthenticated} path='/explore' component={Explore} />
-                <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
-                <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />
-                <PrivateRoute auth={isAuthenticated} path='/settings' component={Settings} />
-                <PrivateRoute auth={isAuthenticated} path='/pay-in-confirmation' component={PayInConfirmation} />
-                <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
-                <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
-                <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />
-                <PrivateRoute auth={isAuthenticated} path='/dashboard' component={Dashboard} />
-                <PrivateRoute auth={isAdmin} path='/admin/dashboard' component={AdminDashboard} />
-                <PrivateRoute auth={isAdmin} path='/admin/cashout' component={AdminCashout} />
-                <PrivateRoute auth={isAdmin} path='/admin/store_transfer' component={AdminStoreTransfer} />
-                <PrivateRoute auth={isAdmin} path='/admin/accounts_ledger' component={AdminAccountsLedger} />
-                <Route component={NotFound} />
-              </Switch>
-            </MuiThemeProvider>
-            {
-              notification && notification.message &&
-              <div onClick={this.notify(notification.message)}>
-              </div>
-            }
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={true}
-              newestOnTop={false}
-              closeOnClick
-              pauseOnHover
-            />
-          </Layout>
-        </BrowserRouter>
-
+        <HttpsRedirect>
+          <BrowserRouter>
+            <Layout>
+              <MuiThemeProvider theme={theme}>
+                <Switch>
+                  <Route exact path='/' component={Signin} />
+                  <Route exact path='/signin' component={Signin} />
+                  <Route exact path='/signup' component={Signup} />
+                  <Route exact path='/reset_password' component={ResetPassword} />
+                  <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
+                  <PrivateRoute auth={isAuthenticated} path='/explore' component={Explore} />
+                  <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
+                  <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />
+                  <PrivateRoute auth={isAuthenticated} path='/settings' component={Settings} />
+                  <PrivateRoute auth={isAuthenticated} path='/pay-in-confirmation' component={PayInConfirmation} />
+                  <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
+                  <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
+                  <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />
+                  <PrivateRoute auth={isAuthenticated} path='/dashboard' component={Dashboard} />
+                  <PrivateRoute auth={isAdmin} path='/admin/dashboard' component={AdminDashboard} />
+                  <PrivateRoute auth={isAdmin} path='/admin/cashout' component={AdminCashout} />
+                  <PrivateRoute auth={isAdmin} path='/admin/store_transfer' component={AdminStoreTransfer} />
+                  <PrivateRoute auth={isAdmin} path='/admin/accounts_ledger' component={AdminAccountsLedger} />
+                  <Route component={NotFound} />
+                </Switch>
+              </MuiThemeProvider>
+              {
+                notification && notification.message &&
+                <div onClick={this.notify(notification.message)}>
+                </div>
+              }
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={true}
+                newestOnTop={false}
+                closeOnClick
+                pauseOnHover
+              />
+            </Layout>
+          </BrowserRouter>
+        </HttpsRedirect>
       )
     }
   }
