@@ -894,6 +894,14 @@ input[type=number] {
 	.upload-dialog {
 		min-height: 500px !important;
 	}
+	.column-on-mobile {
+		flex-direction: column !important;
+		justify-content: space-between !important;
+		height: 80px;
+	}
+	.iban-mobile {
+		width: 100% !important;
+	}
 
 	/* MATERIAL UI OVERIDE */
 

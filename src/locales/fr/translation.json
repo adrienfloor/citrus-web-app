@@ -541,5 +541,8 @@
 	"areYouSureYouWantToCancelTheUpload": "es-tu sûr de vouloir annuler cet upload ?",
 	"sirenOrSiretFormat": "9 ou 14 chiffres uniquement",
 	"submitKycDocuments": "soumettre les documents KYC",
-	"pleaseSelectAllDocuments": "merci de sélectionner tous les documents"
+	"pleaseSelectAllDocuments": "merci de sélectionner tous les documents",
+	"registeringIdentityProof": "envoie de la preuve d'identité ...",
+	"registeringArticlesOfAssociation": "envoie des statuts d'association ...",
+	"registeringCompanyRegistrationProof": "envoie de l'enregistrement de l'entreprise ..."
 }

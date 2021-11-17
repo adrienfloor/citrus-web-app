@@ -42,7 +42,8 @@ class Kyc extends React.Component {
 			registrationProofFileName: '',
 			isLoading: true,
 			warningMessage: '',
-			success: false
+			success: false,
+			loadingMessage: ''
 		}
 
 		fetchKycsOfAUser(this.props.user.MPLegalUserId)
@@ -94,6 +95,8 @@ class Kyc extends React.Component {
 		} = this.state
 		const { t, setNotification } = this.props
 
+		e.preventDefault()
+
 		this.setState({ isLoading: true })
 
 		if(isSoletrader) {
@@ -119,19 +122,15 @@ class Kyc extends React.Component {
 			}
 		}
 
-		const identityDoc = await this.handleSubmit('IDENTITY_PROOF', identityProof)
-		const associationDoc = isSoletrader ? true : await this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation)
-		const registrationDoc = await this.handleSubmit('REGISTRATION_PROOF', registrationProof)
-
-		if(identityDoc && associationDoc && registrationDoc) {
-			this.setState({ isLoading: false })
-			setNotification({ message: capitalize(t('updatedSuccessfully')) })
-		}
+		const identityDoc = await this.handleSubmit('IDENTITY_PROOF', identityProof, isSoletrader)
+		const associationDoc = isSoletrader ? true : await this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation, isSoletrader)
+		const registrationDoc = await this.handleSubmit('REGISTRATION_PROOF', registrationProof, isSoletrader)
 	}
 
-	async handleSubmit(typeOfDocument, file) {
+	async handleSubmit(typeOfDocument, file, isSoletrader) {
 		const { user, t, setNotification } = this.props
 		const { MPLegalUserId } = user
+		let kycsLength = 3
 
 		if (!file) {
 			this.setState({
@@ -140,7 +139,24 @@ class Kyc extends React.Component {
 			return
 		}
 
-		// this.setState({ isLoading: true })
+		if(typeOfDocument === 'IDENTITY_PROOF') {
+			this.setState({
+				loadingMessage: capitalize(t('registeringIdentityProof'))
+			})
+		}
+		if (typeOfDocument === 'ARTICLES_OF_ASSOCIATION') {
+			this.setState({
+				loadingMessage: capitalize(t('registeringArticlesOfAssociation'))
+			})
+		}
+		if (typeOfDocument === 'REGISTRATION_PROOF') {
+			this.setState({
+				loadingMessage: capitalize(t('registeringCompanyRegistrationProof'))
+			})
+		}
+		if(isSoletrader) {
+			kycsLength = 2
+		}
 
 		const { KYCDocumentId } = await createMpKycDocument(MPLegalUserId, typeOfDocument)
 		const kycPage = await createMpKycPage(MPLegalUserId, KYCDocumentId, file)
@@ -151,8 +167,18 @@ class Kyc extends React.Component {
 						fetchKycsOfAUser(MPLegalUserId)
 							.then(res => {
 								mpUserKycs = res
-								// this.setState({ isLoading: false })
-								// setNotification({ message: capitalize(t('updatedSuccessfully')) })
+								if (
+									mpUserKycs.length === kycsLength &&
+									mpUserKycs[kycsLength - 1] &&
+									mpUserKycs[kycsLength - 1].Status === 'VALIDATION_ASKED'
+								) {
+									this.setState({
+										isLoading: false,
+										loadingMessage: ''
+									})
+									setNotification({ message: capitalize(t('updatedSuccessfully')) })
+									return
+								}
 							})
 					}
 				})
@@ -160,6 +186,7 @@ class Kyc extends React.Component {
 			this.setState({
 				warningMessage: capitalize(t('somethingWentWrongUploadingYourFile'))
 			})
+			return null
 		}
 	}
 
@@ -173,7 +200,8 @@ class Kyc extends React.Component {
 			articlesOfAssociation,
 			articlesOfAssociationFileName,
 			registrationProof,
-			registrationProofFileName
+			registrationProofFileName,
+			loadingMessage
 		} = this.state
 
 		const {
@@ -188,9 +216,13 @@ class Kyc extends React.Component {
 					<Loader
 						type='Oval'
 						color='#C2C2C2'
-						height={100}
-						width={100}
+						height={50}
+						width={50}
 					/>
+					<div className='small-separator'></div>
+					<span class='small-text-bold citrusGrey'>
+						{loadingMessage}
+					</span>
 				</div>
 			)
 		}
@@ -236,18 +268,6 @@ class Kyc extends React.Component {
 										</label>
 									</div>
 								}
-								{/* {
-									identityProof &&
-									<button
-										className='filled-button'
-										style={{ width: '130px', height: '40px' }}
-										onClick={() => this.handleSubmit('IDENTITY_PROOF', identityProof)}
-									>
-										<span className='small-title citrusWhite'>
-											{capitalize(t('submit'))}
-										</span>
-									</button>
-								} */}
 							</div>
 					}
 
@@ -293,18 +313,6 @@ class Kyc extends React.Component {
 												</label>
 											</div>
 										}
-										{/* {
-											articlesOfAssociation &&
-											<button
-												className='filled-button'
-												style={{ width: '130px', height: '40px' }}
-												onClick={() => this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation)}
-											>
-												<span className='small-text-bold citrusWhite'>
-													{capitalize(t('submit'))}
-												</span>
-											</button>
-										} */}
 									</div>
 							}
 						</div>
@@ -348,29 +356,19 @@ class Kyc extends React.Component {
 										</label>
 									</div>
 								}
-								{/* {
-									registrationProof &&
-									<button
-										className='filled-button'
-										style={{ width: '130px', height: '40px' }}
-										onClick={() => this.handleSubmit('REGISTRATION_PROOF', registrationProof)}
-									>
-										<span className='small-title citrusWhite'>
-											{capitalize(t('submit'))}
-										</span>
-									</button>
-								} */}
 							</div>
 					}
 					{
-						identityProofFileName && articlesOfAssociationFileName && registrationProofFileName &&
+						identityProofFileName &&
+						articlesOfAssociationFileName &&
+						registrationProofFileName &&
+						!this.isKycValidationInProgress('IDENTITY_PROOF') &&
+						!this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') &&
+						!this.isKycValidationInProgress('REGISTRATION_PROOF') &&
 						<>
 							<div className='small-separator'></div>
 							<div className='medium-separator'></div>
-							<div
-								// className='flex-center'
-								style={{ width: '100%' }}
-							>
+							<div style={{ width: '100%' }}>
 								<div
 									className='filled-button'
 									onClick={e => this.handleSubmitAllDocuments(e, mpLegalUserInfo.LegalPersonType == 'SOLETRADER')}

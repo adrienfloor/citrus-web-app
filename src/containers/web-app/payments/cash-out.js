@@ -339,14 +339,17 @@ class Cashout extends React.Component {
 							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
 							<div className='medium-separator'></div>
 							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
-							<div className='flex-row' style={{ justifyContent: 'flex-start' }}>
+							<div className='flex-row column-on-mobile' style={{ justifyContent: 'flex-start' }}>
 								{
 									bankAccount &&
 									<span className='smaller-text row-item citrusGrey'>{capitalize(t('bankAccount'))}</span>
 								}
 								{
 									bankAccount && bankAccount.IBAN &&
-									<span className='smaller-text row-item' style={{ width: '40%' }}>
+									<span
+										className='smaller-text row-item 	iban-mobile '
+										style={{ width: '40%' }}
+									>
 										{bankAccount.IBAN}
 									</span>
 								}
@@ -356,6 +359,7 @@ class Cashout extends React.Component {
 											'small-text-bold citrusRed row-item' :
 											'small-text-bold row-item simple-link'
 									}
+									style={{ textAlign: 'center'}}
 									onClick={() => this.setState({ isUpdatingBankAccount: true })}
 								>
 									{
@@ -389,10 +393,7 @@ class Cashout extends React.Component {
 								{capitalize(t('cashOutWelcomeMessage'))}
 							</span>
 							<div className='small-separator'></div>
-							<div
-								// className='flex-center'
-								style={{ width: '100%' }}
-							>
+							<div style={{ width: '100%' }}>
 								<div className='filled-button' onClick={this.handleWithdrawMissingProperties}>
 									<span className='small-title citrusWhite'>
 										{capitalize(t('withdrawNow'))}

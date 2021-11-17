@@ -79,7 +79,6 @@ const countries = [
 	{ code: 'AW', label: 'Aruba', phone: '297' },
 	{ code: 'AX', label: 'Alland Islands', phone: '358' },
 	{ code: 'AZ', label: 'Azerbaijan', phone: '994' },
-	{ code: 'BA', label: 'Bosnia and Herzegovina', phone: '387' },
 	{ code: 'BB', label: 'Barbados', phone: '1-246' },
 	{ code: 'BD', label: 'Bangladesh', phone: '880' },
 	{ code: 'BE', label: 'Belgium', phone: '32' },
