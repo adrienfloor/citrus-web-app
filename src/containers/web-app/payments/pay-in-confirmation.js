@@ -27,7 +27,8 @@ import '../../../styling/App.css'
 
 import {
 	capitalize,
-	returnCurrencyCode
+	returnCurrencyCode,
+	returnCurrency
 } from '../../../utils/various'
 
 import {
@@ -101,8 +102,8 @@ class PayInConfirmation extends React.Component {
 		if (transactionId) {
 			fetchPayIn(transactionId)
 				.then(res => {
+					console.log('pay-in-confirmation ::: fetch paying response : ', res)
 					if (res && res.Status === 'SUCCEEDED' && res.CreditedFunds) {
-						console.log('pay-in-confirmation ::: fetch paying response : ', res)
 						this.setState({
 							subscription: res.CreditedFunds.Amount / 100
 						})
@@ -143,6 +144,11 @@ class PayInConfirmation extends React.Component {
 									})
 								})
 						}
+					} else {
+						return this.setState({
+							isLoading: false,
+							isFailure: true
+						})
 					}
 				})
 		} else {
@@ -279,23 +285,30 @@ class PayInConfirmation extends React.Component {
 					className='full-container flex-column flex-center my-plan-container'
 					style={{ justifyContent: 'center' }}
 				>
-					<span className='small-title citrusBlack'>
-						{capitalize(t('somethingWentWrong'))}
-					</span>
-					<div className='small-separator'></div>
-					<span className='small-text citrusBlack'>
-						{errorMessage}
-					</span>
-					<div className='small-separator'></div>
-					<div className='medium-separator'></div>
-					<Link to='/home' className='filled-button'>
-						<span className='small-title citrusWhite'>
-							{capitalize(t('goBackToHomePage'))}
+					<div
+						className='flex-column flex-center'
+						style={{ maxWidth: '454px' }}
+					>
+						<span className='small-title citrusBlack'>
+							{capitalize(t('somethingWentWrongProcessingTheTransaction'))}
 						</span>
-					</Link>
+						<div className='small-separator'></div>
+						<span className='small-text citrusBlack'>
+							{errorMessage}
+						</span>
+						<div className='small-separator'></div>
+						<div className='medium-separator'></div>
+						<Link to='/home' className='filled-button'>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('goBackToHomePage'))}
+							</span>
+						</Link>
+					</div>
 				</div>
 			)
 		}
+
+		const currency = returnCurrency(moment.locale())
 
 		return (
 			<div
@@ -334,7 +347,7 @@ class PayInConfirmation extends React.Component {
 							onClick={this.handleBuyCoaching}
 						>
 							<span className='small-title citrusWhite'>
-								{`${capitalize(t('confirmBuyingCoachingFor'))} ${coaching.price} ${coaching.price === 1 ? capitalize(t('credit')) : t('credits')} ?`}
+								{`${capitalize(t('confirmBuyingCoachingFor'))} ${coaching.price} ${coaching.price === 1 ? `${capitalize(t('credit'))} (=${coaching.price}${currency})` : `${t('credits')} (=${coaching.price}${currency})`} ?`}
 							</span>
 						</div>
 						<div className='small-separator'></div>

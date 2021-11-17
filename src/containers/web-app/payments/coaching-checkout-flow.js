@@ -348,11 +348,11 @@ class CoachingCheckout extends React.Component {
 									</> :
 									<>
 										<span className='small-title citrusBlack'>
-											{capitalize(t('buyingCoachingALaCarte'))}
+											{capitalize(t('purchaseConfirmation'))}
 										</span>
 										<div className='small-separator'></div>
 										<span className='small-text-bold citrusGrey'>
-											{`${amount}${returnCurrency(moment.locale())} (+ 1${returnCurrency(moment.locale())} ${t('ofFees')})`}
+											{`${capitalize(t('total'))} = ${amount+1}${returnCurrency(moment.locale())} (${amount} ${t('credits')} + 1${returnCurrency(moment.locale())} ${t('aLaCarteFee')})`}
 										</span>
 									</>
 							}

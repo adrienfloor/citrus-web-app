@@ -323,6 +323,8 @@ class Coaching extends React.Component {
 			price
 		} = coaching
 
+		const currency = returnCurrency(moment.locale())
+
 		if (isLoading) {
 			return (
 				<div className='flex-column flex-center coaching-loading white'>
@@ -391,7 +393,7 @@ class Coaching extends React.Component {
 						className='small-text-bold citrusBlack'
 						style={{ padding: '0 12px', textAlign: 'center' }}
 					>
-						{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? capitalize(t('credit')) : t('credits')} ?`}
+						{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`}
 					</span>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
@@ -418,7 +420,7 @@ class Coaching extends React.Component {
 								onClick={this.handlePayCoaching}
 							>
 								<span className='small-title citrusWhite'>
-									{`${capitalize(t('yesALaCarte'))} (1${returnCurrency(moment.locale())} ${t('ofFees')})`}
+									{`${capitalize(t('yes'))} (${price}${currency} + 1${currency} ${t('aLaCarteFee')})`}
 								</span>
 							</div>
 							<div className='medium-separator'></div>

@@ -470,7 +470,7 @@
 	"congratulations": "congratulations",
 	"thisTransactionHasBeenProcessedSuccessfully": "the transaction has been processed successfully",
 	"startTrainingNow": "start training now !",
-	"somethingWentWrongProcessingTheTransaction": "an error occured while processing the transactrion",
+	"somethingWentWrongProcessingTheTransaction": "an error occured while processing the transactrion, no payment has been processed.",
 	"goBackToHomePage": "go back to home page",
 	"areYouSureYouWantToCancelThisPlan": "If you confirm cancelation you will only be able to use your credits until your next billing date. Are you sure ?",
 	"areYouSureYouWantToGoALaCarte": "do you confirm you want to go a la carte ?",
@@ -480,11 +480,12 @@
 	"redirectedToYourBank": "for security reasons, you might be redirected to your bank to authentify in a few seconds...",
 	"cancelingYourPlan": "canceling your current plan to go a la carte...",
 	"watchForFree": "watch for free",
-	"confirmBuyingCoachingFor": "do you confirm coaching purchase for",
-	"chooseAPaymentPlan": "choose a payment plan",
+	"confirmBuyingCoachingFor": "do you confirm your purchase for",
+	"chooseAPaymentPlan": "choose a plan",
 	"yesALaCarte": "yes, a la carte",
 	"ofFees": "of fees",
 	"buyingCoachingALaCarte": "purchasing coaching a la carte",
+	"purchaseConfirmation": "purchase confirmation",
 	"startMyTrainingNow": "start my training now",
 	"legalInformation": "legal information",
 	"legalUserCreationDisclaimer": "before uploading your video we need some information. Don’t worry, this is a one time thing.",
@@ -542,5 +543,7 @@
 	"pleaseSelectAllDocuments": "please select all documents",
 	"registeringIdentityProof": "sending identitiy proof ...",
 	"registeringArticlesOfAssociation": "sending articles of association ...",
-	"registeringCompanyRegistrationProof": "sending company registration proof ..."
+	"registeringCompanyRegistrationProof": "sending company registration proof ...",
+	"aLaCarteFee": "a la carte fee",
+	"total": "total"
 }

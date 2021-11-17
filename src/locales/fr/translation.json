@@ -472,7 +472,7 @@
 	"congratulations": "félicitations",
 	"thisTransactionHasBeenProcessedSuccessfully": "la transaction a été réalisé avec succès",
 	"startTrainingNow": "commence à t'entraîner maintenant !",
-	"somethingWentWrongProcessingTheTransaction": "un échec a eu lieu lors du traitement de la transaction",
+	"somethingWentWrongProcessingTheTransaction": "un échec a eu lieu lors du traitement de la transaction, aucun paiement n'a été débité.",
 	"goBackToHomePage": "revenir à la page d'accueil",
 	"areYouSureYouWantToGoALaCarte": "confirmes-tu vouloir passer à la carte ?",
 	"areYouSureYouWantToCancelThisPlan": "en confirmant l'annulation tu ne pourras utiliser tes crédits que jusqu'à ta prochaine échéance (date du mois à laquelle tu as souscris à Citrus). Es-tu sûr ?",
@@ -482,11 +482,12 @@
 	"redirectedToYourBank": "par sécurité, tu pourrais être redirigé vers ta banque pour t'authentifier si celle-ci l'exige ...",
 	"cancelingYourPlan": "annulation du plan de paiement actuel pour passer à la carte...",
 	"watchForFree": "regarder gratuitement",
-	"confirmBuyingCoachingFor": "confirmes-tu l'achat du coaching pour",
-	"chooseAPaymentPlan": "choisir un plan de paiement",
+	"confirmBuyingCoachingFor": "confirmes-tu l'achat pour",
+	"chooseAPaymentPlan": "choisir un forfait",
 	"yesALaCarte": "oui, à la carte",
 	"ofFees": "de frais",
 	"buyingCoachingALaCarte": "achat du coaching à la carte",
+	"purchaseConfirmation": "confirmation d'achat",
 	"startMyTrainingNow": "commencer mon entraînement maintenant",
 	"legalInformation": "informations légales",
 	"legalUserCreationDisclaimer": "avant d'uploader ta vidéo nous avons besoin d'informations supplémentaires. Pas d'inquiétude, ce n'est que pour cette fois.",
@@ -544,5 +545,7 @@
 	"pleaseSelectAllDocuments": "merci de sélectionner tous les documents",
 	"registeringIdentityProof": "envoie de la preuve d'identité ...",
 	"registeringArticlesOfAssociation": "envoie des statuts d'association ...",
-	"registeringCompanyRegistrationProof": "envoie de l'enregistrement de l'entreprise ..."
+	"registeringCompanyRegistrationProof": "envoie de l'enregistrement de l'entreprise ...",
+	"aLaCarteFee": "de frais à la carte",
+	"total": "total"
 }
