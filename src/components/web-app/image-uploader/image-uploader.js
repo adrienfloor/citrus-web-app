@@ -1,8 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import Dialog from '@material-ui/core/Dialog'
-import ReactCrop from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
 import Loader from 'react-loader-spinner'
 
 import ImageCropper from './index'
