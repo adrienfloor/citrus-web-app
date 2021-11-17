@@ -161,7 +161,7 @@ export const countryCodeToLanguage = countryCode => {
 }
 
 export const returnNextBillingDate = (userBillingDate, locale) => {
-	const currentDay = new Date().getDay()
+	const currentDay = new Date().getDate()
 	const currentMonth = new Date().getMonth()
 	const currentYear = new Date().getFullYear()
 	let month = null

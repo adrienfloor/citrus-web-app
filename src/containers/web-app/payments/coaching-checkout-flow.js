@@ -325,15 +325,16 @@ class CoachingCheckout extends React.Component {
 					<div>
 						<div
 							style={{
-								width: '100%',
+								width: '97.5%',
 								display: 'flex',
 								flexDirection: 'column',
-								alignItems: 'center'
+								alignItems: 'center',
+								margin: '0 2.5%'
 							}}
 						>
 							{
 								type === 'plan' ?
-									<>
+									<div style={{ maxWidth: '350px', width: '100%', padding: '0 20px' }}>
 										<span className='small-title citrusBlack'>
 											{this.returnPlanTypeTitle(planType).title}
 										</span>
@@ -345,8 +346,8 @@ class CoachingCheckout extends React.Component {
 										<span className='small-text citrusBlack'>
 											{this.returnPlanTypeTitle(planType).subtext}
 										</span>
-									</> :
-									<>
+									</div> :
+									<div style={{ maxWidth: '350px', width: '100%', padding: '0 20px' }}>
 										<span className='small-title citrusBlack'>
 											{capitalize(t('purchaseConfirmation'))}
 										</span>
@@ -354,7 +355,7 @@ class CoachingCheckout extends React.Component {
 										<span className='small-text-bold citrusGrey'>
 											{`${capitalize(t('total'))} = ${amount+1}${returnCurrency(moment.locale())} (${amount} ${t('credits')} + 1${returnCurrency(moment.locale())} ${t('aLaCarteFee')})`}
 										</span>
-									</>
+									</div>
 							}
 						</div>
 						<div className='small-separator'></div>
@@ -364,7 +365,7 @@ class CoachingCheckout extends React.Component {
 								onCancel={() => console.log('cancel')}
 								title={
 									type === 'plan' ?
-										`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}` :
+										capitalize(t('submit')) :
 										`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
 								}
 								onSuccess={mpUserId => {
@@ -404,7 +405,7 @@ class CoachingCheckout extends React.Component {
 								<span className='small-title citrusWhite'>
 										{
 											type === 'plan' ?
-												`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}` :
+												capitalize(t('submit')) :
 												`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
 										}
 								</span>

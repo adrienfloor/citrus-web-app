@@ -483,7 +483,7 @@
 	"cancelingYourPlan": "annulation du plan de paiement actuel pour passer à la carte...",
 	"watchForFree": "regarder gratuitement",
 	"confirmBuyingCoachingFor": "confirmes-tu l'achat pour",
-	"chooseAPaymentPlan": "choisir un forfait",
+	"chooseAPaymentPlan": "choisir un forfait (plus de frais)",
 	"yesALaCarte": "oui, à la carte",
 	"ofFees": "de frais",
 	"buyingCoachingALaCarte": "achat du coaching à la carte",
@@ -532,7 +532,7 @@
 	"currentPlan": "plan actuel",
 	"creditsLeft": "crédits restants",
 	"creditLeft": "crédit restant",
-	"renewOn": "renouvelé le",
+	"renewOn": "renouvellement le",
 	"cancelMySubscription": "annuler mon abonnement",
 	"remainingCredits": "crédits restants",
 	"noTakeMeHome": "non, revenir au dashboard",
@@ -547,5 +547,10 @@
 	"registeringArticlesOfAssociation": "envoie des statuts d'association ...",
 	"registeringCompanyRegistrationProof": "envoie de l'enregistrement de l'entreprise ...",
 	"aLaCarteFee": "de frais à la carte",
-	"total": "total"
+	"total": "total",
+	"youveBeenCredited": "tu as été crédité de",
+	"forThisMonth": "pour ce mois",
+	"purchaseCoaching": "acheter le coaching",
+	"doYouWantToPurchaseTheCoaching": "veux-tu acheter le coaching ?",
+	"purchaseCoachingFor": "acheter le coaching pour"
 }

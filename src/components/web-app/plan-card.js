@@ -138,7 +138,7 @@ const PlanCard = ({
 					<div style={{ backgroundColor: '#C2C2C2', width: '100%', height: '2px' }}></div>
 					<div className='small-separator'></div>
 					{
-						credits ?
+						credits || (planType && billingDate) ?
 						<span className='extra-small-text-bold'>
 							{`${credits} ${credits > 1 ? t('creditsLeft') : t('creditLeft')} ${planType ? `- ${t('renewOn')} ${returnNextBillingDate(billingDate, moment.locale())}` : ''}`}
 						</span> :

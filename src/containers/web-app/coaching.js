@@ -323,6 +323,8 @@ class Coaching extends React.Component {
 			price
 		} = coaching
 
+		console.log(coaching._id)
+
 		const currency = returnCurrency(moment.locale())
 
 		if (isLoading) {

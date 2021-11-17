@@ -28,7 +28,8 @@ import '../../../styling/App.css'
 import {
 	capitalize,
 	returnCurrencyCode,
-	returnCurrency
+	returnCurrency,
+	returnNextBillingDate
 } from '../../../utils/various'
 
 import {
@@ -121,11 +122,23 @@ class PayInConfirmation extends React.Component {
 									console.log('pay-in-confirmation ::: fetch coach info response : ', res)
 									const coachInfo = res.payload
 									this.setState({ coachInfo })
-									if(isALaCarte) {
-										this.handleBuyCoaching()
-									} else {
-										this.setState({ isLoading: false })
-									}
+									updateUser({
+										id: user._id,
+										myReplays: [
+											coaching,
+											...user.myReplays
+										],
+										subscription: this.state.subscription,
+										billingDate,
+										pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+									}, true)
+									.then(() => {
+										if (isALaCarte) {
+											this.handleBuyCoaching()
+										} else {
+											this.setState({ isLoading: false })
+										}
+									})
 								})
 								.catch(e => console.log('catchhhh : ', e))
 							})
@@ -213,10 +226,7 @@ class PayInConfirmation extends React.Component {
 						myReplays: [
 							coaching,
 							...user.myReplays
-						],
-						subscription: isALaCarte ? null : subscription,
-						billingDate: isALaCarte ? null : user.billingDate ? user.billingDate : billingDate,
-						pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+						]
 					}, true)
 						.then(res => {
 							// Fetch updated replays of user
@@ -315,61 +325,90 @@ class PayInConfirmation extends React.Component {
 				className='full-container flex-column flex-center my-plan-container'
 				style={{ justifyContent: 'center' }}
 			>
-				<span className='small-title citrusBlack'>
-					{capitalize(t('congratulations'))}
-				</span>
-				<div className='small-separator'></div>
-				<span className='small-text citrusBlack'>
+				<div
+					className='flex-column'
+					style={{ maxWidth: '454px' }}
+				>
+					<span className='big-title citrusBlack'>
+						{capitalize(t('congratulations'))}
+					</span>
+					<span className='small-text citrusBlack'>
+						{
+							isALaCarte && !coachingId &&
+							capitalize(t('youAreNowGoingALaCarte'))
+						}
+						{
+							coachingId &&
+							capitalize(t('thisTransactionHasBeenProcessedSuccessfully'))
+						}
+					</span>
+					<div className='small-separator'></div>
 					{
-						isALaCarte && !coachingId &&
-						capitalize(t('youAreNowGoingALaCarte'))
-					}
-					{
-						coachingId &&
-						capitalize(t('thisTransactionHasBeenProcessedSuccessfully'))
-					}
-				</span>
-				<div className='small-separator'></div>
-				<div className='medium-separator'></div>
-				{
-					coachingId && isALaCarte &&
-					<Link to={`/home?coaching=${coachingId}`} className='filled-button'>
-						<span className='small-title citrusWhite'>
-							{capitalize(t('startMyTrainingNow'))}
-						</span>
-					</Link>
-				}
-				{
-					coachingId && !isALaCarte &&
-					<>
-						<div
-							className='filled-button'
-							onClick={this.handleBuyCoaching}
-						>
-							<span className='small-title citrusWhite'>
-								{`${capitalize(t('confirmBuyingCoachingFor'))} ${coaching.price} ${coaching.price === 1 ? `${capitalize(t('credit'))} (=${coaching.price}${currency})` : `${t('credits')} (=${coaching.price}${currency})`} ?`}
+						!isALaCarte && user && user.subscription &&
+						<>
+							<span className='small-text citrusBlack'>
+								{`${capitalize(t('youveBeenCredited'))} ${user.subscription} ${user.subscription > 1 ? t('credits') : t('credit')} ${t('forThisMonth')}`}
 							</span>
-						</div>
-						<div className='small-separator'></div>
-						<Link
-							to='/home'
-							className='extra-small-text-bold hover citrusGrey'
-							style={{
-								width: 'max-content',
-								textDecoration: 'underline'
-							}}
-						>
-							{capitalize(t('noTakeMeHome'))}
+							<div className='small-separator'></div>
+							<span className='small-text citrusBlack'>
+								{`${capitalize(t('renewOn'))} ${returnNextBillingDate(user.billingDate, moment.locale())}`}
+							</span>
+						</>
+					}
+					{
+						!isALaCarte && coachingId &&
+						<>
+							<div className='big-separator'></div>
+							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+							<div className='big-separator'></div>
+							<span className='medium-title citrusBlack'>
+								{`${capitalize(t('doYouWantToPurchaseTheCoaching'))}`}
+							</span>
+						</>
+					}
+					<div className='medium-separator'></div>
+					{
+						coachingId && isALaCarte &&
+						<Link to={`/home?coaching=${coachingId}`} className='filled-button'>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('startMyTrainingNow'))}
+							</span>
 						</Link>
-					</>
-				}
-				{ !coachingId &&
-					<Link to='/explore' className='filled-button'>
-						<span className='small-title citrusWhite'>
-							{capitalize(t('startTrainingNow'))}
-						</span>
-					</Link>
-				}
+					}
+					{
+						coachingId && !isALaCarte &&
+						<>
+							<div
+								className='filled-button'
+								onClick={this.handleBuyCoaching}
+							>
+								<span className='small-title citrusWhite'>
+									{`${capitalize(t('purchaseCoachingFor'))} ${coaching.price} ${ coaching.price === 1 ? t('credit') : t('credits')}`}
+								</span>
+							</div>
+							<div className='small-separator'></div>
+							<div style={{ width: '100%' }} className='flex-center'>
+								<Link
+									to='/home'
+									className='extra-small-text-bold hover citrusGrey'
+									style={{
+										width: 'max-content',
+										textDecoration: 'underline'
+									}}
+								>
+									{capitalize(t('noTakeMeHome'))}
+								</Link>
+							</div>
+						</>
+					}
+					{ !coachingId &&
+						<Link to='/explore' className='filled-button'>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('startTrainingNow'))}
+							</span>
+						</Link>
+					}
+				</div>
 			</div>
 		)
 	}
