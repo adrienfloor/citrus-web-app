@@ -56,6 +56,42 @@ class Kyc extends React.Component {
 		this.getFiles = this.getFiles.bind(this)
 		this.isKycValidationInProgress = this.isKycValidationInProgress.bind(this)
 		this.handleSubmitAllDocuments = this.handleSubmitAllDocuments.bind(this)
+		this.shouldSubmitButtonBeShown = this.shouldSubmitButtonBeShown.bind(this)
+	}
+
+	shouldSubmitButtonBeShown() {
+		const {
+			identityProofFileName,
+			articlesOfAssociationFileName,
+			registrationProofFileName
+		} = this.state
+		const { mpLegalUserInfo } = this.props
+
+		const isSoletrader = mpLegalUserInfo && mpLegalUserInfo.LegalPersonType == 'SOLETRADER'
+
+		if(isSoletrader) {
+			// Soletrader type only need these two KYC documents
+			if (
+				identityProofFileName &&
+				registrationProofFileName &&
+				!this.isKycValidationInProgress('IDENTITY_PROOF') &&
+				!this.isKycValidationInProgress('REGISTRATION_PROOF')
+			) {
+				return true
+			}
+		} else {
+			if (
+				identityProofFileName &&
+				articlesOfAssociationFileName &&
+				registrationProofFileName &&
+				!this.isKycValidationInProgress('IDENTITY_PROOF') &&
+				!this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') &&
+				!this.isKycValidationInProgress('REGISTRATION_PROOF')
+			) {
+				return true
+			}
+			return false
+		}
 	}
 
 	getFiles(file, fileName) {
@@ -359,12 +395,7 @@ class Kyc extends React.Component {
 							</div>
 					}
 					{
-						identityProofFileName &&
-						articlesOfAssociationFileName &&
-						registrationProofFileName &&
-						!this.isKycValidationInProgress('IDENTITY_PROOF') &&
-						!this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') &&
-						!this.isKycValidationInProgress('REGISTRATION_PROOF') &&
+						this.shouldSubmitButtonBeShown() &&
 						<>
 							<div className='small-separator'></div>
 							<div className='medium-separator'></div>
