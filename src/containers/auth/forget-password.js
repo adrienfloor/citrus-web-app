@@ -212,6 +212,19 @@ class ForgetPassword extends React.Component {
 								{capitalize(t('submit'))}
 							</span>
 						</button>
+						<div className='small-separator'></div>
+						<div
+							className='hover'
+							style={{
+								borderBottom: '1px solid #C2C2C2',
+								paddingBottom: 2
+							}}
+							onClick={onDone}
+						>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('cancel'))}
+							</span>
+						</div>
 					</div>
 				</form>
 				<style jsx='true'>

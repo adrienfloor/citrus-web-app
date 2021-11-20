@@ -433,21 +433,7 @@ class LegalUserCreation extends React.Component {
 						</div>
 						<div className='row flex-row'>
 							<TextField
-								label={capitalize(t('companyNumber'))}
-								onChange={e => this.handleInputChange(e, 'CompanyNumber')}
-								style={{ width: '100%' }}
-								variant='outlined'
-								value={CompanyNumber}
-								helperText={CompanyNumber.length > 0 && t('sirenOrSiretFormat')}
-							/>
-						</div>
-						<div className='medium-separator'></div>
-						<span className='small-title citrusBlack row'>
-							{capitalize(t('companyAddress'))}
-						</span>
-						<div className='row flex-row'>
-							<TextField
-								label={capitalize(t('addressLine'))}
+								label={capitalize(t('companyAddress'))}
 								onChange={e => this.handleInputChange(e, 'AddressLine1')}
 								style={{ width: '100%' }}
 								variant='outlined'
@@ -482,6 +468,16 @@ class LegalUserCreation extends React.Component {
 								name={capitalize(t('country'))}
 								onSelect={Country => this.setState({ Country })}
 								value={Country}
+							/>
+						</div>
+						<div className='row flex-row'>
+							<TextField
+								label={capitalize(t('companyNumber'))}
+								onChange={e => this.handleInputChange(e, 'CompanyNumber')}
+								style={{ width: '100%' }}
+								variant='outlined'
+								value={CompanyNumber}
+								helperText={CompanyNumber.length > 0 && t('sirenOrSiretFormat')}
 							/>
 						</div>
 						<div className='medium-separator'></div>

@@ -481,7 +481,7 @@
 	"cancelingYourPlan": "canceling your current plan to go a la carte...",
 	"watchForFree": "watch for free",
 	"confirmBuyingCoachingFor": "do you confirm your purchase for",
-	"chooseAPaymentPlan": "choose a plan (no more fees",
+	"chooseAPaymentPlan": "choose a plan (no more fees)",
 	"yesALaCarte": "yes, a la carte",
 	"ofFees": "of fees",
 	"buyingCoachingALaCarte": "purchasing coaching a la carte",
@@ -550,5 +550,9 @@
 	"forThisMonth": "for this month",
 	"purchaseCoaching": "purchase coaching",
 	"purchaseCoachingFor": "purchase coaching for",
-	"doYouWantToPurchaseTheCoaching": "do you want to purchase the coaching?"
+	"doYouWantToPurchaseTheCoaching": "do you want to purchase the coaching?",
+	"purchaseThisPlan": "purchase this plan",
+	"upgradeYourPlan": "upgrade my plan today",
+	"noCreditsLeftAvailableThisMonth": "you don't have any credits left for this month",
+	"residence": "residence"
 }

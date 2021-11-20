@@ -86,8 +86,8 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 		<div
 			className={
 				fullWidth ?
-					'fullWidthContainer hover' :
-					'card-container hover'
+					'fullWidthContainer' :
+					'card-container'
 			}
 		>
 			<div

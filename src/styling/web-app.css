@@ -223,7 +223,8 @@
 	min-height: 700px;
 	justify-content: flex-start;
 }
-.my-plan-container {
+.my-plan-container,
+.pay-in-confirmation-container {
 	/* margin: 0 5%;
 	width: 90%; */
 	height: 92%;
@@ -288,7 +289,7 @@
 	align-items: flex-start;
 	flex-wrap: wrap;
 	max-width: 1000px;
-	height: 800px;
+	/* height: 800px; */
 }
 .sports-scroll {
 	padding-bottom: 30px;
@@ -901,6 +902,12 @@ input[type=number] {
 	}
 	.iban-mobile {
 		width: 100% !important;
+	}
+	.pay-in-confirmation-container {
+		height: 100%;
+		width: 100%;
+		margin: 0;
+		overflow-y: auto;
 	}
 
 	/* MATERIAL UI OVERIDE */

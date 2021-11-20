@@ -6,6 +6,7 @@ import moment from 'moment'
 import qs from 'query-string'
 import { Link } from 'react-router-dom'
 
+import Card from '../../../components/web-app/card'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 
@@ -124,10 +125,10 @@ class PayInConfirmation extends React.Component {
 									this.setState({ coachInfo })
 									updateUser({
 										id: user._id,
-										myReplays: [
-											coaching,
-											...user.myReplays
-										],
+										// myReplays: [
+										// 	coaching,
+										// 	...user.myReplays
+										// ],
 										subscription: this.state.subscription,
 										billingDate,
 										pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
@@ -302,8 +303,11 @@ class PayInConfirmation extends React.Component {
 						<span className='small-title citrusBlack'>
 							{capitalize(t('somethingWentWrongProcessingTheTransaction'))}
 						</span>
-						<div className='small-separator'></div>
-						<span className='small-text citrusBlack'>
+						<div className='medium-separator'></div>
+						<span
+							style={{ width: '100%' }}
+							className='small-text citrusBlack'
+						>
 							{errorMessage}
 						</span>
 						<div className='small-separator'></div>
@@ -322,14 +326,17 @@ class PayInConfirmation extends React.Component {
 
 		return (
 			<div
-				className='full-container flex-column flex-center my-plan-container'
+				className='full-container flex-column flex-center pay-in-confirmation-container'
 				style={{ justifyContent: 'center' }}
 			>
 				<div
 					className='flex-column'
 					style={{ maxWidth: '454px' }}
 				>
-					<span className='big-title citrusBlack'>
+					<span
+						className='big-title citrusBlack'
+						style={{ marginTop: '80px' }}
+					>
 						{capitalize(t('congratulations'))}
 					</span>
 					<span className='small-text citrusBlack'>
@@ -357,14 +364,23 @@ class PayInConfirmation extends React.Component {
 					}
 					{
 						!isALaCarte && coachingId &&
-						<>
+						<div className='flex-column'>
 							<div className='big-separator'></div>
 							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
 							<div className='big-separator'></div>
 							<span className='medium-title citrusBlack'>
 								{`${capitalize(t('doYouWantToPurchaseTheCoaching'))}`}
 							</span>
-						</>
+							<div className='medium-separator'></div>
+							<Card
+								// onClick={() => this.setState({ selectedCoaching: activity })}
+								size='large'
+								title={capitalize(coaching.title)}
+								subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
+								imgUri={coaching.pictureUri}
+							/>
+							<div className='small-separator'></div>
+						</div>
 					}
 					<div className='medium-separator'></div>
 					{
@@ -387,7 +403,7 @@ class PayInConfirmation extends React.Component {
 								</span>
 							</div>
 							<div className='small-separator'></div>
-							<div style={{ width: '100%' }} className='flex-center'>
+							<div style={{ width: '100%', marginBottom: '20px' }} className='flex-center'>
 								<Link
 									to='/home'
 									className='extra-small-text-bold hover citrusGrey'
@@ -398,6 +414,9 @@ class PayInConfirmation extends React.Component {
 								>
 									{capitalize(t('noTakeMeHome'))}
 								</Link>
+								<div className='medium-separator'></div>
+								<div className='mobile-only-medium-separator'></div>
+								<div className='mobile-only-medium-separator'></div>
 							</div>
 						</>
 					}

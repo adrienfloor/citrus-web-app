@@ -418,27 +418,14 @@ class CreditCardForm extends React.Component {
 										onSelect={Nationality => this.setState({ Nationality })}
 									/>
 									<CountrySelector
-										style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
-										name={capitalize(t('countryOfResidence'))}
+										style={{
+											width: '47.5%',
+											margin: '2% 0 0 2.5%'
+										}}
+										name={capitalize(t('residence'))}
 										onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
 									/>
 								</div>
-								{/* <div
-									className='row flex-row medium-text flex-center'
-									style={{ marginTop: '15px' }}
-								>
-									<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>Birthday : </span>
-									<TextField
-										placeholder={t('datePlaceHolder')}
-										// onChange={e => this.handleDateInputChange(e)}
-										style={{ width: '45%', margin: '2% 2.5%' }}
-										variant='standard'
-										helperText={Birthday.length > 0 && capitalize(t('dateFormatMustBe'))}
-										value={Birthday}
-										onChange={e => this.setState({ Birthday: e.target.value })}
-										type='date'
-									/>
-								</div> */}
 								<div
 									className='row flex-row medium-text flex-center'
 									style={{ marginTop: '15px' }}

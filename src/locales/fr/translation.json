@@ -443,7 +443,7 @@
 	"moreCoachings": "plus de coachings",
 	"membership": "adhésion",
 	"billing": "facturation",
-	"chooseThisPlan": "choisir ce plan",
+	"chooseThisPlan": "choisir ce forfait",
 	"month": "mois",
 	"youGet10CreditsAmonth": "10 crédits par mois sans frais additionnels",
 	"youGet20CreditsAmonth": "20 crédits par mois sans frais additionnels",
@@ -483,7 +483,7 @@
 	"cancelingYourPlan": "annulation du plan de paiement actuel pour passer à la carte...",
 	"watchForFree": "regarder gratuitement",
 	"confirmBuyingCoachingFor": "confirmes-tu l'achat pour",
-	"chooseAPaymentPlan": "choisir un forfait (plus de frais)",
+	"chooseAPaymentPlan": "choisir un forfait (sans frais)",
 	"yesALaCarte": "oui, à la carte",
 	"ofFees": "de frais",
 	"buyingCoachingALaCarte": "achat du coaching à la carte",
@@ -552,5 +552,9 @@
 	"forThisMonth": "pour ce mois",
 	"purchaseCoaching": "acheter le coaching",
 	"doYouWantToPurchaseTheCoaching": "veux-tu acheter le coaching ?",
-	"purchaseCoachingFor": "acheter le coaching pour"
+	"purchaseCoachingFor": "acheter le coaching pour",
+	"purchaseThisPlan": "acheter cet  abonnement",
+	"upgradeYourPlan": "upgrade ton abonnement dès aujourd'hui",
+	"noCreditsLeftAvailableThisMonth": "tu n'as plus de crédits disponibles ce mois-ci",
+	"residence": "résidence"
 }

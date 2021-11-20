@@ -336,8 +336,12 @@ class Cashout extends React.Component {
 							<div className='small-separator'></div>
 							<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
 							<div className='medium-separator'></div>
-							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
 							<div className='medium-separator'></div>
+							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+						</div>
+						<div>
+							<div className='mobile-only-medium-separator'></div>
+							<div className='mobile-only-medium-separator'></div>
 							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
 							<div className='flex-row column-on-mobile' style={{ justifyContent: 'flex-start' }}>
 								{
@@ -359,7 +363,11 @@ class Cashout extends React.Component {
 											'small-text-bold citrusRed row-item' :
 											'small-text-bold row-item simple-link'
 									}
-									style={{ textAlign: 'center'}}
+									style={
+										bankAccount ?
+											{ textAlign: 'center' } :
+											{ textAlign: 'start' }
+									}
 									onClick={() => this.setState({ isUpdatingBankAccount: true })}
 								>
 									{
@@ -374,9 +382,7 @@ class Cashout extends React.Component {
 							<div className='medium-separator'></div>
 						</div>
 						<div className='flex-column'>
-							<div className='medium-separator'></div>
-							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
-							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
 							{
 								warningMessage &&
 								<>
@@ -386,19 +392,19 @@ class Cashout extends React.Component {
 									<div className='small-separator'></div>
 								</>
 							}
-							<span
-								className='smaller-text citrusGrey'
-								style={{ maxWidth: '454px' }}
-							>
-								{capitalize(t('cashOutWelcomeMessage'))}
-							</span>
-							<div className='small-separator'></div>
 							<div style={{ width: '100%' }}>
 								<div className='filled-button' onClick={this.handleWithdrawMissingProperties}>
 									<span className='small-title citrusWhite'>
 										{capitalize(t('withdrawNow'))}
 									</span>
 								</div>
+								<div className='small-separator'></div>
+								<span
+									className='smaller-text citrusGrey'
+									style={{ maxWidth: '454px' }}
+								>
+									{capitalize(t('cashOutWelcomeMessage'))}
+								</span>
 							</div>
 						</div>
 					</div>

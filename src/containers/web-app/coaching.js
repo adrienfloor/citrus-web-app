@@ -323,8 +323,6 @@ class Coaching extends React.Component {
 			price
 		} = coaching
 
-		console.log(coaching._id)
-
 		const currency = returnCurrency(moment.locale())
 
 		if (isLoading) {
@@ -391,60 +389,89 @@ class Coaching extends React.Component {
 						backgroundColor: '#FFFFFF'
 					}}
 				>
-					<span
-						className='small-text-bold citrusBlack'
-						style={{ padding: '0 12px', textAlign: 'center' }}
-					>
-						{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`}
-					</span>
+					{
+						(credits>0 || !user.subscription) &&
+						<span
+							className='small-text-bold citrusBlack'
+							style={{ padding: '0 12px', textAlign: 'center' }}
+						>
+							{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`}
+						</span>
+					}
+					{
+						!credits && user.subscription &&
+						<span
+							className='small-text-bold citrusBlack'
+							style={{ padding: '0 12px', textAlign: 'center' }}
+						>
+							{capitalize(t('noCreditsLeftAvailableThisMonth'))}
+						</span>
+					}
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					<div
 						className='flex-column flex-center'
 						style={{ width: '90%', margin: '0 5%'}}
 					>
-					{
-						credits && credits >= coaching.price ?
-						<>
-							<div
-								className='filled-button full-width hover'
-								onClick={this.handlePayCoaching}
-							>
-								<span className='small-title citrusWhite'>
-									{capitalize(t('yes'))}
-								</span>
-							</div>
-							<div className='medium-separator'></div>
-						</> :
-						<>
-							<div
-								className='filled-button full-width hover'
-								onClick={this.handlePayCoaching}
-							>
-								<span className='small-title citrusWhite'>
-									{`${capitalize(t('yes'))} (${price}${currency} + 1${currency} ${t('aLaCarteFee')})`}
-								</span>
-							</div>
-							<div className='medium-separator'></div>
-						</>
-					}
-					{
-						user.subscription !== 30 &&
-						<>
-							<div
-								className='light-button full-width hover'
-								onClick={() => this.setState({
-									isPaymentConfirmationOpen: false,
-									isCoachingCheckoutOpen: 'plan'
-								})}
-							>
-								<span className='small-title citrusBlue'>
-									{capitalize(t('chooseAPaymentPlan'))}
-								</span>
-							</div>
-							<div className='medium-separator'></div>
-						</>
-					}
+						{
+							!credits && user.subscription && user.subscription !== 30 &&
+							<>
+								<div
+									className='light-button full-width hover'
+									onClick={() => this.setState({
+										isPaymentConfirmationOpen: false,
+										isCoachingCheckoutOpen: 'plan'
+									})}
+								>
+									<span className='small-title citrusBlue'>
+										{capitalize(t('upgradeYourPlan'))}
+									</span>
+								</div>
+								<div className='medium-separator'></div>
+							</>
+						}
+						{
+							!user.subscription &&
+							<>
+								<div
+									className='light-button full-width hover'
+									onClick={() => this.setState({
+										isPaymentConfirmationOpen: false,
+										isCoachingCheckoutOpen: 'plan'
+									})}
+								>
+									<span className='small-title citrusBlue'>
+										{capitalize(t('chooseAPaymentPlan'))}
+									</span>
+								</div>
+								<div className='medium-separator'></div>
+							</>
+						}
+						{
+							credits>0 && credits >= coaching.price ?
+							<>
+								<div
+									className='filled-button full-width hover'
+									onClick={this.handlePayCoaching}
+								>
+									<span className='small-title citrusWhite'>
+										{capitalize(t('yes'))}
+									</span>
+								</div>
+								<div className='medium-separator'></div>
+							</> :
+							<>
+								<div
+									className='filled-button full-width hover'
+									onClick={this.handlePayCoaching}
+								>
+									<span className='small-title citrusWhite'>
+										{`${capitalize(t('yes'))} (${price}${currency} + 1${currency} ${t('aLaCarteFee')})`}
+									</span>
+								</div>
+								<div className='medium-separator'></div>
+							</>
+						}
 						<span
 							className='small-text-bold citrusGrey hover'
 							onClick={() => this.setState({ isPaymentConfirmationOpen: false })}

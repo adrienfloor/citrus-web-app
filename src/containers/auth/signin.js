@@ -285,7 +285,7 @@ class Signin extends React.Component {
 						style={{
 							borderBottom: '1px solid #C2C2C2',
 							marginBottom: 5,
-							paddingBottom: 5
+							paddingBottom: 3
 						}}
 						onClick={() => {
 							this.setState({

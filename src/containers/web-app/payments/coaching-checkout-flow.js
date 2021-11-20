@@ -324,30 +324,52 @@ class CoachingCheckout extends React.Component {
 					<div className='small-separator'></div>
 					<div>
 						<div
-							style={{
-								width: '97.5%',
-								display: 'flex',
-								flexDirection: 'column',
-								alignItems: 'center',
-								margin: '0 2.5%'
-							}}
+							style={
+								cardId ?
+									{
+										height: '250px',
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: 'flex-end',
+										width: '300px'
+									} :
+									{
+										width: '97.5%',
+										display: 'flex',
+										flexDirection: 'column',
+										alignItems: 'center',
+										margin: '0 2.5%'
+									}
+							}
 						>
 							{
 								type === 'plan' ?
-									<div style={{ maxWidth: '350px', width: '100%', padding: '0 20px' }}>
-										<span className='small-title citrusBlack'>
+									<div
+										style={
+											cardId ?
+												{ maxWidth: '350px', width: '100%', padding: '0' } :
+												{ maxWidth: '350px', width: '100%', padding: '0 20px' }
+										}
+									>
+										<span className='medium-title citrusBlack'>
 											{this.returnPlanTypeTitle(planType).title}
 										</span>
 										<div className='small-separator'></div>
-										<span className='small-text citrusBlack'>
+										<span className='smaller-text-bold citrusBlack'>
 											{this.returnPlanTypeTitle(planType).text}
 										</span>
 										<div className='small-separator'></div>
-										<span className='small-text citrusBlack'>
+										<span className='smaller-text-bold citrusBlack'>
 											{this.returnPlanTypeTitle(planType).subtext}
 										</span>
 									</div> :
-									<div style={{ maxWidth: '350px', width: '100%', padding: '0 20px' }}>
+									<div
+										style={
+											cardId ?
+												{ maxWidth: '350px', width: '100%', padding: '0' } :
+												{ maxWidth: '350px', width: '100%', padding: '0 20px' }
+										}
+									>
 										<span className='small-title citrusBlack'>
 											{capitalize(t('purchaseConfirmation'))}
 										</span>
@@ -365,7 +387,7 @@ class CoachingCheckout extends React.Component {
 								onCancel={() => console.log('cancel')}
 								title={
 									type === 'plan' ?
-										capitalize(t('submit')) :
+										capitalize(t('purchaseThisPlan')) :
 										`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
 								}
 								onSuccess={mpUserId => {
@@ -395,7 +417,7 @@ class CoachingCheckout extends React.Component {
 							/> :
 							<div
 								className='filled-button'
-								style={{ marginTop: '30px', width: '300px' }}
+								style={{ marginTop: '20px', width: '300px' }}
 								onClick={
 									type === 'plan' ?
 									() => this.handleSubscribe(cardId) :
@@ -405,7 +427,7 @@ class CoachingCheckout extends React.Component {
 								<span className='small-title citrusWhite'>
 										{
 											type === 'plan' ?
-												capitalize(t('submit')) :
+												capitalize(t('purchaseThisPlan')) :
 												`${capitalize(t('buyFor'))} ${amount + 1}${returnCurrency(moment.locale())}`
 										}
 								</span>

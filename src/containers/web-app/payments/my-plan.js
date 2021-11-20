@@ -375,32 +375,40 @@ class MyPlan extends React.Component {
 							style={
 								cardId ?
 									{
-										height: '150px',
+										height: '250px',
 										display: 'flex',
 										flexDirection: 'column',
-										justifyContent: 'space-around',
-										width: '300px',
-										marginBottom: '30px'
+										justifyContent: 'flex-end',
+										width: '300px'
 									} :
 									{
-										width: '100%',
+										width: '97.5%',
 										display: 'flex',
 										flexDirection: 'column',
-										alignItems: 'center'
+										alignItems: 'center',
+										margin: '0 2.5%'
 									}
 							}
 						>
-							<span className='small-title citrusBlack'>
-								{this.returnPlanTypeTitle(planType).title}
-							</span>
-							<div className='small-separator'></div>
-							<span className='small-text citrusBlack'>
-								{this.returnPlanTypeTitle(planType).text}
-							</span>
-							<div className='small-separator'></div>
-							<span className='small-text citrusBlack'>
-								{this.returnPlanTypeTitle(planType).subtext}
-							</span>
+							<div
+								style={
+									cardId ?
+									{ maxWidth: '350px', width: '100%', padding: '0' } :
+									{ maxWidth: '350px', width: '100%', padding: '0 20px' }
+								}
+							>
+								<span className='medium-title citrusBlack'>
+									{this.returnPlanTypeTitle(planType).title}
+								</span>
+								<div className='small-separator'></div>
+								<span className='smaller-text-bold citrusBlack'>
+									{this.returnPlanTypeTitle(planType).text}
+								</span>
+								<div className='small-separator'></div>
+								<span className='smaller-text-bold citrusBlack'>
+									{this.returnPlanTypeTitle(planType).subtext}
+								</span>
+							</div>
 						</div>
 						<div className='small-separator'></div>
 						{
@@ -414,7 +422,7 @@ class MyPlan extends React.Component {
 								title={
 									planType === null ?
 										capitalize(t('startALaCarte')) :
-										`${capitalize(t('startWith'))} ${planType}${returnCurrency(moment.locale())} / ${t('month')}`
+										capitalize(t('purchaseThisPlan'))
 								}
 								onSuccess={mpUserId => {
 									this.setState({
@@ -436,12 +444,14 @@ class MyPlan extends React.Component {
 						}
 						{
 							cardId && !isLoading &&
+
 							<button
+								style={{ marginTop: '20px'}}
 								onClick={() => this.handleSubscribe(cardId)}
 								className='filled-button full-width'
 							>
 								<span className='small-title citrusWhite'>
-									{capitalize(t('submit'))}
+									{capitalize(t('purchaseThisPlan'))}
 								</span>
 							</button>
 						}
@@ -475,9 +485,6 @@ class MyPlan extends React.Component {
 					<span className='big-title citrusBlack small-responsive-title-plan'>
 						{capitalize(t('yourPlan'))}
 					</span>
-					{/* <span className='small-text citrusBlack small-responsive-title-plan'>
-						{capitalize(t('youCanChangeYouPlanAnytimeOr'))}
-					</span> */}
 					<div className='medium-separator'></div>
 					<div className='flex-row available-plans'>
 						<div className='flex-column'>
@@ -518,9 +525,6 @@ class MyPlan extends React.Component {
 					<span className='big-title citrusBlack small-responsive-title-plan'>
 						{capitalize(t('availablePlans'))}
 					</span>
-					{/* <span className='small-text citrusBlack small-responsive-title-plan'>
-						{capitalize(t('exploreMorePlans'))}
-					</span> */}
 					<div className='medium-separator'></div>
 					<div className='flex-row available-plans'>
 						{
