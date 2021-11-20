@@ -61,26 +61,25 @@ class CreditCardForm extends React.Component {
 			user.creditCard.expirationDate.slice(0, 2) + '/' + user.creditCard.expirationDate.slice(2) :
 			''
 		this.state = {
-			// cvc: '',
-			// expiry: '',
-			// number: '',
-			// FirstName: '',
-			// LastName: '',
-			// Birthday: new Date('1990-08-18'),
-			// Nationality: '',
-			// CountryOfResidence: '',
+			cvc: '',
+			expiry: '',
+			number: '',
+			FirstName: '',
+			LastName: '',
+			Birthday: new Date('1990-08-18'),
+			Nationality: '',
+			CountryOfResidence: '',
 			isLoading: false,
 			warningMessage: '',
 			loadingMessage: '',
-			//////////////////
-			cvc: '123',
-			expiry: '',
-			number: '4970105191923460',
-			FirstName: 'Adrien',
-			LastName: 'Floor',
-			Birthday: new Date('1990-08-18'),
-			Nationality: 'FR',
-			CountryOfResidence: 'FR'
+			// cvc: '123',
+			// expiry: '',
+			// number: '4970105191923460',
+			// FirstName: 'Adrien',
+			// LastName: 'Floor',
+			// Birthday: new Date('1990-08-18'),
+			// Nationality: 'FR',
+			// CountryOfResidence: 'FR'
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
