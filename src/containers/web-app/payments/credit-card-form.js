@@ -46,7 +46,10 @@ import {
 	loadUser
 } from '../../../actions/auth-actions'
 
-const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
+const {
+	REACT_APP_MANGOPAY_CLIENT_ID,
+	REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
+} = process.env
 const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class CreditCardForm extends React.Component {
@@ -54,19 +57,30 @@ class CreditCardForm extends React.Component {
 		super(props)
 		const { user } = this.props
 		const initialExpirationDate =
-			user?.creditCard?.expirationDate.slice(0, 2) + '/' + user?.creditCard?.expirationDate.slice(2)
+			user?.creditCard?.expirationDate ?
+			user.creditCard.expirationDate.slice(0, 2) + '/' + user.creditCard.expirationDate.slice(2) :
+			''
 		this.state = {
-			cvc: '',
-			expiry: '',
-			number: '',
-			FirstName: '',
-			LastName: '',
-			Birthday: new Date('1990-08-18'),
-			Nationality: '',
-			CountryOfResidence: '',
+			// cvc: '',
+			// expiry: '',
+			// number: '',
+			// FirstName: '',
+			// LastName: '',
+			// Birthday: new Date('1990-08-18'),
+			// Nationality: '',
+			// CountryOfResidence: '',
 			isLoading: false,
 			warningMessage: '',
-			loadingMessage: ''
+			loadingMessage: '',
+			//////////////////
+			cvc: '123',
+			expiry: '',
+			number: '4970105191923460',
+			FirstName: 'Adrien',
+			LastName: 'Floor',
+			Birthday: new Date('1990-08-18'),
+			Nationality: 'FR',
+			CountryOfResidence: 'FR'
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -155,7 +169,7 @@ class CreditCardForm extends React.Component {
 			console.log(res, res.ResultCode, res.ResultMessage)
 			this.setState({
 				isLoading: false,
-				warningMessage: `${capitalize(t('somethingWentWrongRegisteringYourCard'))} : ${res.ResultMessage}`
+				warningMessage: `${capitalize(t('somethingWentWrongRegisteringYourCard'))} ${res.ResultMessage == undefined ? '' : `: ${res.ResultMessage}`}`
 			})
 		}
 
@@ -170,7 +184,7 @@ class CreditCardForm extends React.Component {
 			} = mpUserInfo
 
 			createLoadingMessage(capitalize(t('registeringCard')))
-			cardRegistration.baseURL = 'https://api.sandbox.mangopay.com'
+			cardRegistration.baseURL = REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
 			cardRegistration.clientId = REACT_APP_MANGOPAY_CLIENT_ID
 
 			const cardRegistrationURL = mpUserCardRegistration.CardRegistrationURL
@@ -198,7 +212,7 @@ class CreditCardForm extends React.Component {
 					updateMpUserCardRegistration(res.RegistrationData, res.Id)
 						.then(async (res) => {
 							const cardInfo = await fetchMpCardInfo(mpUserId)
-							if (cardInfo && mpUserId) {
+							if (cardInfo && cardInfo.Alias && cardInfo.ExpirationDate && mpUserId) {
 								updateUser({
 									id: user._id,
 									creditCard: {
@@ -267,7 +281,6 @@ class CreditCardForm extends React.Component {
 		const splitDate = formattedDate.split('/')
 		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
 		const birthday =  updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
-		console.log(birthday)
 
 		createLoadingMessage(capitalize(t('creatingMangoUser')))
 		mpUser = await createMpUser(
@@ -279,24 +292,39 @@ class CreditCardForm extends React.Component {
 			user.email
 		)
 		console.log(mpUser)
-		if (mpUser) {
+		if(!mpUser || (mpUser && mpUser.errors)) {
+			endPaymentProcessWithError({
+				ResultMessage: mpUser.errors ? mpUser.errors[Object.keys(mpUser.errors )[0]] : t('errorCreatingMangoPayUser')
+			})
+			return
+		} else {
 			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 			mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
 		}
 		console.log(mpUserWallet)
-		if (mpUserWallet) {
+		if (!mpUserWallet || (mpUserWallet && mpUserWallet.errors)) {
+			endPaymentProcessWithError({
+				ResultMessage: mpUserWallet.errors ? mpUserWallet.errors[Object.keys(mpUserWallet.errors)[0]] : t('errorCreatingMangoPayUserWallet')
+			})
+			return
+		} else {
 			createLoadingMessage(capitalize(t('creatingCardRegistration')))
 			const CardType = null
 			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
 		}
 		console.log(mpUserCardRegistration)
-		if (mpUserCardRegistration) {
+		if(mpUserCardRegistration && mpUserCardRegistration.PreregistrationData) {
 			const info = {
 				mpUserId: mpUser.Id,
 				mpUserFirstName: FirstName,
 				mpUserLastName: LastName
 			}
 			registerNewCard(mpUserCardRegistration, info)
+		} else {
+			endPaymentProcessWithError({
+				ResultMessage: t('errorRegisteringMangoPayUserCard')
+			})
+			return
 		}
 	}
 
@@ -315,6 +343,10 @@ class CreditCardForm extends React.Component {
 			isLoading,
 			error,
 			Birthday,
+			FirstName,
+			LastName,
+			Nationality,
+			CountryOfResidence,
 			loadingMessage,
 			warningMessage
 		} = this.state
@@ -403,12 +435,14 @@ class CreditCardForm extends React.Component {
 										onChange={e => this.handleInputChange(e, 'FirstName')}
 										style={{ width: '47.5%', margin: '2% 2.5% 2% 0' }}
 										variant='outlined'
+										value={FirstName}
 									/>
 									<TextField
 										label={capitalize(t('lastName'))}
 										onChange={e => this.handleInputChange(e, 'LastName')}
 										style={{ width: '47.5%', margin: '2% 0 2% 2.5%' }}
 										variant='outlined'
+										value={LastName}
 									/>
 								</div>
 								<div className='row flex-row'>
@@ -416,14 +450,13 @@ class CreditCardForm extends React.Component {
 										style={{ width: '47.5%', margin: '2% 2.5% 0 0' }}
 										name={capitalize(t('nationality'))}
 										onSelect={Nationality => this.setState({ Nationality })}
+										value={Nationality}
 									/>
 									<CountrySelector
-										style={{
-											width: '47.5%',
-											margin: '2% 0 0 2.5%'
-										}}
+										style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
 										name={capitalize(t('residence'))}
 										onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
+										value={CountryOfResidence}
 									/>
 								</div>
 								<div

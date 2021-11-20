@@ -48,7 +48,10 @@ import {
 	loadUser
 } from '../../../actions/auth-actions'
 
-const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
+const {
+	REACT_APP_MANGOPAY_CLIENT_ID,
+	REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
+} = process.env
 const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
 class PaymentMethod extends React.Component {
@@ -56,7 +59,9 @@ class PaymentMethod extends React.Component {
 		super(props)
 		const { user } = this.props
 		const initialExpirationDate =
-			user?.creditCard?.expirationDate.slice(0, 2) + '/' + user?.creditCard?.expirationDate.slice(2)
+			user?.creditCard?.expirationDate ?
+			user.creditCard.expirationDate.slice(0, 2) + '/' + user.creditCard.expirationDate.slice(2) :
+			''
 		this.state = {
 			cvc: '',
 			expiry: initialExpirationDate || '',
@@ -162,7 +167,7 @@ class PaymentMethod extends React.Component {
 			console.log(res, res.ResultCode, res.ResultMessage)
 			this.setState({
 				isLoading: false,
-				warningMessage: `${capitalize(t('somethingWentWrongRegisteringYourCard'))} : ${res.ResultMessage}`
+				warningMessage: `${capitalize(t('somethingWentWrongRegisteringYourCard'))} ${res.ResultMessage == undefined ? '' : `: ${res.ResultMessage}`}`
 			})
 		}
 
@@ -175,7 +180,7 @@ class PaymentMethod extends React.Component {
 			} = mpUserInfo
 
 			createLoadingMessage(capitalize(t('registeringCard')))
-			cardRegistration.baseURL = 'https://api.sandbox.mangopay.com'
+			cardRegistration.baseURL = REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
 			cardRegistration.clientId = REACT_APP_MANGOPAY_CLIENT_ID
 
 			const cardRegistrationURL = mpUserCardRegistration.CardRegistrationURL
@@ -205,7 +210,7 @@ class PaymentMethod extends React.Component {
 						.then(async(res) => {
 							const cardInfo = await fetchMpCardInfo(mpUserId)
 
-							if(cardInfo && mpUserId) {
+							if (cardInfo && cardInfo.Alias && cardInfo.ExpirationDate && mpUserId) {
 								updateUser({
 									id: user._id,
 									creditCard: {
@@ -306,23 +311,40 @@ class PaymentMethod extends React.Component {
 				CountryOfResidence,
 				user.email
 			)
-			if (mpUser) {
+			console.log(mpUser)
+			if (!mpUser || (mpUser && mpUser.errors)) {
+				endPaymentProcessWithError({
+					ResultMessage: mpUser.errors ? mpUser.errors[Object.keys(mpUser.errors)[0]] : t('errorCreatingMangoPayUser')
+				})
+				return
+			} else {
 				createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
 				mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
 			}
-			if (mpUserWallet) {
+			console.log(mpUserWallet)
+			if (!mpUserWallet || (mpUserWallet && mpUserWallet.errors)) {
+				endPaymentProcessWithError({
+					ResultMessage: mpUserWallet.errors ? mpUserWallet.errors[Object.keys(mpUserWallet.errors)[0]] : t('errorCreatingMangoPayUserWallet')
+				})
+				return
+			} else {
 				createLoadingMessage(capitalize(t('creatingCardRegistration')))
 				const CardType = null
 				mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
 			}
-
-			if (mpUserCardRegistration) {
+			console.log(mpUserCardRegistration)
+			if (mpUserCardRegistration && mpUserCardRegistration.PreregistrationData) {
 				const info = {
 					mpUserId: mpUser.Id,
 					mpUserFirstName: FirstName,
 					mpUserLastName: LastName
 				}
 				registerNewCard(mpUserCardRegistration, info)
+			} else {
+				endPaymentProcessWithError({
+					ResultMessage: t('errorRegisteringMangoPayUserCard')
+				})
+				return
 			}
 		}
 	}

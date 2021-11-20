@@ -40,7 +40,10 @@ import {
 	updateUser
 } from '../../actions/auth-actions'
 
-const { REACT_APP_MANGOPAY_CLIENT_ID } = process.env
+const {
+	REACT_APP_MANGOPAY_CLIENT_ID,
+	REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
+} = process.env
 
 const locale = moment.locale() == 'fr' ? frLocale : enLocale
 
@@ -134,7 +137,7 @@ class CreditCardForm extends React.Component {
 		const registerNewCard = (mpUserCardRegistration) => {
 
 			createLoadingMessage(capitalize(t('registeringCard')))
-			cardRegistration.baseURL = 'https://api.sandbox.mangopay.com'
+			cardRegistration.baseURL = REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
 			cardRegistration.clientId = REACT_APP_MANGOPAY_CLIENT_ID
 
 			const cardRegistrationURL = mpUserCardRegistration.CardRegistrationURL

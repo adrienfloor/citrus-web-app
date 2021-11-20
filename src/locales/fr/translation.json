@@ -556,5 +556,8 @@
 	"purchaseThisPlan": "acheter cet  abonnement",
 	"upgradeYourPlan": "upgrade ton abonnement dès aujourd'hui",
 	"noCreditsLeftAvailableThisMonth": "tu n'as plus de crédits disponibles ce mois-ci",
-	"residence": "résidence"
+	"residence": "résidence",
+	"errorCreatingMangoPayUser": "erreur à la création de l'utilisateur Mangopay",
+	"errorCreatingMangoPayUserWallet": "erreur à la création du wallet de l'utilisateur Mangopay",
+	"errorRegisteringMangoPayUserCard": "erreur à l'enrtegistrement de la carte de l'utilisateur Mangopay"
 }
