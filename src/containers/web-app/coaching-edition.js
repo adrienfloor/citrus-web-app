@@ -8,7 +8,7 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextField from '@material-ui/core/TextField'
 
-import ImageUploader from '../../components/web-app/image-uploader'
+import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -110,7 +110,8 @@ class Schedule extends React.Component {
 			updateCoaching,
 			onCoachingUpdated,
 			t,
-			user
+			user,
+			fetchTrainerCoachings
 		} = this.props
 		const {
 			firstName,
@@ -165,6 +166,7 @@ class Schedule extends React.Component {
 
 		return updateCoaching(updatedCoaching)
 			.then(res => {
+				fetchTrainerCoachings(user._id, true)
 				onCoachingUpdated(res.payload)
 			})
 	}
@@ -460,7 +462,10 @@ class Schedule extends React.Component {
 					<div className='medium-separator'></div>
 					<div
 						className='more-details-row'
-						style={{ margin: '0 0 0 2.5%' }}
+						style={{
+							margin: '0 0 0 2.5%',
+							width: '92.5%'
+						}}
 					>
 						<span className='small-text-bold citrusGrey'>
 							{
@@ -672,7 +677,12 @@ class Schedule extends React.Component {
 						</>
 					}
 					<div className='medium-separator'></div>
-					<div style={{ margin: '0 0 0 2.5%' }}>
+					<div
+						style={{
+							margin: '0 0 0 2.5%',
+							width: '95%'
+						}}
+					>
 						<ImageUploader
 							t={t}
 							onSetPictureUri={pictureUri => {

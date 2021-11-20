@@ -45,14 +45,13 @@ import { setNotification } from '../../actions/notifications-actions'
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
 
-const translations = moment.locale() == 'fr' ? frCommonTranslations : enCommonTranslations
-const sportsItems = Object.keys(translations.default.sportsAvailable)
-const focusItems = Object.keys(translations.default.focus)
-const levelsItems = Object.keys(translations.default.levels)
-const durationsItems = Object.keys(translations.default.durationsByTen)
-const equipmentsItems = Object.keys(translations.default.equipments)
-const languagesItems = Object.keys(translations.default.languagesAvailable)
-const pricesItems = Object.keys(translations.default.pricesAvailable)
+let sportsItems = []
+let focusItems = []
+let levelsItems = []
+let durationsItems = []
+let equipmentsItems = []
+let languagesItems = []
+let pricesItems = []
 
 const {
 	REACT_APP_API_URL,
@@ -92,6 +91,16 @@ class Schedule extends React.Component {
 			isUploading: false,
 			videoSrc: ''
 		}
+
+		const translations = this.props.i18n.language == 'fr' ? frCommonTranslations : enCommonTranslations
+		sportsItems = Object.keys(translations.default.sportsAvailable)
+		focusItems = Object.keys(translations.default.focus)
+		levelsItems = Object.keys(translations.default.levels)
+		durationsItems = Object.keys(translations.default.durationsByTen)
+		equipmentsItems = Object.keys(translations.default.equipments)
+		languagesItems = Object.keys(translations.default.languagesAvailable)
+		pricesItems = Object.keys(translations.default.pricesAvailable)
+
 		this.returnPriceWording = this.returnPriceWording.bind(this)
 		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
 		this.upload = this.upload.bind(this)

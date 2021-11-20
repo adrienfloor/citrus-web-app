@@ -232,7 +232,7 @@ em {
 	/* font-size: 18px !important; */
 	font-size: 14px !important;
 	line-height: 19px !important;
-	color: #C2C2C2 !important;
+	/* color: #C2C2C2 !important; */
 }
 
 input[type="password"] {

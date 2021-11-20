@@ -218,7 +218,7 @@ class Signin extends React.Component {
 					className='flex-column flex-start card auth-card form'
 				>
 					<input
-						className='text-input small-text citrusGrey input'
+						className='text-input small-text citrusBlack input'
 						placeholder={capitalize(t('email'))}
 						type='email'
 						autoComplete='email'
@@ -228,7 +228,7 @@ class Signin extends React.Component {
 					<div className='password-container'>
 						<input
 							placeholder={capitalize(t('password'))}
-							className='text-input small-text citrusGrey input password-input'
+							className='text-input small-text citrusBlack input password-input'
 							type={showPassword ? 'text' : 'password'}
 							onChange={e => this.onTextInputChange(e, 'password')}
 							style={showPassword ? { height: '50px'} : { height: '52px' } }

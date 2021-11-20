@@ -40,10 +40,9 @@ import {
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
 
-const translations = moment.locale() == 'fr' ? frCommonTranslations : enCommonTranslations
-const sportsItems = Object.keys(translations.default.sportsAvailable)
-const languagesItems = Object.keys(translations.default.languagesAvailable)
-const metricsItems = Object.keys(translations.default.metricsAvailable)
+let sportsItems = []
+let languagesItems = []
+let metricsItems = []
 let yesNoItems = []
 
 
@@ -63,6 +62,10 @@ class Settings extends React.Component {
 		}
 
 		yesNoItems = [capitalize(this.props.t('no')), capitalize(this.props.t('yes'))]
+		const translations = this.props.i18n.language == 'fr' ? frCommonTranslations : enCommonTranslations
+		sportsItems = Object.keys(translations.default.sportsAvailable)
+		languagesItems = Object.keys(translations.default.languagesAvailable)
+		metricsItems = Object.keys(translations.default.metricsAvailable)
 
 		this.handleSelectChange = this.handleSelectChange.bind(this)
 		this.handleDeleteAccount = this.handleDeleteAccount.bind(this)

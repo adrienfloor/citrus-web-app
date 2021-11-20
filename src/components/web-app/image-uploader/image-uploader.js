@@ -36,6 +36,7 @@ class ImageUploader extends React.Component {
 		this.handleUploadClick = this.handleUploadClick.bind(this)
 	}
 
+
 	componentWillUnmount() {
 		this.setState({
 			imgSrc: '',
@@ -236,7 +237,7 @@ class ImageUploader extends React.Component {
 								margin-bottom: 15px;
 							}
 							.crop-container {
-								width: 800px;
+								width: 730px;
 							}
 							.cropper {
 								width: 50%;

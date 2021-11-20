@@ -19,7 +19,7 @@ import { setNotification } from '../../actions/notifications-actions'
 import Coaching from './coaching'
 import Tag from '../../components/web-app/tag'
 import Card from '../../components/web-app/card'
-import ImageUploader from '../../components/web-app/image-uploader'
+import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 import { ReactComponent as PlusButton } from '../../assets/svg/plus-button.svg'
 
 import '../../styling/headings.css'
@@ -37,8 +37,7 @@ import {
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
 
-const translations = moment.locale() == 'fr' ? frCommonTranslations : enCommonTranslations
-const sportsItems = Object.keys(translations.default.sportsAvailable)
+let sportsItems = []
 
 class Profile extends React.Component {
 	constructor(props) {
@@ -60,6 +59,10 @@ class Profile extends React.Component {
 			avatarUrl,
 			myCoachingsSkip: 3
 		}
+
+		const translations = this.props.i18n.language == 'fr' ? frCommonTranslations : enCommonTranslations
+		sportsItems = Object.keys(translations.default.sportsAvailable)
+
 		this.handleSportChange = this.handleSportChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
@@ -501,7 +504,7 @@ class Profile extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div style={{ maxWidth: '800px' }}>
+						<div className='dialog-modal'>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

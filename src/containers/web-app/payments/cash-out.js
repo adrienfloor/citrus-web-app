@@ -336,10 +336,10 @@ class Cashout extends React.Component {
 							<div className='small-separator'></div>
 							<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
 							<div className='medium-separator'></div>
-							<div className='medium-separator'></div>
-							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
 						</div>
 						<div>
+							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+							<div className='small-separator'></div>
 							<div className='mobile-only-medium-separator'></div>
 							<div className='mobile-only-medium-separator'></div>
 							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
