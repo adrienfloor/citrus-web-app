@@ -35,6 +35,9 @@
 	.mobile-only-medium-separator {
 		min-height: 20px;
 	}
+	.mobile-only-max-separator {
+		min-height: 100px;
+	}
 	.desktop-only-medium-separator,
 	.desktop-only-small-separator {
 		display: none;

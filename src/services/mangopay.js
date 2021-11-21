@@ -566,6 +566,33 @@ export const createRecurringPayinCIT = async (
 	}
 }
 
+// CREATE A PAYIN REFUND
+
+export const createPayinRefund = async (
+	PayInId,
+	AuthorId
+) => {
+	// HEADERS
+	const config = {
+		headers: {
+			"Content-type": "application/json"
+		}
+	}
+
+	// BODY
+	const body = JSON.stringify({
+		PayInId,
+		AuthorId
+	})
+	try {
+		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_payin_refund`, body, config)
+		return response.data
+	} catch (err) {
+		console.log(err)
+		return err
+	}
+}
+
 // VIEW A PAYIN
 
 export const fetchPayIn = async (PayInId) => {

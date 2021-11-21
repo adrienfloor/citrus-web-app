@@ -390,7 +390,6 @@ class Settings extends React.Component {
 						{capitalize(t('billing'))}
 					</span> */}
 					<div className='medium-separator'></div>
-					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('personal'))}
 					</span>
@@ -654,7 +653,7 @@ class Settings extends React.Component {
 						open={true}
 						onClose={() => this.setState({ isCreditCardOpen: false })}
 					>
-						<div className='full-width-and-height-dialog'>
+						<div className='payment-method-credit-card-container'>
 							<PaymentMethod
 								onCancel={() => this.setState({ isCreditCardOpen: false })}
 							/>

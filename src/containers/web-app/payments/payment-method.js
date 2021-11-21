@@ -19,7 +19,8 @@ import enLocale from 'date-fns/locale/en-US'
 
 import {
 	capitalize,
-	returnCurrencyCode
+	returnCurrencyCode,
+	returnCurrency
 } from '../../../utils/various'
 import { checkDateValue } from '../../../utils/validations'
 
@@ -40,7 +41,8 @@ import {
 	fetchMpWalletInfo,
 	fetchMpCardInfo,
 	createRecurringPayinCIT,
-	updateRecurringPayinRegistration
+	updateRecurringPayinRegistration,
+	createPayinRefund
 } from '../../../services/mangopay'
 
 import {
@@ -224,7 +226,7 @@ class PaymentMethod extends React.Component {
 							}
 							console.log('card info', cardInfo)
 
-							if (user.MPRecurringPayinRegistrationId) {
+							if (user.MPRecurringPayinRegistrationId && user.subscription) {
 								updateRecurringPayinRegistration(
 									user.MPRecurringPayinRegistrationId,
 									cardInfo.Id,
@@ -232,26 +234,25 @@ class PaymentMethod extends React.Component {
 								)
 								.then(res => {
 									console.log('res update recurring payin registration : ', res)
+									const query = `?updatecard=${true}`
 									createRecurringPayinCIT(
 										res.Id,
 										true,
-										returnCurrencyCode(moment.locale())
+										returnCurrencyCode(moment.locale()),
+										query
 									)
 									.then(res => {
-										console.log('update recurring CIT', res)
-
-										// TODO
-										//
-										//
-										// RECURRING PAYMENT CANNOT BE OF AMOUNT 0
-										// THERE CANNOT RE-AUTHENTICATE WITHOUT PAYING WHEN SWITCHING CARD
-										// WTF MANGOPAY FUCK FUCK FUCK
-										//
-										//
-										//////////////////////////////
-
-										if (res && res.SecureModeRedirectURL) {
-											window.location.href = res.SecureModeRedirectURL
+										console.log('create recurring CIT for authentication ', res)
+										if(res && res.Status == 'CREATED' && res.Id) {
+											if (res.SecureModeRedirectURL) {
+												window.location.href = res.SecureModeRedirectURL
+											} else {
+												endPaymentProcess()
+											}
+										} else {
+											endPaymentProcessWithError({
+												ResultMessage: t('errorRegisteringMangoPayUserCard')
+											})
 										}
 									})
 								})
@@ -287,12 +288,18 @@ class PaymentMethod extends React.Component {
 					returnCurrencyCode(moment.locale())
 				)
 				.then(mpUserCardRegistration => {
-					const info = {
-						mpUserId: user.MPUserId,
-						mpUserFirstName: FirstName,
-						mpUserLastName: LastName
+					if(mpUserCardRegistration && mpUserCardRegistration.PreregistrationData) {
+						const info = {
+							mpUserId: user.MPUserId,
+							mpUserFirstName: FirstName,
+							mpUserLastName: LastName
+						}
+						return registerNewCard(mpUserCardRegistration, info)
+					} else {
+						endPaymentProcessWithError({
+							ResultMessage: t('errorRegisteringMangoPayUserCard')
+						})
 					}
-					return registerNewCard(mpUserCardRegistration, info)
 				})
 			}.bind(this), 3000)
 		} else {
@@ -371,11 +378,11 @@ class PaymentMethod extends React.Component {
 
 		if (success) {
 			return (
-				<div className='full-container flex-column flex-center my-plan-container'>
-					<div className='desktop-only-medium-separator'></div>
+				<div className='full-container flex-column flex-center payment-method-credit-card-container'>
+					<div className='desktop-only-small-separator'></div>
 					<div
 						style={{
-							width: '100%',
+							width: '97.5%',
 							display: 'flex',
 							justifyContent: 'flex-end',
 							alignItems: 'center'
@@ -399,7 +406,7 @@ class PaymentMethod extends React.Component {
 							alignItems: 'center'
 						}}
 					>
-						<span className='small-title citrusBlack'>
+						<span className='big-title citrusBlack'>
 							{capitalize(t('congratulations'))}
 						</span>
 						<div className='small-separator'></div>
@@ -415,7 +422,7 @@ class PaymentMethod extends React.Component {
 		if (isLoading) {
 			return (
 				<div
-					className='flex-center loading-container'
+					className='flex-center payment-method-credit-card-container'
 					style={{ justifyContent: 'center' }}
 				>
 					<Loader
@@ -427,7 +434,10 @@ class PaymentMethod extends React.Component {
 					<div className='medium-separator'></div>
 					<span
 						className='small-text-bold citrusGrey small-responsive-title'
-						style={{ textAlign: 'center' }}
+						style={{
+							textAlign: 'center',
+							maxWidth: '454px'
+						}}
 					>
 						{loadingMessage}
 					</span>
@@ -436,11 +446,11 @@ class PaymentMethod extends React.Component {
 		}
 
 		return (
-			<div className='full-container flex-column credit-card-container'>
-				<div className='desktop-only-medium-separator'></div>
+			<div className='full-container flex-column payment-method-credit-card-container'>
+				<div className='desktop-only-small-separator'></div>
 				<div
 					style={{
-						width: '100%',
+						width: '97.5%',
 						display: 'flex',
 						justifyContent: 'flex-end',
 						alignItems: 'center'
@@ -455,198 +465,213 @@ class PaymentMethod extends React.Component {
 						strokeWidth={2}
 					/>
 				</div>
-				{
-					user?.creditCard?.alias && !isUpdatingCard ?
-					<>
-						<span className='small-title citrusBlack small-responsive-title'>
-							{capitalize(t('yourPaymentMethod'))}
-						</span>
-						<div className='small-separator'></div>
-						<span className='small-text citrusBlack small-responsive-title'>
-							{capitalize(t('youCanChangeItAnytime'))}
-						</span>
-						<div className='medium-separator'></div>
-						<div className='small-separator'></div>
-						<div className='flex-row credit-card-row'>
-							<Cards
-								cvc='***'
-								expiry={user.creditCard.expirationDate}
-								focused=''
-								name={`${user.firstName} ${user.lastName}`}
-								number={user.creditCard.alias.replace('XXXXXX', '******')}
-							/>
-						</div>
-						<div className='medium-separator'></div>
-						<div style={{ width: '100%' }}>
-							<div
-								className='flex-row'
-								style={{
-									height: '100%',
-									width: '290px',
-									justifyContent: 'flex-end'
-								}}
-							>
-								<span
-									className='small-text-bold citrusGrey hover'
-									style={{
-										borderBottom: '1px solid #C2C2C2',
-										paddingBottom: '2px',
-										display: 'block'
-									}}
-									onClick={() => this.setState({ isUpdatingCard: true })}
-								>
-									{capitalize(t('change'))}
-								</span>
-							</div>
-						</div>
-					</> :
-					<>
-						<form
-							id='credit-card-form'
-							className='credit-card-form card card-like'
-							onSubmit={this.handleSubmit}
-						>
-							<div className='small-separator'></div>
+				<div className='desktop-only-medium-separator'></div>
+				<div className='mobile-only-max-separator'></div>
+				<div className='flex-column'>
+					{
+						user?.creditCard?.alias && !isUpdatingCard ?
+						<div className='credit-card-form'>
 							<span className='small-title citrusBlack small-responsive-title'>
-								{
-									isUpdatingCard ?
-									capitalize(t('saveYourNewBillingInfo')) :
-									capitalize(t('saveYourBillingInfo'))
-								}
+								{capitalize(t('yourPaymentMethod'))}
+							</span>
+							<div className='small-separator'></div>
+							<span className='small-text citrusBlack small-responsive-title'>
+								{capitalize(t('youCanChangeItAnytime'))}
 							</span>
 							<div className='medium-separator'></div>
-							<PaymentInputsContainer>
-								{({ meta, getCardNumberProps, getExpiryDateProps, getCVCProps }) => (
-									<div
-										className='flex-column'
-										style={{ width: '100%' }}
+							<div className='small-separator'></div>
+							<div className='flex-row credit-card-row'>
+								<Cards
+									cvc='***'
+									expiry={user.creditCard.expirationDate}
+									focused=''
+									name={`${user.firstName} ${user.lastName}`}
+									number={user.creditCard.alias.replace('XXXXXX', '******')}
+								/>
+							</div>
+							<div className='medium-separator'></div>
+							<div style={{ width: '100%' }}>
+								<div
+									className='flex-row'
+									style={{
+										height: '100%',
+										width: '290px',
+										justifyContent: 'flex-end'
+									}}
+								>
+									<span
+										className='small-text-bold citrusGrey hover'
+										style={{
+											borderBottom: '1px solid #C2C2C2',
+											paddingBottom: '2px',
+											display: 'block'
+										}}
+										onClick={() => this.setState({ isUpdatingCard: true })}
 									>
-										<TextField
-											style={{ margin: '2% 0 2% 0' }}
-											variant='outlined'
-											label={capitalize(t('cardNumber'))}
-											inputProps={getCardNumberProps({ onChange: e => this.handleInputChange(e, 'number') })}
-											value={number}
-										/>
+										{capitalize(t('change'))}
+									</span>
+								</div>
+							</div>
+						</div> :
+						<>
+							<form
+								id='credit-card-form'
+								className='credit-card-form card card-like'
+								onSubmit={this.handleSubmit}
+							>
+								<div className='small-separator'></div>
+								<span className='small-title citrusBlack small-responsive-title'>
+									{
+										isUpdatingCard ?
+										capitalize(t('saveYourNewBillingInfo')) :
+										capitalize(t('saveYourBillingInfo'))
+									}
+								</span>
+								{
+									isUpdatingCard && user.MPRecurringPayinRegistrationId && user.subscription &&
+									<>
+										<div className='small-separator'></div>
+										<div className='medium-separator'></div>
+										<span className='small-text citrusBlack'>
+											{`${capitalize(t('cardUpdateRefundDisclaimer'))}${returnCurrency(moment.locale())}`}
+										</span>
+										<div className='small-separator'></div>
+									</>
+								}
+								<div className='medium-separator'></div>
+								<PaymentInputsContainer>
+									{({ meta, getCardNumberProps, getExpiryDateProps, getCVCProps }) => (
 										<div
-											className='flex-row'
-											style={{ justifyContent: 'space-between' }}
+											className='flex-column'
+											style={{ width: '100%' }}
 										>
 											<TextField
-												style={{ width: '50%', margin: '2% 2.5% 2% 0' }}
+												style={{ margin: '2% 0 2% 0' }}
 												variant='outlined'
-												label={capitalize(t('expiry'))}
-												inputProps={getExpiryDateProps({ onChange: e => this.handleInputChange(e, 'expiry') })}
-												value={expiry}
+												label={capitalize(t('cardNumber'))}
+												inputProps={getCardNumberProps({ onChange: e => this.handleInputChange(e, 'number') })}
+												value={number}
 											/>
-											<TextField
-												style={{ width: '50%', margin: '2% 0 2% 2.5%' }}
-												variant='outlined'
-												label={capitalize(t('cvc'))}
-												inputProps={getCVCProps({onChange: e => this.handleInputChange(e, 'cvc') })}
-												value={cvc}
-											/>
-										</div>
-										{
-											meta.isTouched && meta.error &&
-											<>
-												<div className='small-separator'></div>
-												<span className='small-text-bold citrusRed'>
-													{meta.error}
-												</span>
-											</>
-										}
-										{
-											!user.MPUserId &&
-											<>
-												<div className='flex-row'>
-													<TextField
-														label="Firstname"
-														onChange={e => this.handleInputChange(e, 'FirstName')}
-														style={{ width: '47.5%', margin: '2% 2.5% 2% 0' }}
-														variant='outlined'
-													/>
-													<TextField
-														label="Lastname"
-														onChange={e => this.handleInputChange(e, 'LastName')}
-														style={{ width: '47.5%', margin: '2% 0 2% 2.5%' }}
-														variant='outlined'
-													/>
-												</div>
-												<div className='row flex-row'>
-													<CountrySelector
-														style={{ width: '47.5%', margin: '2% 2.5% 0 0' }}
-														name="Nationality"
-														onSelect={Nationality => this.setState({ Nationality })}
-													/>
-													<CountrySelector
-														style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
-														name="Residence"
-														onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
-													/>
-												</div>
-												<div
-													className='row flex-row medium-text flex-center'
-													style={{ marginTop: '15px' }}
-												>
-													<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
-														{capitalize(t('birthday'))} :
+											<div
+												className='flex-row'
+												style={{ justifyContent: 'space-between' }}
+											>
+												<TextField
+													style={{ width: '50%', margin: '2% 2.5% 2% 0' }}
+													variant='outlined'
+													label={capitalize(t('expiry'))}
+													inputProps={getExpiryDateProps({ onChange: e => this.handleInputChange(e, 'expiry') })}
+													value={expiry}
+												/>
+												<TextField
+													style={{ width: '50%', margin: '2% 0 2% 2.5%' }}
+													variant='outlined'
+													label={capitalize(t('cvc'))}
+													inputProps={getCVCProps({onChange: e => this.handleInputChange(e, 'cvc') })}
+													value={cvc}
+												/>
+											</div>
+											{
+												meta.isTouched && meta.error &&
+												<>
+													<div className='small-separator'></div>
+													<span className='small-text-bold citrusRed'>
+														{meta.error}
 													</span>
-													<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
-														<DatePicker
-															format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
-															variant='dialog'
-															openTo='year'
-															views={['year', 'month', 'date']}
-															value={Birthday}
-															onChange={date => this.setState({ Birthday: date })}
+												</>
+											}
+											{
+												!user.MPUserId &&
+												<>
+													<div className='flex-row'>
+														<TextField
+															label="Firstname"
+															onChange={e => this.handleInputChange(e, 'FirstName')}
+															style={{ width: '47.5%', margin: '2% 2.5% 2% 0' }}
+															variant='outlined'
 														/>
-													</MuiPickersUtilsProvider>
-												</div>
-											</>
-										}
-									</div>
-								)}
-							</PaymentInputsContainer>
-							<div className='medium-separator'></div>
-							{/* Show any error that happens when processing the payment */}
-							{
-								warningMessage &&
-								<div style={{ textAlign: 'center' }} className='small-text red' role='alert'>
-									{warningMessage}
-									<div className='small-separator'></div>
-								</div>
-							}
-							<div className='button-container flex-center flex-column'>
-								<button
-									className='filled-button full-width'
-									type='submit'
-									form='credit-card-form'
-								>
-									<span className='small-title citrusWhite'>
-										{capitalize(t('submit'))}
-									</span>
-								</button>
+														<TextField
+															label="Lastname"
+															onChange={e => this.handleInputChange(e, 'LastName')}
+															style={{ width: '47.5%', margin: '2% 0 2% 2.5%' }}
+															variant='outlined'
+														/>
+													</div>
+													<div className='row flex-row'>
+														<CountrySelector
+															style={{ width: '47.5%', margin: '2% 2.5% 0 0' }}
+															name="Nationality"
+															onSelect={Nationality => this.setState({ Nationality })}
+														/>
+														<CountrySelector
+															style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
+															name="Residence"
+															onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
+														/>
+													</div>
+													<div
+														className='row flex-row medium-text flex-center'
+														style={{ marginTop: '15px' }}
+													>
+														<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
+															{capitalize(t('birthday'))} :
+														</span>
+														<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
+															<DatePicker
+																format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
+																variant='dialog'
+																openTo='year'
+																views={['year', 'month', 'date']}
+																value={Birthday}
+																onChange={date => this.setState({ Birthday: date })}
+															/>
+														</MuiPickersUtilsProvider>
+													</div>
+												</>
+											}
+										</div>
+									)}
+								</PaymentInputsContainer>
 								<div className='medium-separator'></div>
-								<span
-									className='small-text-bold citrusGrey hover'
-									style={{
-										borderBottom: '1px solid #C2C2C2',
-										paddingBottom: '2px',
-										display: 'block'
-									}}
-									onClick={() => {
-										isUpdatingCard ?
-										this.setState({ isUpdatingCard: false }) :
-										onCancel()
-									}}
-								>
-									{t('cancel')}
-								</span>
-							</div>
-						</form>
-					</>
-				}
+								{/* Show any error that happens when processing the payment */}
+								{
+									warningMessage &&
+									<div style={{ textAlign: 'center' }} className='small-text red' role='alert'>
+										{warningMessage}
+										<div className='small-separator'></div>
+									</div>
+								}
+								<div className='button-container flex-center flex-column'>
+									<button
+										className='filled-button full-width'
+										type='submit'
+										form='credit-card-form'
+									>
+										<span className='small-title citrusWhite'>
+											{capitalize(t('submit'))}
+										</span>
+									</button>
+									<div className='medium-separator'></div>
+									<span
+										className='small-text-bold citrusGrey hover'
+										style={{
+											borderBottom: '1px solid #C2C2C2',
+											paddingBottom: '2px',
+											display: 'block'
+										}}
+										onClick={() => {
+											isUpdatingCard ?
+											this.setState({ isUpdatingCard: false }) :
+											onCancel()
+										}}
+									>
+										{t('cancel')}
+									</span>
+								</div>
+							</form>
+						</>
+					}
+				</div>
 				<style jsx='true'>
 					{`
 						.row {

@@ -35,7 +35,8 @@ import {
 
 import {
 	fetchPayIn,
-	createMpTransfer
+	createMpTransfer,
+	createPayinRefund
 } from '../../../services/mangopay'
 
 class PayInConfirmation extends React.Component {
@@ -49,7 +50,8 @@ class PayInConfirmation extends React.Component {
 			coaching: null,
 			coachInfo: null,
 			subscription: null,
-			hasUpdatedPlan: false
+			hasUpdatedPlan: false,
+			hasUpdatedCard: false
 		}
 		this.handleBuyCoaching = this.handleBuyCoaching.bind(this)
 	}
@@ -70,10 +72,43 @@ class PayInConfirmation extends React.Component {
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
 		const hasUpdatedPlan = qs.parse(location.search, { ignoreQueryPrefix: true }).updateplan
+		const hasUpdatedCard = qs.parse(location.search, { ignoreQueryPrefix: true }).updatecard
+		const payinId = qs.parse(location.search, { ignoreQueryPrefix: true }).payin
 
 		let billingDate = new Date().getUTCDate()
 		if (billingDate > 27 && billingDate < 32) {
 			billingDate = 28
+		}
+
+		if(hasUpdatedCard && transactionId) {
+			return fetchPayIn(transactionId)
+				.then(payin => {
+					console.log('::: pay in :::', payin)
+					if(payin && payin.Id && payin.Status == 'SUCCEEDED') {
+						createPayinRefund(payin.Id, user.MPUserId)
+							.then(refund => {
+								console.log('refund response : ', refund)
+								if (refund && (refund.Status == 'CREATED' || refund.Status == 'SUCCEEDED')) {
+									return this.setState({
+										isLoading: false,
+										hasUpdatedCard: true
+									})
+								} else {
+									return this.setState({
+										isLoading: false,
+										isFailure: true,
+										errorMessage: refund.ResultMessage
+									})
+								}
+							})
+					} else {
+						return this.setState({
+							isLoading: false,
+							isFailure: true,
+							errorMessage: payin.ResultMessage
+						})
+					}
+				})
 		}
 
 		if (hasUpdatedPlan) {
@@ -125,10 +160,6 @@ class PayInConfirmation extends React.Component {
 									this.setState({ coachInfo })
 									updateUser({
 										id: user._id,
-										// myReplays: [
-										// 	coaching,
-										// 	...user.myReplays
-										// ],
 										subscription: this.state.subscription,
 										billingDate,
 										pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
@@ -271,7 +302,8 @@ class PayInConfirmation extends React.Component {
 			errorMessage,
 			isALaCarte,
 			coachingId,
-			coaching
+			coaching,
+			hasUpdatedCard
 		} = this.state
 
 		if (isLoading) {
@@ -322,6 +354,42 @@ class PayInConfirmation extends React.Component {
 			)
 		}
 
+
+		if (hasUpdatedCard) {
+			return (
+				<div
+					className='full-container flex-column flex-center my-plan-container'
+					style={{ justifyContent: 'center' }}
+				>
+					<div
+						className='flex-column flex-center'
+						style={{ maxWidth: '454px' }}
+					>
+						<span
+							className='big-title citrusBlack'
+							style={{ width: '100%' }}
+						>
+							{capitalize(t('congratulations'))}
+						</span>
+						<div className='medium-separator'></div>
+						<span
+							style={{ width: '100%' }}
+							className='small-text citrusBlack'
+						>
+							{capitalize(t('yourCardHasBeenUpdatedSuccessfully'))}
+						</span>
+						<div className='small-separator'></div>
+						<div className='medium-separator'></div>
+						<Link to='/home' className='filled-button'>
+							<span className='small-title citrusWhite'>
+								{capitalize(t('goBackToHomePage'))}
+							</span>
+						</Link>
+					</div>
+				</div>
+			)
+		}
+
 		const currency = returnCurrency(moment.locale())
 
 		return (
@@ -336,6 +404,7 @@ class PayInConfirmation extends React.Component {
 					<span
 						className='big-title citrusBlack'
 						style={{ marginTop: '80px' }}
+						style={{ width: '100%' }}
 					>
 						{capitalize(t('congratulations'))}
 					</span>

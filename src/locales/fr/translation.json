@@ -559,5 +559,7 @@
 	"residence": "résidence",
 	"errorCreatingMangoPayUser": "erreur à la création de l'utilisateur Mangopay",
 	"errorCreatingMangoPayUserWallet": "erreur à la création du wallet de l'utilisateur Mangopay",
-	"errorRegisteringMangoPayUserCard": "erreur à l'enrtegistrement de la carte de l'utilisateur Mangopay"
+	"errorRegisteringMangoPayUserCard": "erreur à l'enregistrement de la carte de l'utilisateur Mangopay",
+	"cardUpdateRefundDisclaimer": "dans le but d'authentifier ta nouvelle carte, tu seras débité puis immédiatement remboursé de 1",
+	"yourCardHasBeenUpdatedSuccessfully": "ta nouvelle a été enregistrée avec succès"
 }
