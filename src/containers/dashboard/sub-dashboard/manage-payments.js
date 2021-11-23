@@ -76,7 +76,8 @@ class ManagePayments extends React.Component {
 			loadUser
 		} = this.props
 
-		let billingDate = new Date().getUTCDate()
+		let billingDate = new Date().getDate()
+		const lastBillingMonth = new Date().getMonth()
 		if(27<billingDate<32) {
 			billingDate = 28
 		}
@@ -85,7 +86,8 @@ class ManagePayments extends React.Component {
 			id: user._id,
 			subscription,
 			myVideos: subscription ? (user.myVideos + 20) : user.myVideos,
-			billingDate
+			billingDate,
+			lastBillingMonth
 		}, true)
 			.then(() => {
 				loadUser()

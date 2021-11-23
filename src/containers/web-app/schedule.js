@@ -564,7 +564,9 @@ class Schedule extends React.Component {
 						}}
 					>
 						<MenuItem disabled value="">
-							<em className='small-text-bold citrusGrey'>{t('pricePlaceholder')}</em>
+							<em className='small-text-bold citrusGrey'>
+								{`${capitalize(t('pricePlaceholder'))} ${returnCurrency(moment.locale())})`}
+							</em>
 						</MenuItem>
 						{
 							pricesItems.map((price, i) => (

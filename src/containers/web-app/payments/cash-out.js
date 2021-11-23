@@ -300,7 +300,7 @@ class Cashout extends React.Component {
 				<div
 					style={{
 						width: '99.5%',
-						height: '50px',
+						height: '40px',
 						display: 'flex',
 						justifyContent: 'flex-end',
 						alignItems: 'center'
@@ -317,10 +317,10 @@ class Cashout extends React.Component {
 				</div>
 				<div className='cash-out-container'>
 					<div
-						className='flex-column card-like cash-out-card'
+						className='flex-column cash-out-card'
 						style={{ justifyContent: 'space-between'}}
 					>
-						<div>
+						<div style={{ maxWidth: '454px', width: '100%' }}>
 							<div className='flex-row' style={{ alignItems: 'baseline' }}>
 								<span className='medium-title citrusBlack' style={{ marginRight: '5px' }}>{capitalize(t('verifyYourKyc'))} </span>
 									<a
@@ -337,10 +337,9 @@ class Cashout extends React.Component {
 							<Kyc userKycs={kycs} mpLegalUserInfo={mpLegalUserInfo} />
 							<div className='medium-separator'></div>
 						</div>
-						<div>
+						<div style={{ maxWidth: '454px', width: '100%' }}>
 							<div style={{ height: '2px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
 							<div className='small-separator'></div>
-							<div className='mobile-only-medium-separator'></div>
 							<div className='mobile-only-medium-separator'></div>
 							<span className='medium-title citrusBlack'>{capitalize(t('addYourBankAccount'))}</span>
 							<div className='flex-row column-on-mobile' style={{ justifyContent: 'flex-start' }}>
@@ -360,8 +359,8 @@ class Cashout extends React.Component {
 								<span
 									className={
 										bankAccountRequiredMessage ?
-											'small-text-bold citrusRed row-item' :
-											'small-text-bold row-item simple-link'
+											'smaller-text-bold citrusRed row-item' :
+											'smaller-text-bold row-item simple-link'
 									}
 									style={
 										bankAccount ?
@@ -381,7 +380,10 @@ class Cashout extends React.Component {
 							</div>
 							<div className='medium-separator'></div>
 						</div>
-						<div className='flex-column'>
+						<div
+							className='flex-column'
+							style={{ maxWidth: '454px' }}
+						>
 							<div className='small-separator'></div>
 							{
 								warningMessage &&

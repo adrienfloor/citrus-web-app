@@ -5,6 +5,7 @@ import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import FileBase64 from 'react-file-base64'
 import { Link } from 'react-router-dom'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import '../../../styling/headings.css'
 import '../../../styling/colors.css'
@@ -54,44 +55,108 @@ class Kyc extends React.Component {
 
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.getFiles = this.getFiles.bind(this)
-		this.isKycValidationInProgress = this.isKycValidationInProgress.bind(this)
-		this.handleSubmitAllDocuments = this.handleSubmitAllDocuments.bind(this)
-		this.shouldSubmitButtonBeShown = this.shouldSubmitButtonBeShown.bind(this)
+		this.returnKycDocStatus = this.returnKycDocStatus.bind(this)
+		this.handleSubmitDocuments = this.handleSubmitDocuments.bind(this)
+		this.returnSubmitButtonState = this.returnSubmitButtonState.bind(this)
 	}
 
-	shouldSubmitButtonBeShown() {
-		const {
-			identityProofFileName,
-			articlesOfAssociationFileName,
-			registrationProofFileName
-		} = this.state
-		const { mpLegalUserInfo } = this.props
+	returnKycDocStatus(type) {
+		const kycDoc = mpUserKycs.filter(kyc => kyc.Type === type)
+		if (kycDoc.length === 0) {
+			return 'NOT_SUBMITTED'
+		}
+		if (kycDoc.length === 1) {
+			const isValidated = kycDoc[0].Status === 'VALIDATED'
+			const isInProgress = kycDoc[0].Status === 'VALIDATION_ASKED'
+			const isBeingCreated = kycDoc[0].Status === 'CREATED'
+			const isRefused = kycDoc[0].Status === 'REFUSED'
+			if (isValidated) { return 'VALIDATED' }
+			if (isInProgress) { return 'VALIDATION_ASKED' }
+			if (isBeingCreated) { return null }
+			return 'REFUSED'
+		}
+		if (kycDoc.length > 1) {
+			const isValidated = kycDoc.find(doc => doc.Status === 'VALIDATED')
+			const isInProgress = kycDoc.find(doc => doc.Status === 'VALIDATION_ASKED')
+			const isRefused = kycDoc.find(doc => doc.Status === 'REFUSED')
+			if (isRefused) {
+				if (isValidated) { return 'VALIDATED' }
+				if (isInProgress) { return 'VALIDATION_ASKED' }
+				return 'REFUSED'
+			} else {
+				if (isValidated) { return 'VALIDATED' }
+				if (isInProgress) { return 'VALIDATION_ASKED' }
+			}
+		}
+	}
 
+	returnTrueIfValidatedOrAskedForValidation(type1, type2) {
+		if(type1 === 'VALIDATION_ASKED' && type2 === 'VALIDATION_ASKED') {
+			return true
+		}
+		if (type1 === 'VALIDATED' && type2 === 'VALIDATED') {
+			return true
+		}
+		if(type1 === 'VALIDATED' && type2 === 'VALIDATION_ASKED') {
+			return true
+		}
+		if(type1 === 'VALIDATION_ASKED' && type2 === 'VALIDATED') {
+			return true
+		}
+		return false
+	}
+
+	returnSubmitButtonState() {
+		const { mpLegalUserInfo } = this.props
 		const isSoletrader = mpLegalUserInfo && mpLegalUserInfo.LegalPersonType == 'SOLETRADER'
 
-		if(isSoletrader) {
+		if (isSoletrader) {
 			// Soletrader type only need these two KYC documents
 			if (
-				identityProofFileName &&
-				registrationProofFileName &&
-				!this.isKycValidationInProgress('IDENTITY_PROOF') &&
-				!this.isKycValidationInProgress('REGISTRATION_PROOF')
+				this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATED' &&
+				this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATED'
 			) {
-				return true
+				return 'VALIDATED'
+			}
+			if (
+				(this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATION_ASKED' &&
+				this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATION_ASKED') ||
+				(this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATED' &&
+				this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATION_ASKED') ||
+				(this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATION_ASKED' &&
+				this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATED')
+			) {
+				return 'VALIDATION_ASKED'
 			}
 		} else {
 			if (
-				identityProofFileName &&
-				articlesOfAssociationFileName &&
-				registrationProofFileName &&
-				!this.isKycValidationInProgress('IDENTITY_PROOF') &&
-				!this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') &&
-				!this.isKycValidationInProgress('REGISTRATION_PROOF')
+				this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATED' &&
+				this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'VALIDATED' &&
+				this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATED'
 			) {
-				return true
+				return 'VALIDATED'
 			}
-			return false
+			if (
+				(this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATION_ASKED' &&
+				this.returnTrueIfValidatedOrAskedForValidation(
+					this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION'),
+					this.returnKycDocStatus('REGISTRATION_PROOF')
+				)) ||
+				(this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'VALIDATION_ASKED' &&
+				this.returnTrueIfValidatedOrAskedForValidation(
+					this.returnKycDocStatus('IDENTITY_PROOF'),
+					this.returnKycDocStatus('REGISTRATION_PROOF')
+				)) ||
+				(this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATION_ASKED' &&
+				this.returnTrueIfValidatedOrAskedForValidation(
+					this.returnKycDocStatus('IDENTITY_PROOF'),
+					this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION')
+				))
+			) {
+				return 'VALIDATION_ASKED'
+			}
 		}
+		return 'NOT_SUBMITTED'
 	}
 
 	getFiles(file, fileName) {
@@ -104,25 +169,7 @@ class Kyc extends React.Component {
 		this.setState({ [fileName]: cleanedFile })
 	}
 
-	isKycValidationInProgress(type) {
-		const checkKycStatus = status => {
-			if (status === 'CREATED' || status === 'VALIDATION_ASKED' || status === 'VALIDATED') {
-				return true
-			}
-		}
-
-		if (mpUserKycs) {
-			const kyc = mpUserKycs.find(
-				el => el.Type === type && checkKycStatus(el.Status)
-			)
-			if (kyc && kyc.Type) {
-				return true
-			}
-			return false
-		}
-	}
-
-	async handleSubmitAllDocuments(e, isSoletrader) {
+	async handleSubmitDocuments(e, isSoletrader) {
 
 		const {
 			identityProof,
@@ -133,65 +180,79 @@ class Kyc extends React.Component {
 
 		e.preventDefault()
 
-		this.setState({ isLoading: true })
-
-		if(isSoletrader) {
-			if (
-				!identityProof ||
-				!registrationProof
-			) {
-				return this.setState({
-					isLoading: false,
-					warningMessage: capitalize(t('pleaseSelectAllDocuments'))
+		if (
+			!identityProof &&
+			!registrationProof &&
+			!articlesOfAssociation
+		) {
+			this.setState({
+				isLoading: false,
+				warningMessage: capitalize(t('pleaseSelectADocument'))
+			})
+			setTimeout(function () {
+				this.setState({
+					warningMessage: ''
 				})
-			}
-		} else {
-			if (
-				!identityProof ||
-				!articlesOfAssociation ||
-				!registrationProof
-			) {
-				return this.setState({
-					isLoading: false,
-					warningMessage: capitalize(t('pleaseSelectAllDocuments'))
-				})
-			}
+			}.bind(this), 3000)
+			return
 		}
 
-		const identityDoc = await this.handleSubmit('IDENTITY_PROOF', identityProof, isSoletrader)
-		const associationDoc = isSoletrader ? true : await this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation, isSoletrader)
-		const registrationDoc = await this.handleSubmit('REGISTRATION_PROOF', registrationProof, isSoletrader)
+		// if(isSoletrader) {
+		// 	if (
+		// 		!identityProof ||
+		// 		!registrationProof
+		// 	) {
+		// 		return this.setState({
+		// 			isLoading: false,
+		// 			warningMessage: capitalize(t('pleaseSelectAllDocuments'))
+		// 		})
+		// 	}
+		// } else {
+		// 	if (
+		// 		!identityProof ||
+		// 		!articlesOfAssociation ||
+		// 		!registrationProof
+		// 	) {
+		// 		return this.setState({
+		// 			isLoading: false,
+		// 			warningMessage: capitalize(t('pleaseSelectAllDocuments'))
+		// 		})
+		// 	}
+		// }
+
+		if(identityProof) {
+			this.handleSubmit('IDENTITY_PROOF', identityProof, isSoletrader)
+		}
+		if(articlesOfAssociation) {
+			this.handleSubmit('ARTICLES_OF_ASSOCIATION', articlesOfAssociation, isSoletrader)
+		}
+		if(registrationProof) {
+			this.handleSubmit('REGISTRATION_PROOF', registrationProof, isSoletrader)
+		}
 	}
 
 	async handleSubmit(typeOfDocument, file, isSoletrader) {
 		const { user, t, setNotification } = this.props
 		const { MPLegalUserId } = user
-		let kycsLength = 3
 
-		if (!file) {
-			this.setState({
-				warningMessage: capitalize(t('pleaseSelectAFile'))
-			})
-			return
-		}
+		if (!file) return
+
+		this.setState({ isLoading: true })
 
 		if(typeOfDocument === 'IDENTITY_PROOF') {
 			this.setState({
-				loadingMessage: capitalize(t('registeringIdentityProof'))
+				loadingMessage: capitalize(t('sendingInProcess'))
 			})
 		}
 		if (typeOfDocument === 'ARTICLES_OF_ASSOCIATION') {
 			this.setState({
-				loadingMessage: capitalize(t('registeringArticlesOfAssociation'))
+				loadingMessage: capitalize(t('sendingInProcess'))
 			})
 		}
 		if (typeOfDocument === 'REGISTRATION_PROOF') {
 			this.setState({
-				loadingMessage: capitalize(t('registeringCompanyRegistrationProof'))
+				loadingMessage: capitalize(t('sendingInProcess'))
 			})
-		}
-		if(isSoletrader) {
-			kycsLength = 2
 		}
 
 		const { KYCDocumentId } = await createMpKycDocument(MPLegalUserId, typeOfDocument)
@@ -203,18 +264,13 @@ class Kyc extends React.Component {
 						fetchKycsOfAUser(MPLegalUserId)
 							.then(res => {
 								mpUserKycs = res
-								if (
-									mpUserKycs.length === kycsLength &&
-									mpUserKycs[kycsLength - 1] &&
-									mpUserKycs[kycsLength - 1].Status === 'VALIDATION_ASKED'
-								) {
-									this.setState({
-										isLoading: false,
-										loadingMessage: ''
-									})
-									setNotification({ message: capitalize(t('updatedSuccessfully')) })
-									return
-								}
+								this.setState({
+									isLoading: false,
+									loadingMessage: ''
+								})
+								setNotification({
+									message: `${capitalize(t(typeOfDocument))} ${t('uploadedSuccessfully')}`
+								})
 							})
 					}
 				})
@@ -270,12 +326,31 @@ class Kyc extends React.Component {
 					<div className='small-separator'></div>
 					<span className='small-text-bold'>{capitalize(t('identityProof'))}</span>
 					{
-						this.isKycValidationInProgress('IDENTITY_PROOF') ?
-							<div>
-								<div className='small-separator'></div>
-								<span className='smaller-text citrusGrey'>{capitalize(t('yourIdValidationIsInProgress'))}</span>
-							</div> :
-							<div className='row flex-row upload-row'>
+						this.returnKycDocStatus('IDENTITY_PROOF') === 'REFUSED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusRed'>{capitalize(t('kycRefused'))}</span>
+						</div>
+					}
+					{
+						this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATION_ASKED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusGrey'>{capitalize(t('validationInProgress'))}</span>
+						</div>
+					}
+					{
+						this.returnKycDocStatus('IDENTITY_PROOF') === 'VALIDATED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusGrey'>{capitalize(t('validationSucceeded'))}</span>
+						</div>
+					}
+					<div className='row flex-row upload-row'>
+						{
+							(this.returnKycDocStatus('IDENTITY_PROOF') === 'REFUSED' ||
+							this.returnKycDocStatus('IDENTITY_PROOF') === 'NOT_SUBMITTED') &&
+							<>
 								{
 									!identityProof &&
 									<label className="custom-empty-file-upload">
@@ -283,7 +358,7 @@ class Kyc extends React.Component {
 											multiple={false}
 											onDone={file => this.getFiles(file, 'identityProof')}
 										/>
-										<span className='small-text-bold citrusBlue'>{t('upload')}</span>
+										<span className='smaller-text-bold citrusBlue'>{t('selectAFile')}</span>
 									</label>
 								}
 								{
@@ -300,27 +375,46 @@ class Kyc extends React.Component {
 												multiple={false}
 												onDone={file => this.getFiles(file, 'identityProof')}
 											/>
-											<span className='small-text-bold citrusBlue'>{t('change')}</span>
+											<span className='smaller-text-bold citrusBlue'>{t('change')}</span>
 										</label>
 									</div>
 								}
-							</div>
-					}
+							</>
+						}
+					</div>
 
 					{/*  ARTICLES OF ASSOCIATION PROOF */}
-					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
 					{
 						mpLegalUserInfo && mpLegalUserInfo.LegalPersonType !== 'SOLETRADER' &&
-						<div style={{ width: '100%' }}>
-							<span className='small-text-bold'>{capitalize(t('articlesOfAssociation'))} : </span>
+						<>
+							<span className='small-text-bold'>{capitalize(t('articlesOfAssociation'))}</span>
 							{
-								this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION') ?
-									<div>
-										<div className='small-separator'></div>
-										<div>{this.isKycValidationInProgress('ARTICLES_OF_ASSOCIATION')}</div>
-										<span className='smaller-text citrusGrey'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
-									</div> :
-									<div className='row flex-row upload-row' >
+								this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'REFUSED' &&
+								<div>
+									<div className='small-separator'></div>
+									<span className='smaller-text citrusRed'>{capitalize(t('kycRefused'))}</span>
+								</div>
+							}
+							{
+								this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'VALIDATION_ASKED' &&
+								<div>
+									<div className='small-separator'></div>
+									<span className='smaller-text citrusGrey'>{capitalize(t('validationInProgress'))}</span>
+								</div>
+							}
+							{
+								this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'VALIDATED' &&
+								<div>
+									<div className='small-separator'></div>
+									<span className='smaller-text citrusGrey'>{capitalize(t('validationSucceeded'))}</span>
+								</div>
+							}
+							<div className='row flex-row upload-row'>
+								{
+									(this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'REFUSED' ||
+									this.returnKycDocStatus('ARTICLES_OF_ASSOCIATION') === 'NOT_SUBMITTED') &&
+									<>
 										{
 											!articlesOfAssociation &&
 											<label className="custom-empty-file-upload">
@@ -328,7 +422,7 @@ class Kyc extends React.Component {
 													multiple={false}
 													onDone={file => this.getFiles(file, 'articlesOfAssociation')}
 												/>
-												<span className='small-text-bold citrusBlue'>{t('upload')}</span>
+												<span className='smaller-text-bold citrusBlue'>{t('selectAFile')}</span>
 											</label>
 										}
 										{
@@ -345,25 +439,45 @@ class Kyc extends React.Component {
 														multiple={false}
 														onDone={file => this.getFiles(file, 'articlesOfAssociation')}
 													/>
-													<span className='small-text-bold citrusBlue'>{t('change')}</span>
+													<span className='smaller-text-bold citrusBlue'>{t('change')}</span>
 												</label>
 											</div>
 										}
-									</div>
-							}
-						</div>
+									</>
+								}
+							</div>
+						</>
 					}
 
 					{/*  REGISTRATION PROOF */}
-					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
 					<span className='small-text-bold'>{capitalize(t('registrationProof'))}</span>
 					{
-						this.isKycValidationInProgress('REGISTRATION_PROOF') ?
-							<div>
-								<div className='small-separator'></div>
-								<span className='smaller-text citrusGrey'>{capitalize(t('yourRegistrationValidationIsInProgress'))}</span>
-							</div> :
-							<div className='row flex-row upload-row'>
+						this.returnKycDocStatus('REGISTRATION_PROOF') === 'REFUSED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusRed'>{capitalize(t('kycRefused'))}</span>
+						</div>
+					}
+					{
+						this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATION_ASKED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusGrey'>{capitalize(t('validationInProgress'))}</span>
+						</div>
+					}
+					{
+						this.returnKycDocStatus('REGISTRATION_PROOF') === 'VALIDATED' &&
+						<div>
+							<div className='small-separator'></div>
+							<span className='smaller-text citrusGrey'>{capitalize(t('validationSucceeded'))}</span>
+						</div>
+					}
+						<div className='row flex-row upload-row'>
+						{
+							(this.returnKycDocStatus('REGISTRATION_PROOF') === 'REFUSED' ||
+							this.returnKycDocStatus('REGISTRATION_PROOF') === 'NOT_SUBMITTED') &&
+							<>
 								{
 									!registrationProof &&
 									<label className="custom-empty-file-upload">
@@ -371,7 +485,7 @@ class Kyc extends React.Component {
 											multiple={false}
 											onDone={file => this.getFiles(file, 'registrationProof')}
 										/>
-										<span className='small-text-bold citrusBlue'>{t('upload')}</span>
+										<span className='smaller-text-bold citrusBlue'>{t('selectAFile')}</span>
 									</label>
 								}
 								{
@@ -388,31 +502,61 @@ class Kyc extends React.Component {
 												multiple={false}
 												onDone={file => this.getFiles(file, 'registrationProof')}
 											/>
-											<span className='small-text-bold citrusBlue'>{t('change')}</span>
+											<span className='smaller-text-bold citrusBlue'>{t('change')}</span>
 										</label>
 									</div>
 								}
-							</div>
-					}
-					{
-						this.shouldSubmitButtonBeShown() &&
-						<>
-							<div className='small-separator'></div>
-							<div className='medium-separator'></div>
-							<div style={{ width: '100%' }}>
+							</>
+						}
+					</div>
+					<div className='small-separator'></div>
+					<div className='medium-separator'></div>
+					<div style={{ width: '100%' }}>
+						{
+							this.returnSubmitButtonState() === 'VALIDATED' &&
+							<Tooltip title={capitalize(t('kycValidated'))}>
 								<div
-									className='filled-button'
-									onClick={e => this.handleSubmitAllDocuments(e, mpLegalUserInfo.LegalPersonType == 'SOLETRADER')}
+									className='disabled-button'
+									onClick={() => {}}
 								>
 									<span className='small-title citrusWhite'>
-										{capitalize(t('submitKycDocuments'))}
+										{capitalize(t('kycValidated'))}
 									</span>
 								</div>
+							</Tooltip>
+						}
+						{
+							this.returnSubmitButtonState() === 'VALIDATION_ASKED' &&
+							<Tooltip title={capitalize(t('kycInValidation'))}>
+								<div
+									className='disabled-button'
+									onClick={() => { }}
+								>
+									<span className='small-title citrusWhite'>
+										{capitalize(t('kycInValidation'))}
+									</span>
+								</div>
+							</Tooltip>
+						}
+						{
+							this.returnSubmitButtonState() === 'NOT_SUBMITTED' &&
+							<div
+								className='filled-button'
+								onClick={e => this.handleSubmitDocuments(e, mpLegalUserInfo.LegalPersonType == 'SOLETRADER')}
+							>
+								<span className='small-title citrusWhite'>
+									{capitalize(t('submitKycDocuments'))}
+								</span>
 							</div>
-						</>
-					}
+						}
+					</div>
 					<div className='small-separator'></div>
-					<span className='small-text citrusRed'>{warningMessage}</span>
+					<span
+						className='smaller-text-bold citrusRed'
+						style={{ textAlign: 'center' }}
+					>
+						{warningMessage}
+					</span>
 				</div>
 				<style jsx='true'>
 					{`
@@ -430,10 +574,7 @@ class Kyc extends React.Component {
 						.custom-empty-file-upload {
 							display: inline-block;
 							cursor: pointer;
-							// width: 454px;
-							// height: 50px;
 							background-color: #FFFFFF;
-							// border: 2px solid #0075FF;
 							display: flex;
 							justify-content: center;
 							align-items: center;

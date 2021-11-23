@@ -190,7 +190,8 @@ class CreateLegalUser extends React.Component {
 						id: user._id,
 						MPLegalUserId: mpLegalUser.Id,
 						firstName: user.firstName || LegalRepresentativeFirstName,
-						lastName: user.lastName || LegalRepresentativeLastName
+						lastName: user.lastName || LegalRepresentativeLastName,
+						isCoach: true
 					}, true)
 					.then(res => {
 						onUserCreated()

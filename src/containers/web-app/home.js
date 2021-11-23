@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next'
 import Loader from 'react-loader-spinner'
 import moment from 'moment'
 import ProgressBar from '@ramonak/react-progress-bar'
-import Dialog from '@material-ui/core/Dialog'
+import { Dialog, Tooltip } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import qs from 'query-string'
 
@@ -749,14 +749,33 @@ class Home extends React.Component {
 									</div>
 									<div className='medium-separator'></div>
 									<div className='small-separator'></div>
-									<div
-										className='filled-button cashout-button'
-										onClick={() => this.setState({ isCashingOut: true })}
-									>
-										<span className='small-title citrusWhite'>
-											{capitalize(t('withdrawNow'))}
-										</span>
-									</div>
+
+									{ /* TAKE IT FROM HERE */ }
+
+									{
+										user.isCoach ?
+											<div
+												className='filled-button cashout-button'
+												onClick={() => this.setState({ isCashingOut: true })}
+											>
+												<span className='small-title citrusWhite'>
+													{capitalize(t('withdrawNow'))}
+												</span>
+											</div> :
+											<Tooltip title={capitalize(t('startPostingToGenerateRevenue'))}>
+												<div
+													className='disabled-button cashout-button'
+													onClick={() => {}}
+												>
+													<span className='small-title' style={{ color: '#D8D8D7' }}>
+														{capitalize(t('withdrawNow'))}
+													</span>
+												</div>
+											</Tooltip>
+									}
+
+									{ /* END HERE */}
+
 									<div className='small-separator'></div>
 								</div>
 							</div>

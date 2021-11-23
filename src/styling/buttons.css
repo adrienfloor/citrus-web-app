@@ -155,6 +155,18 @@
 	margin-top: 10px;
 }
 
+.disabled-button {
+	width: 454px;
+	height: 50px;
+	background-color: #C8C8C8;
+	/* D8D8D7 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #FFFFFF;
+	border: none !important;
+}
+
 .full-width {
 	width: 100% !important;
 }
@@ -170,6 +182,9 @@
 .light-button:hover,
 .filled-button:hover {
 	cursor: pointer;
+}
+.disabled-button:hover {
+	cursor: none;
 }
 
 .small-no-color-button {
@@ -188,7 +203,8 @@
 
 @media only screen and (max-width: 640px) {
 	.light-button,
-	.filled-button {
+	.filled-button,
+	.disabled-button {
 		width: 100%;
 	}
 }

@@ -75,7 +75,8 @@ class PayInConfirmation extends React.Component {
 		const hasUpdatedCard = qs.parse(location.search, { ignoreQueryPrefix: true }).updatecard
 		const payinId = qs.parse(location.search, { ignoreQueryPrefix: true }).payin
 
-		let billingDate = new Date().getUTCDate()
+		let billingDate = new Date().getDate()
+		const lastBillingMonth = new Date().getMonth()
 		if (billingDate > 27 && billingDate < 32) {
 			billingDate = 28
 		}
@@ -162,6 +163,7 @@ class PayInConfirmation extends React.Component {
 										id: user._id,
 										subscription: this.state.subscription,
 										billingDate,
+										lastBillingMonth,
 										pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
 									}, true)
 									.then(() => {
@@ -180,6 +182,7 @@ class PayInConfirmation extends React.Component {
 								id: user._id,
 								subscription: res.CreditedFunds.Amount / 100,
 								billingDate,
+								lastBillingMonth,
 								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
 							}, true)
 								.then(res => {
@@ -231,12 +234,6 @@ class PayInConfirmation extends React.Component {
 			updateCoaching,
 			history
 		} = this.props
-
-		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
-		let billingDate = new Date().getUTCDate()
-		if (billingDate > 27 && billingDate < 32) {
-			billingDate = 28
-		}
 
 		this.setState({ isLoading: true })
 

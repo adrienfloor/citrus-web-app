@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 
 import MyPlan from './payments/my-plan'
 import PaymentMethod from './payments/payment-method'
+import BillingFailure from './payments/billing-failure'
 
 import {
 	updateUser,
@@ -54,6 +55,7 @@ class Settings extends React.Component {
 			isDeletingAccount: false,
 			isChoosingPlan: false,
 			isCreditCardOpen: false,
+			isPlanBillingFailure: false,
 			password: '',
 			newPassword: '',
 			newMatchingPassword: '',
@@ -251,7 +253,9 @@ class Settings extends React.Component {
 			sports,
 			distanceMetricPreference,
 			weightMetricPreference,
-			basedOnLocationPreference
+			basedOnLocationPreference,
+			hasCreditCardFailed,
+			subscription
 		} = user
 		const {
 			isChangingPassword,
@@ -262,7 +266,8 @@ class Settings extends React.Component {
 			newMatchingPassword,
 			isLoading,
 			isChoosingPlan,
-			isCreditCardOpen
+			isCreditCardOpen,
+			isPlanBillingFailure
 		} = this.state
 
 	 	return (
@@ -383,6 +388,15 @@ class Settings extends React.Component {
 					>
 						{capitalize(t('paymentMethod'))}
 					</span>
+					{
+						hasCreditCardFailed && subscription &&
+						<span
+							className='small-text-bold citrusRed titles-form-input hover'
+							onClick={() => this.setState({ isPlanBillingFailure: true })}
+						>
+							{capitalize(t('planBillingFailure'))}
+						</span>
+					}
 					{/* <span
 						className='small-text-bold citrusGrey titles-form-input hover'
 						onClick={() => this.setState({ isChangingPassword: true })}
@@ -660,6 +674,39 @@ class Settings extends React.Component {
 						</div>
 					</Dialog>
 				}
+					{
+						isPlanBillingFailure &&
+						<Dialog
+							open={true}
+							onClose={() => this.setState({ isPlanBillingFailure: false })}
+						>
+							<div className='full-width-and-height-dialog'>
+								<BillingFailure
+									onCancel={() => {
+										this.setState({ isPlanBillingFailure: false })
+									}}
+									history={history}
+									title={capitalize(t('purchaseThisPlan'))}
+									// onSuccess={mpUserId => {
+									// 	this.setState({
+									// 		isLoading: true,
+									// 		loadingMessage: capitalize(t('proceedingToPayment'))
+									// 	})
+									// 	fetchMpCardInfo(mpUserId)
+									// 		.then(res => {
+									// 			if (res && res.Id) {
+									// 				this.handleSubscribe(res.Id)
+									// 			}
+									// 		})
+									// 		.catch(err => {
+									// 			console.log(err)
+									// 			// SET UP SOME KIND OF ERROR MESSAGE
+									// 		})
+									// }}
+								/>
+							</div>
+						</Dialog>
+					}
 			</div>
 		)
 	}

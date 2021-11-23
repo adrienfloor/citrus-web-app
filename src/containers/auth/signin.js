@@ -224,6 +224,7 @@ class Signin extends React.Component {
 						autoComplete='email'
 						onChange={e => this.onTextInputChange(e, 'email')}
 						name='email'
+						value={email}
 					/>
 					<div className='password-container'>
 						<input
