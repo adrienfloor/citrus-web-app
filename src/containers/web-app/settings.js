@@ -397,12 +397,6 @@ class Settings extends React.Component {
 							{capitalize(t('planBillingFailure'))}
 						</span>
 					}
-					{/* <span
-						className='small-text-bold citrusGrey titles-form-input hover'
-						onClick={() => this.setState({ isChangingPassword: true })}
-					>
-						{capitalize(t('billing'))}
-					</span> */}
 					<div className='medium-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('personal'))}
@@ -686,23 +680,6 @@ class Settings extends React.Component {
 										this.setState({ isPlanBillingFailure: false })
 									}}
 									history={history}
-									title={capitalize(t('purchaseThisPlan'))}
-									// onSuccess={mpUserId => {
-									// 	this.setState({
-									// 		isLoading: true,
-									// 		loadingMessage: capitalize(t('proceedingToPayment'))
-									// 	})
-									// 	fetchMpCardInfo(mpUserId)
-									// 		.then(res => {
-									// 			if (res && res.Id) {
-									// 				this.handleSubscribe(res.Id)
-									// 			}
-									// 		})
-									// 		.catch(err => {
-									// 			console.log(err)
-									// 			// SET UP SOME KIND OF ERROR MESSAGE
-									// 		})
-									// }}
 								/>
 							</div>
 						</Dialog>

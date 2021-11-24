@@ -164,7 +164,8 @@ class PayInConfirmation extends React.Component {
 										subscription: this.state.subscription,
 										billingDate,
 										lastBillingMonth,
-										pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+										pastTransactionsIds: [...user.pastTransactionsIds, transactionId],
+										hasCreditCardFailed: false
 									}, true)
 									.then(() => {
 										if (isALaCarte) {
@@ -183,7 +184,8 @@ class PayInConfirmation extends React.Component {
 								subscription: res.CreditedFunds.Amount / 100,
 								billingDate,
 								lastBillingMonth,
-								pastTransactionsIds: [...user.pastTransactionsIds, transactionId]
+								pastTransactionsIds: [...user.pastTransactionsIds, transactionId],
+								hasCreditCardFailed: false
 							}, true)
 								.then(res => {
 									return this.setState({
@@ -439,7 +441,6 @@ class PayInConfirmation extends React.Component {
 							</span>
 							<div className='medium-separator'></div>
 							<Card
-								// onClick={() => this.setState({ selectedCoaching: activity })}
 								size='large'
 								title={capitalize(coaching.title)}
 								subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}

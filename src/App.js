@@ -9,6 +9,7 @@ import { withTranslation } from 'react-i18next'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Loader from 'react-loader-spinner'
+import HttpsRedirect from 'react-https-redirect'
 
 import './styling/App.css'
 import PrivateRoute from './containers/privateRoute'
@@ -31,7 +32,7 @@ import Explore from './containers/web-app/explore'
 import Schedule from './containers/web-app/schedule'
 import Profile from './containers/web-app/profile'
 import Settings from './containers/web-app/settings'
-import HttpsRedirect from 'react-https-redirect'
+import BillingFailure from './containers/web-app/payments/billing-failure'
 
 import Layout from './containers/layout'
 
@@ -45,6 +46,9 @@ const theme = createMuiTheme({
     primary: { main: '#0075FF' }
   }
 })
+
+const { REACT_APP_ADMINS } = process.env
+const admins = REACT_APP_ADMINS.split(',')
 
 class App extends React.Component {
   constructor(props){
@@ -75,7 +79,7 @@ class App extends React.Component {
     let isAdmin = false
 
     if(user) {
-      isAdmin = user.email === 'adrien@thecitrusapp.com' || user.email === 'quentin@thecitrusapp.com'
+      isAdmin = admins.includes(user.email)
     }
 
     if (isRedirectingHome) {
@@ -107,6 +111,7 @@ class App extends React.Component {
                   <Route exact path='/signin' component={Signin} />
                   <Route exact path='/signup' component={Signup} />
                   <Route exact path='/reset_password' component={ResetPassword} />
+                  <Route exact path='/billing_plan' component={BillingFailure} />
                   <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
                   <PrivateRoute auth={isAuthenticated} path='/explore' component={Explore} />
                   <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />

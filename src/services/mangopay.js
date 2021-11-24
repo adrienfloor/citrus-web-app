@@ -530,7 +530,8 @@ export const createRecurringPayinCIT = async (
 	RecurringPayinRegistrationId,
 	isUpdatingCard,
 	Currency,
-	query
+	query,
+	email
 ) => {
 	// HEADERS
 	const config = {
@@ -554,7 +555,8 @@ export const createRecurringPayinCIT = async (
 			IpAddress,
 			isUpdatingCard,
 			Currency,
-			query
+			query,
+			email
 		})
 
 		const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_create_recurring_payin_cit`, body, config)

@@ -571,5 +571,7 @@
 	"REGISTRATION_PROOF": "registration proof",
 	"pleaseSelectADocument": "please select a document",
 	"selectAFile": "select a file",
-	"sendingInProcess": "sending in process ..."
+	"sendingInProcess": "sending in process ...",
+	"somethingWentWrongYouSHouldntBeHere": "something went wrong you shouldn't be here ...",
+	"confirmYourIdentity": "confirme ton identité"
 }

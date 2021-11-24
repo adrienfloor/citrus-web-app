@@ -8,7 +8,6 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers'
 import frLocale from 'date-fns/locale/fr'
 import enLocale from 'date-fns/locale/en-US'
 import CloseIcon from '@material-ui/icons/Close'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
 import Loader from 'react-loader-spinner'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 import moment from 'moment'
@@ -16,6 +15,7 @@ import { cardRegistration } from 'mangopay-cardregistration-js-kit'
 import Cards from 'react-credit-cards'
 import 'react-credit-cards/es/styles-compiled.css'
 import { PaymentInputsContainer } from 'react-payment-inputs'
+import { Link } from 'react-router-dom'
 
 import {
 	capitalize,
@@ -28,9 +28,11 @@ import '../../../styling/spacings.css'
 import '../../../styling/buttons.css'
 import '../../../styling/colors.css'
 import '../../../styling/App.css'
+
+import Signin from '../../auth/signin-from-redirect'
 import CountrySelector from '../../../components/country-selector'
-import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
+import { ReactComponent as Logo } from '../../../assets/svg/logo.svg'
 
 import {
 	createMpUser,
@@ -39,12 +41,16 @@ import {
 	updateMpUserCardRegistration,
 	fetchMpUserInfo,
 	fetchMpWalletInfo,
-	fetchMpCardInfo
+	fetchMpCardInfo,
+	createRecurringPayinRegistration,
+	createRecurringPayinCIT,
+	updateRecurringPayinRegistration
 } from '../../../services/mangopay'
 
 import {
 	updateUser,
-	loadUser
+	loadUser,
+	signin
 } from '../../../actions/auth-actions'
 
 const {
@@ -56,20 +62,10 @@ const locale = moment.locale() == 'fr' ? frLocale : enLocale
 class BillingFailure extends React.Component {
 	constructor(props) {
 		super(props)
-		const { user } = this.props
-		const initialExpirationDate =
-			user?.creditCard?.expirationDate ?
-				user.creditCard.expirationDate.slice(0, 2) + '/' + user.creditCard.expirationDate.slice(2) :
-				''
 		this.state = {
 			cvc: '',
 			expiry: '',
 			number: '',
-			FirstName: '',
-			LastName: '',
-			Birthday: new Date('1990-08-18'),
-			Nationality: '',
-			CountryOfResidence: '',
 			isLoading: false,
 			warningMessage: '',
 			loadingMessage: ''
@@ -80,24 +76,13 @@ class BillingFailure extends React.Component {
 		this.handleDateInputChange = this.handleDateInputChange.bind(this)
 	}
 
-	handleMissingParam(newUser) {
+	handleMissingParam() {
 		if (
 			!this.state.cvc ||
 			!this.state.expiry ||
 			!this.state.number
 		) {
 			return true
-		}
-		if (!newUser) {
-			if (
-				!this.state.FirstName ||
-				!this.state.LastName ||
-				!this.state.Birthday ||
-				!this.state.Nationality ||
-				!this.state.CountryOfResidence
-			) {
-				return true
-			}
 		}
 	}
 
@@ -122,19 +107,12 @@ class BillingFailure extends React.Component {
 
 	async handleSubmit(e) {
 
-		let mpUser = null
-		let mpUserWallet = null
 		let mpUserCardRegistration = null
 
 		const {
 			cvc,
 			expiry,
 			number,
-			FirstName,
-			LastName,
-			Birthday,
-			Nationality,
-			CountryOfResidence,
 			warningMessage
 		} = this.state
 
@@ -143,6 +121,12 @@ class BillingFailure extends React.Component {
 			updateUser,
 			user
 		} = this.props
+		const {
+			MPUserId,
+			MPRecurringPayinRegistrationId,
+			subscription,
+			email
+		} = user
 
 		e.preventDefault()
 
@@ -152,9 +136,49 @@ class BillingFailure extends React.Component {
 			})
 		}
 
-		const endPaymentProcess = (mpUserId) => {
-			const { onSuccess } = this.props
-			onSuccess(mpUserId)
+		const endPaymentProcess = (cardId) => {
+			this.setState({
+				isLoading: true,
+				loadingMessage: capitalize(t('redirectedToYourBank'))
+			})
+			updateRecurringPayinRegistration(
+				MPRecurringPayinRegistrationId,
+				null,
+				'ENDED'
+			)
+			// Handle re-subscription
+			setTimeout(function () {
+				createRecurringPayinRegistration(
+					MPUserId,
+					cardId,
+					subscription,
+					returnCurrencyCode(moment.locale())
+				)
+					.then(res => {
+						if (res && res.Id) {
+							updateUser({
+								id: user._id,
+								MPRecurringPayinRegistrationId: res.Id
+							}, true)
+							const MPRecurringPayinRegistrationId = res.Id
+							createRecurringPayinCIT(
+								MPRecurringPayinRegistrationId,
+								false,
+								returnCurrencyCode(moment.locale()),
+								null,
+								email
+							)
+								.then(res => {
+									if (res && res.SecureModeRedirectURL) {
+										window.location.href = res.SecureModeRedirectURL
+									}
+								})
+						}
+					})
+					.catch(err => {
+						console.log(err)
+					})
+			}.bind(this), 3000)
 		}
 
 		const endPaymentProcessWithError = res => {
@@ -165,15 +189,9 @@ class BillingFailure extends React.Component {
 			})
 		}
 
-		const registerNewCard = (mpUserCardRegistration, mpUserInfo) => {
+		const registerNewCard = (mpUserCardRegistration) => {
 
-			console.log(mpUserCardRegistration, mpUserInfo)
-
-			const {
-				mpUserId,
-				mpUserLastName,
-				mpUserFirstName
-			} = mpUserInfo
+			console.log(mpUserCardRegistration)
 
 			createLoadingMessage(capitalize(t('registeringCard')))
 			cardRegistration.baseURL = REACT_APP_MANGOPAY_CARD_REGISTRATION_BASE_URL
@@ -203,19 +221,16 @@ class BillingFailure extends React.Component {
 				function (res) {
 					updateMpUserCardRegistration(res.RegistrationData, res.Id)
 						.then(async (res) => {
-							const cardInfo = await fetchMpCardInfo(mpUserId)
-							if (cardInfo && cardInfo.Alias && cardInfo.ExpirationDate && mpUserId) {
+							const cardInfo = await fetchMpCardInfo(MPUserId)
+							if (cardInfo && cardInfo.Alias && cardInfo.ExpirationDate && MPUserId) {
 								updateUser({
 									id: user._id,
 									creditCard: {
 										alias: cardInfo.Alias,
 										expirationDate: cardInfo.ExpirationDate
-									},
-									MPUserId: mpUserId,
-									firstName: user.firstName.length > 0 ? user.firstName : mpUserFirstName,
-									lastName: user.lastName.length > 0 ? user.LastName : mpUserLastName
+									}
 								}, true)
-									.then(res => endPaymentProcess(mpUserId))
+									.then(res => endPaymentProcess(cardInfo.Id))
 							}
 						})
 				},
@@ -225,7 +240,7 @@ class BillingFailure extends React.Component {
 			)
 		}
 
-		if (this.handleMissingParam(user.MPUserId)) {
+		if (this.handleMissingParam()) {
 			this.setState({
 				warningMessage: capitalize(this.props.t('pleaseEnterAllFields'))
 			})
@@ -269,48 +284,13 @@ class BillingFailure extends React.Component {
 		}
 
 		this.setState({ isLoading: true })
-		const formattedDate = moment(Birthday).format('L')
-		const splitDate = formattedDate.split('/')
-		const updatedDate = new Date(splitDate[2], splitDate[1] - 1, splitDate[0])
-		const birthday = updatedDate.setTime(updatedDate.getTime() + (2 * 60 * 60 * 1000)) / 1000
 
-		createLoadingMessage(capitalize(t('creatingMangoUser')))
-		mpUser = await createMpUser(
-			FirstName,
-			LastName,
-			birthday,
-			Nationality,
-			CountryOfResidence,
-			user.email
-		)
-		console.log(mpUser)
-		if (!mpUser || (mpUser && mpUser.errors)) {
-			endPaymentProcessWithError({
-				ResultMessage: mpUser.errors ? mpUser.errors[Object.keys(mpUser.errors)[0]] : t('errorCreatingMangoPayUser')
-			})
-			return
-		} else {
-			createLoadingMessage(capitalize(t('creatingMangoUserWallet')))
-			mpUserWallet = await createMpUserWallet(mpUser.Id, returnCurrencyCode(moment.locale()))
-		}
-		console.log(mpUserWallet)
-		if (!mpUserWallet || (mpUserWallet && mpUserWallet.errors)) {
-			endPaymentProcessWithError({
-				ResultMessage: mpUserWallet.errors ? mpUserWallet.errors[Object.keys(mpUserWallet.errors)[0]] : t('errorCreatingMangoPayUserWallet')
-			})
-			return
-		} else {
-			createLoadingMessage(capitalize(t('creatingCardRegistration')))
-			const CardType = null
-			mpUserCardRegistration = await createMpUserCardRegistration(mpUser.Id, CardType)
-		}
+		createLoadingMessage(capitalize(t('creatingCardRegistration')))
+		const CardType = null
+		mpUserCardRegistration = await createMpUserCardRegistration(MPUserId, CardType)
 		console.log(mpUserCardRegistration)
 		if (mpUserCardRegistration && mpUserCardRegistration.PreregistrationData) {
-			const info = {
-				mpUserId: mpUser.Id,
-				mpUserFirstName: FirstName,
-				mpUserLastName: LastName
-			}
+			const info = { mpUserId: MPUserId }
 			registerNewCard(mpUserCardRegistration, info)
 		} else {
 			endPaymentProcessWithError({
@@ -325,7 +305,9 @@ class BillingFailure extends React.Component {
 			t,
 			onCancel,
 			user,
-			title
+			title,
+			isAuthenticated,
+			location
 		} = this.props
 		const {
 			number,
@@ -333,16 +315,55 @@ class BillingFailure extends React.Component {
 			cvc,
 			isLoading,
 			error,
-			Birthday,
-			FirstName,
-			LastName,
-			Nationality,
-			CountryOfResidence,
 			loadingMessage,
 			warningMessage
 		} = this.state
 
-		if (isLoading) {
+		const isOnRedirectPage = this.props.location.pathname === '/billing_plan'
+
+		if(!user) {
+			return (
+				<Signin
+					onSigninSuccess={() => console.log('Signed in')}
+					title={capitalize(t('confirmYourIdentity'))}
+					location={location}
+				/>
+			)
+		}
+
+		if(user && (!user.MPUserId || !user.subscription)) {
+			return (
+				<div
+					className='flex-center cancel-subscription-container'
+					style={{ justifyContent: 'center' }}
+				>
+					<Logo
+						width={100}
+						height={100}
+					/>
+					<div className='medium-separator'></div>
+					<span
+						className='small-text-bold citrusGrey small-responsive-title'
+						style={{ textAlign: 'center' }}
+					>
+						{capitalize(t('somethingWentWrongYouSHouldntBeHere'))}
+					</span>
+					<div className='medium-separator'></div>
+					<Link
+						to='/home'
+						className='extra-small-text-bold hover citrusGrey'
+						style={{
+							width: 'max-content',
+							textDecoration: 'underline'
+						}}
+					>
+						{capitalize(t('goBackToHomePage'))}
+					</Link>
+				</div>
+			)
+		}
+
+		if(isLoading) {
 			return (
 				<div
 					className='flex-center cancel-subscription-container'
@@ -368,24 +389,28 @@ class BillingFailure extends React.Component {
 		return (
 			<div className='full-container flex-column credit-card-container'>
 				<div className='desktop-only-small-separator'></div>
-				<div
-					style={{
-						width: '100%',
-						display: 'flex',
-						justifyContent: 'flex-end',
-						alignItems: 'center',
-						marginTop: '5px'
-					}}
-					onClick={onCancel}
-					className='hover'
-				>
-					<Close
-						width={25}
-						height={25}
-						stroke={'#C2C2C2'}
-						strokeWidth={2}
-					/>
-				</div>
+				{
+					isOnRedirectPage ?
+					<div className='max-separator'></div> :
+					<div
+						style={{
+							width: '100%',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'center',
+							marginTop: '5px'
+						}}
+						onClick={onCancel}
+						className='hover'
+					>
+						<Close
+							width={25}
+							height={25}
+							stroke={'#C2C2C2'}
+							strokeWidth={2}
+						/>
+					</div>
+				}
 				<form
 					id='credit-card-form'
 					className='credit-card-form card card-like'
@@ -441,54 +466,6 @@ class BillingFailure extends React.Component {
 										</span>
 									</>
 								}
-								<div className='flex-row'>
-									<TextField
-										label={capitalize(t('firstName'))}
-										onChange={e => this.handleInputChange(e, 'FirstName')}
-										style={{ width: '47.5%', margin: '2% 2.5% 2% 0' }}
-										variant='outlined'
-										value={FirstName}
-									/>
-									<TextField
-										label={capitalize(t('lastName'))}
-										onChange={e => this.handleInputChange(e, 'LastName')}
-										style={{ width: '47.5%', margin: '2% 0 2% 2.5%' }}
-										variant='outlined'
-										value={LastName}
-									/>
-								</div>
-								<div className='row flex-row'>
-									<CountrySelector
-										style={{ width: '47.5%', margin: '2% 2.5% 0 0' }}
-										name={capitalize(t('nationality'))}
-										onSelect={Nationality => this.setState({ Nationality })}
-										value={Nationality}
-									/>
-									<CountrySelector
-										style={{ width: '47.5%', margin: '2% 0 0 2.5%' }}
-										name={capitalize(t('residence'))}
-										onSelect={CountryOfResidence => this.setState({ CountryOfResidence })}
-										value={CountryOfResidence}
-									/>
-								</div>
-								<div
-									className='row flex-row medium-text flex-center'
-									style={{ marginTop: '15px' }}
-								>
-									<span className='small-text citrusGrey' style={{ marginRight: '5px' }}>
-										{capitalize(t('birthday'))} :
-									</span>
-									<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
-										<DatePicker
-											format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
-											variant='dialog'
-											openTo='year'
-											views={['year', 'month', 'date']}
-											value={Birthday}
-											onChange={date => this.setState({ Birthday: date })}
-										/>
-									</MuiPickersUtilsProvider>
-								</div>
 							</div>
 						)}
 					</PaymentInputsContainer>
@@ -508,7 +485,7 @@ class BillingFailure extends React.Component {
 							form='credit-card-form'
 						>
 							<span className='small-title citrusWhite'>
-								{title}
+								{capitalize(t('purchaseThisPlan'))}
 							</span>
 						</button>
 						<div className='medium-separator'></div>
@@ -563,12 +540,14 @@ class BillingFailure extends React.Component {
 
 const mapStateToProps = state => ({
 	user: state.auth.user,
-	error: state.error
+	error: state.error,
+	isAuthenticated: state.auth.isAuthenticated
 })
 
 const mapDispatchToProps = dispatch => ({
 	loadUser: () => dispatch(loadUser()),
-	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe))
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
+	signin: (email, password) => dispatch(signin(email, password))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(BillingFailure))

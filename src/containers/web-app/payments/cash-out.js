@@ -216,7 +216,8 @@ class Cashout extends React.Component {
 			} else {
 				updateUser({
 					id: user._id,
-					MPPayoutId: payout.Id
+					MPPayoutId: payout.Id,
+					lastCashOutDate: (new Date()).getMonth()
 				}, true)
 				.then(() => this.setState({ isLoading: false }))
 				setNotification({ message: capitalize(t('congratulationsPayout')) })

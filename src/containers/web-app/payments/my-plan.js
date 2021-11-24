@@ -179,7 +179,8 @@ class MyPlan extends React.Component {
 							MPRecurringPayinRegistrationId,
 							false,
 							returnCurrencyCode(moment.locale()),
-							null
+							null,
+							user.email
 						)
 							.then(res => {
 								if (res && res.SecureModeRedirectURL) {

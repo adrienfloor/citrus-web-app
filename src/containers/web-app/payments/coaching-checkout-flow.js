@@ -169,7 +169,8 @@ class CoachingCheckout extends React.Component {
 							MPRecurringPayinRegistrationId,
 							false,
 							returnCurrencyCode(moment.locale()),
-							query
+							query,
+							user.email
 						)
 							.then(res => {
 								console.log('createRecurringPayinCIT : ', res)
