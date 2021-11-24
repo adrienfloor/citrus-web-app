@@ -127,21 +127,35 @@ class Explore extends React.Component {
 			resetExploreSearch,
 			user,
 		} = this.props
-		const { activeTitleTabName } = this.state
+
 		this.setState({
-			activeTabIndex: index,
 			activeSportType: sport,
+			activeTabIndex: index,
+			skip: 0
 		})
 
-		resetSpecificSportSearch()
-		executeExploreSearch(sport, user._id, 0, 5, user.sports)
-			.then(res => {
-				if (res && res.payload && res.payload.length < 5) {
-					this.setState({ showLoadMore: false })
-				} else {
-					this.setState({ showLoadMore: true })
-				}
-			})
+		if(sport === 'all') {
+			console.log('kirikou')
+			resetExploreSearch()
+			executeExploreSearch(sport, user._id, 0, 5, user.sports)
+				.then(res => {
+					if (res && res.payload && res.payload.length < 5) {
+						this.setState({ showLoadMore: false })
+					} else {
+						this.setState({ showLoadMore: true })
+					}
+				})
+		} else {
+			resetSpecificSportSearch()
+			executeExploreSearch(sport, user._id, 0, 5, user.sports)
+				.then(res => {
+					if (res && res.payload && res.payload.length < 5) {
+						this.setState({ showLoadMore: false })
+					} else {
+						this.setState({ showLoadMore: true })
+					}
+				})
+		}
 	}
 
 	render() {
@@ -260,7 +274,7 @@ class Explore extends React.Component {
 										this.setState({
 											searchingSessions: true,
 											searchingAccounts: false
-										});
+										})
 										executeSearch(searchInputText, 'sessions', user._id)
 									}}>
 									<span
@@ -312,13 +326,14 @@ class Explore extends React.Component {
 							<div className='medium-separator desktop-only'></div>
 							<div className='scroll-div-horizontal sports-scroll'>
 								<div
-									onClick={() =>
-										this.setState({
-											activeTabIndex: 'all',
-											activeSportType: 'all',
-											showLoadMore: true
-										})
-									}
+									// onClick={() =>
+									// 	this.setState({
+									// 		activeTabIndex: 'all',
+									// 		activeSportType: 'all',
+									// 		showLoadMore: true
+									// 	})
+									// }
+									onClick={() => this.handleSportSelection('all', 'all')}
 								>
 									<div
 										className={activeTabIndex === 'all' ? 'small-active-tab hover' : 'small-tab hover'}
@@ -411,7 +426,7 @@ class Explore extends React.Component {
 													className='hover button-load-more-mobile'
 													onClick={() => {
 														this.setState({
-															skip: skip + 5,
+															skip: skip + 6,
 															isFetchingCoachings: true
 														})
 														executeExploreSearch(
