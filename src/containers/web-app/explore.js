@@ -135,7 +135,6 @@ class Explore extends React.Component {
 		})
 
 		if(sport === 'all') {
-			console.log('kirikou')
 			resetExploreSearch()
 			executeExploreSearch(sport, user._id, 0, 5, user.sports)
 				.then(res => {
@@ -325,16 +324,7 @@ class Explore extends React.Component {
 							<div className='small-separator'></div>
 							<div className='medium-separator desktop-only'></div>
 							<div className='scroll-div-horizontal sports-scroll'>
-								<div
-									// onClick={() =>
-									// 	this.setState({
-									// 		activeTabIndex: 'all',
-									// 		activeSportType: 'all',
-									// 		showLoadMore: true
-									// 	})
-									// }
-									onClick={() => this.handleSportSelection('all', 'all')}
-								>
+								<div onClick={() => this.handleSportSelection('all', 'all')}>
 									<div
 										className={activeTabIndex === 'all' ? 'small-active-tab hover' : 'small-tab hover'}
 										style={{ paddingLeft: 0 }}
@@ -496,6 +486,31 @@ class Explore extends React.Component {
 							</div>
 						)
 					}
+					{
+						exploreSearch && exploreSearch.length === 0 &&
+						exploreSpecificSportSearch && exploreSpecificSportSearch.length === 0 &&
+						searchInputText === '' && (
+						<div style={{ width: '100%' }}>
+							<Link to='/schedule' className='empty-coaching-card hover'>
+								<PlusButton
+									width={90}
+									height={90}
+									stroke={'#FFFFFF'}
+									strokeWidth={2}
+								/>
+								<span className='small-title citrusBlack'>
+									{capitalize(t('noSessionsInThatCategory'))}
+								</span>
+								<div className='small-separator'></div>
+								<div className='light-button plus-button'>
+									<span className='small-title citrusBlue'>
+										{capitalize(t('createOne'))}
+									</span>
+								</div>
+								<div className='medium-separator'></div>
+							</Link>
+						</div>
+					)}
 					{
 						searchInputText !== '' &&
 						<div className='search-container scroll-div-vertical'>
