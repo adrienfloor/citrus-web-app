@@ -20,7 +20,7 @@ export const styles = (theme) => ({
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'stretch',
-		[theme.breakpoints.up('sm')]: {
+		[theme.breakpoints.up('md')]: {
 			flexDirection: 'row',
 			alignItems: 'center',
 		},

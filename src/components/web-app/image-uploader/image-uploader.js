@@ -200,7 +200,7 @@ class ImageUploader extends React.Component {
 				{
 					isCropping &&
 					<Dialog
-						className='crop-dialog'
+						// className='crop-dialog'
 						open={true}
 						onClose={() => {
 							this.setState({
@@ -283,6 +283,11 @@ class ImageUploader extends React.Component {
 								top: 0;
 								right: 0;
 								background-color: #FFFFFF;
+							}
+							@media only screen and (min-width: 641px) and (max-width: 1024px) {
+								.crop-container {
+									width: 470px;
+								}
 							}
 							@media only screen and (max-width: 640px) {
 								.crop-container {

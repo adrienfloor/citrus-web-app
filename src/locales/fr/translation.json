@@ -356,8 +356,10 @@
 	"uploadingVideo": "video en cours d'upload",
 	"video": "vidéo",
 	"creatingThumbnail": "création thumbnail",
-	"dontClose": "Ne quitte pas cette page avant la fin de l'upload sinon celui-ci sera perdu",
-	"processingVideo": "traitement de la video, ne quitte pas cette page ... ",
+	"dontQuit": "Ne quitte pas cette page avant la fin de l'upload sinon celui-ci sera perdu",
+	"processingVideoDontQuit": "traitement de la video, ne quitte pas cette page ... ",
+	"dontClose": "Ne ferme pas cette page avant la fin de l'upload sinon celui-ci sera perdu",
+	"processingVideoDontClose": "traitement de la video, ne ferme pas cette page ... ",
 	"successFullyUploadedCoaching": "coaching uploadé avec succès",
 	"successFullyUpdatedProfile": "profile mis à jour avec succès",
 	"successFullySentResetLink": "lien de réinitialisation de mot de passe envoyé vers ton email",
@@ -575,5 +577,6 @@
 	"selectAFile": "selectionner un fichier",
 	"sendingInProcess": "envoie en cours ...",
 	"somethingWentWrongYouSHouldntBeHere": "quelque chose s'est mal passé, tu devrais pas être ici ...",
-	"confirmYourIdentity": "confirme ton identité"
+	"confirmYourIdentity": "confirme ton identité",
+	"uploadFile": "upload file"
 }

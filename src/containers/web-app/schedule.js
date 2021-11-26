@@ -625,7 +625,7 @@ class Schedule extends React.Component {
 							</>
 						}
 					</div>
-					<div className='medium-separator'></div>
+					{/* <div className='medium-separator'></div>
 					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
 						{`${capitalize(t('duration'))} ( ${t('optional')} )`}
@@ -661,7 +661,7 @@ class Schedule extends React.Component {
 								</MenuItem>
 							))
 						}
-					</Select>
+					</Select> */}
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
@@ -919,7 +919,7 @@ class Schedule extends React.Component {
 											<ProgressBar
 												completed={progress}
 												height='10px'
-												width='350px'
+												width='310px'
 												baseBgColor='#DFDFDF'
 												bgColor='#0075FF'
 												isLabelVisible={false}
@@ -931,33 +931,63 @@ class Schedule extends React.Component {
 							<div className='small-separator'></div>
 							{
 								isProcessingVideo && !isConfirmingCancelUpload &&
-								<div className='flex-row' style={{ height: '50px', maxWidth: '350px' }}>
-									<div className='flex-row' style={{ alignItems: 'center' }}>
-										<span className='small-title citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
-											{capitalize(t('processingVideo'))}
-										</span>
+									<div className='flex-row' style={{ width: '100%' }}>
+									<div
+										className='flex-column'
+										style={{
+											alignItems: 'center',
+											width: '100%'
+										}}
+									>
 										<Loader
 											type="Oval"
 											color="#C2C2C2"
-											height={20}
-											width={20}
+											height={60}
+											width={60}
 										/>
+										<div className='medium-separator'></div>
+										<span
+											style={{ maxWidth: '96%', marginLeft: '2%' }}
+											className='tablet-only small-title citrusGrey'
+										>
+											{capitalize(t('processingVideoDontQuit'))}
+										</span>
+										<span
+											style={{ maxWidth: '96%', marginLeft: '2%' }}
+											className='not-on-tablet small-title citrusGrey'
+										>
+											{capitalize(t('processingVideoDontClose'))}
+										</span>
 									</div>
 								</div>
 							}
 							{
 								progress !== null && progress >= 0 && !isProcessingVideo && !isConfirmingCancelUpload ?
+									<>
 									<span
-										className='small-title citrusBlack'
+										className='not-on-tablet small-title citrusBlack'
 										style={{
 											width: '100%',
 											marginBottom: '10px',
 											textAlign: 'center',
-											maxWidth: '350px'
+											maxWidth: '320px'
 										}}
 									>
 										{capitalize(t('dontClose'))}
-									</span> : null
+									</span>
+									<span
+										className='tablet-only small-title citrusBlack'
+										style={{
+											width: '100%',
+											marginBottom: '10px',
+											textAlign: 'center',
+											maxWidth: '320px'
+										}}
+										// style={{ maxWidth: '96%', marginLeft: '2%' }}
+									>
+										{capitalize(t('dontQuit'))}
+									</span>
+									</> : null
 							}
 							{
 								errorMessage.length > 0 && !isConfirmingCancelUpload &&
