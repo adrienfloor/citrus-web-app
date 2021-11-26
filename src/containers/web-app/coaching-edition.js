@@ -147,7 +147,7 @@ class Schedule extends React.Component {
 			_id: coaching._id,
 			title: title.toLowerCase(),
 			sport,
-			duration,
+			// duration,
 			level: level && level.length > 0 ? level : 'allLevel',
 			equipment: equipment && equipment.length > 0 ? equipment : [],
 			startingDate: startingDate || Date.now(),
@@ -498,7 +498,7 @@ class Schedule extends React.Component {
 					{
 						isShowingAllParams &&
 						<>
-							<span className='small-text-bold citrusGrey title-coaching-edition'>
+							{/* <span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('duration'))}
 							</span>
 							<div className='desktop-only-small-separator'></div>
@@ -534,7 +534,7 @@ class Schedule extends React.Component {
 									))
 								}
 							</Select>
-							<div className='medium-separator'></div>
+							<div className='medium-separator'></div> */}
 							<span className='small-text-bold citrusGrey title-coaching-edition'>
 								{capitalize(t('level'))}
 							</span>

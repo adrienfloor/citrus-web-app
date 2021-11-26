@@ -188,7 +188,8 @@ export const returnTotalLengthOfActivities = userReplays => {
 	}
 	for(let i = 0; i < userReplays.length ; i++) {
 		if(userReplays[i].duration) {
-			duration = duration + returnTextDurationToNumber(userReplays[i].duration)
+			// duration = duration + returnTextDurationToNumber(userReplays[i].duration)
+			duration = duration + userReplays[i].duration
 		} else {
 			duration = duration + 30
 		}

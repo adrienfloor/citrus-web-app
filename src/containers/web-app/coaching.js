@@ -638,15 +638,15 @@ class Coaching extends React.Component {
 						</div>
 
 						{
-							duration && t('duration') > 0 ?
+							duration &&
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('duration'))}
 								</span>
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
-									{capitalize(t(duration))}
+									{`${duration} ${t('min')}`}
 								</span>
-							</div> : null
+							</div>
 						}
 
 						{
