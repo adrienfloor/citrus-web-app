@@ -54,7 +54,7 @@ export default {
 		lowerBody: "bas du corps",
 		arms: "bras",
 		cardio: "cardio",
-		back: "dos",
+		backFocus: "dos",
 		endurance: "endurance",
 		strength: "force",
 		core: "gainage",

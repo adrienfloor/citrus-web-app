@@ -753,7 +753,7 @@ class Home extends React.Component {
 									{ /* TAKE IT FROM HERE */ }
 
 									{
-										user.isCoach ?
+										user.isCoach && currentGains >= 100 ?
 											<div
 												className='filled-button cashout-button'
 												onClick={() => this.setState({ isCashingOut: true })}
@@ -762,7 +762,9 @@ class Home extends React.Component {
 													{capitalize(t('withdrawNow'))}
 												</span>
 											</div> :
-											<Tooltip title={capitalize(t('startPostingToGenerateRevenue'))}>
+											<Tooltip
+												title={capitalize(t('withdrawTooltipDisclaimer'))}
+											>
 												<div
 													className='disabled-button cashout-button'
 													onClick={() => {}}

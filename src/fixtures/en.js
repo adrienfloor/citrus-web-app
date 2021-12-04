@@ -52,7 +52,7 @@ export default {
 	},
 	focus: {
 		arms: "arms",
-		back: "back",
+		backFocus: "back",
 		cardio: "cardio",
 		chest: "chest",
 		core: "core",
