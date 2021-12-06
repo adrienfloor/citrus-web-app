@@ -159,7 +159,8 @@ class CreateLegalUser extends React.Component {
 
 		if (this.handleMissingParam()) {
 			this.setState({
-				warningMessage: capitalize(t('pleaseEnterAllFields'))
+				warningMessage: capitalize(t('pleaseEnterAllFields')),
+				isLoading: false
 			})
 			return
 		}
@@ -182,9 +183,11 @@ class CreateLegalUser extends React.Component {
 			user.email,
 			user.email
 		)
+		console.log('create user res : ', mpLegalUser)
 		if (mpLegalUser && mpLegalUser.PersonType === 'LEGAL') {
 			createMpUserWallet(mpLegalUser.Id, returnCurrencyCode(moment.locale()))
 			.then(res => {
+				console.log('create user wallet res : ', res)
 				if(res && res.Balance) {
 					updateUser({
 						id: user._id,
@@ -212,6 +215,12 @@ class CreateLegalUser extends React.Component {
 					warningMessage: capitalize(t('errorDuringInfoRegistration'))
 				})
 			})
+		} else {
+			this.setState({ isLoading: false })
+			this.setState({
+				warningMessage: capitalize(t('errorDuringInfoRegistration'))
+			})
+			return
 		}
 	}
 

@@ -44,6 +44,7 @@
 	"allowAutomaticTopUp": "allow automatic top up",
 	"myCredits": "my credits",
 	"pleaseEnterAllFields": "Please enter all fields",
+	"someFieldsAreIncorrect": "some fields are incorrect",
 	"wrongEmailFormat": "wrong email format",
 	"wrongEmailOrPassword": "wrong email or password",
 	"passwordFormat": "password must be at least 8 characters long, with one uppercase and one number",

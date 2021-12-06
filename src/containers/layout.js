@@ -127,7 +127,7 @@ const Layout = ({
 				}
 			</header>
 			<div className='children'>{children}</div>
-			<footer className='footer flex-row desktop-only'>
+			<footer className='footer flex-row desktop-only not-on-tablet'>
 				<div className='flex-row flex-center contact-row'>
 					{/* <a target='_blank' className='small-text' href='https://thecitrusapp.com'>Legals</a> */}
 					<div className='footer-links'>

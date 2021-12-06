@@ -879,17 +879,20 @@ class Schedule extends React.Component {
 									</span>
 									<div className='small-separator'></div>
 									<div className='medium-separator'></div>
-									<div className='flex-column flex-center'>
-										<button
+									<div
+										className='flex-column flex-center'
+										style={{ width: '98%' }}
+									>
+										<div
 											className='filled-button'
 											onClick={this.handleCancelUpload}
 										>
 											<span className='small-title citrusWhite'>
 												{capitalize(t('yes'))}
 											</span>
-										</button>
+										</div>
 										<div className='small-separator'></div>
-										<button
+										<div
 											className='light-button'
 											onClick={() => this.setState({
 												isConfirmingCancelUpload: false
@@ -898,7 +901,7 @@ class Schedule extends React.Component {
 											<span className='small-title citrusBlue'>
 												{capitalize(t('no'))}
 											</span>
-										</button>
+										</div>
 									</div>
 								</>
 							}

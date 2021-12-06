@@ -207,4 +207,7 @@
 	.disabled-button {
 		width: 100%;
 	}
+	.light-button {
+		width: 99%;
+	}
 }

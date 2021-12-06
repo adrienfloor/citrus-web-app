@@ -423,7 +423,7 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com' }}
 							target='_blank'
-							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only tablet-only'
 						>
 							{capitalize(t('howItWorks'))}
 						</Link>
@@ -431,7 +431,7 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/privacy-policy' }}
 							target='_blank'
-							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only tablet-only'
 						>
 							{capitalize(t('privacy'))}
 						</Link>
@@ -439,13 +439,13 @@ class Settings extends React.Component {
 						<Link
 							to={{ pathname: 'https://thecitrusapp.com/cgu-cgv/' }}
 							target='_blank'
-							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only tablet-only'
 						>
 							{capitalize(t('terms'))}
 						</Link>
 						<div className='small-separator mobile-only'></div>
 						<Link
-							className='small-text-bold citrusGrey titles-form-input hover mobile-only'
+							className='small-text-bold citrusGrey titles-form-input hover mobile-only tablet-only'
 							to='#'
 							onClick={e => {
 								e.preventDefault()
