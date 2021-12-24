@@ -562,7 +562,10 @@ class Explore extends React.Component {
 							this.setState({ selectedCoaching: null })
 						}}
 					>
-						<div className='dialog-modal'>
+						<div
+							className='dialog-modal'
+							style={{ overflowY: 'auto' }}
+						>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => {

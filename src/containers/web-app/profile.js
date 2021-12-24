@@ -504,7 +504,10 @@ class Profile extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div className='dialog-modal'>
+						<div
+							className='dialog-modal'
+							style={{ overflowY: 'auto' }}
+						>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

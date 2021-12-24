@@ -6,6 +6,8 @@ import io from 'socket.io-client'
 import Loader from 'react-loader-spinner'
 import ReactPlayer from 'react-player'
 import Dialog from '@material-ui/core/Dialog'
+import Rating from '@material-ui/lab/Rating'
+import TextField from '@material-ui/core/TextField'
 
 import CoachingCheckout from '../web-app/payments/coaching-checkout-flow'
 import CoachingEdition from './coaching-edition'
@@ -64,13 +66,17 @@ class Coaching extends React.Component {
 			isChoosingPaymentMethod: false,
 			isCoachingCheckoutOpen: null,
 			errorMessage: null,
-			selectedCoach: null
+			selectedCoach: null,
+			isRatingCoaching: false,
+			ratingValue: null,
+			coachComment: ''
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handlePayCoaching = this.handlePayCoaching.bind(this)
 		this.renderButtonText = this.renderButtonText.bind(this)
 		this.handleTransfer = this.handleTransfer.bind(this)
+		this.handleCoachRating = this.handleCoachRating.bind(this)
 	}
 
 	componentDidMount() {
@@ -94,7 +100,82 @@ class Coaching extends React.Component {
 		if(price === 0) {
 			return capitalize(t('watchForFree'))
 		}
-		return `${capitalize(t('buyFor'))} ${price} ${price === 1 ? capitalize(t('credit')) : capitalize(t('credits'))}`
+		// return `${capitalize(t('buyFor'))} ${price} ${price === 1 ? capitalize(t('credit')) : capitalize(t('credits'))}`
+		return `${capitalize(t('buyFor'))} ${price} ${returnCurrency(moment.locale())}`
+	}
+
+	handleCoachRating() {
+		const {
+			coachComment,
+			ratingValue,
+			coachInfo
+		} = this.state
+		const {
+			updateCoaching,
+			updateUser,
+			coaching,
+			user,
+			fetchUserReplays,
+			onCancel,
+			setNotification,
+			t
+		} = this.props
+
+		if(ratingValue === null) {
+			return
+		}
+
+		this.setState({ isLoading: true })
+
+		const { coachingRating } = coaching
+		// update coaching rating with new rating
+		const newNumberOfRatings = coachingRating.numberOfRatings + 1
+		const newRating = ((coachingRating.rating * coachingRating.numberOfRatings) + ratingValue) / newNumberOfRatings
+		updateCoaching({
+			_id: coaching._id,
+			coachingRating: {
+				numberOfRatings: newNumberOfRatings,
+				rating: newRating
+			}
+		})
+		// update user replay to confirm he rated it
+		const updatedReplays = user.myReplays
+		for(let i=0; i<updatedReplays.length;i++) {
+			if(updatedReplays[i]._id === coaching._id) {
+				updatedReplays[i].myRating = ratingValue
+				updatedReplays[i].coachingRating = {
+					numberOfRatings: newNumberOfRatings,
+					rating: newRating
+				}
+			}
+		}
+		updateUser({
+			id: user._id,
+			myReplays: updatedReplays
+		}).then(() => {
+			// update coach comments
+			if(coachComment !== '') {
+				updateUser({
+					id: coaching.coachId,
+					coachComments: [
+						{
+							coachComment,
+							userName: user.userName,
+							rating: ratingValue
+						},
+						...coachInfo.coachComments
+					]
+				})
+			}
+			fetchUserReplays(user._id)
+			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
+			onCancel()
+			this.setState({
+				muxReplayPlaybackId: null,
+				isRatingCoaching: false,
+				isLoading: false
+			})
+		})
 	}
 
 	handleTransfer() {
@@ -291,7 +372,8 @@ class Coaching extends React.Component {
 			onCoachingDeleted,
 			t,
 			setNotification,
-			fetchTrainerCoachings
+			fetchTrainerCoachings,
+			isMyUnratedReplay
 		} = this.props
 		const {
 			isLoading,
@@ -304,7 +386,9 @@ class Coaching extends React.Component {
 			isCoachingCheckoutOpen,
 			errorMessage,
 			coachInfo,
-			selectedCoach
+			selectedCoach,
+			isRatingCoaching,
+			ratingValue
 		} = this.state
 		const {
 			coachUserName,
@@ -320,7 +404,8 @@ class Coaching extends React.Component {
 			freeAccess,
 			pictureUri,
 			ratio,
-			price
+			price,
+			coachingRating
 		} = coaching
 
 		const currency = returnCurrency(moment.locale())
@@ -395,7 +480,8 @@ class Coaching extends React.Component {
 							className='small-text-bold citrusBlack'
 							style={{ padding: '0 12px', textAlign: 'center' }}
 						>
-							{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`}
+							{/* {`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`} */}
+								{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${returnCurrency(moment.locale())} ?`}
 						</span>
 					}
 					{
@@ -526,7 +612,14 @@ class Coaching extends React.Component {
 						}}
 					>
 						<Close
-							onClick={() => this.setState({ muxReplayPlaybackId: null })}
+							onClick={() => {
+								isMyUnratedReplay ?
+								this.setState({
+									isRatingCoaching: true,
+									muxReplayPlaybackId: null
+								}) :
+								this.setState({ muxReplayPlaybackId: null })
+							}}
 							className='hover'
 							width={25}
 							height={25}
@@ -543,6 +636,103 @@ class Coaching extends React.Component {
 						controls
 						url={muxReplayPlaybackId}
 					/>
+				</div>
+			)
+		}
+
+		if(isRatingCoaching) {
+			return (
+				<div
+					className='full-width-and-height-dialog white'
+					style={{
+						height: '100%',
+						minHeight: '600px',
+						overflowY: 'auto'
+					}}
+				>
+					<div
+						className='flex-column flex-center'
+						style={{ padding: '10%' }}
+					>
+						<div className='rating-container'>
+							<span className='small-text-bold'>
+								{capitalize(t('whatDidYouThinkAboutThisCoaching'))}
+							</span>
+							<Rating
+								name='size-large'
+								size='large'
+								value={ratingValue}
+								onChange={(event, newValue) => {
+									this.setState({ ratingValue: newValue })
+								}}
+							/>
+						</div>
+						<div className='big-separator'></div>
+						<span className='small-text-bold' style={{ width: '100%' }}>
+							{capitalize(t('tellUseMOreAboutThisCoach'))} :
+						</span>
+						<div className='medium-separator'></div>
+						<div className='small-separator'></div>
+						<TextField
+							variant='outlined'
+							className='small-text-bold citrusGrey'
+							multiline
+							rows={4}
+							placeholder={capitalize(t('whatDidYouLikeTrainingWithThisCoach'))}
+							onChange={(e) => this.setState({ coachComment: e.target.value })}
+							style={{
+								color: '#000000',
+								width: '100%',
+								backgroundColor: 'inherit'
+							}}
+						/>
+						<div className='big-separator'></div>
+						<div
+							className='filled-button hover'
+							onClick={this.handleCoachRating}
+						>
+							<span className='small-text-bold'>{capitalize(t('send'))}</span>
+						</div>
+						<div className='medium-separator'></div>
+						<div
+							className='hover'
+							style={{
+								borderBottom: '1px solid #C2C2C2',
+								paddingBottom: 1
+							}}
+							onClick={() => {
+								this.setState({
+									isRatingCoaching: false,
+									muxReplayPlaybackId: null
+								})
+							}}
+						>
+							<span className='smaller-text-bold citrusGrey'>
+								{capitalize(t('illDoItLater'))}
+							</span>
+						</div>
+					</div>
+					<style jsx='true'>
+						{`
+						.rating-container {
+							width: 50%;
+							margin-right: 50%;
+							display: flex;
+							align-items: center;
+							justify-content: space-between;
+						}
+						@media only screen and (max-width: 640px) {
+							.rating-container {
+								width: 100%;
+								margin-right: 0;
+								flex-direction: column;
+								align-items: flex-start;
+								justify-content: space-between;
+								height: 70px;
+							}
+						}
+					`}
+					</style>
 				</div>
 			)
 		}
@@ -636,7 +826,18 @@ class Coaching extends React.Component {
 								{capitalize(t(sport))}
 							</span>
 						</div>
-
+						{
+							coachingRating && coachingRating.rating &&
+							<div className='thin-row'>
+								<span className='small-text-bold citrusGrey'>
+									{capitalize(t('globalRating'))}
+								</span>
+									<Rating
+										size='small'
+										value={coachingRating.rating }
+									/>
+							</div>
+						}
 						{
 							duration &&
 							<div className='thin-row'>
@@ -668,7 +869,7 @@ class Coaching extends React.Component {
 									{capitalize(t('price'))}
 								</span>
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
-									{`${price} ${price === 0 ? t('credit') : t('credits')}`}
+									{`${price} ${returnCurrency(moment.locale())}`}
 								</span>
 							</div>
 						}

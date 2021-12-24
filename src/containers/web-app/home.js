@@ -794,7 +794,10 @@ class Home extends React.Component {
 							this.setState({ selectedCoaching: null })
 						}}
 					>
-						<div className='dialog-modal'>
+						<div
+							className='dialog-modal'
+							style={{ overflowY: 'auto' }}
+						>
 							<Coaching
 								isVideoPlaying={isVideoPlaying}
 								coaching={selectedCoaching}
@@ -803,6 +806,7 @@ class Home extends React.Component {
 									this.setState({ selectedCoaching: null })
 								}}
 								isMyCoaching={user._id === selectedCoaching.coachId}
+								isMyUnratedReplay={ selectedCoaching && !selectedCoaching.myRating}
 							/>
 						</div>
 					</Dialog>

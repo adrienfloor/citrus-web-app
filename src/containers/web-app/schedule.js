@@ -340,10 +340,11 @@ class Schedule extends React.Component {
 		if (t(price) === 0) {
 			return capitalize(t('freeAccess'))
 		}
-		if (t(price)>1) {
-			return `${t(price)} ${t('credits')}`
-		}
-		return `${t(price)} ${t('credit')}`
+		// if (t(price)>1) {
+		// 	return `${t(price)} ${t('credits')}`
+		// }
+		// return `${t(price)} ${t('credit')}`
+		return `${t(price)} ${returnCurrency(moment.locale())}`
 	}
 
 	returnMultipleSelectItem(item, type) {
@@ -556,7 +557,7 @@ class Schedule extends React.Component {
 							if (selected.length === 0) {
 								return (
 									<em className='small-text-bold citrusGrey'>
-										{`${capitalize(t('pricePlaceholder'))} ${returnCurrency(moment.locale())})`}
+										{t('pricePlaceholder')}
 									</em>
 								)
 							}
@@ -565,7 +566,7 @@ class Schedule extends React.Component {
 					>
 						<MenuItem disabled value="">
 							<em className='small-text-bold citrusGrey'>
-								{`${capitalize(t('pricePlaceholder'))} ${returnCurrency(moment.locale())})`}
+								{t('pricePlaceholder')}
 							</em>
 						</MenuItem>
 						{

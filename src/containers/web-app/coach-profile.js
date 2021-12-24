@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next'
 import io from 'socket.io-client'
 import Loader from 'react-loader-spinner'
 import Dialog from '@material-ui/core/Dialog'
+import Rating from '@material-ui/lab/Rating'
 
 import Coaching from './coaching'
 import Tag from '../../components/web-app/tag'
@@ -180,7 +181,8 @@ class CoachProfile extends React.Component {
 			sports,
 			bio,
 			avatarUrl,
-			_id
+			_id,
+			coachComments
 		} = coach
 		const {
 			selectedCoaching,
@@ -381,6 +383,63 @@ class CoachProfile extends React.Component {
 								</span>
 						}
 					</div>
+					{
+						coachComments && coachComments.length > 0 ?
+						<>
+							<div
+								className='category-block coaching-block-mobile'
+								style={{ minHeight: '150px' }}
+							>
+								<div className='small-separator'></div>
+								<div className='medium-separator'></div>
+									<span className='small-title citrusBlack'>
+										{capitalize(t('ratings'))}
+									</span>
+									<div className='medium-separator'></div>
+								{
+									coachComments.map(com => (
+										<div className='flex-column'>
+											<div
+												className='flex-row'
+												style={{ alignItems: 'center' }}
+											>
+												<span
+													className='smaller-text-bold citrusGrey'
+													style={{ margin: '0 10px 0 0' }}
+												>
+													{capitalize(com.userName)}
+												</span>
+												<Rating
+													size='small'
+													value={com.rating}
+												/>
+											</div>
+											<div className='small-separator'></div>
+											<div className='flex-row'>
+												{/* <span
+													className='smaller-text-bold citrusGrey'
+													style={{ marginRight: '5px' }}
+												>
+													{capitalize(t('comment'))} :
+												</span> */}
+												<span className='small-text-bold citrusBlack'>
+													{capitalize(com.coachComment)}
+												</span>
+											</div>
+											{
+												coachComments.length > 1 ?
+												<>
+													<div className='medium-separator'></div>
+													<div style={{ height: '1px', maxWidth: '454px', width: '100%', backgroundColor: '#C2C2C2' }}></div>
+													<div className='medium-separator'></div>
+												</> : null
+											}
+										</div>
+									))
+								}
+							</div>
+						</> : null
+					}
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					<div
@@ -398,7 +457,10 @@ class CoachProfile extends React.Component {
 						open={selectedCoaching ? true : false}
 						onClose={() => this.setState({ selectedCoaching: null })}
 					>
-						<div className='dialog-modal'>
+						<div
+							className='dialog-modal'
+							style={{ overflowY: 'auto' }}
+						>
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => this.setState({ selectedCoaching: null })}

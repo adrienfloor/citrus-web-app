@@ -633,7 +633,7 @@ input[type=number] {
 		display: flex !important;
 	}
 	.mobile-only-flex {
-		display: flex;
+		display: flex !important;
 	}
 	.cashout-button {
 		width: 100%;
