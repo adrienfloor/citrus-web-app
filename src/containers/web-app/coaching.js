@@ -44,6 +44,7 @@ import {
 	fetchTrainerCoachings
 } from '../../actions/coachings-actions'
 import { setNotification } from '../../actions/notifications-actions'
+import { executeExploreSearch } from '../../actions/search-actions'
 import {
 	fetchMpUserCredits,
 	createMpTransfer,
@@ -118,7 +119,8 @@ class Coaching extends React.Component {
 			fetchUserReplays,
 			onCancel,
 			setNotification,
-			t
+			t,
+			executeExploreSearch
 		} = this.props
 
 		if(ratingValue === null) {
@@ -175,6 +177,7 @@ class Coaching extends React.Component {
 			}
 			fetchUserReplays(user._id)
 			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
+			executeExploreSearch('all', user._id, 0, 5, user.sports)
 			onCancel()
 			this.setState({
 				muxReplayPlaybackId: null,
@@ -974,7 +977,9 @@ const mapDispatchToProps = (dispatch) => ({
 	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
 	fetchUserReplays: (id) => dispatch(fetchUserReplays(id)),
 	setNotification: notif => dispatch(setNotification(notif)),
-	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe))
+	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
+	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Coaching))

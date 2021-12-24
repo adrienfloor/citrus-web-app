@@ -51,14 +51,16 @@ class CoachProfile extends React.Component {
 			sports,
 			bio,
 			avatarUrl,
-			_id
+			_id,
+			coachComments
 		} = coach
 
 		this.state = {
 			isLoading: false,
 			isRefreshing: false,
 			coachings: [],
-			coachingsSkip: 3
+			coachingsSkip: 3,
+			coachComments: coachComments || []
 		}
 
 		this.loadCoachInfo()
@@ -100,6 +102,7 @@ class CoachProfile extends React.Component {
 				if (trainingsResponse && userResponse) {
 					this.setState({
 						coachings: trainingsResponse.payload,
+						coachComments: userResponse.payload.coachComments,
 						isLoading: false
 					})
 				}
@@ -182,14 +185,15 @@ class CoachProfile extends React.Component {
 			bio,
 			avatarUrl,
 			_id,
-			coachComments
+			// coachComments
 		} = coach
 		const {
 			selectedCoaching,
 			isLoading,
 			isRefreshing,
 			coachings,
-			coachingsSkip
+			coachingsSkip,
+			coachComments
 		} = this.state
 
 		const isFollowingCoach = coach && user.following.find(
@@ -393,7 +397,7 @@ class CoachProfile extends React.Component {
 								<div className='small-separator'></div>
 								<div className='medium-separator'></div>
 									<span className='small-title citrusBlack'>
-										{capitalize(t('ratings'))}
+										{capitalize(t('coachingRatingsOfThisCoach'))}
 									</span>
 									<div className='medium-separator'></div>
 								{

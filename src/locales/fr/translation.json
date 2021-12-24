@@ -596,5 +596,6 @@
 	"globalRating": "note globale",
 	"ratings": "notes",
 	"comment": "commentaire",
-	"send": "envoyer"
+	"send": "envoyer",
+	"coachingRatingsOfThisCoach": "notes sur ses coachings"
 }

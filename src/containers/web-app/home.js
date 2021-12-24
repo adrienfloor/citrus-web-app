@@ -806,7 +806,10 @@ class Home extends React.Component {
 									this.setState({ selectedCoaching: null })
 								}}
 								isMyCoaching={user._id === selectedCoaching.coachId}
-								isMyUnratedReplay={ selectedCoaching && !selectedCoaching.myRating}
+								isMyUnratedReplay={
+									selectedCoaching && !selectedCoaching.myRating &&
+									selectedCoaching.coachId !== user._id
+								}
 							/>
 						</div>
 					</Dialog>

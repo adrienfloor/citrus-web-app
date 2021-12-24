@@ -594,5 +594,6 @@
 	"globalRating": "global rating",
 	"ratings": "ratings",
 	"comment": "comment",
-	"send": "send"
+	"send": "send",
+	"coachingRatingsOfThisCoach": "ratings about their coachings"
 }
