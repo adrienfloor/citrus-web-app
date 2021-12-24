@@ -127,8 +127,14 @@ class Coaching extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const { coachingRating } = coaching
+		let { coachingRating } = coaching
 		// update coaching rating with new rating
+		if(!coachingRating) {
+			coachingRating = {
+				rating: null,
+				numberOfRatings: 0
+			}
+		}
 		const newNumberOfRatings = coachingRating.numberOfRatings + 1
 		const newRating = ((coachingRating.rating * coachingRating.numberOfRatings) + ratingValue) / newNumberOfRatings
 		updateCoaching({
