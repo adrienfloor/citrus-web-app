@@ -19,6 +19,8 @@ import { ReactComponent as Search } from '../../assets/svg/search.svg'
 import { ReactComponent as PlusButton } from '../../assets/svg/plus-button.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
+import SignupFromRedirect from '../auth/signup-from-redirect'
+import SigninFromRedirect from '../auth/signin-from-redirect'
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
 import Card from '../../components/web-app/card'
@@ -36,6 +38,7 @@ import {
 	resetSpecificSportSearch,
 	resetExploreSearch,
 } from '../../actions/search-actions'
+import { fetchCoaching } from '../../actions/coachings-actions'
 
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
@@ -60,35 +63,58 @@ class Explore extends React.Component {
 			selectedCoach: null,
 			isMenuOpen: false,
 			skip: 0,
-			showLoadMore: true
+			showLoadMore: true,
+			isLoading: false,
+			isSigninUp: false
 		}
 
-		if (this.props.user.sports.length > 0) {
+		const { user } = this.props
+		if (user && user.sports && user.sports.length > 0) {
 			sportsItems = this.props.user.sports.map((sport) => sport.type)
 		}
 
 		this.handleSearch = this.handleSearch.bind(this)
 		this.handleResetSearch = this.handleResetSearch.bind(this)
 		this.handleSportSelection = this.handleSportSelection.bind(this)
+		this.handleShowCoaching = this.handleShowCoaching.bind(this)
 	}
 
 	componentDidMount() {
+		this.handleShowCoaching()
+	}
+
+	handleShowCoaching() {
 		const {
 			location,
 			user,
 			userReplays,
 			executeExploreSearch,
-			resetExploreSearch
+			resetExploreSearch,
+			fetchCoaching
 		} = this.props
 
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
 
-		if (coachingId) {
+		if (user && coachingId) {
+			this.setState({ isLoading: true })
 			setTimeout(() => {
-				if(this.props.exploreSearch && this.props.exploreSearch.length > 0) {
-					this.setState({
-						selectedCoaching: this.props.exploreSearch.find(coaching => coaching._id == coachingId)
-					})
+				if (this.props.exploreSearch && this.props.exploreSearch.length > 0) {
+					let selectedCoaching = this.props.exploreSearch.find(coaching => coaching._id == coachingId)
+					if (selectedCoaching) {
+						this.setState({
+							selectedCoaching,
+							isLoading: false
+						})
+					} else {
+						fetchCoaching(coachingId)
+							.then(res => {
+								const { coaching } = res.payload
+								this.setState({
+									selectedCoaching: coaching,
+									isLoading: false
+								})
+							})
+					}
 				}
 			}, 1000)
 		}
@@ -170,7 +196,9 @@ class Explore extends React.Component {
 			skip,
 			isFetchingCoachings,
 			activeSportType,
-			showLoadMore
+			showLoadMore,
+			isLoading,
+			isSigninUp
 		} = this.state
 		const {
 			executeExploreSearch,
@@ -185,7 +213,44 @@ class Explore extends React.Component {
 			history,
 			location
 		} = this.props
-		const { sports } = user
+		const { sports } = user || {}
+
+		if (isLoading) {
+			return (
+				<div
+					className='flex-column flex-center'
+					style={{ height: '100%' }}
+				>
+					<Loader
+						type='Oval'
+						color='#C2C2C2'
+						height={100}
+						width={100}
+					/>
+				</div>
+			)
+		}
+
+		if (!user) {
+			if(isSigninUp) {
+				return (
+					<SignupFromRedirect
+						onSignupSuccess={this.handleShowCoaching}
+						title={capitalize(t('createAnAccountToAccessThisCoaching'))}
+						location={location}
+						onGoToSignIn={() => this.setState({ isSigninUp: false })}
+					/>
+				)
+			}
+			return (
+				<SigninFromRedirect
+					onSigninSuccess={this.handleShowCoaching}
+					title={capitalize(t('signinToAccessThisCoaching'))}
+					location={location}
+					onGoToSignUp={() => this.setState({ isSigninUp: true })}
+				/>
+			)
+		}
 
 		if (selectedCoach) {
 			return (
@@ -602,7 +667,8 @@ const mapDispatchToProps = (dispatch) => ({
 		dispatch(executeSearch(query, type, userId)),
 	resetSearch: () => dispatch(resetSearch()),
 	resetExploreSearch: () => dispatch(resetExploreSearch()),
-	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch())
+	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
+	fetchCoaching: id => dispatch(fetchCoaching(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Explore))

@@ -46,7 +46,7 @@ import {
 import { setNotification } from '../../actions/notifications-actions'
 import { executeExploreSearch } from '../../actions/search-actions'
 import {
-	fetchMpUserCredits,
+	// fetchMpUserCredits,
 	createMpTransfer,
 	createMpCardDirectPayin
 } from '../../services/mangopay'
@@ -62,7 +62,7 @@ class Coaching extends React.Component {
 			muxReplayPlaybackId: isVideoPlaying ? coaching.muxReplayPlaybackId : null,
 			isEditingCoaching: false,
 			coaching: this.props.coaching,
-			credits: null,
+			// credits: null,
 			coachInfo: null,
 			isChoosingPaymentMethod: false,
 			isCoachingCheckoutOpen: null,
@@ -85,8 +85,8 @@ class Coaching extends React.Component {
 		const { coaching, timeToStart } = this.state
 		fetchUserInfo(coaching.coachId)
 		.then(res => this.setState({ coachInfo: res.payload }))
-		fetchMpUserCredits(user.MPUserId)
-		.then(credits => this.setState({ credits }))
+		// fetchMpUserCredits(user.MPUserId)
+		// .then(credits => this.setState({ credits }))
 	}
 
 	renderButtonText() {
@@ -190,7 +190,7 @@ class Coaching extends React.Component {
 	handleTransfer() {
 		const {
 			coaching,
-			credits,
+			// credits,
 			coachInfo
 		} = this.state
 		const {
@@ -258,7 +258,7 @@ class Coaching extends React.Component {
 	handlePayCoaching() {
 		const {
 			coaching,
-			credits,
+			// credits,
 			coachInfo
 		} = this.state
 		const {
@@ -277,52 +277,109 @@ class Coaching extends React.Component {
 
 		// THINGS TO HANDLE :
 		// ADD TO MY VIDEO
-		// ADD CREDITS TO COACH CURRENT GAINS AND LIFETIME GAINS
+		// ADD CREDITS TO COACH LIFETIME GAINS
 		//
-		// IF NO SUBSCRIPTION LAUNCH PAYMENT OF NUMBER OF CREDITS + 1
+		// IF NO SUBSCRIPTION LAUNCH PAYMENT OF COACHING + 1
 		// ELSE
-		// SUBSTRACT THE PRICE FROM USER CREDITS
+		// LAUNCH PAYMENT OF COACHING
 		// INITIATE THE TRANSFER FROM MP USER WALLET TO MP COACH WALLET
-		// OR JUST ADD CREDITS TO COACH CURRENT GAINS ?
 		//
 		// LOAD USER AND FETCH USER REPLAYS
 		// LAUNCH THE VIDEO PLAYER WITH THIS VIDEO
 
-		if (credits >= coaching.price) {
-			this.handleTransfer()
-		} else {
 			// New user, no card registered, go to checkout
-			if(!user.MPUserId) {
+			if (!user.MPUserId) {
 				this.setState({
 					isLoading: false,
 					isCoachingCheckoutOpen: 'aLaCarte'
 				})
 			} else {
-				// user paying à la carte
-				createMpCardDirectPayin(
-					user.MPUserId,
-					{
-						"Amount": (coaching.price + 1) * 100,
-						"Currency": returnCurrencyCode(moment.locale())
-					},
-					{
-						"Amount": 100,
-						"Currency": returnCurrencyCode(moment.locale())
-					}
-				).then(res => {
-					console.log('res form direct pay in : ', res)
-					if(res && res.Status === "SUCCEEDED") {
-						return this.handleTransfer()
-					}
-					this.setState({
-						isLoading: false,
-						isPaymentConfirmationOpen: false,
-						isCoachingCheckoutOpen: false,
-						errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+				if(!user.subscription) {
+					// user paying à la carte with fees
+					createMpCardDirectPayin(
+						user.MPUserId,
+						{
+							"Amount": (coaching.price + 1) * 100,
+							"Currency": returnCurrencyCode(moment.locale())
+						},
+						{
+							"Amount": 100,
+							"Currency": returnCurrencyCode(moment.locale())
+						}
+					).then(res => {
+						console.log('res form direct pay in : ', res)
+						if (res && res.Status === "SUCCEEDED") {
+							return this.handleTransfer()
+						}
+						this.setState({
+							isLoading: false,
+							isPaymentConfirmationOpen: false,
+							isCoachingCheckoutOpen: false,
+							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+						})
 					})
-				})
+				} else {
+					// premium user paying without fees
+					createMpCardDirectPayin(
+						user.MPUserId,
+						{
+							"Amount": coaching.price * 100,
+							"Currency": returnCurrencyCode(moment.locale())
+						},
+						{
+							"Amount": 0,
+							"Currency": returnCurrencyCode(moment.locale())
+						}
+					).then(res => {
+						console.log('res form direct pay in : ', res)
+						if (res && res.Status === "SUCCEEDED") {
+							return this.handleTransfer()
+						}
+						this.setState({
+							isLoading: false,
+							isPaymentConfirmationOpen: false,
+							isCoachingCheckoutOpen: false,
+							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+						})
+					})
+				}
 			}
-		}
+
+		// if (credits >= coaching.price) {
+		// 	this.handleTransfer()
+		// } else {
+		// 	// New user, no card registered, go to checkout
+		// 	if(!user.MPUserId) {
+		// 		this.setState({
+		// 			isLoading: false,
+		// 			isCoachingCheckoutOpen: 'aLaCarte'
+		// 		})
+		// 	} else {
+		// 		// user paying à la carte
+		// 		createMpCardDirectPayin(
+		// 			user.MPUserId,
+		// 			{
+		// 				"Amount": (coaching.price + 1) * 100,
+		// 				"Currency": returnCurrencyCode(moment.locale())
+		// 			},
+		// 			{
+		// 				"Amount": 100,
+		// 				"Currency": returnCurrencyCode(moment.locale())
+		// 			}
+		// 		).then(res => {
+		// 			console.log('res form direct pay in : ', res)
+		// 			if(res && res.Status === "SUCCEEDED") {
+		// 				return this.handleTransfer()
+		// 			}
+		// 			this.setState({
+		// 				isLoading: false,
+		// 				isPaymentConfirmationOpen: false,
+		// 				isCoachingCheckoutOpen: false,
+		// 				errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+		// 			})
+		// 		})
+		// 	}
+		// }
 	}
 
 	handleSubmit() {
@@ -391,7 +448,7 @@ class Coaching extends React.Component {
 			muxReplayPlaybackId,
 			isEditingCoaching,
 			coaching,
-			credits,
+			// credits,
 			isCoachingCheckoutOpen,
 			errorMessage,
 			coachInfo,
@@ -418,6 +475,8 @@ class Coaching extends React.Component {
 		} = coaching
 
 		const currency = returnCurrency(moment.locale())
+
+		console.log(coaching._id)
 
 		if (isLoading) {
 			return (
@@ -484,16 +543,15 @@ class Coaching extends React.Component {
 					}}
 				>
 					{
-						(credits>0 || !user.subscription) &&
+						// (credits>0 || !user.subscription) &&
 						<span
 							className='small-text-bold citrusBlack'
 							style={{ padding: '0 12px', textAlign: 'center' }}
 						>
-							{/* {`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${price === 1 ? `${capitalize(t('credit'))} (=${price}${currency})` : `${t('credits')} (=${price}${currency})` } ?`} */}
-								{`${capitalize(t('confirmBuyingCoachingFor'))} ${price} ${returnCurrency(moment.locale())} ?`}
+							{`${capitalize(t('confirmBuyingCoachingFor'))} ${price}${currency} ?`}
 						</span>
 					}
-					{
+					{/* {
 						!credits && user.subscription &&
 						<span
 							className='small-text-bold citrusBlack'
@@ -501,14 +559,14 @@ class Coaching extends React.Component {
 						>
 							{capitalize(t('noCreditsLeftAvailableThisMonth'))}
 						</span>
-					}
+					} */}
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
 					<div
 						className='flex-column flex-center'
 						style={{ width: '90%', margin: '0 5%'}}
 					>
-						{
+						{/* {
 							!credits && user.subscription && user.subscription !== 30 &&
 							<>
 								<div
@@ -524,7 +582,7 @@ class Coaching extends React.Component {
 								</div>
 								<div className='medium-separator'></div>
 							</>
-						}
+						} */}
 						{
 							!user.subscription &&
 							<>
@@ -543,7 +601,8 @@ class Coaching extends React.Component {
 							</>
 						}
 						{
-							credits>0 && credits >= coaching.price ?
+							// credits>0 && credits >= coaching.price ?
+							user.subscription ?
 							<>
 								<div
 									className='filled-button full-width hover'
@@ -591,7 +650,7 @@ class Coaching extends React.Component {
 				>
 					<CoachingCheckout
 						currentPlan={user.subscription}
-						credits={credits}
+						// credits={credits}
 						type={isCoachingCheckoutOpen}
 						amount={coaching.price}
 						coachingId={coaching._id}
@@ -921,7 +980,7 @@ class Coaching extends React.Component {
 						{equipment && equipment.length > 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
-									{capitalize(t('level'))}
+									{capitalize(t('equipment'))}
 								</span>
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{
@@ -929,6 +988,17 @@ class Coaching extends React.Component {
 											.map((eq) => capitalize(t(eq)))
 											.join(', ')
 									}
+								</span>
+							</div> : null
+						}
+
+						{!equipment || equipment.length === 0 ?
+							<div className='thin-row'>
+								<span className='small-text-bold citrusGrey'>
+									{capitalize(t('equipment'))}
+								</span>
+								<span className='small-text-bold citrusBlack ellipsis-mobile'>
+									{capitalize(t('none'))}
 								</span>
 							</div> : null
 						}

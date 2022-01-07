@@ -5,7 +5,8 @@ import Loader from 'react-loader-spinner'
 import moment from 'moment'
 
 import CreditCardForm from './credit-card-form'
-import PlanCard from '../../../components/web-app/plan-card'
+// import PlanCard from '../../../components/web-app/plan-card'
+import PremiumPlanCard from '../../../components/web-app/premium-plan-card'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 
@@ -32,25 +33,25 @@ import {
 	createMpCardDirectPayin
 } from '../../../services/mangopay'
 
-let plansTypes = [10, 20, 30]
+let plansTypes = [4.99, 49.99]
 
 class CoachingCheckout extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
 			isLoading: false,
-			planType: 10,
+			planType: 49.99,
 			loadingMessage: '',
 			cardId: '',
 			isCheckingOut: this.props.type === 'aLaCarte',
 			errorMessage: null
 		}
 
-		if (this.props.currentPlan === 10) {
-			plansTypes = [20, 30]
+		if (this.props.currentPlan === 4.99) {
+			plansTypes = [49.99]
 		}
-		if (this.props.currentPlan === 20) {
-			plansTypes = [30]
+		if (this.props.currentPlan === 49.99) {
+			plansTypes = [4.99]
 		}
 
 		this.returnPlanTypeTitle = this.returnPlanTypeTitle.bind(this)
@@ -131,22 +132,11 @@ class CoachingCheckout extends React.Component {
 		})
 
 		if (user.subscription !== null) {
-			if(credits < amount) {
-				updateRecurringPayinRegistration(
-					user.MPRecurringPayinRegistrationId,
-					null,
-					'ENDED'
-				)
-			} else {
-				return updateUser({
-					id: user._id,
-					subscription: planType
-				}, true)
-					.then(() => {
-						this.setState({ isLoading: false })
-						history.push('/pay-in-confirmation?updateplan=true')
-					})
-			}
+			updateRecurringPayinRegistration(
+				user.MPRecurringPayinRegistrationId,
+				null,
+				'ENDED'
+			)
 		}
 
 		setTimeout(function () {
@@ -193,18 +183,18 @@ class CoachingCheckout extends React.Component {
 
 		const { t } = this.props
 
-		if (planType === 20) {
-			title = `20${returnCurrency(moment.locale())} / ${t('month')}`
-			text = capitalize(t('youGet20CreditsAmonth'))
-			subtext = capitalize(t('rollOverUpTo5Credits'))
-		} else if (planType === 30) {
-			title = `30${returnCurrency(moment.locale())} / ${t('month')}`
-			text = capitalize(t('youGet30CreditsAmonth'))
-			subtext = capitalize(t('rollOverUpTo10Credits'))
-		} else if (planType === 10) {
-			title = `10${returnCurrency(moment.locale())} / ${t('month')}`
-			text = capitalize(t('youGet10CreditsAmonth'))
-			subtext = capitalize(t('noRollOverOnCredits'))
+		if (planType === 4.99) {
+			title = `${capitalize(t('premiumMonthly'))}`
+			text = `4.99${returnCurrency(moment.locale())}/${t('month')}`
+			subtext = capitalize(t('noAdditionnalFeePerTraining'))
+		} else if (planType === 49.99) {
+			title = `${capitalize(t('premiumAnnually'))}`
+			text = `49.99${returnCurrency(moment.locale())}/${t('year')}`
+			subtext = `${capitalize(t('noAdditionnalFeePerTraining'))}`
+		} else {
+			title = capitalize(t('aLaCarte'))
+			text = `${capitalize(t('youPayTheClassCost'))}${returnCurrency(moment.locale())})`
+			subtext = `${capitalize(t('+1'))}${returnCurrency(moment.locale())} ${t('feePerClass')}`
 		}
 		return { title, text, subtext }
 	}
@@ -376,7 +366,7 @@ class CoachingCheckout extends React.Component {
 										</span>
 										<div className='small-separator'></div>
 										<span className='small-text-bold citrusGrey'>
-											{`${capitalize(t('total'))} = ${amount+1}${returnCurrency(moment.locale())} (${amount} ${t('credits')} + 1${returnCurrency(moment.locale())} ${t('aLaCarteFee')})`}
+											{`${capitalize(t('total'))} = ${amount+1}${returnCurrency(moment.locale())} (${amount}${returnCurrency(moment.locale())} + 1${returnCurrency(moment.locale())} ${t('aLaCarteFee')})`}
 										</span>
 									</div>
 							}
@@ -483,7 +473,7 @@ class CoachingCheckout extends React.Component {
 								.map(
 									plan => (
 										<div key={plan} className='plan-card-desktop-margin'>
-											<PlanCard
+											<PremiumPlanCard
 												t={t}
 												planType={plan}
 												onClick={() => {

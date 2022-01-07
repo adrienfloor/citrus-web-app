@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next'
 import { Checkbox } from '@material-ui/core'
 
 import Profile from './sub-dashboard/profile'
-import ManagePayments from './sub-dashboard/manage-payments'
+// import ManagePayments from './sub-dashboard/manage-payments'
 import PaymentsMethods from './sub-dashboard/payments-methods'
 import LegalUserCreation from './sub-dashboard/legal-user-creation'
 import Invoices from './sub-dashboard/invoices'
@@ -68,9 +68,9 @@ class Dashboard extends React.Component {
 			case 'profile':
 				component = <Profile />
 				break;
-			case 'managePayments':
-				component = <ManagePayments history={this.props.history} />
-				break;
+			// case 'managePayments':
+			// 	component = <ManagePayments history={this.props.history} />
+			// 	break;
 			case 'invoices':
 				component = <Invoices />
 				break;

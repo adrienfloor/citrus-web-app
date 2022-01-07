@@ -619,7 +619,8 @@ export const fetchPayIn = async (PayInId) => {
 	export const createMpTransfer = async (
 		MPLegalUserId,
 		DebitedFunds,
-		MPUserId
+		MPUserId,
+		noFees
 	) => {
 		// HEADERS
 		const config = {
@@ -632,7 +633,8 @@ export const fetchPayIn = async (PayInId) => {
 		const body = JSON.stringify({
 			MPLegalUserId,
 			DebitedFunds,
-			MPUserId
+			MPUserId,
+			noFees
 		})
 		try {
 			const response = await axios.post(`${REACT_APP_API_URL}/mp/mp_transfer_funds_between_wallets`, body, config)

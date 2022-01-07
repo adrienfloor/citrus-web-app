@@ -10,7 +10,7 @@ import Dialog from '@material-ui/core/Dialog'
 import TextField from '@material-ui/core/TextField'
 import { Link } from 'react-router-dom'
 
-import MyPlan from './payments/my-plan'
+import PremiumPlan from './payments/my-premium-plan'
 import PaymentMethod from './payments/payment-method'
 import BillingFailure from './payments/billing-failure'
 
@@ -646,7 +646,13 @@ class Settings extends React.Component {
 						onClose={() => this.setState({ isChoosingPlan: false })}
 					>
 						<div className='full-width-and-height-dialog'>
-							<MyPlan
+							{/* <MyPlan
+								onCancel={() => {
+									this.setState({ isChoosingPlan: false })
+								}}
+								history={history}
+							/> */}
+							<PremiumPlan
 								onCancel={() => {
 									this.setState({ isChoosingPlan: false })
 								}}

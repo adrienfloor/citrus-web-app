@@ -16,9 +16,6 @@ import PrivateRoute from './containers/privateRoute'
 import Signin from './containers/auth/signin'
 import Signup from './containers/auth/signup'
 import NotFound from './components/notFound'
-import ChoosePlan from './containers/choose-plan'
-import DownloadApp from './containers/download-app'
-import InitialPayment from './containers/mangopay/initial-payment'
 import Dashboard from './containers/dashboard/dashboard'
 import AdminCashout from './containers/admin/cash-out-dashboard'
 import ResetPassword from './containers/auth/reset-password'
@@ -112,15 +109,12 @@ class App extends React.Component {
                   <Route exact path='/signup' component={Signup} />
                   <Route exact path='/reset_password' component={ResetPassword} />
                   <Route exact path='/billing_plan' component={BillingFailure} />
+                  <Route exact path='/explore' component={Explore} />
                   <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
-                  <PrivateRoute auth={isAuthenticated} path='/explore' component={Explore} />
                   <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
                   <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />
                   <PrivateRoute auth={isAuthenticated} path='/settings' component={Settings} />
                   <PrivateRoute auth={isAuthenticated} path='/pay-in-confirmation' component={PayInConfirmation} />
-                  <PrivateRoute auth={isAuthenticated} path='/choose-plan' component={ChoosePlan} />
-                  <PrivateRoute auth={isAuthenticated} path='/download-app' component={DownloadApp} />
-                  <PrivateRoute auth={isAuthenticated} path='/initial-payment' component={InitialPayment} />
                   <PrivateRoute auth={isAuthenticated} path='/dashboard' component={Dashboard} />
                   <PrivateRoute auth={isAdmin} path='/admin/dashboard' component={AdminDashboard} />
                   <PrivateRoute auth={isAdmin} path='/admin/cashout' component={AdminCashout} />

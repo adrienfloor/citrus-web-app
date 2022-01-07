@@ -14,9 +14,7 @@ import { ReactComponent as CaretBack } from '../../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 
 import CreditCardForm from '../../mangopay/credit-card-form'
-import TopUp from '../../mangopay/top-up'
 import PaymentForm from '../../mangopay/payment-form'
-import Subscription from '../../mangopay/subscription'
 
 import {
 	updateUser,

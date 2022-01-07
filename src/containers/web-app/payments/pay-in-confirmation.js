@@ -36,7 +36,8 @@ import {
 import {
 	fetchPayIn,
 	createMpTransfer,
-	createPayinRefund
+	createPayinRefund,
+	createMpCardDirectPayin
 } from '../../../services/mangopay'
 
 class PayInConfirmation extends React.Component {
@@ -50,7 +51,7 @@ class PayInConfirmation extends React.Component {
 			coaching: null,
 			coachInfo: null,
 			subscription: null,
-			hasUpdatedPlan: false,
+			// hasUpdatedPlan: false,
 			hasUpdatedCard: false
 		}
 		this.handleBuyCoaching = this.handleBuyCoaching.bind(this)
@@ -71,12 +72,13 @@ class PayInConfirmation extends React.Component {
 		const transactionId = qs.parse(location.search, { ignoreQueryPrefix: true }).transactionId
 		const isALaCarte = qs.parse(location.search, { ignoreQueryPrefix: true }).alacarte
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
-		const hasUpdatedPlan = qs.parse(location.search, { ignoreQueryPrefix: true }).updateplan
+		// const hasUpdatedPlan = qs.parse(location.search, { ignoreQueryPrefix: true }).updateplan
 		const hasUpdatedCard = qs.parse(location.search, { ignoreQueryPrefix: true }).updatecard
-		const payinId = qs.parse(location.search, { ignoreQueryPrefix: true }).payin
+		// const payinId = qs.parse(location.search, { ignoreQueryPrefix: true }).payin
 
 		let billingDate = new Date().getDate()
 		const lastBillingMonth = new Date().getMonth()
+		const lastBillingYear = new Date().getFullYear()
 		if (billingDate > 27 && billingDate < 32) {
 			billingDate = 28
 		}
@@ -112,9 +114,9 @@ class PayInConfirmation extends React.Component {
 				})
 		}
 
-		if (hasUpdatedPlan) {
-			this.setState({ hasUpdatedPlan })
-		}
+		// if (hasUpdatedPlan) {
+		// 	this.setState({ hasUpdatedPlan })
+		// }
 		if(coachingId) {
 			this.setState({ coachingId })
 		}
@@ -125,7 +127,7 @@ class PayInConfirmation extends React.Component {
 		if(isALaCarte && !coachingId) {
 			return this.setState({
 				isLoading: false,
-				isFailure: false,
+				isFailure: false
 			})
 		}
 
@@ -142,58 +144,72 @@ class PayInConfirmation extends React.Component {
 				.then(res => {
 					console.log('pay-in-confirmation ::: fetch paying response : ', res)
 					if (res && res.Status === 'SUCCEEDED' && res.CreditedFunds) {
-						this.setState({
-							subscription: res.CreditedFunds.Amount / 100
-						})
-						if(coachingId) {
-							// Fetch coaching to get info
-							fetchCoaching(coachingId)
-							.then(res => {
-								console.log('pay-in-confirmation ::: fetch coaching response : ', res)
-								const { coaching } = res.payload
-								const { coachId, numberOfViewers, price } = coaching
-								this.setState({ coaching })
-								// Fetch coach info
-								fetchUserInfo(coachId)
-								.then(res => {
-									console.log('pay-in-confirmation ::: fetch coach info response : ', res)
-									const coachInfo = res.payload
-									this.setState({ coachInfo })
+						this.setState({ subscription: res.CreditedFunds.Amount / 100 })
+						createMpTransfer(
+							null,
+							{
+								"Amount": res.CreditedFunds.Amount / 100,
+								"Currency": returnCurrencyCode(moment.locale())
+							},
+							user.MPUserId,
+							true
+						)
+						.then(res => {
+							console.log('res from transfer : ', res)
+							if (res && res.Status === 'SUCCEEDED') {
+								if (coachingId) {
+									// Fetch coaching to get info
+									fetchCoaching(coachingId)
+										.then(res => {
+											console.log('pay-in-confirmation ::: fetch coaching response : ', res)
+											const { coaching } = res.payload
+											const { coachId, numberOfViewers, price } = coaching
+											this.setState({ coaching })
+											// Fetch coach info
+											fetchUserInfo(coachId)
+												.then(res => {
+													console.log('pay-in-confirmation ::: fetch coach info response : ', res)
+													const coachInfo = res.payload
+													this.setState({ coachInfo })
+													updateUser({
+														id: user._id,
+														subscription: this.state.subscription,
+														billingDate,
+														lastBillingMonth,
+														lastBillingYear,
+														pastTransactionsIds: [...user.pastTransactionsIds, transactionId],
+														hasCreditCardFailed: false
+													}, true)
+														.then(() => {
+															if (isALaCarte) {
+																this.handleBuyCoaching()
+															} else {
+																this.setState({ isLoading: false })
+															}
+														})
+												})
+												.catch(e => console.log('catchhhh : ', e))
+										})
+										.catch(e => console.log('catchhhh : ', e))
+								} else {
 									updateUser({
 										id: user._id,
-										subscription: this.state.subscription,
+										subscription: res.CreditedFunds.Amount / 100,
 										billingDate,
 										lastBillingMonth,
+										lastBillingYear,
 										pastTransactionsIds: [...user.pastTransactionsIds, transactionId],
 										hasCreditCardFailed: false
 									}, true)
-									.then(() => {
-										if (isALaCarte) {
-											this.handleBuyCoaching()
-										} else {
-											this.setState({ isLoading: false })
-										}
-									})
-								})
-								.catch(e => console.log('catchhhh : ', e))
-							})
-							.catch(e => console.log('catchhhh : ', e))
-						} else {
-							updateUser({
-								id: user._id,
-								subscription: res.CreditedFunds.Amount / 100,
-								billingDate,
-								lastBillingMonth,
-								pastTransactionsIds: [...user.pastTransactionsIds, transactionId],
-								hasCreditCardFailed: false
-							}, true)
-								.then(res => {
-									return this.setState({
-										isLoading: false,
-										isFailure: false
-									})
-								})
-						}
+										.then(res => {
+											return this.setState({
+												isLoading: false,
+												isFailure: false
+											})
+										})
+								}
+							}
+						})
 					} else {
 						return this.setState({
 							isLoading: false,
@@ -202,18 +218,18 @@ class PayInConfirmation extends React.Component {
 					}
 				})
 		} else {
-			if (hasUpdatedPlan) {
-				return this.setState({
-					isLoading: false,
-					isFailure: false
-				})
-			} else {
+			// if (hasUpdatedPlan) {
+			// 	return this.setState({
+			// 		isLoading: false,
+			// 		isFailure: false
+			// 	})
+			// } else {
 				return this.setState({
 					isLoading: false,
 					isFailure: true,
 					errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
 				})
-			}
+			// }
 		}
 	}
 
@@ -239,55 +255,71 @@ class PayInConfirmation extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		// Transfer amount from user wallet to coach wallet while handling Citrus fees
-		createMpTransfer(
-			coachInfo.MPLegalUserId,
+		createMpCardDirectPayin(
+			user.MPUserId,
 			{
-				"Amount": coaching.price,
+				"Amount": user.subscription ? coaching.price * 100 : (coaching.price + 1) * 100,
 				"Currency": returnCurrencyCode(moment.locale())
 			},
-			user.MPUserId
+			{
+				"Amount": user.subscription ? 0 : 100,
+				"Currency": returnCurrencyCode(moment.locale())
+			}
 		)
-			.then(res => {
-				console.log('res from transfer : ', res)
-				if (res && res.Status === 'SUCCEEDED') {
-					// Update buyer profile
-					updateUser({
-						id: user._id,
-						myReplays: [
-							coaching,
-							...user.myReplays
-						]
-					}, true)
-						.then(res => {
-							// Fetch updated replays of user
-							fetchUserReplays(user._id)
-							.then(() => {
-								// Launch video
-								this.setState({
-									isLoading: false
+		.then(res => {
+			console.log('res form direct pay in : ', res)
+			if (res && res.Status === "SUCCEEDED") {
+				// Transfer amount from user wallet to coach wallet while handling Citrus fees
+				createMpTransfer(
+					coachInfo.MPLegalUserId,
+					{
+						"Amount": coaching.price,
+						"Currency": returnCurrencyCode(moment.locale())
+					},
+					user.MPUserId
+				)
+				.then(res => {
+					console.log('res from transfer : ', res)
+					if (res && res.Status === 'SUCCEEDED') {
+						// Update buyer profile
+						updateUser({
+							id: user._id,
+							myReplays: [
+								coaching,
+								...user.myReplays
+							]
+						}, true)
+							.then(res => {
+								// Fetch updated replays of user
+								fetchUserReplays(user._id)
+									.then(() => {
+										// Launch video
+										this.setState({
+											isLoading: false
+										})
+										history.push(`/home?coaching=${coaching._id}&play=true`)
+									})
+								// Update coaching
+								updateCoaching({
+									_id: coaching._id,
+									numberOfViewers: coaching.numberOfViewers + 1
 								})
-								history.push(`/home?coaching=${coaching._id}&play=true`)
+								// Update coach profile
+								updateUser({
+									id: coaching.coachId,
+									lifeTimeGains: coachInfo.lifeTimeGains + (coaching.price * 0.7)
+								})
 							})
-							// Update coaching
-							updateCoaching({
-								_id: coaching._id,
-								numberOfViewers: coaching.numberOfViewers + 1
-							})
-							// Update coach profile
-							updateUser({
-								id: coaching.coachId,
-								lifeTimeGains: coachInfo.lifeTimeGains + (coaching.price * 0.7)
-							})
+					} else {
+						this.setState({
+							isLoading: false,
+							isFailure: true,
+							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
 						})
-				} else {
-					this.setState({
-						isLoading: false,
-						isFailure: true,
-						errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
-					})
-				}
-			})
+					}
+				})
+			}
+		})
 	}
 
 	render() {
@@ -422,11 +454,15 @@ class PayInConfirmation extends React.Component {
 						!isALaCarte && user && user.subscription &&
 						<>
 							<span className='small-text citrusBlack'>
-								{`${capitalize(t('youveBeenCredited'))} ${user.subscription} ${user.subscription > 1 ? t('credits') : t('credit')} ${t('forThisMonth')}`}
+								{`${capitalize(t('youReNowAPremiumMember'))} - ${user.subscription}${currency} / ${user.subscription === 4.99 ? t('month') : t('year')}`}
 							</span>
 							<div className='small-separator'></div>
 							<span className='small-text citrusBlack'>
-								{`${capitalize(t('renewOn'))} ${returnNextBillingDate(user.billingDate, moment.locale())}`}
+								{
+									user.subscription === 4.99 ?
+										`${capitalize(t('renewOn'))} ${returnNextBillingDate(user.billingDate, moment.locale())}` :
+										`${capitalize(t('renewOn'))} ${returnNextBillingDate(user.billingDate, moment.locale(), user.lastBillingMonth, user.lastBillingYear)}`
+								}
 							</span>
 						</>
 					}
@@ -466,7 +502,7 @@ class PayInConfirmation extends React.Component {
 								onClick={this.handleBuyCoaching}
 							>
 								<span className='small-title citrusWhite'>
-									{`${capitalize(t('purchaseCoachingFor'))} ${coaching.price} ${ coaching.price === 1 ? t('credit') : t('credits')}`}
+									{`${capitalize(t('purchaseCoachingFor'))} ${coaching.price}${currency}`}
 								</span>
 							</div>
 							<div className='small-separator'></div>

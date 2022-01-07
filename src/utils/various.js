@@ -160,12 +160,26 @@ export const countryCodeToLanguage = countryCode => {
 	}
 }
 
-export const returnNextBillingDate = (userBillingDate, locale) => {
+export const returnNextBillingDate = (userBillingDate, locale, userBillingMonth, userBillingYear) => {
 	const currentDay = new Date().getDate()
 	const currentMonth = new Date().getMonth()
 	const currentYear = new Date().getFullYear()
 	let month = null
 	let date = null
+	let year = null
+	if((userBillingMonth || userBillingMonth === 0) && userBillingYear) {
+		if (userBillingYear === currentYear) {
+			year = currentYear + 1
+		} else {
+			year = currentYear
+		}
+		if (locale == 'fr') {
+			date = `${userBillingDate}/${userBillingMonth + 1}/${year}`
+		} else {
+			date = `${month + 1}/${userBillingDate}/${year}`
+		}
+		return date
+	}
 
 	if(userBillingDate>currentDay) {
 		month = currentMonth + 1

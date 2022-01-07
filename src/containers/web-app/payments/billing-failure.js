@@ -29,7 +29,7 @@ import '../../../styling/buttons.css'
 import '../../../styling/colors.css'
 import '../../../styling/App.css'
 
-import Signin from '../../auth/signin-from-redirect'
+import SigninFromRedirect from '../../auth/signin-from-redirect'
 import CountrySelector from '../../../components/country-selector'
 import { ReactComponent as Close } from '../../../assets/svg/close.svg'
 import { ReactComponent as Logo } from '../../../assets/svg/logo.svg'
@@ -323,7 +323,7 @@ class BillingFailure extends React.Component {
 
 		if(!user) {
 			return (
-				<Signin
+				<SigninFromRedirect
 					onSigninSuccess={() => console.log('Signed in')}
 					title={capitalize(t('confirmYourIdentity'))}
 					location={location}
