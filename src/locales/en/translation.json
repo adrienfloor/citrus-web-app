@@ -606,5 +606,8 @@
 	"year": "year",
 	"goPremium": "go premium",
 	"createAnAccountToAccessThisCoaching": "join us now and access this coaching",
-	"signinToAccessThisCoaching": "sign in and access coaching"
+	"signinToAccessThisCoaching": "sign in and access coaching",
+	"share": "share",
+	"clickOnThisLinkToCopyIt": "click on the link to copy it",
+	"copied": "copied to clipboard!"
 }

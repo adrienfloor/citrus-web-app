@@ -24,6 +24,7 @@ import '../../styling/web-app.css'
 
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
+import { ReactComponent as Share } from '../../assets/svg/share.svg'
 
 import {
 	uppercase,
@@ -70,7 +71,9 @@ class Coaching extends React.Component {
 			selectedCoach: null,
 			isRatingCoaching: false,
 			ratingValue: null,
-			coachComment: ''
+			coachComment: '',
+			isSharingCoaching: false,
+			isWatchingPreview: true
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -78,6 +81,7 @@ class Coaching extends React.Component {
 		this.renderButtonText = this.renderButtonText.bind(this)
 		this.handleTransfer = this.handleTransfer.bind(this)
 		this.handleCoachRating = this.handleCoachRating.bind(this)
+		this.showVideoPreview = this.showVideoPreview.bind(this)
 	}
 
 	componentDidMount() {
@@ -87,6 +91,16 @@ class Coaching extends React.Component {
 		.then(res => this.setState({ coachInfo: res.payload }))
 		// fetchMpUserCredits(user.MPUserId)
 		// .then(credits => this.setState({ credits }))
+		setTimeout(() => {
+			this.setState({ isWatchingPreview: false })
+		}, 30000);
+	}
+
+	showVideoPreview() {
+		this.setState({ isWatchingPreview: true })
+		setTimeout(() => {
+			this.setState({ isWatchingPreview: false })
+		}, 30000);
 	}
 
 	renderButtonText() {
@@ -454,7 +468,9 @@ class Coaching extends React.Component {
 			coachInfo,
 			selectedCoach,
 			isRatingCoaching,
-			ratingValue
+			ratingValue,
+			isSharingCoaching,
+			isWatchingPreview
 		} = this.state
 		const {
 			coachUserName,
@@ -475,8 +491,6 @@ class Coaching extends React.Component {
 		} = coaching
 
 		const currency = returnCurrency(moment.locale())
-
-		console.log(coaching._id)
 
 		if (isLoading) {
 			return (
@@ -727,7 +741,7 @@ class Coaching extends React.Component {
 								{capitalize(t('whatDidYouThinkAboutThisCoaching'))}
 							</span>
 							<Rating
-								name='size-large'
+								precision={0.5}
 								size='large'
 								value={ratingValue}
 								onChange={(event, newValue) => {
@@ -852,16 +866,37 @@ class Coaching extends React.Component {
 							strokeWidth={2}
 						/>
 					</div>
-					<div
-						className='mobile-card-image'
-						style={{
-							backgroundPosition: 'center',
-							backgroundRepeat: 'no-repeat',
-							backgroundImage: `url(${pictureUri})`,
-							backgroundSize: 'cover'
-						}}
-					>
-					</div>
+					{
+						!isWatchingPreview ?
+						<div
+							onMouseOver={this.showVideoPreview}
+							onMouseLeave={() => this.setState({ isWatchingPreview: false })}
+							className='mobile-card-image'
+							style={{
+								backgroundPosition: 'center',
+								backgroundRepeat: 'no-repeat',
+								backgroundImage: `url(${pictureUri})`,
+								backgroundSize: 'cover'
+							}}
+						>
+						</div> :
+						<div
+							onMouseLeave={() => this.setState({ isWatchingPreview: false })}
+							className='mobile-card-image'
+						>
+							<div className='preview-player-wrapper'>
+								<ReactPlayer
+									volume={0}
+									className='react-player'
+									width='100%'
+									height='100%'
+									playing={true}
+									controls={false}
+									url={coaching.muxReplayPlaybackId}
+								/>
+							</div>
+						</div>
+					}
 					<div className='small-separator'></div>
 					<div className='coaching-column'>
 						<div className='flex-row'>
@@ -878,12 +913,33 @@ class Coaching extends React.Component {
 						</div>
 						{
 							coaching.coachId === user._id ?
-								<span
-									className='small-text-bold citrusGrey hover'
-									onClick={() => this.setState({ isEditingCoaching: true })}
-								>
-									{t('edit')}
-								</span> :
+								<>
+									<div className='small-separator'></div>
+									<div style={{ display: 'flex' }}>
+										<span
+											className='small-text-bold citrusGrey hover'
+											onClick={() => this.setState({ isEditingCoaching: true })}
+										>
+											{capitalize(t('edit'))}
+										</span>
+										<div style={{ margin: '0 10px', color: '#C2C2C2' }}>|</div>
+										<div style={{ display: 'flex', alignItems: 'center' }}>
+											<span
+												className='small-text-bold citrusGrey hover'
+												onClick={() => this.setState({ isSharingCoaching: true })}
+												style={{ marginRight: '5px' }}
+											>
+												{capitalize(t('share'))}
+											</span>
+											<Share
+												width={15}
+												height={15}
+												stroke={'#C2C2C2'}
+												strokeWidth={2}
+											/>
+										</div>
+									</div>
+								</> :
 								<div className='small-separator'></div>
 						}
 						<div className='thin-row'>
@@ -901,8 +957,10 @@ class Coaching extends React.Component {
 									{capitalize(t('globalRating'))}
 								</span>
 									<Rating
+										precision={0.5}
 										size='small'
-										value={coachingRating.rating }
+										value={coachingRating.rating}
+										readOnly
 									/>
 							</div>
 						}
@@ -1026,6 +1084,57 @@ class Coaching extends React.Component {
 									this.setState({ selectedCoach: null })
 								}}
 							/>
+						</div>
+					</Dialog>
+				}
+				{
+					isSharingCoaching &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isSharingCoaching: false })}
+					>
+						<div className='share-coaching-container'>
+							<div className='flex-column'>
+								<div
+									style={{
+										width: '100%',
+										height: '25px',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'flex-end'
+									}}
+									onClick={() => this.setState({ isSharingCoaching: false })}
+									className='hover'
+								>
+									<Close
+										width={25}
+										height={25}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/>
+								</div>
+								<div
+									className='flex-column'
+									style={{ padding: '10px', minHeight: '150px', justifyContent: 'center' }}
+								>
+									<span className='small-text-bold citrusGrey'>
+										{capitalize(t('clickOnThisLinkToCopyIt'))} :
+									</span>
+									<div className='small-separator'></div>
+									<span
+										className='small-title citrusBlack hover'
+										onClick={() => {
+											navigator.clipboard.writeText(
+												`https://app.thecitrusapp.com/explore?coaching=${coaching._id}`
+											)
+											setNotification({ message: capitalize(t('copied')) })
+											this.setState({ isSharingCoaching: false })
+										}}
+									>
+										{`https://app.thecitrusapp.com/explore?coaching=${coaching._id}`}
+									</span>
+								</div>
+							</div>
 						</div>
 					</Dialog>
 				}

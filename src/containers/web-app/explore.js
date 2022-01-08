@@ -447,6 +447,7 @@ class Explore extends React.Component {
 													}
 													fullWidth
 													title={capitalize(coaching.title)}
+													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
 												/>
@@ -463,6 +464,7 @@ class Explore extends React.Component {
 													}
 													fullWidth
 													title={capitalize(coaching.title)}
+													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
 												/>
@@ -589,6 +591,7 @@ class Explore extends React.Component {
 												onClick={() => this.setState({ selectedCoaching: coaching })}
 												fullWidth
 												title={capitalize(coaching.title)}
+												rating={coaching.coachingRating}
 												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 												imgUri={coaching.pictureUri}
 											/>

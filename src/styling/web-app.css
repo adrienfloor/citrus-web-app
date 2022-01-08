@@ -416,6 +416,11 @@
 	padding-top: 56.25%;
 	width: 1000px;
 }
+.preview-player-wrapper {
+	position: relative;
+	padding-top: 66%;
+	width: 454px;
+}
 .react-player {
 	position: absolute;
 	top: 0;
@@ -461,6 +466,15 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 20px;
+}
+.share-coaching-container {
+	width: 444px;
+	height: 200px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	padding: 5px;
 }
 .cancel-plan-container {
 		width: 500px;
@@ -775,6 +789,10 @@ input[type=number] {
 		margin-top: 56.5%;
 		width: 100%;
 	}
+	.preview-player-wrapper {
+		height: 10%;
+		width: 100%;
+	}
 	.schedule-container {
 		width: 100%;
 		margin-left: 0;
@@ -870,12 +888,18 @@ input[type=number] {
 		padding: 15px 0 15px 0 !important;
 	}
 	.change-password-container,
-	.cancel-plan-container {
+	.cancel-plan-container{
 		width: 97.5%;
 		height: 60%;
 		padding: 0 1.25%;
 		margin: 20% 0;
 		justify-content: center;
+	}
+	.share-coaching-container {
+		width: 97.5%;
+		height: 100%;
+		padding: 0 1.25%;
+		padding: 5px;
 	}
 	.delete-account-container {
 		width: 97.5%;

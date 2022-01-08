@@ -414,8 +414,10 @@ class CoachProfile extends React.Component {
 													{capitalize(com.userName)}
 												</span>
 												<Rating
+													precision={0.5}
 													size='small'
 													value={com.rating}
+													readOnly
 												/>
 											</div>
 											<div className='small-separator'></div>

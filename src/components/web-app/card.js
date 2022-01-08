@@ -1,4 +1,5 @@
 import React from 'react'
+import Rating from '@material-ui/lab/Rating'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -9,7 +10,7 @@ import '../../styling/web-app.css'
 
 import { capitalize } from '../../utils/various'
 
-const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
+const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => {
 
 	const imageType = `image${capitalize(size)}`
 	if (onClick) {
@@ -38,8 +39,18 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 				<div className='textContainer'>
 					{
 						title && title.length > 0 &&
-						<span className='small-title citrusBlack'>
+						<span className='small-title citrusBlack title-row'>
 							{title}
+							{
+								rating && rating.rating &&
+								<Rating
+									precision={0.5}
+									size='small'
+									value={rating.rating}
+									readOnly
+									style={{ marginLeft: '5px' }}
+								/>
+							}
 						</span>
 					}
 					{
@@ -76,6 +87,10 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth }) => {
 					}
 					.loadingImage {
 						background-color: #EFEFEF;
+					}
+					.title-row {
+						display: flex;
+						align-items: center;
 					}
 				`}
 				</style>

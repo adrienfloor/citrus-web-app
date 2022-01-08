@@ -271,7 +271,7 @@
 	"follow": "follow",
 	"unfollow": "unfollow",
 	"activity": "activité",
-	"durée": "durée",
+	"duration": "durée",
 	"freeAccess": "accès gratuit",
 	"level": "niveau",
 	"language": "langue",
@@ -608,5 +608,8 @@
 	"year": "an",
 	"goPremium": "passer premium",
 	"createAnAccountToAccessThisCoaching": "rejoins-nous maintenant et accède à ce coaching",
-	"signinToAccessThisCoaching": "connecte-toi et accède à ce coaching"
+	"signinToAccessThisCoaching": "connecte-toi et accède à ce coaching",
+	"share": "partager",
+	"clickOnThisLinkToCopyIt": "clique sur le lien pour le copier",
+	"copied": "copié dans le presse papier !"
 }
