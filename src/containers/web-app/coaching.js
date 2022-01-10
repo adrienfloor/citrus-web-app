@@ -890,6 +890,7 @@ class Coaching extends React.Component {
 						>
 							<div className='preview-player-wrapper'>
 								<ReactPlayer
+								 	playsinline
 									volume={1}
 									className='react-player'
 									width='100%'
