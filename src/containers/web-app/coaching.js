@@ -25,6 +25,8 @@ import '../../styling/web-app.css'
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
 import { ReactComponent as Share } from '../../assets/svg/share.svg'
+import { ReactComponent as Unmuted } from '../../assets/svg/unmuted.svg'
+import { ReactComponent as Muted } from '../../assets/svg/muted.svg'
 
 import {
 	uppercase,
@@ -73,7 +75,8 @@ class Coaching extends React.Component {
 			ratingValue: null,
 			coachComment: '',
 			isSharingCoaching: false,
-			isWatchingPreview: true
+			isWatchingPreview: true,
+			isPreviewMuted: true
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
@@ -470,7 +473,8 @@ class Coaching extends React.Component {
 			isRatingCoaching,
 			ratingValue,
 			isSharingCoaching,
-			isWatchingPreview
+			isWatchingPreview,
+			isPreviewMuted
 		} = this.state
 		const {
 			coachUserName,
@@ -886,14 +890,41 @@ class Coaching extends React.Component {
 						>
 							<div className='preview-player-wrapper'>
 								<ReactPlayer
-									volume={0}
+									volume={1}
 									className='react-player'
 									width='100%'
 									height='100%'
 									playing={true}
-									controls={false}
 									url={coaching.muxReplayPlaybackId}
+									muted={isPreviewMuted}
 								/>
+								<div
+									style={{
+										width: '98%',
+										position: 'relative',
+										display: 'flex',
+										justifyContent: 'flex-end',
+										padding: '0 0 10px 0'
+									}}
+									onClick={() => this.setState({ isPreviewMuted: !isPreviewMuted })}
+									className='hover'
+								>
+									{
+										isPreviewMuted ?
+										<Muted
+											width={25}
+											height={25}
+											stroke={'#C2C2C2'}
+											strokeWidth={2}
+										/> :
+										<Unmuted
+											width={25}
+											height={25}
+											stroke={'#C2C2C2'}
+											strokeWidth={2}
+										/>
+									}
+								</div>
 							</div>
 						</div>
 					}
@@ -940,7 +971,23 @@ class Coaching extends React.Component {
 										</div>
 									</div>
 								</> :
-								<div className='small-separator'></div>
+								<>
+									<div style={{ display: 'flex', alignItems: 'center' }}>
+										<span
+											className='small-text-bold citrusGrey hover'
+											onClick={() => this.setState({ isSharingCoaching: true })}
+											style={{ marginRight: '5px' }}
+										>
+											{capitalize(t('share'))}
+										</span>
+										<Share
+											width={15}
+											height={15}
+											stroke={'#C2C2C2'}
+											strokeWidth={2}
+										/>
+									</div>
+								</>
 						}
 						<div className='thin-row'>
 							<span className='small-text-bold citrusGrey'>
