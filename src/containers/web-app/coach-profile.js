@@ -20,9 +20,11 @@ import '../../styling/web-app.css'
 
 import { ReactComponent as CaretBack } from '../../assets/svg/caret-left.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
+import { ReactComponent as Share } from '../../assets/svg/share.svg'
 
 import {
-	capitalize
+	capitalize,
+	titleCase
 } from '../../utils/various'
 
 import { fetchTrainerCoachings } from '../../actions/coachings-actions'
@@ -60,7 +62,8 @@ class CoachProfile extends React.Component {
 			isRefreshing: false,
 			coachings: [],
 			coachingsSkip: 3,
-			coachComments: coachComments || []
+			coachComments: coachComments || [],
+			isSharingCoachProfile: false
 		}
 
 		this.loadCoachInfo()
@@ -193,7 +196,8 @@ class CoachProfile extends React.Component {
 			isRefreshing,
 			coachings,
 			coachingsSkip,
-			coachComments
+			coachComments,
+			isSharingCoachProfile
 		} = this.state
 
 		const isFollowingCoach = coach && user.following.find(
@@ -285,6 +289,21 @@ class CoachProfile extends React.Component {
 										{isFollowingCoachWording}
 									</span>
 								</div>
+								<div style={{ display: 'flex', alignItems: 'center', marginLeft: '10px' }}>
+									<span
+										className='small-text-bold citrusGrey hover'
+										onClick={() => this.setState({ isSharingCoachProfile: true })}
+										style={{ marginRight: '5px' }}
+									>
+										{capitalize(t('share'))}
+									</span>
+									<Share
+										width={15}
+										height={15}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/>
+								</div>
 							</div>
 							<div className='small-separator'></div>
 							{bio && bio.length > 0 &&
@@ -324,7 +343,7 @@ class CoachProfile extends React.Component {
 													onClick={() => this.setState({ selectedCoaching: coaching })}
 													size='medium'
 													key={i}
-													title={capitalize(coaching.title)}
+													title={titleCase(coaching.title)}
 													subtitle={capitalize(t(coaching.sport))}
 													imgUri={coaching.pictureUri}
 												/>
@@ -473,6 +492,57 @@ class CoachProfile extends React.Component {
 								isMyCoaching={false}
 								onCoachingDeleted={() => { }}
 							/>
+						</div>
+					</Dialog>
+				}
+				{
+					isSharingCoachProfile &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isSharingCoachProfile: false })}
+					>
+						<div className='share-coaching-container'>
+							<div className='flex-column'>
+								<div
+									style={{
+										width: '100%',
+										height: '25px',
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'flex-end'
+									}}
+									onClick={() => this.setState({ isSharingCoachProfile: false })}
+									className='hover'
+								>
+									<Close
+										width={25}
+										height={25}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/>
+								</div>
+								<div
+									className='flex-column'
+									style={{ padding: '10px', minHeight: '150px', justifyContent: 'center' }}
+								>
+									<span className='small-text-bold citrusGrey'>
+										{capitalize(t('clickOnThisLinkToCopyIt'))} :
+									</span>
+									<div className='small-separator'></div>
+									<span
+										className='small-title citrusBlack hover'
+										onClick={() => {
+											navigator.clipboard.writeText(
+												`https://app.thecitrusapp.com/explore?coach=${coach._id}`
+											)
+											setNotification({ message: capitalize(t('copied')) })
+											this.setState({ isSharingCoaching: false })
+										}}
+									>
+										{`https://app.thecitrusapp.com/explore?coach=${coach._id}`}
+									</span>
+								</div>
+							</div>
 						</div>
 					</Dialog>
 				}

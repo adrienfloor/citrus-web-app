@@ -274,6 +274,10 @@
 	height: 300px;
 	background-position: center;
 }
+.mobile-card-image-with-video-preview {
+	background-position: center;
+	margin-bottom: 10px;
+}
 .mobile-coach-image {
 	width: 300px;
 	height: 200px;
@@ -418,7 +422,7 @@
 }
 .preview-player-wrapper {
 	position: relative;
-	padding-top: 58.5%;
+	padding-top: 48.5%;
 	width: 454px;
 }
 .react-player {
@@ -790,8 +794,12 @@ input[type=number] {
 		width: 100%;
 	}
 	.preview-player-wrapper {
-		height: 10%;
+		height: 25%;
 		width: 100%;
+	}
+	.mobile-card-image-with-video-preview {
+		height: 200px !important;
+		margin-bottom: 80px;
 	}
 	.schedule-container {
 		width: 100%;

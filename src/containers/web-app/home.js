@@ -33,6 +33,7 @@ import {
 
 import {
 	capitalize,
+	titleCase,
 	returnTheHighestOccurrence,
 	returnCurrency,
 	returnUserStatus,
@@ -277,7 +278,7 @@ class Home extends React.Component {
 															onClick={() => this.setState({ selectedCoaching: activity })}
 															size='medium'
 															key={i}
-															title={capitalize(activity.title)}
+															title={titleCase(activity.title)}
 															subtitle={`${capitalize(t(activity.sport))} ${t('with')} ${capitalize(activity.coachUserName)}`}
 															imgUri={activity.pictureUri}
 														/>
@@ -372,7 +373,7 @@ class Home extends React.Component {
 													onClick={() => this.setState({ selectedCoach: coach })}
 													size='medium'
 													key={i}
-													title={capitalize(coach.userName)}
+													title={titleCase(coach.userName)}
 													subtitle={`${coach.numberOfFollowers} ${coach.numberOfFollowers > 1 ? t('followers') : t('follower')}`}
 													imgUri={coach.avatarUrl}
 												/>
@@ -595,7 +596,7 @@ class Home extends React.Component {
 															onClick={() => this.setState({ selectedCoaching: activity })}
 															size='medium'
 															key={i}
-															title={capitalize(activity.title)}
+															title={titleCase(activity.title)}
 															subtitle={capitalize(t(activity.sport))}
 															imgUri={activity.pictureUri}
 														/>

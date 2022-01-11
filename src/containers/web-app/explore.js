@@ -27,10 +27,14 @@ import Card from '../../components/web-app/card'
 import Tag from '../../components/web-app/tag'
 
 import {
-	capitalize
+	capitalize,
+	titleCase
 } from '../../utils/various'
 
-import { loadUser } from '../../actions/auth-actions'
+import {
+	loadUser,
+	fetchUserInfo
+} from '../../actions/auth-actions'
 import {
 	executeExploreSearch,
 	executeSearch,
@@ -76,24 +80,26 @@ class Explore extends React.Component {
 		this.handleSearch = this.handleSearch.bind(this)
 		this.handleResetSearch = this.handleResetSearch.bind(this)
 		this.handleSportSelection = this.handleSportSelection.bind(this)
-		this.handleShowCoaching = this.handleShowCoaching.bind(this)
+		this.handleShowCoachOrCoaching = this.handleShowCoachOrCoaching.bind(this)
 	}
 
 	componentDidMount() {
-		this.handleShowCoaching()
+		this.handleShowCoachOrCoaching()
 	}
 
-	handleShowCoaching() {
+	handleShowCoachOrCoaching() {
 		const {
 			location,
 			user,
 			userReplays,
 			executeExploreSearch,
 			resetExploreSearch,
-			fetchCoaching
+			fetchCoaching,
+			fetchUserInfo
 		} = this.props
 
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+		const coachId = qs.parse(location.search, { ignoreQueryPrefix: true }).coach
 
 		if (user && coachingId) {
 			this.setState({ isLoading: true })
@@ -116,6 +122,20 @@ class Explore extends React.Component {
 							})
 					}
 				}
+			}, 1000)
+		}
+
+		if (user && coachId) {
+			this.setState({ isLoading: true })
+			setTimeout(() => {
+				fetchUserInfo(coachId)
+				.then(res => {
+					const coach = res.payload
+					this.setState({
+						selectedCoach: coach,
+						isLoading: false
+					})
+				})
 			}, 1000)
 		}
 	}
@@ -235,7 +255,7 @@ class Explore extends React.Component {
 			if(isSigninUp) {
 				return (
 					<SignupFromRedirect
-						onSignupSuccess={this.handleShowCoaching}
+						onSignupSuccess={this.handleShowCoachOrCoaching}
 						title={capitalize(t('createAnAccountToAccessThisCoaching'))}
 						location={location}
 						onGoToSignIn={() => this.setState({ isSigninUp: false })}
@@ -244,7 +264,7 @@ class Explore extends React.Component {
 			}
 			return (
 				<SigninFromRedirect
-					onSigninSuccess={this.handleShowCoaching}
+					onSigninSuccess={this.handleShowCoachOrCoaching}
 					title={capitalize(t('signinToAccessThisCoaching'))}
 					location={location}
 					onGoToSignUp={() => this.setState({ isSigninUp: true })}
@@ -446,7 +466,7 @@ class Explore extends React.Component {
 														})
 													}
 													fullWidth
-													title={capitalize(coaching.title)}
+													title={titleCase(coaching.title)}
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
@@ -463,7 +483,7 @@ class Explore extends React.Component {
 														})
 													}
 													fullWidth
-													title={capitalize(coaching.title)}
+													title={titleCase(coaching.title)}
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
@@ -590,7 +610,7 @@ class Explore extends React.Component {
 											<Card
 												onClick={() => this.setState({ selectedCoaching: coaching })}
 												fullWidth
-												title={capitalize(coaching.title)}
+												title={titleCase(coaching.title)}
 												rating={coaching.coachingRating}
 												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 												imgUri={coaching.pictureUri}
@@ -607,7 +627,7 @@ class Explore extends React.Component {
 											<Card
 												onClick={() => this.setState({ selectedCoach: coach })}
 												size='medium'
-												title={capitalize(coach.userName)}
+												title={titleCase(coach.userName)}
 												subtitle={`${coach.followers.length} ${coach.followers.length > 1 ? t('followers') : t('follower')}`}
 												imgUri={coach.avatarUrl}
 												fullWidth
@@ -671,7 +691,8 @@ const mapDispatchToProps = (dispatch) => ({
 	resetSearch: () => dispatch(resetSearch()),
 	resetExploreSearch: () => dispatch(resetExploreSearch()),
 	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
-	fetchCoaching: id => dispatch(fetchCoaching(id))
+	fetchCoaching: id => dispatch(fetchCoaching(id)),
+	fetchUserInfo: id => dispatch(fetchUserInfo(id))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Explore))

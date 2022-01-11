@@ -30,7 +30,8 @@ import {
 	capitalize,
 	returnCurrencyCode,
 	returnCurrency,
-	returnNextBillingDate
+	returnNextBillingDate,
+	titleCase
 } from '../../../utils/various'
 
 import {
@@ -478,7 +479,7 @@ class PayInConfirmation extends React.Component {
 							<div className='medium-separator'></div>
 							<Card
 								size='large'
-								title={capitalize(coaching.title)}
+								title={titleCase(coaching.title)}
 								subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
 								imgUri={coaching.pictureUri}
 							/>

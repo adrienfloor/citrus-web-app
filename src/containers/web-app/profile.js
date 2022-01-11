@@ -31,7 +31,8 @@ import '../../styling/web-app.css'
 import { ReactComponent as Check } from '../../assets/svg/check.svg'
 
 import {
-	capitalize
+	capitalize,
+	titleCase
 } from '../../utils/various'
 
 import * as frCommonTranslations from '../../fixtures/fr'
@@ -413,7 +414,7 @@ class Profile extends React.Component {
 														onClick={() => this.setState({ selectedCoaching: activity })}
 														size='medium'
 														key={i}
-														title={capitalize(activity.title)}
+														title={titleCase(activity.title)}
 														subtitle={capitalize(t(activity.sport))}
 														imgUri={activity.pictureUri}
 													/>

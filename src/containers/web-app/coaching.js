@@ -886,7 +886,11 @@ class Coaching extends React.Component {
 						</div> :
 						<div
 							onMouseLeave={() => this.setState({ isWatchingPreview: false })}
-							className='mobile-card-image'
+							className={
+								isWatchingPreview ?
+								'mobile-card-image-with-video-preview' :
+								'mobile-card-image'
+							}
 						>
 							<div className='preview-player-wrapper'>
 								<ReactPlayer
@@ -931,16 +935,16 @@ class Coaching extends React.Component {
 					}
 					<div className='small-separator'></div>
 					<div className='coaching-column'>
-						<div className='flex-row'>
+						<div className='flex-row-desktop-column-mobile'>
 							<span className='small-title citrusBlack'>
-								{`${capitalize(title)} ${t('with')}`}
+								{capitalize(title)}
 							</span>
 							<span
 								onClick={() => this.setState({ selectedCoach: coachInfo })}
 								style={{ marginLeft: '3px' }}
 								className='small-title citrusBlack username-hover'
 							>
-								{capitalize(coaching.coachUserName)}
+								{`${t('with')} ${titleCase(coaching.coachUserName)}`}
 							</span>
 						</div>
 						{
@@ -972,23 +976,21 @@ class Coaching extends React.Component {
 										</div>
 									</div>
 								</> :
-								<>
-									<div style={{ display: 'flex', alignItems: 'center' }}>
-										<span
-											className='small-text-bold citrusGrey hover'
-											onClick={() => this.setState({ isSharingCoaching: true })}
-											style={{ marginRight: '5px' }}
-										>
-											{capitalize(t('share'))}
-										</span>
-										<Share
-											width={15}
-											height={15}
-											stroke={'#C2C2C2'}
-											strokeWidth={2}
-										/>
-									</div>
-								</>
+								<div style={{ display: 'flex', alignItems: 'center' }}>
+									<span
+										className='small-text-bold citrusGrey hover'
+										onClick={() => this.setState({ isSharingCoaching: true })}
+										style={{ marginRight: '5px' }}
+									>
+										{capitalize(t('share'))}
+									</span>
+									<Share
+										width={15}
+										height={15}
+										stroke={'#C2C2C2'}
+										strokeWidth={2}
+									/>
+								</div>
 						}
 						<div className='thin-row'>
 							<span className='small-text-bold citrusGrey'>
