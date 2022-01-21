@@ -319,7 +319,7 @@ class BillingFailure extends React.Component {
 			warningMessage
 		} = this.state
 
-		const isOnRedirectPage = this.props.location.pathname === '/billing_plan'
+		const isOnRedirectPage = this.props.history.location.pathname === '/billing_plan'
 
 		if(!user) {
 			return (

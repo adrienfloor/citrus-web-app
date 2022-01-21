@@ -1001,7 +1001,7 @@ class Coaching extends React.Component {
 							</span>
 						</div>
 						{
-							coachingRating && coachingRating.rating &&
+							coachingRating && coachingRating.rating ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('globalRating'))}
@@ -1012,10 +1012,10 @@ class Coaching extends React.Component {
 										value={coachingRating.rating}
 										readOnly
 									/>
-							</div>
+							</div> : null
 						}
 						{
-							duration &&
+							duration ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('duration'))}
@@ -1023,7 +1023,7 @@ class Coaching extends React.Component {
 								<span className='small-text-bold citrusBlack ellipsis-mobile'>
 									{`${duration} ${t('min')}`}
 								</span>
-							</div>
+							</div> : null
 						}
 
 						{
@@ -1100,7 +1100,7 @@ class Coaching extends React.Component {
 							</div> : null
 						}
 
-						{!equipment || equipment.length === 0 ?
+						{!equipment || equipment && equipment.length === 0 ?
 							<div className='thin-row'>
 								<span className='small-text-bold citrusGrey'>
 									{capitalize(t('equipment'))}

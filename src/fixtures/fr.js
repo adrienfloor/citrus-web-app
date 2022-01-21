@@ -34,7 +34,7 @@ export default {
 		weightTraining: "musculation",
 		swimming: "natation",
 		nutrition: "nutrition",
-		pilates: "pilate",
+		pilates: "pilates",
 		rowing: "rameur",
 		rugby: "rugby",
 		ski: "ski",

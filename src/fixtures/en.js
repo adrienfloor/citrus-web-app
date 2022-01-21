@@ -30,7 +30,7 @@ export default {
 		mountainBiking: "mountain biking",
 		movement: "movement",
 		nutrition: "nutrition",
-		pilates: "pilate",
+		pilates: "pilates",
 		rowing: "rowing",
 		rugby: "rugby",
 		running: "running",

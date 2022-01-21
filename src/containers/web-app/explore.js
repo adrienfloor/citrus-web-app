@@ -468,7 +468,7 @@ class Explore extends React.Component {
 													fullWidth
 													title={titleCase(coaching.title)}
 													rating={coaching.coachingRating}
-													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
+													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
 												/>
 											</div>
@@ -485,7 +485,7 @@ class Explore extends React.Component {
 													fullWidth
 													title={titleCase(coaching.title)}
 													rating={coaching.coachingRating}
-													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
+													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
 												/>
 											</div>
@@ -612,7 +612,7 @@ class Explore extends React.Component {
 												fullWidth
 												title={titleCase(coaching.title)}
 												rating={coaching.coachingRating}
-												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${capitalize(coaching.coachUserName)}`}
+												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 												imgUri={coaching.pictureUri}
 											/>
 										</div>)) :

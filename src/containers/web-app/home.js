@@ -279,7 +279,7 @@ class Home extends React.Component {
 															size='medium'
 															key={i}
 															title={titleCase(activity.title)}
-															subtitle={`${capitalize(t(activity.sport))} ${t('with')} ${capitalize(activity.coachUserName)}`}
+															subtitle={`${capitalize(t(activity.sport))} ${t('with')} ${titleCase(activity.coachUserName)}`}
 															imgUri={activity.pictureUri}
 														/>
 													))
