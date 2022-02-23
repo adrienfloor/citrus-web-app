@@ -36,6 +36,12 @@ const Layout = ({
 		return 'small-text-bold citrusGrey hover'
 	}
 
+	const isWebview = location && location.pathname === '/schedule-webview'
+
+	if(isWebview) {
+		return <div className='webview'>{children}</div>
+	}
+
 	return (
 		<div
 			className='full-container flex-column'
@@ -141,6 +147,9 @@ const Layout = ({
 			</footer>
 			<style jsx='true'>
 				{`
+					.webview {
+						height: 100vh;
+					}
 					.logo {
 						// height: 30px;
 						// width: 197px;

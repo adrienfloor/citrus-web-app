@@ -110,6 +110,7 @@ class App extends React.Component {
                   <Route exact path='/reset_password' component={ResetPassword} />
                   <Route exact path='/billing_plan' component={BillingFailure} />
                   <Route exact path='/explore' component={Explore} />
+                  <Route exact path='/schedule-webview' component={Schedule} />
                   <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
                   <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
                   <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />

@@ -12,6 +12,7 @@ import axios from 'axios'
 import io from 'socket.io-client'
 import ProgressBar from '@ramonak/react-progress-bar'
 import Dialog from '@material-ui/core/Dialog'
+import qs from 'query-string'
 
 import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
@@ -63,7 +64,9 @@ let upload = null
 class Schedule extends React.Component {
 	constructor(props) {
 		super(props)
-		const { coaching } = this.props
+		const { coaching, location } = this.props
+		const videoSrc = qs.parse(location.search, { ignoreQueryPrefix: true }).videoSrc
+		const videoFile = qs.parse(location.search, { ignoreQueryPrefix: true }).videoFile
 		this.state = {
 			title: (coaching || {}).title || '',
 			sport: (coaching || {}).sport || '',
@@ -80,7 +83,7 @@ class Schedule extends React.Component {
 			isSelecting: '',
 			isButtonDisabled: false,
 			errorMessage: '',
-			videoFile: '',
+			videoFile: videoFile || '',
 			isReadingFile: false,
 			progress: null,
 			isProcessingVideo: false,
@@ -89,7 +92,7 @@ class Schedule extends React.Component {
 			coachingId: null,
 			isConfirmingCancelUpload: false,
 			isUploading: false,
-			videoSrc: ''
+			videoSrc: videoSrc || ''
 		}
 
 		const translations = this.props.i18n.language == 'fr' ? frCommonTranslations : enCommonTranslations
@@ -437,7 +440,8 @@ class Schedule extends React.Component {
 			user,
 			videoThumbnail,
 			t,
-			classes
+			classes,
+			location
 		} = this.props
 		const {
 			title,
@@ -464,6 +468,8 @@ class Schedule extends React.Component {
 			videoSrc
 		} = this.state
 
+		const isWebview = location && location.pathname === '/schedule-webview'
+
 		if (isLoading) {
 			return (
 				<div
@@ -482,9 +488,13 @@ class Schedule extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack responsive-title'>
-					{capitalize(t('post'))}
-				</span>
+				{
+					!isWebview &&
+					<span className='big-title citrusBlack responsive-title'>
+						{capitalize(t('post'))}
+					</span>
+				}
+				{  isWebview && <div className='medium-separator'></div> }
 				<form
 					id='upload-form'
 					onSubmit={e => this.handleCreateCoaching(e)}
@@ -606,7 +616,7 @@ class Schedule extends React.Component {
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
 							onVideoSelected={(videoFile, videoSrc) => {
-								console.log('video file', videoFile)
+								console.log('video file', videoFile, 'videoSrc', videoSrc)
 								this.setState({ videoFile, videoSrc })
 							}}
 							onError={() =>this.setState({
@@ -834,6 +844,7 @@ class Schedule extends React.Component {
 									{capitalize(t('createCoaching'))}
 								</span>
 							</button>
+							{  isWebview && <div className='medium-separator'></div> }
 						</div>
 					}
 				</form>
