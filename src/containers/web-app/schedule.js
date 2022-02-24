@@ -17,6 +17,7 @@ import qs from 'query-string'
 import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 import VideoUploader from '../../components/web-app/video-uploader'
+import VideoRecorder from './video-recorder'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -42,6 +43,7 @@ import {
 	fetchTrainerCoachings
 } from '../../actions/coachings-actions'
 import { setNotification } from '../../actions/notifications-actions'
+import { loadWebviewUser } from '../../actions/auth-actions'
 
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
@@ -67,6 +69,7 @@ class Schedule extends React.Component {
 		const { coaching, location } = this.props
 		const videoSrc = qs.parse(location.search, { ignoreQueryPrefix: true }).videoSrc
 		const videoFile = qs.parse(location.search, { ignoreQueryPrefix: true }).videoFile
+		const token = qs.parse(location.search, { ignoreQueryPrefix: true }).token
 		this.state = {
 			title: (coaching || {}).title || '',
 			sport: (coaching || {}).sport || '',
@@ -93,6 +96,10 @@ class Schedule extends React.Component {
 			isConfirmingCancelUpload: false,
 			isUploading: false,
 			videoSrc: videoSrc || ''
+		}
+
+		if(token) {
+			this.props.loadWebviewUser(token)
 		}
 
 		const translations = this.props.i18n.language == 'fr' ? frCommonTranslations : enCommonTranslations
@@ -255,27 +262,27 @@ class Schedule extends React.Component {
 			progress: null
 		})
 
-		if (this.hasMissingParams()) {
-			this.setState({
-				isButtonDisabled: false,
-				progress: null,
-				errorMessage: `${t('pleaseFillIn')} : ${this.hasMissingParams().join(', ')}`
-			})
-			setTimeout(function () {
-				this.setState({
-					errorMessage: ''
-				})
-			}.bind(this), 3000)
-			return
-		}
+		// if (this.hasMissingParams()) {
+		// 	this.setState({
+		// 		isButtonDisabled: false,
+		// 		progress: null,
+		// 		errorMessage: `${t('pleaseFillIn')} : ${this.hasMissingParams().join(', ')}`
+		// 	})
+		// 	setTimeout(function () {
+		// 		this.setState({
+		// 			errorMessage: ''
+		// 		})
+		// 	}.bind(this), 3000)
+		// 	return
+		// }
 
-		if (MPLegalUserId.length <= 0) {
-			return this.setState({
-				isCreatingLegalUser: true,
-				isButtonDisabled: false,
-				progress: null
-			})
-		}
+		// if (MPLegalUserId.length <= 0) {
+		// 	return this.setState({
+		// 		isCreatingLegalUser: true,
+		// 		isButtonDisabled: false,
+		// 		progress: null
+		// 	})
+		// }
 
 		this.setState({ isLoading: true })
 
@@ -295,7 +302,8 @@ class Schedule extends React.Component {
 			coachLastName: lastName.toLowerCase(),
 			coachUserName: userName.toLowerCase(),
 			coachId: _id,
-			pictureUri,
+			// pictureUri,
+			pictureUri: 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1644222312/VonageApp/rh2wraz2kgp6gfieydwy.jpg',
 			coachRating,
 		}
 
@@ -465,10 +473,24 @@ class Schedule extends React.Component {
 			videoErrorMessage,
 			isConfirmingCancelUpload,
 			isUploading,
-			videoSrc
+			videoSrc,
+			x
 		} = this.state
 
 		const isWebview = location && location.pathname === '/schedule-webview'
+
+		if(isWebview) {
+			return (
+				<div style={{ backgroundColor: '#000000' }}>
+					<VideoRecorder
+						onCancel={() => {
+							this.setState({ isLoading: true })
+							window.location.href = `${window.location.href}&oncancel=true`
+						}}
+					/>
+				</div>
+			)
+		}
 
 		if (isLoading) {
 			return (
@@ -481,6 +503,7 @@ class Schedule extends React.Component {
 						color='#C2C2C2'
 						height={100}
 						width={100}
+						style={{ marginTop: isWebview ? '300px' : 0 }}
 					/>
 				</div>
 			)
@@ -495,8 +518,7 @@ class Schedule extends React.Component {
 					</span>
 				}
 				{  isWebview && <div className='medium-separator'></div> }
-				<form
-					id='upload-form'
+				<div
 					onSubmit={e => this.handleCreateCoaching(e)}
 					className='scroll-div-vertical card upload-form schedule'
 				>
@@ -616,7 +638,8 @@ class Schedule extends React.Component {
 							disabled={progress || progress === 0 ? true : false}
 							t={t}
 							onVideoSelected={(videoFile, videoSrc) => {
-								console.log('video file', videoFile, 'videoSrc', videoSrc)
+								console.log('video file', videoFile)
+								console.log('videoSrc', videoSrc)
 								this.setState({ videoFile, videoSrc })
 							}}
 							onError={() =>this.setState({
@@ -831,13 +854,13 @@ class Schedule extends React.Component {
 						!progress && progress != 0 && !isProcessingVideo &&
 						<div className='flex-row schedule-button-container'>
 							<button
+								onClick={e => this.handleCreateCoaching(e)}
 								className={
 									!isButtonDisabled ?
 									'filled-button button schedule-submit-button' :
 									'filled-button disabled-button button schedule-submit-button'
 								}
 								type='submit'
-								form='upload-form'
 								disabled={isButtonDisabled}
 							>
 								<span className='small-title citrusWhite'>
@@ -847,7 +870,7 @@ class Schedule extends React.Component {
 							{  isWebview && <div className='medium-separator'></div> }
 						</div>
 					}
-				</form>
+				</div>
 				{
 					isUploading ?
 					<Dialog
@@ -862,10 +885,10 @@ class Schedule extends React.Component {
 							<div
 								style={{
 									width: '99%',
-									height: '50px',
+									height: isWebview ? '90px' : '50px',
 									display: 'flex',
 									justifyContent: 'flex-end',
-									alignItems: 'center'
+									alignItems: isWebview ? 'flex-end' : 'center'
 								}}
 								onClick={() => this.setState({ isConfirmingCancelUpload: true })}
 								className='hover'
@@ -875,6 +898,7 @@ class Schedule extends React.Component {
 									height={25}
 									stroke={'#C2C2C2'}
 									strokeWidth={2}
+									style={{ paddingRight: isWebview ? '12px' : '0' }}
 								/>
 							</div>
 						}
@@ -1046,7 +1070,8 @@ const mapDispatchToProps = (dispatch) => ({
 	updateCoaching: coachingInfo => dispatch(updateCoaching(coachingInfo)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),
 	setNotification: notification => dispatch(setNotification(notification)),
-	deleteCoaching: coachingId => dispatch(deleteCoaching(coachingId))
+	deleteCoaching: coachingId => dispatch(deleteCoaching(coachingId)),
+	loadWebviewUser: token => dispatch(loadWebviewUser(token))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Schedule))

@@ -37,6 +37,26 @@ export const loadUser = () => async (dispatch, getState) => {
 	}
 }
 
+export const loadWebviewUser = token => async dispatch => {
+		dispatch({ type: USER_LOADING })
+		try {
+			// HEADERS
+			const config = {
+				headers: {
+					"Content-type": "application/json",
+					'x-auth-token': token
+				}
+			}
+			const response = await axios.get(`${REACT_APP_API_URL}/auth/user`, config)
+			dispatch({ type: LOGIN_SUCCESS, payload: { token, ...response.data } })
+			return dispatch({ type: USER_LOADED, payload: response.data })
+		} catch (err) {
+			console.log(err)
+			dispatch(returnErrors(err, err))
+			return dispatch({ type: AUTH_ERROR })
+		}
+}
+
 // SIGNUP USER
 export const signup = (userName, email, password, language) => async dispatch => {
 	// HEADERS

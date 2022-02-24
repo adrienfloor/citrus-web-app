@@ -1,9 +1,6 @@
 import React from 'react'
-import axios from 'axios'
-import Dialog from '@material-ui/core/Dialog'
 import Loader from 'react-loader-spinner'
 import { ReactComponent as Upload } from '../../assets/svg/upload.svg'
-import * as UpChunk from '@mux/upchunk'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -12,11 +9,7 @@ import '../../styling/spacings.css'
 import '../../styling/App.css'
 import '../../styling/web-app.css'
 
-import {
-	capitalize,
-	uppercase,
-	titleCase
-} from '../../utils/various'
+import { capitalize } from '../../utils/various'
 
 
 class VideoUploader extends React.Component {
@@ -31,7 +24,6 @@ class VideoUploader extends React.Component {
 
 	handleVideoPicking(e) {
 		const { onVideoSelected, onError } = this.props
-		const { videoSrc } = this.state
 		if(e && e.target && e.target.files || e.tartget.files[0]) {
 			this.setState({ videoSrc: URL.createObjectURL(e.target.files[0]) })
 			onVideoSelected(
@@ -47,7 +39,6 @@ class VideoUploader extends React.Component {
 	render() {
 		const {
 			t,
-			onVideoSelected,
 			disabled
 		} = this.props
 		const {

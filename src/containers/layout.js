@@ -115,7 +115,7 @@ const Layout = ({
 							}}
 							className='medium-text hover logout desktop-only'
 						>
-						<a href='https://thecitrusapp.com'>
+							<a href='https://thecitrusapp.com'>
 								<div
 									className='small-button'
 									style={{

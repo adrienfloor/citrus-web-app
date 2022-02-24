@@ -157,9 +157,11 @@ function MobileDrawer({ t, currentFocus, logout }) {
 						onClick={logout}
 						className='medium-text hover logout filled-button'
 					>
-						<span className='small-text-bold citrusWhite'>
-							{capitalize(t('logOut'))}
-						</span>
+						<a href='https://thecitrusapp.com'>
+							<span className='small-text-bold citrusWhite'>
+								{capitalize(t('logOut'))}
+							</span>
+						</a>
 					</div>
 				</ListItem>
 			</List>
