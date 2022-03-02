@@ -17,7 +17,6 @@ import qs from 'query-string'
 import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 import VideoUploader from '../../components/web-app/video-uploader'
-import VideoRecorder from './video-recorder'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -473,24 +472,10 @@ class Schedule extends React.Component {
 			videoErrorMessage,
 			isConfirmingCancelUpload,
 			isUploading,
-			videoSrc,
-			x
+			videoSrc
 		} = this.state
 
 		const isWebview = location && location.pathname === '/schedule-webview'
-
-		if(isWebview) {
-			return (
-				<div style={{ backgroundColor: '#000000' }}>
-					<VideoRecorder
-						onCancel={() => {
-							this.setState({ isLoading: true })
-							window.location.href = `${window.location.href}&oncancel=true`
-						}}
-					/>
-				</div>
-			)
-		}
 
 		if (isLoading) {
 			return (
