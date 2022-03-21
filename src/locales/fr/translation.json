@@ -451,6 +451,8 @@
 	"moreTrainings": "plus de trainings",
 	"moreCoachs": "plus de coachs",
 	"moreCoachings": "plus de coachings",
+	"verifiedAccount": "compte vérifié",
+	"verifyMyAccount": "vérifier mon compte",
 	"membership": "adhésion",
 	"billing": "facturation",
 	"chooseThisPlan": "choisir ce forfait",
@@ -611,5 +613,14 @@
 	"signinToAccessThisCoaching": "connecte-toi et accède à ce coaching",
 	"share": "partager",
 	"clickOnThisLinkToCopyIt": "clique sur le lien pour le copier",
-	"copied": "copié dans le presse papier !"
+	"copied": "copié dans le presse papier !",
+	"verifiedCoachAccountDisclaimer": "si tu es coach professionnel, en nous envoyant tes diplômes et/ou les liens vers tes réseaux sociaux ou site web, nous pourrons te certifier en tant que tel sur Citrus. Attention, ce processus peut prendre quelques jours.",
+	"instagram": "instagram",
+	"facebook": "facebook",
+	"tiktok": "tik tok",
+	"instagramUrl": "url de ton Instagram",
+	"facebookUrl": "url de ton Facebook",
+	"tiktokUrl": "url de ton Tik Tok",
+	"website": "site web",
+	"yourWebsiteUrl": "url de ton site web"
 }

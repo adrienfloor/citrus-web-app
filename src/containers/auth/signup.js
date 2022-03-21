@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import Loader from 'react-loader-spinner'
+import qs from 'query-string'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -116,7 +117,8 @@ class Signup extends React.Component {
 			executeExploreSearch,
 			fetchTrainerCoachings,
 			fetchUserReplays,
-			setIsRedirectingHome
+			setIsRedirectingHome,
+			location
 		} = this.props
 		const lng = i18n.language || 'en'
 
@@ -132,11 +134,14 @@ class Signup extends React.Component {
 			return
 		}
 
+		const isCoach = qs.parse(location.search, { ignoreQueryPrefix: true }).iscoach
+
 		signup(
 			userName,
 			email.toLowerCase(),
 			password,
-			lng
+			lng,
+			isCoach
 		).then(async (res) => {
 			setIsRedirectingHome(false)
 			if (res && res.type === 'REGISTER_SUCCESS') {
@@ -189,8 +194,11 @@ class Signup extends React.Component {
 		const {
 			t,
 			history,
-			isAuthenticated
+			isAuthenticated,
+			location
 		} = this.props
+
+		const isCoach = qs.parse(location.search, { ignoreQueryPrefix: true }).iscoach
 
 		if (isLoading) {
 			return (
@@ -276,7 +284,12 @@ class Signup extends React.Component {
 							</span>
 						</button>
 						<div className='light-button button'>
-							<Link className='small-title citrusBlue' to="/signin">{capitalize(t('logIn'))}</Link>
+							<Link
+								className='small-title citrusBlue'
+								to={isCoach ? '/signin?iscoach=true' : '/signin'}
+							>
+								{capitalize(t('logIn'))}
+							</Link>
 						</div>
 					</div>
 					{
@@ -369,8 +382,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	signup: (userName, email, password, language) =>
-		dispatch(signup(userName, email, password, language)),
+	signup: (userName, email, password, language, isCoach) =>
+		dispatch(signup(userName, email, password, language, isCoach)),
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),

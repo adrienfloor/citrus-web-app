@@ -261,27 +261,27 @@ class Schedule extends React.Component {
 			progress: null
 		})
 
-		// if (this.hasMissingParams()) {
-		// 	this.setState({
-		// 		isButtonDisabled: false,
-		// 		progress: null,
-		// 		errorMessage: `${t('pleaseFillIn')} : ${this.hasMissingParams().join(', ')}`
-		// 	})
-		// 	setTimeout(function () {
-		// 		this.setState({
-		// 			errorMessage: ''
-		// 		})
-		// 	}.bind(this), 3000)
-		// 	return
-		// }
+		if (this.hasMissingParams()) {
+			this.setState({
+				isButtonDisabled: false,
+				progress: null,
+				errorMessage: `${t('pleaseFillIn')} : ${this.hasMissingParams().join(', ')}`
+			})
+			setTimeout(function () {
+				this.setState({
+					errorMessage: ''
+				})
+			}.bind(this), 3000)
+			return
+		}
 
-		// if (MPLegalUserId.length <= 0) {
-		// 	return this.setState({
-		// 		isCreatingLegalUser: true,
-		// 		isButtonDisabled: false,
-		// 		progress: null
-		// 	})
-		// }
+		if (MPLegalUserId.length <= 0) {
+			return this.setState({
+				isCreatingLegalUser: true,
+				isButtonDisabled: false,
+				progress: null
+			})
+		}
 
 		this.setState({ isLoading: true })
 
@@ -301,8 +301,7 @@ class Schedule extends React.Component {
 			coachLastName: lastName.toLowerCase(),
 			coachUserName: userName.toLowerCase(),
 			coachId: _id,
-			// pictureUri,
-			pictureUri: 'https://res.cloudinary.com/dho1rqbwk/image/upload/v1644222312/VonageApp/rh2wraz2kgp6gfieydwy.jpg',
+			pictureUri,
 			coachRating,
 		}
 
@@ -1033,6 +1032,7 @@ class Schedule extends React.Component {
 					>
 						<div className='full-width-and-height-dialog'>
 							<CreateLegalUser
+								isWebview={isWebview}
 								onUserCreated={e => this.handleCreateCoaching(e)}
 								onCancel={() => {
 									this.setState({ isCreatingLegalUser: false })

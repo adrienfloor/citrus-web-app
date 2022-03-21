@@ -58,7 +58,7 @@ export const loadWebviewUser = token => async dispatch => {
 }
 
 // SIGNUP USER
-export const signup = (userName, email, password, language) => async dispatch => {
+export const signup = (userName, email, password, language, isCoach) => async dispatch => {
 	// HEADERS
 	const config = {
 		headers: {
@@ -67,7 +67,7 @@ export const signup = (userName, email, password, language) => async dispatch =>
 	}
 	const agreedTermsAndConditions = true
 	// BODY
-	const body = JSON.stringify({ userName, email, password, agreedTermsAndConditions, language })
+	const body = JSON.stringify({ userName, email, password, agreedTermsAndConditions, language, isCoach })
 	try {
 		const response = await axios.post(`${REACT_APP_API_URL}/users`, body, config)
 		return dispatch({ type: REGISTER_SUCCESS, payload: response.data })

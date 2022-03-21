@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import {
   MuiThemeProvider,
-  createMuiTheme
+  createTheme
 } from '@material-ui/core'
 import { withTranslation } from 'react-i18next'
 import { ToastContainer, toast } from 'react-toastify'
@@ -38,7 +38,7 @@ import { fetchUserReplays } from './actions/auth-actions'
 import { fetchTrainerCoachings } from './actions/coachings-actions'
 import { executeExploreSearch } from './actions/search-actions'
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: { main: '#0075FF' }
   }

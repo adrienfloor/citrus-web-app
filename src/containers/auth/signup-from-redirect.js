@@ -137,7 +137,8 @@ class SignupFromRedirect extends React.Component {
 			userName,
 			email.toLowerCase(),
 			password,
-			lng
+			lng,
+			null
 		).then(async (res) => {
 			setIsRedirectingHome(false)
 			if (res && res.type === 'REGISTER_SUCCESS') {
@@ -375,8 +376,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-	signup: (userName, email, password, language) =>
-		dispatch(signup(userName, email, password, language)),
+	signup: (userName, email, password, language, isCoach) =>
+		dispatch(signup(userName, email, password, language, isCoach)),
 	loadUser: () => dispatch(loadUser()),
 	fetchUserReplays: id => dispatch(fetchUserReplays(id)),
 	fetchTrainerCoachings: (id, isMe) => dispatch(fetchTrainerCoachings(id, isMe)),

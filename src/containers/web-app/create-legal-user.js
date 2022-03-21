@@ -242,7 +242,8 @@ class CreateLegalUser extends React.Component {
 		const {
 			user,
 			onCancel,
-			t
+			t,
+			isWebview
 		} = this.props
 
 		if (isLoading) {
@@ -290,7 +291,7 @@ class CreateLegalUser extends React.Component {
 				<div className='small-separator'></div>
 				<div
 					style={{
-						width: '100%',
+						width: isWebview ? '95%' : '100%',
 						display: 'flex',
 						justifyContent: 'flex-end',
 						alignItems: 'center'
@@ -299,8 +300,8 @@ class CreateLegalUser extends React.Component {
 					className='hover'
 				>
 					<Close
-						width={25}
-						height={25}
+						width={isWebview ? 30 : 25}
+						height={isWebview ? 30 : 25}
 						stroke={'#C2C2C2'}
 						strokeWidth={2}
 					/>
@@ -395,6 +396,7 @@ class CreateLegalUser extends React.Component {
 								</span>
 								<MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale}>
 									<DatePicker
+										autoOk={isWebview}
 										format={locale === frLocale ? 'dd MM yyyy' : 'MM dd yyyy'}
 										variant='dialog'
 										openTo='year'

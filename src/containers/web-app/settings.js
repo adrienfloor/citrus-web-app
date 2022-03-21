@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import PremiumPlan from './payments/my-premium-plan'
 import PaymentMethod from './payments/payment-method'
 import BillingFailure from './payments/billing-failure'
+import VerifyCoachAccount from './verify-coach-account'
 
 import {
 	updateUser,
@@ -60,7 +61,8 @@ class Settings extends React.Component {
 			newPassword: '',
 			newMatchingPassword: '',
 			warning: '',
-			isLoading: false
+			isLoading: false,
+			isVerifyingCoachAccount: false
 		}
 
 		yesNoItems = [capitalize(this.props.t('no')), capitalize(this.props.t('yes'))]
@@ -255,7 +257,8 @@ class Settings extends React.Component {
 			weightMetricPreference,
 			basedOnLocationPreference,
 			hasCreditCardFailed,
-			subscription
+			subscription,
+			isVerifiedCoach
 		} = user
 		const {
 			isChangingPassword,
@@ -267,7 +270,8 @@ class Settings extends React.Component {
 			isLoading,
 			isChoosingPlan,
 			isCreditCardOpen,
-			isPlanBillingFailure
+			isPlanBillingFailure,
+			isVerifyingCoachAccount
 		} = this.state
 
 	 	return (
@@ -372,6 +376,22 @@ class Settings extends React.Component {
 					</Select>
 					<div className='medium-separator'></div>
 					<div className='medium-separator'></div>
+					{/* {
+						!isVerifiedCoach &&
+						<>
+							<span className='small-title citrusBlack small-responsive-title-settings'>
+								{capitalize(t('verifiedAccount'))}
+							</span>
+							<div className='medium-separator'></div>
+							<span
+								className='small-text-bold citrusGrey titles-form-input hover'
+								onClick={() => this.setState({ isVerifyingCoachAccount: true })}
+							>
+								{capitalize(t('verifyMyAccount'))}
+							</span>
+							<div className='medium-separator'></div>
+						</>
+					} */}
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('membership'))}
 					</span>
@@ -531,7 +551,6 @@ class Settings extends React.Component {
 									<span
 										onClick={() => this.setState({ isDeletingAccount: false })}
 										className='small-title citrusGrey hover'
-										// style={{ width: '25%', margin: '0 2.5% 0 20%' }}
 									>
 										{capitalize(t('cancel'))}
 									</span>
@@ -636,6 +655,22 @@ class Settings extends React.Component {
 								/>
 							}
 							</div>
+						</div>
+					</Dialog>
+				}
+				{
+					isVerifyingCoachAccount &&
+					<Dialog
+						open={true}
+						onClose={() => this.setState({ isVerifyingCoachAccount: false })}
+					>
+						<div
+							className='payment-method-credit-card-container'
+							style={{ width: '99%' }}
+						>
+							<VerifyCoachAccount
+								onCancel={() => this.setState({ isVerifyingCoachAccount: false })}
+							/>
 						</div>
 					</Dialog>
 				}
