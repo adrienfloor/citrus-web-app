@@ -54,6 +54,10 @@ import {
 	createMpCardDirectPayin
 } from '../../services/mangopay'
 
+
+const { REACT_APP_TEST_USERS } = process.env
+const testUsers = REACT_APP_TEST_USERS.split(',')
+
 class Coaching extends React.Component {
 	constructor(props) {
 		super(props)
@@ -112,7 +116,7 @@ class Coaching extends React.Component {
 
 		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
 
-		if(user._id === coachId || hasBoughtCoaching) {
+		if(user._id === coachId || hasBoughtCoaching || testUsers.includes(user.email)) {
 			return capitalize(t('playVideo'))
 		}
 		if(price === 0) {
@@ -411,6 +415,15 @@ class Coaching extends React.Component {
 
 		this.setState({ isLoading: true })
 		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
+
+		// Test users can watch videos for free
+
+		if(testUsers.includes(user.email)) {
+			return this.setState({
+				isLoading: false,
+				muxReplayPlaybackId: coaching.muxReplayPlaybackId
+			})
+		}
 
 		// This is my coaching or my training
 		if (user._id == coaching.coachId || hasBoughtCoaching) {
