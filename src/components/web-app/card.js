@@ -9,6 +9,7 @@ import '../../styling/App.css'
 import '../../styling/web-app.css'
 
 import { capitalize } from '../../utils/various'
+import { Height } from '@material-ui/icons'
 
 const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => {
 
@@ -31,7 +32,7 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => 
 							backgroundImage: `url(${imgUri})`,
 							backgroundSize: 'cover',
 							width: fullWidth ? '100%' : '300px',
-							height: fullWidth ? '100%' : '200px'
+							minHeight: fullWidth ? '100%' : '200px'
 						}}>
 					</div>
 				</div>
@@ -91,6 +92,11 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => 
 					.title-row {
 						display: flex;
 						align-items: center;
+					}
+					@media only screen and (max-width: 640px) {
+						.full-width-image {
+							min-height: 235px;
+						}
 					}
 				`}
 				</style>

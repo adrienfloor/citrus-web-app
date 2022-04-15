@@ -700,16 +700,7 @@ class Coaching extends React.Component {
 		if (muxReplayPlaybackId) {
 			return (
 				<div className='player-wrapper'>
-					<div
-						style={{
-							margin: '10px',
-							zIndex: 1000,
-							backgroundColor: 'transparent',
-							position: 'absolute',
-							top: 10,
-							right: 10
-						}}
-					>
+					<div className='close-button'>
 						<Close
 							onClick={() => {
 								isMyUnratedReplay ?
@@ -735,6 +726,25 @@ class Coaching extends React.Component {
 						controls
 						url={muxReplayPlaybackId}
 					/>
+					<style jsx='true'>
+						{`
+							.close-button {
+								margin: 10px;
+								z-index: 1000;
+								background-color: transparent;
+								position: absolute;
+								top: 10px;
+								right: 10px;
+							}
+							@media only screen and (max-width: 640px) {
+								.close-button {
+									top: 0;
+									right: 60px;
+								}
+							}
+						`}
+					</style>
+
 				</div>
 			)
 		}

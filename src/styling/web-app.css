@@ -809,12 +809,12 @@ input[type=number] {
 		width: 100%;
 	}
 	.preview-player-wrapper {
-		height: 25%;
+		height: 15%;
 		width: 100%;
 	}
 	.mobile-card-image-with-video-preview {
 		height: 200px !important;
-		margin-bottom: 80px;
+		margin-bottom: 30px;
 	}
 	.schedule-container {
 		width: 100%;
