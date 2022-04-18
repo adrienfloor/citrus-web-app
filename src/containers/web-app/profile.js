@@ -425,8 +425,8 @@ class Profile extends React.Component {
 												<div
 													className='mobile-only'
 													style={{
-														height: '100%',
-														minWidth: '125px',
+														// height: '100%',
+														// minWidth: '125px',
 														marginRight: '15px',
 														paddingBottom: '50px'
 													}}

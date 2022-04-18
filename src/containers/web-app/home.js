@@ -290,7 +290,7 @@ class Home extends React.Component {
 														className='mobile-only'
 														style={{
 															height: '100%',
-															minWidth: '115px',
+															// minWidth: '115px',
 															marginRight: '15px',
 															paddingBottom: '50px'
 														}}
@@ -607,8 +607,8 @@ class Home extends React.Component {
 													<div
 														className='mobile-only'
 														style={{
-															height: '100%',
-															minWidth: '125px',
+															// height: '100%',
+															// minWidth: '125px',
 															marginRight: '15px',
 															paddingBottom: '50px'
 														}}
