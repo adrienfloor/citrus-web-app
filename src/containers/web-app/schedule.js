@@ -506,7 +506,7 @@ class Schedule extends React.Component {
 					onSubmit={e => this.handleCreateCoaching(e)}
 					className='scroll-div-vertical card upload-form schedule'
 				>
-					<div className='medium-separator'></div>
+					{ !isWebview && <div className='medium-separator'></div> }
 					<div className='small-separator'></div>
 					<span className='small-title citrusBlack small-responsive-title-settings'>
 						{capitalize(t('newTraining'))}
