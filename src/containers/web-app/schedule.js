@@ -501,7 +501,7 @@ class Schedule extends React.Component {
 						{capitalize(t('post'))}
 					</span>
 				}
-				{  isWebview && <div className='medium-separator'></div> }
+				{/* {  isWebview && <div className='medium-separator'></div> } */}
 				<div
 					onSubmit={e => this.handleCreateCoaching(e)}
 					className='scroll-div-vertical card upload-form schedule'
