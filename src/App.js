@@ -56,7 +56,7 @@ class App extends React.Component {
       if(user) {
         this.props.fetchUserReplays(user._id)
         this.props.fetchTrainerCoachings(user._id, true)
-        this.props.executeExploreSearch('all', user._id, 0, 5, user.sports)
+        this.props.executeExploreSearch('all', user._id, 0, 10, user.sports)
       }
     })
     this.notify = this.notify.bind(this)

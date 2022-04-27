@@ -143,7 +143,7 @@ class SignupFromRedirect extends React.Component {
 			setIsRedirectingHome(false)
 			if (res && res.type === 'REGISTER_SUCCESS') {
 				const { user } = res.payload
-				const search = await executeExploreSearch('all', user._id, 5, 5, user.sports)
+				const search = await executeExploreSearch('all', user._id, 0, 10, user.sports)
 				const replays = await fetchUserReplays(user._id)
 				const trainings = await fetchTrainerCoachings(user._id, true)
 				if (search && replays && trainings) {

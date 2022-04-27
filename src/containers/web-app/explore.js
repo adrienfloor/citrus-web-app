@@ -182,19 +182,19 @@ class Explore extends React.Component {
 
 		if(sport === 'all') {
 			resetExploreSearch()
-			executeExploreSearch(sport, user._id, 0, 5, user.sports)
+			executeExploreSearch(sport, user._id, 0, 10, user.sports)
 				.then(res => {
-					if (res && res.payload && res.payload.length < 5) {
-						this.setState({ showLoadMore: false })
-					} else {
+					// if (res && res.payload && res.payload.length < 10) {
+					// 	this.setState({ showLoadMore: false })
+					// } else {
 						this.setState({ showLoadMore: true })
-					}
+					// }
 				})
 		} else {
 			resetSpecificSportSearch()
-			executeExploreSearch(sport, user._id, 0, 5, user.sports)
+			executeExploreSearch(sport, user._id, 0, 10, user.sports)
 				.then(res => {
-					if (res && res.payload && res.payload.length < 5) {
+					if (res && res.payload && res.payload.length < 10) {
 						this.setState({ showLoadMore: false })
 					} else {
 						this.setState({ showLoadMore: true })
@@ -499,7 +499,12 @@ class Explore extends React.Component {
 												searchInputText === '' &&
 												!exploreSpecificSportSearch.length ? null : (
 												<div
-													style={{ height: '200px', display: 'flex', alignItems: 'flex-end' }}
+													style={{
+														height: exploreSearch.length % 3 === 0 ? '10px' : '200px',
+														display: 'flex',
+														alignItems: 'flex-end',
+														marginBottom: exploreSearch.length % 3 === 0 && '30px'
+													}}
 													className='hover button-load-more-mobile'
 													onClick={() => {
 														this.setState({

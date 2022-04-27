@@ -198,7 +198,7 @@ class Coaching extends React.Component {
 			}
 			fetchUserReplays(user._id)
 			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
-			executeExploreSearch('all', user._id, 0, 5, user.sports)
+			executeExploreSearch('all', user._id, 0, 10, user.sports)
 			onCancel()
 			this.setState({
 				muxReplayPlaybackId: null,

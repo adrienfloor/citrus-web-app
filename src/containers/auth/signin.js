@@ -125,7 +125,7 @@ class Signin extends React.Component {
 			setIsRedirectingHome(false)
 			if(res && res.payload && res.payload.user && res.payload.user._id) {
 				const { user } = res.payload
-				const search = await executeExploreSearch('all', user._id, 0, 5, user.sports)
+				const search = await executeExploreSearch('all', user._id, 0, 10, user.sports)
 				const replays = await fetchUserReplays(user._id)
 				// fetchNotifications(userId)
 				const trainings = await fetchTrainerCoachings(user._id, true)
