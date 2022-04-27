@@ -508,14 +508,14 @@ class Explore extends React.Component {
 													className='hover button-load-more-mobile'
 													onClick={() => {
 														this.setState({
-															skip: skip + 6,
+															skip: skip + 10,
 															isFetchingCoachings: true
 														})
 														executeExploreSearch(
 															activeSportType,
 															user._id,
-															skip + 6,
-															6,
+															skip + 10,
+															10,
 															user.sports
 														).then((res) => {
 															if (res && res.payload && res.payload.length < 5) {
