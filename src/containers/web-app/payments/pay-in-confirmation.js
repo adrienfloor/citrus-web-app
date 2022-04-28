@@ -308,7 +308,7 @@ class PayInConfirmation extends React.Component {
 								// Update coach profile
 								updateUser({
 									id: coaching.coachId,
-									lifeTimeGains: coachInfo.lifeTimeGains + (coaching.price * 0.7)
+									lifeTimeGains: coachInfo.lifeTimeGains + (Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100) / 100)
 								})
 							})
 					} else {

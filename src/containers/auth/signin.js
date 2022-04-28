@@ -131,7 +131,7 @@ class Signin extends React.Component {
 				const trainings = await fetchTrainerCoachings(user._id, true)
 				if(search && replays && trainings) {
 					this.setState({ isLoading: false })
-					return this.props.history.push('/home')
+					return this.props.history.push('/explore')
 				}
 			} else if (res && res.type === 'LOGIN_FAIL') {
 				this.setState({

@@ -727,7 +727,7 @@ class Home extends React.Component {
 									<div className='medium-separator'></div>
 									<div className='small-separator'></div>
 									<span className='small-title citrusBlack'>
-										{capitalize(t('payments'))}
+										{capitalize(t('earnings'))}
 									</span>
 									<div className='small-separator'></div>
 									<div className='stats-row'>

@@ -470,6 +470,7 @@ class Explore extends React.Component {
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
+													boughtCoaching={coaching.isMine}
 												/>
 											</div>
 										))
@@ -487,6 +488,7 @@ class Explore extends React.Component {
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
+													boughtCoaching={coaching.isMine}
 												/>
 											</div>
 										))
@@ -619,6 +621,7 @@ class Explore extends React.Component {
 												rating={coaching.coachingRating}
 												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 												imgUri={coaching.pictureUri}
+												boughtCoaching={coaching.isMine}
 											/>
 										</div>)) :
 									null

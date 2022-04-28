@@ -24,8 +24,6 @@ import '../../styling/buttons.css'
 import '../../styling/spacings.css'
 import '../../styling/App.css'
 import '../../styling/web-app.css'
-import { ReactComponent as CaretDown } from '../../assets/svg/caret-down.svg'
-import { ReactComponent as CaretUp } from '../../assets/svg/caret-up.svg'
 import { ReactComponent as Check } from '../../assets/svg/check.svg'
 import { ReactComponent as Close } from '../../assets/svg/close.svg'
 
@@ -935,11 +933,19 @@ class Schedule extends React.Component {
 									<div className='flex-column'>
 										<div
 											className='flex-row'
-											style={{ alignItems: 'center', justifyContent: 'center' }}
+											style={{ height: '30px', alignItems: 'center', justifyContent: 'center' }}
 										>
-											<span className='big-title-upload-video citrusBlack' style={{ height: '25px', marginRight: '5px' }}>
+											<span className='big-title-upload-video citrusBlack' style={{ height: '40px', marginRight: '10px' }}>
 												{`${capitalize(t('uploadingVideo'))} : ${progress}%`}
 											</span>
+											<div style={{ height: '30px', display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+											<Loader
+												type="Oval"
+												color="#C2C2C2"
+												height={25}
+												width={25}
+											/>
+											</div>
 										</div>
 										<div className='medium-separator'></div>
 										<div className='medium-separator'></div>

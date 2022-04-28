@@ -420,8 +420,8 @@ class CoachProfile extends React.Component {
 									</span>
 									<div className='medium-separator'></div>
 								{
-									coachComments.map(com => (
-										<div className='flex-column'>
+									coachComments.map((com, i) => (
+										<div className='flex-column' key={i}>
 											<div
 												className='flex-row'
 												style={{ alignItems: 'center' }}

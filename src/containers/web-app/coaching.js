@@ -98,6 +98,7 @@ class Coaching extends React.Component {
 		.then(res => this.setState({ coachInfo: res.payload }))
 		// fetchMpUserCredits(user.MPUserId)
 		// .then(credits => this.setState({ credits }))
+
 		setTimeout(() => {
 			this.setState({ isWatchingPreview: false })
 		}, 30000);
@@ -245,12 +246,18 @@ class Coaching extends React.Component {
 						]
 					}, true)
 					.then(res => {
+						console.log(coachInfo)
+						console.log('')
+						console.log(coachInfo.lifeTimeGains)
+						console.log('')
+						console.log(coachInfo.lifeTimeGains + (Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100) / 100))
+						console.log('')
 						// Fetch updated replays of user
 						fetchUserReplays(user._id)
 						// Update coach profile
 						updateUser({
 							id: coaching.coachId,
-							lifeTimeGains: user.lifeTimeGains + (coaching.price * 0.7)
+							lifeTimeGains: coachInfo.lifeTimeGains + (Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100) / 100)
 						})
 						// Update coaching
 						updateCoaching({
@@ -896,17 +903,21 @@ class Coaching extends React.Component {
 					{
 						!isWatchingPreview ?
 						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								alignItems: 'center',
+								overflow: 'hidden'
+							}}
 							onMouseOver={this.showVideoPreview}
 							onMouseLeave={() => this.setState({ isWatchingPreview: false })}
-							className='mobile-card-image'
-							style={{
-								backgroundPosition: 'center',
-								backgroundRepeat: 'no-repeat',
-								backgroundImage: `url(${pictureUri})`,
-								backgroundSize: 'cover'
-							}}
 						>
-						</div> :
+							<img
+								src={pictureUri}
+								className='mobile-card-image'
+							/>
+						</div>
+							:
 						<div
 							onMouseLeave={() => this.setState({ isWatchingPreview: false })}
 							className={

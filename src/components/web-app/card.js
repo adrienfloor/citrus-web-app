@@ -11,7 +11,7 @@ import '../../styling/web-app.css'
 import { capitalize } from '../../utils/various'
 import { Height } from '@material-ui/icons'
 
-const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => {
+const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating, boughtCoaching }) => {
 
 	const imageType = `image${capitalize(size)}`
 	if (onClick) {
@@ -32,15 +32,30 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => 
 							backgroundImage: `url(${imgUri})`,
 							backgroundSize: 'cover',
 							width: fullWidth ? '100%' : '300px',
-							minHeight: fullWidth ? '100%' : '200px'
+							minHeight: fullWidth ? '100%' : '200px',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							alignItems: 'flex-end'
 						}}>
+						{
+							boughtCoaching &&
+							<img
+								src='https://res.cloudinary.com/dho1rqbwk/image/upload/v1651153384/VonageApp/check-one.2048x2048_plpbkv.png'
+								width={25}
+								height={25}
+								style={{ margin: '0 5px 5px 0' }}
+							/>
+						}
 					</div>
 				</div>
 				<div className='small-separator'></div>
 				<div className='textContainer'>
 					{
 						title && title.length > 0 &&
-						<span className='small-title citrusBlack title-row'>
+						<span
+							className='small-title citrusBlack title-row'
+							style={{ alignItems: 'flex-start', justifyContent: 'space-between' }}
+						>
 							{title}
 							{
 								rating && rating.rating &&
@@ -49,7 +64,7 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating }) => 
 									size='small'
 									value={rating.rating}
 									readOnly
-									style={{ marginLeft: '5px' }}
+									style={{ marginLeft: '5px', marginTop: '2px' }}
 								/>
 							}
 						</span>
