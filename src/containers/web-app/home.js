@@ -7,6 +7,8 @@ import ProgressBar from '@ramonak/react-progress-bar'
 import { Dialog, Tooltip } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import qs from 'query-string'
+import TextField from '@material-ui/core/TextField'
+import Rating from '@material-ui/lab/Rating'
 
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
@@ -30,6 +32,15 @@ import {
 	fetchMpUserCredits,
 	fetchMpUserInfo
 } from '../../services/mangopay'
+
+import {
+	fetchUserInfo,
+	updateUser,
+	fetchUserReplays
+} from '../../actions/auth-actions'
+import { updateCoaching } from '../../actions/coachings-actions'
+import { setNotification } from '../../actions/notifications-actions'
+import { executeExploreSearch } from '../../actions/search-actions'
 
 import {
 	capitalize,
@@ -63,7 +74,10 @@ class Home extends React.Component {
 			credits: null,
 			mpLegalUserInfo: null,
 			isLegalUserFullyCreated: false,
-			isVideoPlaying: false
+			isVideoPlaying: false,
+			isRatingCoaching: false,
+			coachingToRate: null,
+			ratingValue: null
 		}
 
 		tabs = [
@@ -74,6 +88,7 @@ class Home extends React.Component {
 		this.handleTabSelection = this.handleTabSelection.bind(this)
 		this.returnTopActivities = this.returnTopActivities.bind(this)
 		this.legalUserFullyCreated = this.legalUserFullyCreated.bind(this)
+		this.handleCoachRating = this.handleCoachRating.bind(this)
 	}
 
 	componentDidMount() {
@@ -180,6 +195,90 @@ class Home extends React.Component {
 		this.setState({ isLegalUserFullyCreated: true })
 	}
 
+	handleCoachRating() {
+		const {
+			coachComment,
+			ratingValue,
+			coachingToRate
+		} = this.state
+		const {
+			updateCoaching,
+			updateUser,
+			user,
+			fetchUserReplays,
+			setNotification,
+			t,
+			executeExploreSearch,
+			fetchUserInfo
+		} = this.props
+
+		if(ratingValue === null) {
+			return
+		}
+		
+		this.setState({ isLoading: true })
+
+		let { coachingRating } = coachingToRate
+		// update coaching rating with new rating
+		if(!coachingRating) {
+			coachingRating = {
+				rating: null,
+				numberOfRatings: 0
+			}
+		}
+		const newNumberOfRatings = coachingRating.numberOfRatings + 1
+		const newRating = ((coachingRating.rating * coachingRating.numberOfRatings) + ratingValue) / newNumberOfRatings
+		updateCoaching({
+			_id: coachingToRate._id,
+			coachingRating: {
+				numberOfRatings: newNumberOfRatings,
+				rating: newRating
+			}
+		})
+		// update user replay to confirm he rated it
+		const updatedReplays = user.myReplays
+		for(let i=0; i<updatedReplays.length;i++) {
+			if(updatedReplays[i]._id === coachingToRate._id) {
+				updatedReplays[i].myRating = ratingValue
+				updatedReplays[i].coachingRating = {
+					numberOfRatings: newNumberOfRatings,
+					rating: newRating
+				}
+			}
+		}
+		updateUser({
+			id: user._id,
+			myReplays: updatedReplays
+		}).then(() => {
+			// update coach comments
+			if(coachComment !== '') {
+				fetchUserInfo(coachingToRate.coachId)
+				.then(res => {
+					const coachInfo = res.payload
+					console.log(coachInfo)
+					updateUser({
+						id: coachingToRate.coachId,
+						coachComments: [
+							{
+								coachComment,
+								userName: user.userName,
+								rating: ratingValue
+							},
+							...coachInfo.coachComments
+						]
+					})
+				})
+			}
+			fetchUserReplays(user._id)
+			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
+			executeExploreSearch('all', user._id, 0, 10, user.sports)
+			this.setState({
+				isRatingCoaching: false,
+				isLoading: false
+			})
+		})
+	}
+
 	render() {
 		const {
 			user,
@@ -207,7 +306,6 @@ class Home extends React.Component {
 			activeTabIndex,
 			activeTabName,
 			selectedCoaching,
-			isMenuOpen,
 			isCashingOut,
 			userReplaysSkip,
 			followingsSkip,
@@ -216,7 +314,9 @@ class Home extends React.Component {
 			currentGains,
 			mpLegalUserInfo,
 			isLegalUserFullyCreated,
-			isVideoPlaying
+			isVideoPlaying,
+			isRatingCoaching,
+			ratingValue
 		} = this.state
 
 		if (isLoading || !user) {
@@ -787,12 +887,139 @@ class Home extends React.Component {
 					}
 				</div>
 				{
+					isRatingCoaching &&
+					<Dialog
+						open={isRatingCoaching ? true : false}
+						onClose={() => this.setState({ isRatingCoaching: false })}
+					>
+						<div className='coaching-rating-container'>
+							<div className='rating-container'>
+								<span className='small-text-bold' style={{ marginRight: '10px' }}>
+									{capitalize(t('whatDidYouThinkAboutThisCoaching'))}
+								</span>
+								<Rating
+									precision={0.5}
+									size='large'
+									value={ratingValue}
+									onChange={(event, newValue) => {
+										this.setState({ ratingValue: newValue })
+									}}
+								/>
+							</div>
+							<div className='big-separator'></div>
+							<span className='small-text-bold' style={{ width: '100%' }}>
+								{capitalize(t('tellUseMOreAboutThisCoach'))} :
+							</span>
+							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
+							<TextField
+								variant='outlined'
+								className='small-text-bold citrusGrey text-field-rating'
+								multiline
+								rows={4}
+								placeholder={capitalize(t('whatDidYouLikeTrainingWithThisCoach'))}
+								onChange={(e) => this.setState({ coachComment: e.target.value })}
+							/>
+							<div className='big-separator'></div>
+							<div className='rating-buttons-container'>
+								<div
+									className='filled-button hover cta'
+									onClick={this.handleCoachRating}
+								>
+									<span className='small-text-bold'>{capitalize(t('send'))}</span>
+								</div>
+								<div className='medium-separator'></div>
+								<div
+									className='hover'
+									style={{
+										borderBottom: '1px solid #C2C2C2',
+										paddingBottom: 1
+									}}
+									onClick={() => {
+										this.setState({
+											isRatingCoaching: false,
+											muxReplayPlaybackId: null
+										})
+									}}
+								>
+									<span className='smaller-text-bold citrusGrey'>
+										{capitalize(t('illDoItLater'))}
+									</span>
+								</div>
+							</div>
+						</div>
+						<style jsx='true'>
+							{`
+							.coaching-rating-container {
+								padding: 40px;
+								min-height: 380px;
+								min-width: 620px;
+							}
+							.rating-container {
+								width: 100%;
+								display: flex;
+								align-items: center;
+							}
+							.rating-buttons-container {
+								width: 100%;
+								display: flex;
+								flex-direction: column;
+								justify-content: center;
+								align-items: center;
+								margin-top: 20px;
+							}
+							.text-field-rating {
+								color: #000000;
+								width: 100%;
+								background-color: inherit;
+							}
+							@media only screen and (max-width: 640px) {
+								.coaching-rating-container {
+									padding: 10px;
+									height: 100%;
+									width: calc(100% - 10px);
+									min-width: 0;
+									min-height: 0;
+								}
+								.rating-container {
+									flex-direction: column;
+									align-items: flex-start;
+									justify-content: space-between;
+									height: 60px;
+								}
+								.rating-buttons-container {
+									margin-top: 10px;
+								}
+								.text-field-rating {
+									width: 95%;
+								}
+								.cta {
+									width: 190px !important;
+								}
+							}
+						`}
+						</style>
+					</Dialog>
+				}
+				{
 					selectedCoaching &&
 					<Dialog
 						open={selectedCoaching ? true : false}
 						onClose={() => {
 							this.handleTabSelection(activeTabName, activeTabIndex)
-							this.setState({ selectedCoaching: null })
+							selectedCoaching &&
+							!selectedCoaching.myRating &&
+							selectedCoaching.coachId !== user._id ?
+							this.setState({
+								coachingToRate: selectedCoaching,
+								selectedCoaching: null,
+								isRatingCoaching: true
+							}) :
+							this.setState({
+								coachingToRate: null,
+								selectedCoaching: null,
+								isRatingCoaching: false
+							})
 						}}
 					>
 						<div
@@ -804,13 +1031,21 @@ class Home extends React.Component {
 								coaching={selectedCoaching}
 								onCancel={() => {
 									this.handleTabSelection(activeTabName, activeTabIndex)
-									this.setState({ selectedCoaching: null })
+									selectedCoaching &&
+									!selectedCoaching.myRating &&
+									selectedCoaching.coachId !== user._id ?
+									this.setState({
+										coachingToRate: selectedCoaching,
+										selectedCoaching: null,
+										isRatingCoaching: true
+									}) :
+									this.setState({
+										coachingToRate: null,
+										selectedCoaching: null,
+										isRatingCoaching: false
+									})
 								}}
 								isMyCoaching={user._id === selectedCoaching.coachId}
-								isMyUnratedReplay={
-									selectedCoaching && !selectedCoaching.myRating &&
-									selectedCoaching.coachId !== user._id
-								}
 							/>
 						</div>
 					</Dialog>
@@ -873,6 +1108,14 @@ const mapStateToProps = (state) => ({
 	userReplays: state.auth.userReplays
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = (dispatch) => ({
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
+	fetchUserInfo: (id) => dispatch(fetchUserInfo(id)),
+	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
+	fetchUserReplays: (id) => dispatch(fetchUserReplays(id)),
+	setNotification: notif => dispatch(setNotification(notif)),
+	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
+		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Home))

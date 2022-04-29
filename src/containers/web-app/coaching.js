@@ -75,19 +75,16 @@ class Coaching extends React.Component {
 			isCoachingCheckoutOpen: null,
 			errorMessage: null,
 			selectedCoach: null,
-			isRatingCoaching: false,
-			ratingValue: null,
-			coachComment: '',
 			isSharingCoaching: false,
 			isWatchingPreview: true,
-			isPreviewMuted: true
+			isPreviewMuted: true,
+			firstTimeWatching: false
 		}
 
 		this.handleSubmit = this.handleSubmit.bind(this)
 		this.handlePayCoaching = this.handlePayCoaching.bind(this)
 		this.renderButtonText = this.renderButtonText.bind(this)
 		this.handleTransfer = this.handleTransfer.bind(this)
-		this.handleCoachRating = this.handleCoachRating.bind(this)
 		this.showVideoPreview = this.showVideoPreview.bind(this)
 	}
 
@@ -127,88 +124,6 @@ class Coaching extends React.Component {
 		return `${capitalize(t('buyFor'))} ${price} ${returnCurrency(moment.locale())}`
 	}
 
-	handleCoachRating() {
-		const {
-			coachComment,
-			ratingValue,
-			coachInfo
-		} = this.state
-		const {
-			updateCoaching,
-			updateUser,
-			coaching,
-			user,
-			fetchUserReplays,
-			onCancel,
-			setNotification,
-			t,
-			executeExploreSearch
-		} = this.props
-
-		if(ratingValue === null) {
-			return
-		}
-
-		this.setState({ isLoading: true })
-
-		let { coachingRating } = coaching
-		// update coaching rating with new rating
-		if(!coachingRating) {
-			coachingRating = {
-				rating: null,
-				numberOfRatings: 0
-			}
-		}
-		const newNumberOfRatings = coachingRating.numberOfRatings + 1
-		const newRating = ((coachingRating.rating * coachingRating.numberOfRatings) + ratingValue) / newNumberOfRatings
-		updateCoaching({
-			_id: coaching._id,
-			coachingRating: {
-				numberOfRatings: newNumberOfRatings,
-				rating: newRating
-			}
-		})
-		// update user replay to confirm he rated it
-		const updatedReplays = user.myReplays
-		for(let i=0; i<updatedReplays.length;i++) {
-			if(updatedReplays[i]._id === coaching._id) {
-				updatedReplays[i].myRating = ratingValue
-				updatedReplays[i].coachingRating = {
-					numberOfRatings: newNumberOfRatings,
-					rating: newRating
-				}
-			}
-		}
-		updateUser({
-			id: user._id,
-			myReplays: updatedReplays
-		}).then(() => {
-			// update coach comments
-			if(coachComment !== '') {
-				updateUser({
-					id: coaching.coachId,
-					coachComments: [
-						{
-							coachComment,
-							userName: user.userName,
-							rating: ratingValue
-						},
-						...coachInfo.coachComments
-					]
-				})
-			}
-			fetchUserReplays(user._id)
-			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
-			executeExploreSearch('all', user._id, 0, 10, user.sports)
-			onCancel()
-			this.setState({
-				muxReplayPlaybackId: null,
-				isRatingCoaching: false,
-				isLoading: false
-			})
-		})
-	}
-
 	handleTransfer() {
 		const {
 			coaching,
@@ -222,7 +137,8 @@ class Coaching extends React.Component {
 			updateUser,
 			fetchUserReplays,
 			updateCoaching,
-			t
+			t,
+			onNewCoachingPurchase
 		} = this.props
 
 		// Transfer amount from user wallet to coach wallet while handling Citrus fees
@@ -246,24 +162,20 @@ class Coaching extends React.Component {
 						]
 					}, true)
 					.then(res => {
-						console.log(coachInfo)
-						console.log('')
-						console.log(coachInfo.lifeTimeGains)
-						console.log('')
-						console.log(coachInfo.lifeTimeGains + (Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100) / 100))
-						console.log('')
 						// Fetch updated replays of user
 						fetchUserReplays(user._id)
 						// Update coach profile
 						updateUser({
 							id: coaching.coachId,
-							lifeTimeGains: coachInfo.lifeTimeGains + (Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100) / 100)
+							lifeTimeGains: coachInfo.lifeTimeGains + ((Math.round(((coaching.price * 0.7) + Number.EPSILON) * 100)) / 100)
 						})
 						// Update coaching
 						updateCoaching({
 							_id: coaching._id,
 							numberOfViewers: coaching.numberOfViewers + 1
 						})
+						loadUser()
+						onNewCoachingPurchase()
 						// Launch video
 						this.setState({
 							isLoading: false,
@@ -475,8 +387,7 @@ class Coaching extends React.Component {
 			onCoachingDeleted,
 			t,
 			setNotification,
-			fetchTrainerCoachings,
-			isMyUnratedReplay
+			fetchTrainerCoachings
 		} = this.props
 		const {
 			isLoading,
@@ -490,7 +401,6 @@ class Coaching extends React.Component {
 			errorMessage,
 			coachInfo,
 			selectedCoach,
-			isRatingCoaching,
 			ratingValue,
 			isSharingCoaching,
 			isWatchingPreview,
@@ -710,12 +620,8 @@ class Coaching extends React.Component {
 					<div className='close-button'>
 						<Close
 							onClick={() => {
-								isMyUnratedReplay ?
-								this.setState({
-									isRatingCoaching: true,
-									muxReplayPlaybackId: null
-								}) :
 								this.setState({ muxReplayPlaybackId: null })
+								onCancel()
 							}}
 							className='hover'
 							width={25}
@@ -745,110 +651,15 @@ class Coaching extends React.Component {
 							}
 							@media only screen and (max-width: 640px) {
 								.close-button {
-									top: 0;
-									right: 60px;
+									// top: 0;
+									// right: 60px;
+									top: -220px;
+									right: -5px;
 								}
 							}
 						`}
 					</style>
 
-				</div>
-			)
-		}
-
-		if(isRatingCoaching) {
-			return (
-				<div
-					className='full-width-and-height-dialog white'
-					style={{
-						height: '100%',
-						minHeight: '600px',
-						overflowY: 'auto'
-					}}
-				>
-					<div
-						className='flex-column flex-center'
-						style={{ padding: '10%' }}
-					>
-						<div className='rating-container'>
-							<span className='small-text-bold'>
-								{capitalize(t('whatDidYouThinkAboutThisCoaching'))}
-							</span>
-							<Rating
-								precision={0.5}
-								size='large'
-								value={ratingValue}
-								onChange={(event, newValue) => {
-									this.setState({ ratingValue: newValue })
-								}}
-							/>
-						</div>
-						<div className='big-separator'></div>
-						<span className='small-text-bold' style={{ width: '100%' }}>
-							{capitalize(t('tellUseMOreAboutThisCoach'))} :
-						</span>
-						<div className='medium-separator'></div>
-						<div className='small-separator'></div>
-						<TextField
-							variant='outlined'
-							className='small-text-bold citrusGrey'
-							multiline
-							rows={4}
-							placeholder={capitalize(t('whatDidYouLikeTrainingWithThisCoach'))}
-							onChange={(e) => this.setState({ coachComment: e.target.value })}
-							style={{
-								color: '#000000',
-								width: '100%',
-								backgroundColor: 'inherit'
-							}}
-						/>
-						<div className='big-separator'></div>
-						<div
-							className='filled-button hover'
-							onClick={this.handleCoachRating}
-						>
-							<span className='small-text-bold'>{capitalize(t('send'))}</span>
-						</div>
-						<div className='medium-separator'></div>
-						<div
-							className='hover'
-							style={{
-								borderBottom: '1px solid #C2C2C2',
-								paddingBottom: 1
-							}}
-							onClick={() => {
-								this.setState({
-									isRatingCoaching: false,
-									muxReplayPlaybackId: null
-								})
-							}}
-						>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('illDoItLater'))}
-							</span>
-						</div>
-					</div>
-					<style jsx='true'>
-						{`
-						.rating-container {
-							width: 50%;
-							margin-right: 50%;
-							display: flex;
-							align-items: center;
-							justify-content: space-between;
-						}
-						@media only screen and (max-width: 640px) {
-							.rating-container {
-								width: 100%;
-								margin-right: 0;
-								flex-direction: column;
-								align-items: flex-start;
-								justify-content: space-between;
-								height: 70px;
-							}
-						}
-					`}
-					</style>
 				</div>
 			)
 		}

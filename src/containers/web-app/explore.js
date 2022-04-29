@@ -5,9 +5,10 @@ import { withTranslation } from 'react-i18next'
 import Dialog from '@material-ui/core/Dialog'
 import Loader from 'react-loader-spinner'
 import moment from 'moment'
-import AwesomeDebouncePromise from 'awesome-debounce-promise'
 import { Link } from 'react-router-dom'
 import qs from 'query-string'
+import TextField from '@material-ui/core/TextField'
+import Rating from '@material-ui/lab/Rating'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -24,7 +25,6 @@ import SigninFromRedirect from '../auth/signin-from-redirect'
 import Coaching from './coaching'
 import CoachProfile from './coach-profile'
 import Card from '../../components/web-app/card'
-import Tag from '../../components/web-app/tag'
 
 import {
 	capitalize,
@@ -32,8 +32,9 @@ import {
 } from '../../utils/various'
 
 import {
-	loadUser,
-	fetchUserInfo
+	fetchUserInfo,
+	updateUser,
+	fetchUserReplays
 } from '../../actions/auth-actions'
 import {
 	executeExploreSearch,
@@ -42,7 +43,11 @@ import {
 	resetSpecificSportSearch,
 	resetExploreSearch,
 } from '../../actions/search-actions'
-import { fetchCoaching } from '../../actions/coachings-actions'
+import {
+	fetchCoaching,
+	updateCoaching
+} from '../../actions/coachings-actions'
+import { setNotification } from '../../actions/notifications-actions'
 
 import * as frCommonTranslations from '../../fixtures/fr'
 import * as enCommonTranslations from '../../fixtures/en'
@@ -69,7 +74,11 @@ class Explore extends React.Component {
 			skip: 0,
 			showLoadMore: true,
 			isLoading: false,
-			isSigninUp: false
+			isSigninUp: false,
+			coachComment : '',
+			ratingValue: null,
+			coachingToRate: null,
+			isNewPurchase: false
 		}
 
 		const { user } = this.props
@@ -81,6 +90,7 @@ class Explore extends React.Component {
 		this.handleResetSearch = this.handleResetSearch.bind(this)
 		this.handleSportSelection = this.handleSportSelection.bind(this)
 		this.handleShowCoachOrCoaching = this.handleShowCoachOrCoaching.bind(this)
+		this.handleCoachRating = this.handleCoachRating.bind(this)
 	}
 
 	componentDidMount() {
@@ -91,9 +101,6 @@ class Explore extends React.Component {
 		const {
 			location,
 			user,
-			userReplays,
-			executeExploreSearch,
-			resetExploreSearch,
 			fetchCoaching,
 			fetchUserInfo
 		} = this.props
@@ -203,6 +210,90 @@ class Explore extends React.Component {
 		}
 	}
 
+	handleCoachRating() {
+		const {
+			coachComment,
+			ratingValue,
+			coachingToRate
+		} = this.state
+		const {
+			updateCoaching,
+			updateUser,
+			user,
+			fetchUserReplays,
+			setNotification,
+			t,
+			executeExploreSearch,
+			fetchUserInfo
+		} = this.props
+
+		if(ratingValue === null) {
+			return
+		}
+		
+		this.setState({ isLoading: true })
+
+		let { coachingRating } = coachingToRate
+		// update coaching rating with new rating
+		if(!coachingRating) {
+			coachingRating = {
+				rating: null,
+				numberOfRatings: 0
+			}
+		}
+		const newNumberOfRatings = coachingRating.numberOfRatings + 1
+		const newRating = ((coachingRating.rating * coachingRating.numberOfRatings) + ratingValue) / newNumberOfRatings
+		updateCoaching({
+			_id: coachingToRate._id,
+			coachingRating: {
+				numberOfRatings: newNumberOfRatings,
+				rating: newRating
+			}
+		})
+		// update user replay to confirm he rated it
+		const updatedReplays = user.myReplays
+		for(let i=0; i<updatedReplays.length;i++) {
+			if(updatedReplays[i]._id === coachingToRate._id) {
+				updatedReplays[i].myRating = ratingValue
+				updatedReplays[i].coachingRating = {
+					numberOfRatings: newNumberOfRatings,
+					rating: newRating
+				}
+			}
+		}
+		updateUser({
+			id: user._id,
+			myReplays: updatedReplays
+		}).then(() => {
+			// update coach comments
+			if(coachComment !== '') {
+				fetchUserInfo(coachingToRate.coachId)
+				.then(res => {
+					const coachInfo = res.payload
+					console.log(coachInfo)
+					updateUser({
+						id: coachingToRate.coachId,
+						coachComments: [
+							{
+								coachComment,
+								userName: user.userName,
+								rating: ratingValue
+							},
+							...coachInfo.coachComments
+						]
+					})
+				})
+			}
+			fetchUserReplays(user._id)
+			setNotification({ message: capitalize(t('thankYouForRatingThisCoaching')) })
+			executeExploreSearch('all', user._id, 0, 10, user.sports)
+			this.setState({
+				isRatingCoaching: false,
+				isLoading: false
+			})
+		})
+	}
+
 	render() {
 		const {
 			activeTabIndex,
@@ -218,7 +309,10 @@ class Explore extends React.Component {
 			activeSportType,
 			showLoadMore,
 			isLoading,
-			isSigninUp
+			isSigninUp,
+			isRatingCoaching,
+			ratingValue,
+			isNewPurchase
 		} = this.state
 		const {
 			executeExploreSearch,
@@ -459,12 +553,13 @@ class Explore extends React.Component {
 										exploreSearch.map((coaching, i) => (
 											<div className='explore-cards-container' key={i}>
 												<Card
-													onClick={() =>
+													onClick={() => {
+														console.log(coaching)
 														this.setState({
 															selectedCoaching: coaching,
 															currentScrollIndex: i
 														})
-													}
+													}}
 													fullWidth
 													title={titleCase(coaching.title)}
 													rating={coaching.coachingRating}
@@ -651,11 +746,34 @@ class Explore extends React.Component {
 					<Dialog
 						open={selectedCoaching ? true : false}
 						onClose={() => {
-							const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
-							if (coachingQuery) {
-								history.push('/explore')
+							if(selectedCoaching.isMine || isNewPurchase) {
+								const myCoaching = user.myReplays.find(replay => (
+									replay._id === selectedCoaching._id
+								))
+								if(!myCoaching.myRating) {
+									this.setState({
+										coachingToRate: selectedCoaching,
+										selectedCoaching: null,
+										isRatingCoaching: true
+									})
+								} else {
+									this.setState({
+										coachingToRate: null,
+										selectedCoaching: null,
+										isRatingCoaching: false
+									})
+									const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+									if (coachingQuery) {
+										history.push('/explore')
+									}
+								}
+							} else {
+								const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+								if (coachingQuery) {
+									history.push('/explore')
+								}
+								this.setState({ selectedCoaching: null })
 							}
-							this.setState({ selectedCoaching: null })
 						}}
 					>
 						<div
@@ -665,15 +783,154 @@ class Explore extends React.Component {
 							<Coaching
 								coaching={selectedCoaching}
 								onCancel={() => {
-									const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
-									if (coachingQuery) {
-										history.push('/explore')
+									if(selectedCoaching.isMine || isNewPurchase) {
+										const myCoaching = user.myReplays.find(replay => (
+											replay._id === selectedCoaching._id
+										))
+										if(!myCoaching.myRating) {
+											this.setState({
+												coachingToRate: selectedCoaching,
+												selectedCoaching: null,
+												isRatingCoaching: true
+											})
+										} else {
+											this.setState({
+												coachingToRate: null,
+												selectedCoaching: null,
+												isRatingCoaching: false
+											})
+											const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+											if (coachingQuery) {
+												history.push('/explore')
+											}
+										}
+									} else {
+										const coachingQuery = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+										if (coachingQuery) {
+											history.push('/explore')
+										}
+										this.setState({ selectedCoaching: null })
 									}
-									this.setState({ selectedCoaching: null })
 								}}
 								isMyCoaching={false}
+								onNewCoachingPurchase={() => this.setState({ isNewPurchase: true })}
 							/>
 						</div>
+					</Dialog>
+				}
+				{
+					isRatingCoaching &&
+					<Dialog
+						open={isRatingCoaching ? true : false}
+						onClose={() => this.setState({ isRatingCoaching: false })}
+					>
+						<div className='coaching-rating-container'>
+							<div className='rating-container'>
+								<span className='small-text-bold' style={{ marginRight: '10px' }}>
+									{capitalize(t('whatDidYouThinkAboutThisCoaching'))}
+								</span>
+								<Rating
+									precision={0.5}
+									size='large'
+									value={ratingValue}
+									onChange={(event, newValue) => {
+										this.setState({ ratingValue: newValue })
+									}}
+								/>
+							</div>
+							<div className='big-separator'></div>
+							<span className='small-text-bold' style={{ width: '100%' }}>
+								{capitalize(t('tellUseMOreAboutThisCoach'))} :
+							</span>
+							<div className='medium-separator'></div>
+							<div className='small-separator'></div>
+							<TextField
+								variant='outlined'
+								className='small-text-bold citrusGrey text-field-rating'
+								multiline
+								rows={4}
+								placeholder={capitalize(t('whatDidYouLikeTrainingWithThisCoach'))}
+								onChange={(e) => this.setState({ coachComment: e.target.value })}
+							/>
+							<div className='big-separator'></div>
+							<div className='rating-buttons-container'>
+								<div
+									className='filled-button hover cta'
+									onClick={this.handleCoachRating}
+								>
+									<span className='small-text-bold'>{capitalize(t('send'))}</span>
+								</div>
+								<div className='medium-separator'></div>
+								<div
+									className='hover'
+									style={{
+										borderBottom: '1px solid #C2C2C2',
+										paddingBottom: 1
+									}}
+									onClick={() => {
+										this.setState({
+											isRatingCoaching: false,
+											muxReplayPlaybackId: null
+										})
+									}}
+								>
+									<span className='smaller-text-bold citrusGrey'>
+										{capitalize(t('illDoItLater'))}
+									</span>
+								</div>
+							</div>
+						</div>
+						<style jsx='true'>
+							{`
+							.coaching-rating-container {
+								padding: 40px;
+								min-height: 380px;
+								min-width: 620px;
+							}
+							.rating-container {
+								width: 100%;
+								display: flex;
+								align-items: center;
+							}
+							.rating-buttons-container {
+								width: 100%;
+								display: flex;
+								flex-direction: column;
+								justify-content: center;
+								align-items: center;
+								margin-top: 20px;
+							}
+							.text-field-rating {
+								color: #000000;
+								width: 100%;
+								background-color: inherit;
+							}
+							@media only screen and (max-width: 640px) {
+								.coaching-rating-container {
+									padding: 10px;
+									height: 100%;
+									width: calc(100% - 10px);
+									min-width: 0;
+									min-height: 0;
+								}
+								.rating-container {
+									flex-direction: column;
+									align-items: flex-start;
+									justify-content: space-between;
+									height: 60px;
+								}
+								.rating-buttons-container {
+									margin-top: 10px;
+								}
+								.text-field-rating {
+									width: 95%;
+								}
+								.cta {
+									width: 190px !important;
+								}
+							}
+						`}
+						</style>
 					</Dialog>
 				}
 			</div>
@@ -690,7 +947,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	loadUser: () => dispatch(loadUser()),
 	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
 	executeExploreSearch: (sport, userId, skipValue, limit, userFavoriteSports) =>
 		dispatch(executeExploreSearch(sport, userId, skipValue, limit, userFavoriteSports)),
@@ -700,7 +956,11 @@ const mapDispatchToProps = (dispatch) => ({
 	resetExploreSearch: () => dispatch(resetExploreSearch()),
 	resetSpecificSportSearch: () => dispatch(resetSpecificSportSearch()),
 	fetchCoaching: id => dispatch(fetchCoaching(id)),
-	fetchUserInfo: id => dispatch(fetchUserInfo(id))
+	fetchUserInfo: id => dispatch(fetchUserInfo(id)),
+	updateUser: (userInfo, isMe) => dispatch(updateUser(userInfo, isMe)),
+	updateCoaching: (coaching) => dispatch(updateCoaching(coaching)),
+	fetchUserReplays: (id) => dispatch(fetchUserReplays(id)),
+	setNotification: notif => dispatch(setNotification(notif))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Explore))
