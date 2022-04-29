@@ -74,6 +74,7 @@ class Coaching extends React.Component {
 			isChoosingPaymentMethod: false,
 			isCoachingCheckoutOpen: null,
 			errorMessage: null,
+			mpErrorMessage: null,
 			selectedCoach: null,
 			isSharingCoaching: false,
 			isWatchingPreview: true,
@@ -255,7 +256,8 @@ class Coaching extends React.Component {
 							isLoading: false,
 							isPaymentConfirmationOpen: false,
 							isCoachingCheckoutOpen: false,
-							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction')),
+							mpErrorMessage: res.ResultMessage
 						})
 					})
 				} else {
@@ -279,7 +281,8 @@ class Coaching extends React.Component {
 							isLoading: false,
 							isPaymentConfirmationOpen: false,
 							isCoachingCheckoutOpen: false,
-							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction'))
+							errorMessage: capitalize(t('somethingWentWrongProcessingTheTransaction')),
+							mpErrorMessage: res.ResultMessage
 						})
 					})
 				}
@@ -399,6 +402,7 @@ class Coaching extends React.Component {
 			// credits,
 			isCoachingCheckoutOpen,
 			errorMessage,
+			mpErrorMessage,
 			coachInfo,
 			selectedCoach,
 			ratingValue,
@@ -470,11 +474,16 @@ class Coaching extends React.Component {
 							justifyContent: 'center',
 							display: 'flex',
 							height: '600px',
-							alignItems: 'center'
+							alignItems: 'center',
+							flexDirection: 'column'
 						}}
 					>
 						<span className='small-title citrusBlack'>
 							{errorMessage}
+						</span>
+						<div className='small-separator'></div>
+						<span className='small-title citrsBlack'>
+							{`Error message : ${mpErrorMessage}`}
 						</span>
 					</div>
 				</div>
