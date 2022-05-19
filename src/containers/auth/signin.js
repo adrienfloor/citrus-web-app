@@ -236,7 +236,7 @@ class Signin extends React.Component {
 							className='text-input small-text citrusBlack input password-input'
 							type={showPassword ? 'text' : 'password'}
 							onChange={e => this.onTextInputChange(e, 'password')}
-							style={showPassword ? { height: '50px'} : { height: '52px' } }
+							// style={showPassword ? { height: '50px'} : { height: '52px' } }
 						/>
 						<div
 							className='password-eye hover'
