@@ -475,7 +475,7 @@ class Profile extends React.Component {
 											</div>
 										}
 									</> :
-									<Link to='/schedule' className='empty-coaching-card hover'>
+									<Link to='/post' className='empty-coaching-card hover'>
 										<PlusButton
 											width={180}
 											height={180}

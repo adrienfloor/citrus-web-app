@@ -754,7 +754,7 @@ class Home extends React.Component {
 												</div>
 											}
 										</> :
-										<Link to='/schedule' className='empty-coaching-card hover'>
+										<Link to='/post' className='empty-coaching-card hover'>
 											<div className='small-separator'></div>
 											<PlusButton
 												width={90}

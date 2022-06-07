@@ -11,7 +11,7 @@ import '../../styling/web-app.css'
 import { capitalize } from '../../utils/various'
 import { Height } from '@material-ui/icons'
 
-const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating, boughtCoaching }) => {
+const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating, hasCheckSign }) => {
 
 	const imageType = `image${capitalize(size)}`
 	if (onClick) {
@@ -38,7 +38,7 @@ const Card = ({ onClick, title, subtitle, imgUri, size, fullWidth, rating, bough
 							alignItems: 'flex-end'
 						}}>
 						{
-							boughtCoaching &&
+							hasCheckSign &&
 							<img
 								src='https://res.cloudinary.com/dho1rqbwk/image/upload/v1651153384/VonageApp/check-one.2048x2048_plpbkv.png'
 								width={25}

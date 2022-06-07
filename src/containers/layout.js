@@ -36,7 +36,7 @@ const Layout = ({
 		return 'small-text-bold citrusGrey hover'
 	}
 
-	const isWebview = location && location.pathname === '/schedule-webview'
+	const isWebview = location && location.pathname === '/post-webview'
 
 	if(isWebview) {
 		return <div className='webview'>{children}</div>
@@ -91,8 +91,8 @@ const Layout = ({
 										{capitalize(t('explore'))}
 									</span>
 								</Link>
-								<Link to='/schedule' className='desktop-only'>
-									<span className={isActiveTab('/schedule')}>
+								<Link to='/post' className='desktop-only'>
+									<span className={isActiveTab('/post')}>
 										{capitalize(t('post'))}
 									</span>
 								</Link>

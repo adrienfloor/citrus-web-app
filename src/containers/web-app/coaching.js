@@ -113,6 +113,10 @@ class Coaching extends React.Component {
 		const { coaching, user, t } = this.props
 		const { price, coachId } = coaching
 
+		if(!user) {
+			return capitalize(t('signinToWatch'))
+		}
+
 		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
 
 		if(user._id === coachId || hasBoughtCoaching || testUsers.includes(user.email)) {
@@ -336,6 +340,13 @@ class Coaching extends React.Component {
 		} = this.props
 
 		this.setState({ isLoading: true })
+
+		if(!user) {
+			window.location.href = `http://localhost:3000/signup`
+			// window.location.href = `http://app.thecitrusapp.com/explore?coaching_id=${coaching._id}`
+			return
+		}
+
 		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
 
 		// Test users can watch videos for free
@@ -802,7 +813,7 @@ class Coaching extends React.Component {
 							</span>
 						</div>
 						{
-							coaching.coachId === user._id ?
+							user && coaching.coachId === user._id ?
 								<>
 									<div className='small-separator'></div>
 									<div style={{ display: 'flex' }}>

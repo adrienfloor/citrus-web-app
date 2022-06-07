@@ -94,7 +94,14 @@ class Explore extends React.Component {
 	}
 
 	componentDidMount() {
+		const {
+			user,
+			executeExploreSearch
+		} = this.props
 		this.handleShowCoachOrCoaching()
+		if(!user) {
+			executeExploreSearch('all', null, 0, 10, null)
+		}
 	}
 
 	handleShowCoachOrCoaching() {
@@ -108,7 +115,7 @@ class Explore extends React.Component {
 		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
 		const coachId = qs.parse(location.search, { ignoreQueryPrefix: true }).coach
 
-		if (user && coachingId) {
+		if (coachingId) {
 			this.setState({ isLoading: true })
 			setTimeout(() => {
 				if (this.props.exploreSearch && this.props.exploreSearch.length > 0) {
@@ -132,7 +139,7 @@ class Explore extends React.Component {
 			}, 1000)
 		}
 
-		if (user && coachId) {
+		if (coachId) {
 			this.setState({ isLoading: true })
 			setTimeout(() => {
 				fetchUserInfo(coachId)
@@ -187,9 +194,12 @@ class Explore extends React.Component {
 			skip: 0
 		})
 
+		const userId = user ? user._id : null
+		const userSports = user ? user.sports : null
+
 		if(sport === 'all') {
 			resetExploreSearch()
-			executeExploreSearch(sport, user._id, 0, 10, user.sports)
+			executeExploreSearch(sport, userId, 0, 10, userSports)
 				.then(res => {
 					// if (res && res.payload && res.payload.length < 10) {
 					// 	this.setState({ showLoadMore: false })
@@ -199,7 +209,7 @@ class Explore extends React.Component {
 				})
 		} else {
 			resetSpecificSportSearch()
-			executeExploreSearch(sport, user._id, 0, 10, user.sports)
+			executeExploreSearch(sport, userId, 0, 10, userSports)
 				.then(res => {
 					if (res && res.payload && res.payload.length < 10) {
 						this.setState({ showLoadMore: false })
@@ -345,26 +355,26 @@ class Explore extends React.Component {
 			)
 		}
 
-		if (!user) {
-			if(isSigninUp) {
-				return (
-					<SignupFromRedirect
-						onSignupSuccess={this.handleShowCoachOrCoaching}
-						title={capitalize(t('createAnAccountToAccessThisCoaching'))}
-						location={location}
-						onGoToSignIn={() => this.setState({ isSigninUp: false })}
-					/>
-				)
-			}
-			return (
-				<SigninFromRedirect
-					onSigninSuccess={this.handleShowCoachOrCoaching}
-					title={capitalize(t('signinToAccessThisCoaching'))}
-					location={location}
-					onGoToSignUp={() => this.setState({ isSigninUp: true })}
-				/>
-			)
-		}
+		// if (!user) {
+		// 	if(isSigninUp) {
+		// 		return (
+		// 			<SignupFromRedirect
+		// 				onSignupSuccess={this.handleShowCoachOrCoaching}
+		// 				title={capitalize(t('createAnAccountToAccessThisCoaching'))}
+		// 				location={location}
+		// 				onGoToSignIn={() => this.setState({ isSigninUp: false })}
+		// 			/>
+		// 		)
+		// 	}
+		// 	return (
+		// 		<SigninFromRedirect
+		// 			onSigninSuccess={this.handleShowCoachOrCoaching}
+		// 			title={capitalize(t('signinToAccessThisCoaching'))}
+		// 			location={location}
+		// 			onGoToSignUp={() => this.setState({ isSigninUp: true })}
+		// 		/>
+		// 	)
+		// }
 
 		if (selectedCoach) {
 			return (
@@ -565,7 +575,7 @@ class Explore extends React.Component {
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
-													boughtCoaching={coaching.isMine}
+													hasCheckSign={coaching.isMine}
 												/>
 											</div>
 										))
@@ -583,7 +593,7 @@ class Explore extends React.Component {
 													rating={coaching.coachingRating}
 													subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 													imgUri={coaching.pictureUri}
-													boughtCoaching={coaching.isMine}
+													hasCheckSign={coaching.isMine}
 												/>
 											</div>
 										))
@@ -610,10 +620,10 @@ class Explore extends React.Component {
 														})
 														executeExploreSearch(
 															activeSportType,
-															user._id,
+															user ? user._id : null,
 															skip + 10,
 															10,
-															user.sports
+															user ? user.sports : null
 														).then((res) => {
 															if (res && res.payload && res.payload.length < 5) {
 																this.setState({ showLoadMore: false })
@@ -653,7 +663,7 @@ class Explore extends React.Component {
 									exploreSpecificSportSearch &&
 									exploreSpecificSportSearch.length === 0 &&
 									activeTabIndex !== 'all' && searchInputText === '' && (
-										<Link to='/schedule' className='empty-coaching-card hover'>
+										<Link to='/post' className='empty-coaching-card hover'>
 											<PlusButton
 												width={90}
 												height={90}
@@ -680,7 +690,7 @@ class Explore extends React.Component {
 						exploreSpecificSportSearch && exploreSpecificSportSearch.length === 0 &&
 						searchInputText === '' && (
 						<div style={{ width: '100%' }}>
-							<Link to='/schedule' className='empty-coaching-card hover'>
+							<Link to='/post' className='empty-coaching-card hover'>
 								<PlusButton
 									width={90}
 									height={90}
@@ -716,7 +726,7 @@ class Explore extends React.Component {
 												rating={coaching.coachingRating}
 												subtitle={`${capitalize(t(coaching.sport))} ${t('with')} ${titleCase(coaching.coachUserName)}`}
 												imgUri={coaching.pictureUri}
-												boughtCoaching={coaching.isMine}
+												hasCheckSign={coaching.isMine}
 											/>
 										</div>)) :
 									null

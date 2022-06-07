@@ -17,6 +17,7 @@ import qs from 'query-string'
 import CreateLegalUser from './create-legal-user'
 import ImageUploader from '../../components/web-app/image-uploader/image-uploader'
 import VideoUploader from '../../components/web-app/video-uploader'
+import VideoSelector from './video-selector'
 
 import '../../styling/headings.css'
 import '../../styling/colors.css'
@@ -60,25 +61,26 @@ const {
 
 let upload = null
 
-class Schedule extends React.Component {
+class Program extends React.Component {
 	constructor(props) {
 		super(props)
-		const { coaching, location } = this.props
+		const { program, location } = this.props
 		const videoSrc = qs.parse(location.search, { ignoreQueryPrefix: true }).videoSrc
 		const videoFile = qs.parse(location.search, { ignoreQueryPrefix: true }).videoFile
 		const token = qs.parse(location.search, { ignoreQueryPrefix: true }).token
 		this.state = {
-			title: (coaching || {}).title || '',
-			sport: (coaching || {}).sport || '',
-			pictureUri: (coaching || {}).pictureUri || '',
-			startingDate: (coaching || {}).startingDate || '',
-			duration: (coaching || {}).duration || '',
-			level: (coaching || {}).level || '',
-			equipment: (coaching || {}).equipment || [],
-			focus: (coaching || {}).focus || [],
-			language: (coaching || {}).coachingLanguage || '',
-			freeAccess: (coaching || {}).freeAccess || '',
-			price: (coaching || {}).price || '',
+			title: (program || {}).title || '',
+			title: (program || {}).description || '',
+			sport: (program || {}).sport || '',
+			pictureUri: (program || {}).pictureUri || '',
+			startingDate: (program || {}).startingDate || '',
+			duration: (program || {}).duration || '',
+			level: (program || {}).level || '',
+			equipment: (program || {}).equipment || [],
+			focus: (program || {}).focus || [],
+			language: (program || {}).coachingLanguage || '',
+			freeAccess: (program || {}).freeAccess || '',
+			price: (program || {}).price || '',
 			isLoading: false,
 			isSelecting: '',
 			isButtonDisabled: false,
@@ -103,13 +105,12 @@ class Schedule extends React.Component {
 		sportsItems = Object.keys(translations.default.sportsAvailable)
 		focusItems = Object.keys(translations.default.focus)
 		levelsItems = Object.keys(translations.default.levels)
-		durationsItems = Object.keys(translations.default.durationsByTen)
 		equipmentsItems = Object.keys(translations.default.equipments)
 		languagesItems = Object.keys(translations.default.languagesAvailable)
 		pricesItems = Object.keys(translations.default.pricesAvailable)
 
 		this.returnPriceWording = this.returnPriceWording.bind(this)
-		this.handleCreateCoaching = this.handleCreateCoaching.bind(this)
+		this.handleCreateProgram = this.handleCreateProgram.bind(this)
 		this.upload = this.upload.bind(this)
 		this.returnMultipleSelectItem = this.returnMultipleSelectItem.bind(this)
 		this.returnSimpleSelectItem = this.returnSimpleSelectItem.bind(this)
@@ -219,9 +220,10 @@ class Schedule extends React.Component {
 		}
 	}
 
-	handleCreateCoaching(e) {
+	handleCreateProgram(e) {
 		const {
 			title,
+			description,
 			sport,
 			pictureUri,
 			startingDate,
@@ -235,10 +237,10 @@ class Schedule extends React.Component {
 			isCreatingLegalUser
 		} = this.state
 		const {
-			createCoaching,
-			coaching,
-			updateCoaching,
-			onCoachingCreated,
+			createProgram,
+			program,
+			updateProgram,
+			onProgramCreated,
 			t,
 			user
 		} = this.props
@@ -283,7 +285,7 @@ class Schedule extends React.Component {
 
 		this.setState({ isLoading: true })
 
-		const newCoaching = {
+		const newProgram = {
 			title: title.toLowerCase(),
 			sport,
 			duration,
@@ -303,7 +305,7 @@ class Schedule extends React.Component {
 			coachRating,
 		}
 
-		return createCoaching(newCoaching)
+		return createProgram(newProgram)
 			.then(res => {
 				const coachingId = res.payload._id
 				this.setState({ coachingId })
@@ -318,20 +320,21 @@ class Schedule extends React.Component {
 			sport,
 			pictureUri,
 			videoFile,
-			price
+			price,
+			description
 		} = this.state
 		const { t } = this.props
 		if (!title) {
 			missingParams.push(t('title'))
+		}
+		if (!description) {
+			missingParams.push(t('description'))
 		}
 		if (!sport) {
 			missingParams.push(t('sport'))
 		}
 		if (!pictureUri) {
 			missingParams.push(t('picture'))
-		}
-		if (!videoFile) {
-			missingParams.push(t('video'))
 		}
 		if (!price) {
 			missingParams.push(t('price'))
@@ -449,6 +452,7 @@ class Schedule extends React.Component {
 		} = this.props
 		const {
 			title,
+			description,
 			sport,
 			pictureUri,
 			startingDate,
@@ -496,6 +500,7 @@ class Schedule extends React.Component {
 				<div
 					onSubmit={e => this.handleCreateCoaching(e)}
 					className='card upload-form schedule'
+					style={{ height: 'unset' }}
 				>
 					{
 						!isWebview &&
@@ -514,6 +519,21 @@ class Schedule extends React.Component {
 						onChange={(e) => this.setState({ title: e.target.value })}
 						disabled={progress || progress === 0 ? true : false}
 						value={title}
+					/>
+					<div className='medium-separator'></div>
+					<div className='small-separator'></div>
+					<span className='small-text-bold citrusGrey titles-form-input'>
+						{capitalize(t('description'))}
+					</span>
+					<TextField
+						placeholder={capitalize(t('addDescription'))}
+						variant='outlined'
+						className='small-text-bold citrusGrey form-input'
+						onChange={(e) => this.setState({ description: e.target.value })}
+						disabled={progress || progress === 0 ? true : false}
+						value={description}
+						multiline
+						minRows={5}
 					/>
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
@@ -604,74 +624,6 @@ class Schedule extends React.Component {
 							pictureUri={pictureUri ? pictureUri : null}
 						/>
 					</div>
-					<div className='medium-separator'></div>
-					<div className='small-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
-						{capitalize(t('addAVideo'))}
-					</span>
-					<div className='media-row'>
-						<VideoUploader
-							disabled={progress || progress === 0 ? true : false}
-							t={t}
-							onVideoSelected={(videoFile, videoSrc) => {
-								console.log('video file', videoFile)
-								console.log('videoSrc', videoSrc)
-								this.setState({ videoFile, videoSrc })
-							}}
-							onError={() =>this.setState({
-								videoErrorMessage: capitalize(t('unreadableVideoFile')),
-								videoFile: ''
-							})}
-							videoSrc={videoSrc}
-						/>
-						{
-							videoErrorMessage &&
-							<>
-								<div className='small-separator'></div>
-								<div className='small-separator'></div>
-									<span className='small-text-bold citrusRed'>
-										{videoErrorMessage}
-									</span>
-							</>
-						}
-					</div>
-					{/* <div className='medium-separator'></div>
-					<div className='small-separator'></div>
-					<span className='small-text-bold citrusGrey titles-form-input'>
-						{`${capitalize(t('duration'))} ( ${t('optional')} )`}
-					</span>
-					<Select
-						variant='outlined'
-						className='form-input'
-						value={duration}
-						onChange={e => this.setState({ duration: e.target.value })}
-						displayEmpty
-						renderValue={(selected) => {
-							if (selected.length === 0) {
-								return (
-									<em className='small-text-bold citrusGrey'>
-										{capitalize(t('durationPlaceholder'))}
-									</em>
-								)
-							}
-							return capitalize(t(selected))
-						}}
-					>
-						<MenuItem disabled value="">
-							<em className='small-text-bold citrusGrey'>{t('durationPlaceholder')}</em>
-						</MenuItem>
-						{
-							durationsItems.map((duration, i) => (
-								<MenuItem key={i} value={duration}>
-									{
-										duration === this.state.duration ?
-											this.returnSimpleSelectItem(duration) :
-											capitalize(t(duration))
-									}
-								</MenuItem>
-							))
-						}
-					</Select> */}
 					<div className='medium-separator'></div>
 					<div className='small-separator'></div>
 					<span className='small-text-bold citrusGrey titles-form-input'>
@@ -840,7 +792,7 @@ class Schedule extends React.Component {
 								disabled={isButtonDisabled}
 							>
 								<span className='small-title citrusWhite'>
-									{capitalize(t('createCoaching'))}
+									{capitalize(t('startCreatingProgram'))}
 								</span>
 							</button>
 							<div className='medium-separator'></div>
@@ -1060,4 +1012,4 @@ const mapDispatchToProps = (dispatch) => ({
 	loadWebviewUser: token => dispatch(loadWebviewUser(token))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Schedule))
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation()(Program))

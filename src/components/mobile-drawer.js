@@ -118,7 +118,7 @@ function MobileDrawer({ t, currentFocus, logout }) {
 						</ListItem>
 					</Link>
 					<div className='small-separator'></div>
-					<Link to='/schedule'>
+					<Link to='/post'>
 						<ListItem button>
 							<ListItemIcon>
 								<Plus />

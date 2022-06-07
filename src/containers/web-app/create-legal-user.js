@@ -277,7 +277,7 @@ class CreateLegalUser extends React.Component {
 					</span>
 					<div className='small-separator'></div>
 					<div className='medium-separator'></div>
-					<Link to='/schedule' className='filled-button'>
+					<Link to='/post' className='filled-button'>
 						<span className='small-title citrusWhite'>
 							{capitalize(t('tryAgain'))}
 						</span>

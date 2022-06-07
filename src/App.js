@@ -26,7 +26,7 @@ import PayInConfirmation from './containers/web-app/payments/pay-in-confirmation
 
 import Home from './containers/web-app/home'
 import Explore from './containers/web-app/explore'
-import Schedule from './containers/web-app/schedule'
+import Post from './containers/web-app/post'
 import Profile from './containers/web-app/profile'
 import Settings from './containers/web-app/settings'
 import BillingFailure from './containers/web-app/payments/billing-failure'
@@ -56,6 +56,7 @@ class App extends React.Component {
       if(user) {
         this.props.fetchUserReplays(user._id)
         this.props.fetchTrainerCoachings(user._id, true)
+        console.log(user)
         this.props.executeExploreSearch('all', user._id, 0, 10, user.sports)
       }
     })
@@ -110,9 +111,9 @@ class App extends React.Component {
                   <Route exact path='/reset_password' component={ResetPassword} />
                   <Route exact path='/billing_plan' component={BillingFailure} />
                   <Route exact path='/explore' component={Explore} />
-                  <Route path='/schedule-webview' component={Schedule} />
+                  <Route path='/post-webview' component={Post} />
                   <PrivateRoute auth={isAuthenticated} path='/home' component={Home} />
-                  <PrivateRoute auth={isAuthenticated} path='/schedule' component={Schedule} />
+                  <PrivateRoute auth={isAuthenticated} path='/post' component={Post} />
                   <PrivateRoute auth={isAuthenticated} path='/profile' component={Profile} />
                   <PrivateRoute auth={isAuthenticated} path='/settings' component={Settings} />
                   <PrivateRoute auth={isAuthenticated} path='/pay-in-confirmation' component={PayInConfirmation} />
