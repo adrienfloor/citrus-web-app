@@ -23,7 +23,7 @@ class Post extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			activeTabIndex: 1
+			activeTabIndex: 0
 		}
 	}
 
@@ -48,7 +48,7 @@ class Post extends React.Component {
 							<div className='small-separator'></div>
 						</>
 					}
-					<div className='small-responsive-title-settings' style={{ display: 'flex' }}>
+					{/* <div className='small-responsive-title-settings' style={{ display: 'flex' }}>
 						<div
                             className={activeTabIndex === 0 ?  'active-tab hover' : 'tab hover'}
                             onClick={() => this.setState({ activeTabIndex: 0 })}
@@ -65,7 +65,10 @@ class Post extends React.Component {
 								{capitalize(t('newTrainingProgram'))}
 							</span>
 						</div>
-					</div>
+					</div> */}
+					<span className='small-title citrusBlack small-responsive-title-settings'>
+						{capitalize(t('newTraining'))}
+					</span>
                     {
                         activeTabIndex === 0 ?
                         <Schedule location={location} /> :

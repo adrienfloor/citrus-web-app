@@ -342,8 +342,7 @@ class Coaching extends React.Component {
 		this.setState({ isLoading: true })
 
 		if(!user) {
-			window.location.href = `http://localhost:3000/signup`
-			// window.location.href = `http://app.thecitrusapp.com/explore?coaching_id=${coaching._id}`
+			window.location.href = 'http://app.thecitrusapp.com/signup'
 			return
 		}
 
