@@ -114,7 +114,7 @@ class Coaching extends React.Component {
 		const { price, coachId } = coaching
 
 		if(!user) {
-			return capitalize(t('signinToWatch'))
+			return `${capitalize(t('buyFor'))} ${price} ${returnCurrency(moment.locale())}`
 		}
 
 		const hasBoughtCoaching = user.myReplays.find(training => training._id === coaching._id)
@@ -336,13 +336,16 @@ class Coaching extends React.Component {
 			onCancel,
 			user,
 			updateUser,
-			fetchUserReplays
+			fetchUserReplays,
+			history,
+			onGoToSignUp
 		} = this.props
 
 		this.setState({ isLoading: true })
 
 		if(!user) {
-			window.location.href = 'http://app.thecitrusapp.com/signup'
+			// history.push('/signup?')
+			onGoToSignUp()
 			return
 		}
 

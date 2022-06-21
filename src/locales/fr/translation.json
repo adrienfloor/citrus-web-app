@@ -1,7 +1,7 @@
 {
 	"signinToWatch": "se connecter pour voir",
 	"signUpNow": "s'inscrire",
-	"logInNow": "log in now",
+	"logInNow": "se connecter",
 	"letMeIn": "let me in",
 	"logIn": "se connecter",
 	"logInTitle": "login",
@@ -633,5 +633,6 @@
 	"facebookUrl": "url de ton Facebook",
 	"tiktokUrl": "url de ton Tik Tok",
 	"website": "site web",
-	"yourWebsiteUrl": "url de ton site web"
+	"yourWebsiteUrl": "url de ton site web",
+	"postYourVideo": "publie ta vidéo"
 }

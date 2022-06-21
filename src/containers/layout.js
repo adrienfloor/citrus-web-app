@@ -10,6 +10,7 @@ import {
 	setIsRedirectingHome
 } from '../actions/navigation-actions'
 import { capitalize } from '../utils/various'
+import { ReactComponent as BluePlus } from '../assets/svg/blue-plus-button.svg'
 
 import '../styling/headings.css'
 import '../styling/colors.css'
@@ -37,6 +38,7 @@ const Layout = ({
 	}
 
 	const isWebview = location && location.pathname === '/post-webview'
+	const isExploreAndUserNotLoggedIn = location && location.pathname === '/explore' && !isAuthenticated
 
 	if(isWebview) {
 		return <div className='webview'>{children}</div>
@@ -51,7 +53,7 @@ const Layout = ({
 				<div className='header-left-box'>
 					{
 						// isDashboard &&
-						isAuthenticated &&
+						(isAuthenticated || isExploreAndUserNotLoggedIn) &&
 						<div className='mobile-drawer'>
 							<MobileDrawer
 								logout={() => {
@@ -59,6 +61,7 @@ const Layout = ({
 									setIsRedirectingHome(true)
 								}}
 								currentFocus={focus => setDashboardFocus(focus)}
+								isExploreAndUserNotLoggedIn={isExploreAndUserNotLoggedIn}
 							/>
 						</div>
 					}
@@ -130,6 +133,70 @@ const Layout = ({
 							</a>
 						</div>
 					</>
+				}
+				{
+					isExploreAndUserNotLoggedIn &&
+					<div
+						className='flex-row'
+						style={{
+							width: '500px',
+							justifyContent: 'space-between',
+							marginRight: '50px'
+						}}
+					>
+						<Link to='/signin'
+							className='medium-text hover desktop-only'
+						>
+							<div
+								className='light-button button'
+								style={{
+									width: '150px',
+									minWidth: '100px',
+									height: '35px',
+									marginRight: '100px'
+								}}
+							>
+								<span
+									className='small-text-bold citrusBlue'
+									style={{ display: 'flex', alignItems: 'center' }}
+								>
+									<BluePlus style={{ marginRight: '5px' }} />
+									{capitalize(t('postYourVideo'))}
+								</span>
+							</div>
+						</Link>
+						<Link to='/signin'
+							className='medium-text hover desktop-only'
+						>
+							<div
+								className='light-button button'
+								style={{
+									width: '100px',
+									minWidth: '100px',
+									height: '35px'
+								}}
+							>
+								<span className='small-text-bold citrusBlue'>
+									{capitalize(t('logInNow'))}
+								</span>
+							</div>
+						</Link>
+						<Link to='/signup'
+							className='medium-text hover desktop-only'
+						>
+							<div
+								className='small-button'
+								style={{
+									minWidth: '100px',
+									height: '39px'
+								}}
+							>
+								<span className='small-text-bold citrusWhite'>
+									{capitalize(t('signUpNow'))}
+								</span>
+							</div>
+						</Link>
+					</div>
 				}
 			</header>
 			<div className='children'>{children}</div>

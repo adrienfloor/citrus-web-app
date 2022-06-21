@@ -21,6 +21,7 @@ import { ReactComponent as Burger } from '../assets/svg/burger.svg'
 import { ReactComponent as Home } from '../assets/svg/home.svg'
 import { ReactComponent as Compass } from '../assets/svg/compass.svg'
 import { ReactComponent as Plus } from '../assets/svg/plus-button.svg'
+import { ReactComponent as BluePlus } from '../assets/svg/blue-plus-button.svg'
 import { ReactComponent as User } from '../assets/svg/user.svg'
 import { ReactComponent as Gear } from '../assets/svg/gear.svg'
 import { ReactComponent as Logo } from '../assets/svg/logo.svg'
@@ -48,7 +49,12 @@ const useStyles = makeStyles({
 	}
 })
 
-function MobileDrawer({ t, currentFocus, logout }) {
+function MobileDrawer({
+	t,
+	currentFocus,
+	logout,
+	isExploreAndUserNotLoggedIn
+}) {
 	const classes = useStyles()
 	const [open, setOpen] = useState(false)
 
@@ -69,103 +75,168 @@ function MobileDrawer({ t, currentFocus, logout }) {
 			onKeyDown={toggleDrawer(false)}
 			style={{ height: '95%', marginBottom: '5%' }}
 		>
-			<List
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'space-between',
-					height: '100%'
-				}}
-			>
-				<div
+			{
+				isExploreAndUserNotLoggedIn ?
+				<List
 					style={{
 						display: 'flex',
+						flexDirection: 'column',
 						justifyContent: 'space-between',
-						alignItems: 'flex-start',
-						marginTop: '5px'
+						height: '100%'
 					}}
 				>
-					<div style={{ marginLeft: '16px' }}>
-						<Logo />
-					</div>
 					<div
-						style={{ marginRight: '10px' }}
-						onClick={toggleDrawer(false)}
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'flex-start',
+							marginTop: '5px'
+						}}
 					>
-						<Close />
+						<div style={{ marginLeft: '16px' }}>
+							<Logo />
+						</div>
+						<div
+							style={{ marginRight: '10px' }}
+							onClick={toggleDrawer(false)}
+						>
+							<Close />
+						</div>
 					</div>
-				</div>
-				<div>
-					<Link to='/home'>
-						<ListItem button>
-							<ListItemIcon>
-								<Home />
-							</ListItemIcon>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('home'))}
-							</span>
-						</ListItem>
-					</Link>
-					<div className='small-separator'></div>
-					<Link to='/explore'>
-						<ListItem button>
-							<ListItemIcon>
-								<Compass />
-							</ListItemIcon>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('explore'))}
-							</span>
-						</ListItem>
-					</Link>
-					<div className='small-separator'></div>
-					<Link to='/post'>
-						<ListItem button>
-							<ListItemIcon>
-								<Plus />
-							</ListItemIcon>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('post'))}
-							</span>
-						</ListItem>
-					</Link>
-					<div className='small-separator'></div>
-					<Link to='/profile'>
-						<ListItem button>
-							<ListItemIcon>
-								<User />
-							</ListItemIcon>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('profile'))}
-							</span>
-						</ListItem>
-					</Link>
-					<div className='small-separator'></div>
-					<Link to='/settings'>
-						<ListItem button>
-							<ListItemIcon>
-								<Gear />
-							</ListItemIcon>
-							<span className='smaller-text-bold citrusGrey'>
-								{capitalize(t('settings'))}
-							</span>
-						</ListItem>
-					</Link>
-				</div>
-				<div className='small-separator'></div>
-				<ListItem button>
+					<div className='big-separator'></div>
+						<Link to='/signin'>
+							<ListItem button>
+								<div className='medium-text hover light-button'>
+								<span
+									className='small-text-bold citrusBlue'
+									style={{ display: 'flex', alignItems: 'center' }}
+								>
+									<BluePlus style={{ marginRight: '5px' }} />
+									{capitalize(t('postYourVideo'))}
+								</span>
+								</div>
+							</ListItem>
+						</Link>
+					<div className='big-separator'></div>
+					<div style={{ height: '400px'}}>
+						<Link to='/signup'>
+							<ListItem button>
+								<div className='medium-text hover filled-button'>
+									<span className='small-text-bold citrusWhite'>
+										{capitalize(t('signUpNow'))}
+									</span>
+								</div>
+							</ListItem>
+						</Link>
+						<div className='small-separator'></div>
+						<Link to='/signin'>
+							<ListItem button>
+								<div className='medium-text hover light-button'>
+									<span className='small-text-bold citrusBlue'>
+										{capitalize(t('logInNow'))}
+									</span>
+								</div>
+							</ListItem>
+						</Link>
+					</div>
+				</List> :
+				<List
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'space-between',
+						height: '100%'
+					}}
+				>
 					<div
-						onClick={logout}
-						className='medium-text hover logout filled-button'
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							alignItems: 'flex-start',
+							marginTop: '5px'
+						}}
 					>
-						<a href='https://thecitrusapp.com'>
-							<span className='small-text-bold citrusWhite'>
-								{capitalize(t('logOut'))}
-							</span>
-						</a>
+						<div style={{ marginLeft: '16px' }}>
+							<Logo />
+						</div>
+						<div
+							style={{ marginRight: '10px' }}
+							onClick={toggleDrawer(false)}
+						>
+							<Close />
+						</div>
 					</div>
-				</ListItem>
-			</List>
-
+					<div>
+						<Link to='/home'>
+							<ListItem button>
+								<ListItemIcon>
+									<Home />
+								</ListItemIcon>
+								<span className='smaller-text-bold citrusGrey'>
+									{capitalize(t('home'))}
+								</span>
+							</ListItem>
+						</Link>
+						<div className='small-separator'></div>
+						<Link to='/explore'>
+							<ListItem button>
+								<ListItemIcon>
+									<Compass />
+								</ListItemIcon>
+								<span className='smaller-text-bold citrusGrey'>
+									{capitalize(t('explore'))}
+								</span>
+							</ListItem>
+						</Link>
+						<div className='small-separator'></div>
+						<Link to='/post'>
+							<ListItem button>
+								<ListItemIcon>
+									<Plus />
+								</ListItemIcon>
+								<span className='smaller-text-bold citrusGrey'>
+									{capitalize(t('post'))}
+								</span>
+							</ListItem>
+						</Link>
+						<div className='small-separator'></div>
+						<Link to='/profile'>
+							<ListItem button>
+								<ListItemIcon>
+									<User />
+								</ListItemIcon>
+								<span className='smaller-text-bold citrusGrey'>
+									{capitalize(t('profile'))}
+								</span>
+							</ListItem>
+						</Link>
+						<div className='small-separator'></div>
+						<Link to='/settings'>
+							<ListItem button>
+								<ListItemIcon>
+									<Gear />
+								</ListItemIcon>
+								<span className='smaller-text-bold citrusGrey'>
+									{capitalize(t('settings'))}
+								</span>
+							</ListItem>
+						</Link>
+					</div>
+					<div className='small-separator'></div>
+					<ListItem button>
+						<div
+							onClick={logout}
+							className='medium-text hover logout filled-button'
+						>
+							<a href='https://thecitrusapp.com'>
+								<span className='small-text-bold citrusWhite'>
+									{capitalize(t('logOut'))}
+								</span>
+							</a>
+						</div>
+					</ListItem>
+				</List>
+			}
 			{/* <div className={`${classes.padded} small-title drawer-title`}>
 				{capitalize(t('account'))}
 			</div>

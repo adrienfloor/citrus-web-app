@@ -75,10 +75,12 @@ class Explore extends React.Component {
 			showLoadMore: true,
 			isLoading: false,
 			isSigninUp: false,
+			isSigninIn: false,
 			coachComment : '',
 			ratingValue: null,
 			coachingToRate: null,
-			isNewPurchase: false
+			isNewPurchase: false,
+			isHeaderHidden: false
 		}
 
 		const { user } = this.props
@@ -91,6 +93,7 @@ class Explore extends React.Component {
 		this.handleSportSelection = this.handleSportSelection.bind(this)
 		this.handleShowCoachOrCoaching = this.handleShowCoachOrCoaching.bind(this)
 		this.handleCoachRating = this.handleCoachRating.bind(this)
+		this.handleScroll = this.handleScroll.bind(this)
 	}
 
 	componentDidMount() {
@@ -104,7 +107,18 @@ class Explore extends React.Component {
 		}
 	}
 
-	handleShowCoachOrCoaching() {
+	handleScroll() {
+		if (typeof window !== 'undefined') {
+			const scrollingDiv = document.getElementById('scroll-vertical-container')
+			if(scrollingDiv.scrollTop > 100 && window.outerWidth < 640) {
+				this.setState({ isHeaderHidden: true })
+			} else {
+				this.setState({ isHeaderHidden: false })
+			}
+		}
+	}
+
+	handleShowCoachOrCoaching(coachingIdFromRedirect) {
 		const {
 			location,
 			user,
@@ -112,7 +126,12 @@ class Explore extends React.Component {
 			fetchUserInfo
 		} = this.props
 
-		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching
+		this.setState({
+			isSigninUp: false,
+			isSigninIn: false
+		})
+
+		const coachingId = qs.parse(location.search, { ignoreQueryPrefix: true }).coaching || coachingIdFromRedirect
 		const coachId = qs.parse(location.search, { ignoreQueryPrefix: true }).coach
 
 		if (coachingId) {
@@ -320,9 +339,11 @@ class Explore extends React.Component {
 			showLoadMore,
 			isLoading,
 			isSigninUp,
+			isSigninIn,
 			isRatingCoaching,
 			ratingValue,
-			isNewPurchase
+			isNewPurchase,
+			isHeaderHidden
 		} = this.state
 		const {
 			executeExploreSearch,
@@ -355,26 +376,33 @@ class Explore extends React.Component {
 			)
 		}
 
-		// if (!user) {
-		// 	if(isSigninUp) {
-		// 		return (
-		// 			<SignupFromRedirect
-		// 				onSignupSuccess={this.handleShowCoachOrCoaching}
-		// 				title={capitalize(t('createAnAccountToAccessThisCoaching'))}
-		// 				location={location}
-		// 				onGoToSignIn={() => this.setState({ isSigninUp: false })}
-		// 			/>
-		// 		)
-		// 	}
-		// 	return (
-		// 		<SigninFromRedirect
-		// 			onSigninSuccess={this.handleShowCoachOrCoaching}
-		// 			title={capitalize(t('signinToAccessThisCoaching'))}
-		// 			location={location}
-		// 			onGoToSignUp={() => this.setState({ isSigninUp: true })}
-		// 		/>
-		// 	)
-		// }
+		if (isSigninUp) {
+			return (
+				<SignupFromRedirect
+					onSignupSuccess={() => this.handleShowCoachOrCoaching(selectedCoaching._id)}
+					title={capitalize(t('createAnAccountToAccessThisCoaching'))}
+					location={location}
+					onGoToSignIn={() => this.setState({
+						isSigninUp: false,
+						isSigninIn: true
+					})}
+				/>
+			)
+		}
+
+		if(isSigninIn) {
+			return (
+				<SigninFromRedirect
+					onSigninSuccess={() => this.handleShowCoachOrCoaching(selectedCoaching._id)}
+					title={capitalize(t('signinToAccessThisCoaching'))}
+					location={location}
+					onGoToSignUp={() => this.setState({
+						isSigninUp: true,
+						isSigninIn: false
+					})}
+				/>
+			)
+		}
 
 		if (selectedCoach) {
 			return (
@@ -394,121 +422,127 @@ class Explore extends React.Component {
 
 		return (
 			<div className='main-container'>
-				<span className='big-title citrusBlack responsive-title' style={{ display: 'block' }}>
-					{capitalize(t('explore'))}
-				</span>
+				{
+					// !isHeaderHidden &&
+					<span className='big-title citrusBlack responsive-title' style={{ display: 'block' }}>
+						{capitalize(t('explore'))}
+					</span>
+				}
 				<div className='upload-form card scroll-div-vertical explore-container'>
-					<div
-						style={
-							searchInputText.length ?
-								{ display: 'flex', width: '100%', alignItems: 'flex-end', paddingBottom: '30px' } :
-								{ display: 'flex', width: '100%', alignItems: 'flex-end' }
-						}
-						className={searchInputText.length ? 'search-input-text-mobile search-bar-container' : 'search-bar-container'}
-					>
-						<div className={searchInputText.length ? 'explore-search-bar-long' : 'explore-search-bar'}>
-							<input
-								className='text-input small-text-bold citrusGrey input search-input'
-								style={{ width: '100%', height: '35px' }}
-								placeholder={capitalize(t('search'))}
-								value={searchInputText}
-								onChange={e => this.handleSearch(e.target.value)}
-							/>
-							{
-								searchInputText.length > 0 &&
+					{
+						!isHeaderHidden &&
+						<div
+							style={
+								searchInputText.length ?
+									{ display: 'flex', width: '100%', alignItems: 'flex-end', paddingBottom: '30px' } :
+									{ display: 'flex', width: '100%', alignItems: 'flex-end' }
+							}
+							className={searchInputText.length ? 'search-input-text-mobile search-bar-container' : 'search-bar-container'}
+						>
+							<div className={searchInputText.length ? 'explore-search-bar-long' : 'explore-search-bar'}>
+								<input
+									className='text-input small-text-bold citrusGrey input search-input'
+									style={{ width: '100%', height: '35px' }}
+									placeholder={capitalize(t('search'))}
+									value={searchInputText}
+									onChange={e => this.handleSearch(e.target.value)}
+								/>
+								{
+									searchInputText.length > 0 &&
+									<div
+										style={{
+											marginTop: '20px',
+											width: '10%',
+											display: 'flex',
+											justifyContent: 'flex-end'
+										}}
+										className='hover mobile-only'
+										onClick={() => {
+											this.setState({ searchInputText: '' })
+											this.handleResetSearch()
+										}}>
+										<Close
+											width={20}
+											height={20}
+											stroke={'#C2C2C2'}
+											strokeWidth={2}
+										/>
+									</div>
+								}
+							</div>
+							{searchInputText.length ? (
 								<div
-									style={{
-										marginTop: '20px',
-										width: '10%',
-										display: 'flex',
-										justifyContent: 'flex-end'
-									}}
-									className='hover mobile-only'
-									onClick={() => {
-										this.setState({ searchInputText: '' })
-										this.handleResetSearch()
-									}}>
-									<Close
-										width={20}
-										height={20}
-										stroke={'#C2C2C2'}
+									style={{ width: '350px' }}
+									className='thin-row mobile-thin-row'
+								>
+									<div
+										style={{ marginLeft: '20px' }}
+										className='hover desktop-only'
+										onClick={() => {
+											this.setState({ searchInputText: '' })
+											this.handleResetSearch()
+										}}>
+										<Close
+											width={20}
+											height={20}
+											stroke={'#C2C2C2'}
+											strokeWidth={2}
+										/>
+									</div>
+									<div
+										className='hover'
+										onClick={() => {
+											this.setState({
+												searchingSessions: true,
+												searchingAccounts: false
+											})
+											executeSearch(searchInputText, 'sessions', user._id)
+										}}>
+										<span
+											className='small-text-bold'
+											style={
+												!searchingSessions ?
+													{ color: '#A9A9A9' } :
+													{ color: '#000000' }
+											}>
+											{t('trainings')}
+										</span>
+									</div>
+									<span>|</span>
+									<div
+										className='hover'
+										onClick={() => {
+											this.setState({
+												searchingSessions: false,
+												searchingAccounts: true
+											})
+											executeSearch(searchInputText, 'accounts', user._id)
+										}}>
+										<span
+											className='small-text-bold'
+											style={
+												!searchingAccounts ?
+													{ color: '#A9A9A9' } :
+													{ color: '#000000' }
+											}>
+											{t('accounts')}
+										</span>
+									</div>
+								</div>
+							) :
+								<div style={{ marginLeft: '10px' }}>
+									<Search
+										width={25}
+										height={25}
+										stroke={'#000000'}
 										strokeWidth={2}
 									/>
 								</div>
 							}
 						</div>
-						{searchInputText.length ? (
-							<div
-								style={{ width: '350px' }}
-								className='thin-row mobile-thin-row'
-							>
-								<div
-									style={{ marginLeft: '20px' }}
-									className='hover desktop-only'
-									onClick={() => {
-										this.setState({ searchInputText: '' })
-										this.handleResetSearch()
-									}}>
-									<Close
-										width={20}
-										height={20}
-										stroke={'#C2C2C2'}
-										strokeWidth={2}
-									/>
-								</div>
-								<div
-									className='hover'
-									onClick={() => {
-										this.setState({
-											searchingSessions: true,
-											searchingAccounts: false
-										})
-										executeSearch(searchInputText, 'sessions', user._id)
-									}}>
-									<span
-										className='small-text-bold'
-										style={
-											!searchingSessions ?
-												{ color: '#A9A9A9' } :
-												{ color: '#000000' }
-										}>
-										{t('trainings')}
-									</span>
-								</div>
-								<span>|</span>
-								<div
-									className='hover'
-									onClick={() => {
-										this.setState({
-											searchingSessions: false,
-											searchingAccounts: true
-										})
-										executeSearch(searchInputText, 'accounts', user._id)
-									}}>
-									<span
-										className='small-text-bold'
-										style={
-											!searchingAccounts ?
-												{ color: '#A9A9A9' } :
-												{ color: '#000000' }
-										}>
-										{t('accounts')}
-									</span>
-								</div>
-							</div>
-						) :
-							<div style={{ marginLeft: '10px' }}>
-								<Search
-									width={25}
-									height={25}
-									stroke={'#000000'}
-									strokeWidth={2}
-								/>
-							</div>
-						}
-					</div>
+					}
 					{
-						searchInputText === '' &&
+						searchInputText === '' && !isHeaderHidden &&
 						<>
 							<div className='small-separator'></div>
 							<div className='medium-separator desktop-only'></div>
@@ -556,7 +590,11 @@ class Explore extends React.Component {
 					}
 					{
 						exploreSearch && exploreSearch.length > 0 && searchInputText === '' && (
-							<div className='search-container scroll-div-vertical'>
+							<div
+								className='search-container scroll-div-vertical'
+								onScroll={this.handleScroll}
+								id='scroll-vertical-container'
+							>
 								{
 									searchInputText === '' &&
 										activeSportType === 'all' ?
@@ -566,8 +604,7 @@ class Explore extends React.Component {
 													onClick={() => {
 														console.log(coaching)
 														this.setState({
-															selectedCoaching: coaching,
-															currentScrollIndex: i
+															selectedCoaching: coaching
 														})
 													}}
 													fullWidth
@@ -584,8 +621,7 @@ class Explore extends React.Component {
 												<Card
 													onClick={() =>
 														this.setState({
-															selectedCoaching: coaching,
-															currentScrollIndex: i
+															selectedCoaching: coaching
 														})
 													}
 													fullWidth
@@ -711,7 +747,7 @@ class Explore extends React.Component {
 						</div>
 					)}
 					{
-						searchInputText !== '' &&
+						searchInputText !== '' && !isHeaderHidden &&
 						<div className='search-container scroll-div-vertical'>
 							{
 								searchingSessions &&
@@ -824,6 +860,8 @@ class Explore extends React.Component {
 								}}
 								isMyCoaching={false}
 								onNewCoachingPurchase={() => this.setState({ isNewPurchase: true })}
+								history={history}
+								onGoToSignUp={() => this.setState({ isSigninUp: true })}
 							/>
 						</div>
 					</Dialog>

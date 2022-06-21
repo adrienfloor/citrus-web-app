@@ -56,7 +56,6 @@ class App extends React.Component {
       if(user) {
         this.props.fetchUserReplays(user._id)
         this.props.fetchTrainerCoachings(user._id, true)
-        console.log(user)
         this.props.executeExploreSearch('all', user._id, 0, 10, user.sports)
       }
     })
