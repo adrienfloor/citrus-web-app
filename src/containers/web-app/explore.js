@@ -423,12 +423,15 @@ class Explore extends React.Component {
 		return (
 			<div className='main-container'>
 				{
-					// !isHeaderHidden &&
+					!isHeaderHidden &&
 					<span className='big-title citrusBlack responsive-title' style={{ display: 'block' }}>
 						{capitalize(t('explore'))}
 					</span>
 				}
-				<div className='upload-form card scroll-div-vertical explore-container'>
+				<div
+					className='upload-form card scroll-div-vertical explore-container'
+					style={isHeaderHidden ? { height: '100%' } : {}}
+				>
 					{
 						!isHeaderHidden &&
 						<div
